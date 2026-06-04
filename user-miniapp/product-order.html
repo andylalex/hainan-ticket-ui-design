@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>商品订单 - 海南演艺票务系统</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: #F5F6FA;
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    
+    .page {
+      width: 100%;
+      max-width: 375px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: #F5F6FA;
+      position: relative;
+      overflow-x: hidden;
+      padding-bottom: 24px;
+    }
+
+    /* ========== Top Nav ========== */
+    .top-nav {
+      height: 44px;
+      background: linear-gradient(135deg, #0A1628 0%, #132240 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 16px;
+    }
+
+    .top-nav .back-btn {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+
+    .top-nav .back-btn:hover { background: rgba(255,255,255,0.1); }
+    .top-nav .nav-title { color: #fff; font-size: 17px; font-weight: 500; }
+
+    /* ========== Tabs ========== */
+    .tabs-section {
+      background: #fff;
+      padding: 0 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(10,22,40,0.04);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 0;
+    }
+
+    .tab-item {
+      flex: 1;
+      padding: 14px 0;
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    .tab-item.active {
+      color: #FF6B4A;
+      font-weight: 600;
+    }
+
+    .tab-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 3px;
+      background: linear-gradient(90deg, #FF6B4A, #D4A853);
+      border-radius: 2px;
+    }
+
+    .tab-item .badge {
+      position: absolute;
+      top: 8px;
+      right: 20%;
+      min-width: 16px;
+      height: 16px;
+      background: #FF6B4A;
+      color: #fff;
+      font-size: 10px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+    }
+
+    /* ========== Order List ========== */
+    .order-list {
+      padding: 12px 16px;
+    }
+
+    .order-card {
+      background: #fff;
+      border-radius: 14px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(10,22,40,0.04);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid #F5F6FA;
+    }
+
+    .order-shop {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #0A1628;
+      font-weight: 500;
+    }
+
+    .order-shop i {
+      font-size: 14px;
+      color: #D4A853;
+    }
+
+    .order-status {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .order-status.pending { color: #FF6B4A; }
+    .order-status.shipping { color: #4A7AFF; }
+    .order-status.completed { color: #00C9A7; }
+    .order-status.cancelled { color: #999; }
+
+    .order-content {
+      padding: 14px 16px;
+      display: flex;
+      gap: 12px;
+    }
+
+    .order-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .order-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .order-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #0A1628;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .order-spec {
+      font-size: 12px;
+      color: #999;
+      margin-top: 4px;
+    }
+
+    .order-price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .order-price {
+      font-size: 16px;
+      font-weight: 700;
+      color: #FF6B4A;
+    }
+
+    .order-price .currency {
+      font-size: 12px;
+    }
+
+    .order-quantity {
+      font-size: 12px;
+      color: #999;
+    }
+
+    .order-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-top: 1px solid #F5F6FA;
+    }
+
+    .order-total {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .order-total strong {
+      color: #0A1628;
+      font-weight: 600;
+    }
+
+    .order-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .order-btn {
+      padding: 7px 16px;
+      border-radius: 18px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .order-btn.outline {
+      background: #fff;
+      border: 1px solid #E0E0E0;
+      color: #666;
+    }
+
+    .order-btn.primary {
+      background: linear-gradient(135deg, #FF6B4A, #FF8A6A);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(255,107,74,0.25);
+    }
+
+    .order-btn:active { transform: scale(0.96); }
+
+    /* ========== Logistics Section ========== */
+    .logistics-section {
+      padding: 12px 16px;
+      border-top: 1px solid #F5F6FA;
+      background: #FAFBFD;
+    }
+
+    .logistics-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .logistics-icon {
+      width: 28px;
+      height: 28px;
+      background: rgba(74,122,255,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #4A7AFF;
+    }
+
+    .logistics-company {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .logistics-company strong {
+      color: #0A1628;
+    }
+
+    .logistics-timeline {
+      padding-left: 14px;
+      border-left: 2px solid #E8E8E8;
+      margin-left: 13px;
+    }
+
+    .logistics-item {
+      position: relative;
+      padding-bottom: 12px;
+    }
+
+    .logistics-item:last-child {
+      padding-bottom: 0;
+    }
+
+    .logistics-item::before {
+      content: '';
+      position: absolute;
+      left: -18px;
+      top: 4px;
+      width: 8px;
+      height: 8px;
+      background: #E8E8E8;
+      border-radius: 50%;
+    }
+
+    .logistics-item.active::before {
+      background: #4A7AFF;
+      box-shadow: 0 0 0 3px rgba(74,122,255,0.2);
+    }
+
+    .logistics-text {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .logistics-item.active .logistics-text {
+      color: #0A1628;
+      font-weight: 500;
+    }
+
+    .logistics-time {
+      font-size: 11px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    /* ========== Empty State ========== */
+    .empty-state {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+    }
+
+    .empty-state.show { display: flex; }
+
+    .empty-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-text {
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 20px;
+    }
+
+    .empty-btn {
+      padding: 10px 24px;
+      background: linear-gradient(135deg, #FF6B4A, #FF8A6A);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* ========== Order Detail Modal ========== */
+    .detail-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .detail-modal-overlay.show { display: flex; }
+
+    .detail-modal {
+      width: 100%;
+      max-width: 375px;
+      max-height: 85vh;
+      background: #fff;
+      border-radius: 20px 20px 0 0;
+      overflow: hidden;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid #F5F6FA;
+    }
+
+    .detail-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #0A1628;
+    }
+
+    .detail-close {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #999;
+      font-size: 18px;
+    }
+
+    .detail-content {
+      padding: 16px 20px;
+      overflow-y: auto;
+      max-height: calc(85vh - 60px);
+    }
+
+    .detail-section {
+      margin-bottom: 20px;
+    }
+
+    .detail-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .detail-section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0A1628;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .detail-section-title i {
+      font-size: 14px;
+      color: #D4A853;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 13px;
+    }
+
+    .detail-label {
+      color: #999;
+    }
+
+    .detail-value {
+      color: #0A1628;
+      text-align: right;
+    }
+
+    .detail-product {
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      background: #F5F6FA;
+      border-radius: 10px;
+    }
+
+    .detail-product-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .detail-product-info {
+      flex: 1;
+    }
+
+    .detail-product-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: #0A1628;
+      margin-bottom: 4px;
+    }
+
+    .detail-product-spec {
+      font-size: 11px;
+      color: #999;
+    }
+
+    .detail-product-price {
+      font-size: 14px;
+      font-weight: 600;
+      color: #FF6B4A;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <!-- Top Nav -->
+  <div class="top-nav">
+    <a class="back-btn" href="profile.html"><i class="fas fa-chevron-left"></i></a>
+    <span class="nav-title">商品订单</span>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs-section">
+    <div class="tabs">
+      <div class="tab-item active" data-status="all" onclick="switchTab(this)">
+        全部
+      </div>
+      <div class="tab-item" data-status="pending" onclick="switchTab(this)">
+        待付款
+        <span class="badge">2</span>
+      </div>
+      <div class="tab-item" data-status="shipping" onclick="switchTab(this)">
+        待发货
+      </div>
+      <div class="tab-item" data-status="completed" onclick="switchTab(this)">
+        已完成
+      </div>
+    </div>
+  </div>
+
+  <!-- Order List -->
+  <div class="order-list" id="orderList">
+    <!-- Order 1 - 待付款 -->
+    <div class="order-card" data-status="pending">
+      <div class="order-header">
+        <div class="order-shop">
+          <i class="fas fa-store"></i>
+          海南演艺文创商城
+        </div>
+        <span class="order-status pending">待付款</span>
+      </div>
+      <div class="order-content">
+        <img class="order-image" src="https://picsum.photos/seed/product1/160/160.jpg" alt="商品图片">
+        <div class="order-info">
+          <div>
+            <div class="order-name">海南黎族文化主题帆布包 文艺简约设计</div>
+            <div class="order-spec">颜色: 黎锦纹样 / 尺寸: 大号</div>
+          </div>
+          <div class="order-price-row">
+            <span class="order-price"><span class="currency">¥</span>68</span>
+            <span class="order-quantity">x1</span>
+          </div>
+        </div>
+      </div>
+      <div class="order-footer">
+        <div class="order-total">共1件，合计: <strong>¥68.00</strong></div>
+        <div class="order-actions">
+          <button class="order-btn outline">取消订单</button>
+          <button class="order-btn primary">立即付款</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order 2 - 待发货 -->
+    <div class="order-card" data-status="shipping">
+      <div class="order-header">
+        <div class="order-shop">
+          <i class="fas fa-store"></i>
+          海南演艺文创商城
+        </div>
+        <span class="order-status shipping">待发货</span>
+      </div>
+      <div class="order-content">
+        <img class="order-image" src="https://picsum.photos/seed/product2/160/160.jpg" alt="商品图片">
+        <div class="order-info">
+          <div>
+            <div class="order-name">限量版演出纪念T恤 2024跨年演唱会</div>
+            <div class="order-spec">颜色: 黑色 / 尺寸: XL</div>
+          </div>
+          <div class="order-price-row">
+            <span class="order-price"><span class="currency">¥</span>128</span>
+            <span class="order-quantity">x1</span>
+          </div>
+        </div>
+      </div>
+      <div class="order-footer">
+        <div class="order-total">共1件，合计: <strong>¥128.00</strong></div>
+        <div class="order-actions">
+          <button class="order-btn outline">联系客服</button>
+          <button class="order-btn primary">催发货</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order 3 - 已完成 (带物流) -->
+    <div class="order-card" data-status="completed">
+      <div class="order-header">
+        <div class="order-shop">
+          <i class="fas fa-store"></i>
+          海南演艺文创商城
+        </div>
+        <span class="order-status completed">已完成</span>
+      </div>
+      <div class="order-content">
+        <img class="order-image" src="https://picsum.photos/seed/product3/160/160.jpg" alt="商品图片">
+        <div class="order-info">
+          <div>
+            <div class="order-name">海南非遗椰雕工艺品 摆件装饰品</div>
+            <div class="order-spec">款式: 椰风海韵</div>
+          </div>
+          <div class="order-price-row">
+            <span class="order-price"><span class="currency">¥</span>198</span>
+            <span class="order-quantity">x1</span>
+          </div>
+        </div>
+      </div>
+      <div class="logistics-section">
+        <div class="logistics-header">
+          <div class="logistics-icon"><i class="fas fa-truck"></i></div>
+          <div class="logistics-company">快递: <strong>顺丰速运</strong> SF1234567890</div>
+        </div>
+        <div class="logistics-timeline">
+          <div class="logistics-item active">
+            <div class="logistics-text">您的快递已签收，签收人: 本人签收</div>
+            <div class="logistics-time">2026-04-25 14:30</div>
+          </div>
+          <div class="logistics-item">
+            <div class="logistics-text">快件派送中，派送员: 王师傅 138****8888</div>
+            <div class="logistics-time">2026-04-25 09:15</div>
+          </div>
+          <div class="logistics-item">
+            <div class="logistics-text">快件到达海口市龙华区营业点</div>
+            <div class="logistics-time">2026-04-25 06:20</div>
+          </div>
+        </div>
+      </div>
+      <div class="order-footer">
+        <div class="order-total">共1件，合计: <strong>¥198.00</strong></div>
+        <div class="order-actions">
+          <button class="order-btn outline">再次购买</button>
+          <button class="order-btn primary" onclick="showDetail()">查看详情</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order 4 - 待付款 -->
+    <div class="order-card" data-status="pending">
+      <div class="order-header">
+        <div class="order-shop">
+          <i class="fas fa-store"></i>
+          海南演艺文创商城
+        </div>
+        <span class="order-status pending">待付款</span>
+      </div>
+      <div class="order-content">
+        <img class="order-image" src="https://picsum.photos/seed/product4/160/160.jpg" alt="商品图片">
+        <div class="order-info">
+          <div>
+            <div class="order-name">演出周边盲盒 随机款含隐藏款</div>
+            <div class="order-spec">款式: 随机</div>
+          </div>
+          <div class="order-price-row">
+            <span class="order-price"><span class="currency">¥</span>59</span>
+            <span class="order-quantity">x2</span>
+          </div>
+        </div>
+      </div>
+      <div class="order-footer">
+        <div class="order-total">共2件，合计: <strong>¥118.00</strong></div>
+        <div class="order-actions">
+          <button class="order-btn outline">取消订单</button>
+          <button class="order-btn primary">立即付款</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order 5 - 已完成 -->
+    <div class="order-card" data-status="completed">
+      <div class="order-header">
+        <div class="order-shop">
+          <i class="fas fa-store"></i>
+          海南演艺文创商城
+        </div>
+        <span class="order-status completed">已完成</span>
+      </div>
+      <div class="order-content">
+        <img class="order-image" src="https://picsum.photos/seed/product5/160/160.jpg" alt="商品图片">
+        <div class="order-info">
+          <div>
+            <div class="order-name">海南热带雨林主题笔记本套装</div>
+            <div class="order-spec">款式: 精装版</div>
+          </div>
+          <div class="order-price-row">
+            <span class="order-price"><span class="currency">¥</span>45</span>
+            <span class="order-quantity">x1</span>
+          </div>
+        </div>
+      </div>
+      <div class="order-footer">
+        <div class="order-total">共1件，合计: <strong>¥45.00</strong></div>
+        <div class="order-actions">
+          <button class="order-btn outline">再次购买</button>
+          <button class="order-btn primary" onclick="showDetail()">查看详情</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" id="emptyState">
+    <div class="empty-icon">📦</div>
+    <div class="empty-text">暂无相关订单</div>
+    <button class="empty-btn" onclick="window.location.href='shop.html'">去逛逛</button>
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="detail-modal-overlay" id="detailModal">
+    <div class="detail-modal">
+      <div class="detail-header">
+        <span class="detail-title">订单详情</span>
+        <div class="detail-close" onclick="closeDetail()"><i class="fas fa-times"></i></div>
+      </div>
+      <div class="detail-content">
+        <div class="detail-section">
+          <div class="detail-section-title">
+            <i class="fas fa-info-circle"></i>
+            订单信息
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">订单编号</span>
+            <span class="detail-value">HN2026042500001</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">下单时间</span>
+            <span class="detail-value">2026-04-25 10:30:25</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">订单状态</span>
+            <span class="detail-value" style="color: #00C9A7;">已完成</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">
+            <i class="fas fa-map-marker-alt"></i>
+            收货信息
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">收货人</span>
+            <span class="detail-value">林小雅</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">联系电话</span>
+            <span class="detail-value">138****8888</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">收货地址</span>
+            <span class="detail-value">海南省海口市龙华区国贸路1号</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">
+            <i class="fas fa-box"></i>
+            商品信息
+          </div>
+          <div class="detail-product">
+            <img class="detail-product-img" src="https://picsum.photos/seed/product3/120/120.jpg" alt="商品">
+            <div class="detail-product-info">
+              <div class="detail-product-name">海南非遗椰雕工艺品 摆件装饰品</div>
+              <div class="detail-product-spec">款式: 椰风海韵</div>
+              <div class="detail-product-price">¥198.00 x1</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <div class="detail-section-title">
+            <i class="fas fa-calculator"></i>
+            费用明细
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">商品金额</span>
+            <span class="detail-value">¥198.00</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">运费</span>
+            <span class="detail-value">¥0.00</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">优惠券</span>
+            <span class="detail-value" style="color: #FF6B4A;">-¥10.00</span>
+          </div>
+          <div class="detail-row" style="border-top: 1px solid #F5F6FA; margin-top: 8px; padding-top: 12px;">
+            <span class="detail-label" style="font-weight: 600; color: #0A1628;">实付金额</span>
+            <span class="detail-value" style="font-size: 16px; font-weight: 700; color: #FF6B4A;">¥188.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function switchTab(el) {
+    // 更新标签状态
+    document.querySelectorAll('.tab-item').forEach(tab => {
+      tab.classList.remove('active');
+    });
+    el.classList.add('active');
+
+    // 筛选订单
+    const status = el.dataset.status;
+    const orders = document.querySelectorAll('.order-card');
+    let visibleCount = 0;
+
+    orders.forEach(order => {
+      if (status === 'all' || order.dataset.status === status) {
+        order.style.display = 'block';
+        visibleCount++;
+      } else {
+        order.style.display = 'none';
+      }
+    });
+
+    // 显示空状态
+    const emptyState = document.getElementById('emptyState');
+    const orderList = document.getElementById('orderList');
+    if (visibleCount === 0) {
+      emptyState.classList.add('show');
+      orderList.style.display = 'none';
+    } else {
+      emptyState.classList.remove('show');
+      orderList.style.display = 'block';
+    }
+  }
+
+  function showDetail() {
+    document.getElementById('detailModal').classList.add('show');
+  }
+
+  function closeDetail() {
+    document.getElementById('detailModal').classList.remove('show');
+  }
+
+  // 点击遮罩关闭
+  document.getElementById('detailModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeDetail();
+    }
+  });
+</script>
+
+</body>
+</html>

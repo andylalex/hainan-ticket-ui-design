@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>推广数据 - 代理中心</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif;
+    background: #E8E8ED;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .phone-frame {
+    width: 375px;
+    min-height: 100vh;
+    background: #F5F6FA;
+    position: relative;
+    overflow-x: hidden;
+    padding-bottom: 24px;
+  }
+
+  /* ========== 状态栏 ========== */
+  .status-bar {
+    height: 44px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1A1A1A;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .status-bar .time { font-size: 15px; font-weight: 700; }
+
+  .status-bar .status-icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+  }
+
+  .status-bar .status-icons i { font-size: 14px; }
+
+  .status-bar .battery {
+    width: 24px;
+    height: 11px;
+    border: 1.5px solid #1A1A1A;
+    border-radius: 2px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 1.5px;
+  }
+
+  .status-bar .battery::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 5px;
+    background: #1A1A1A;
+    border-radius: 0 1px 1px 0;
+  }
+
+  .status-bar .battery-inner {
+    width: 75%;
+    height: 100%;
+    background: #1A1A1A;
+    border-radius: 1px;
+  }
+
+  /* ========== 导航栏 ========== */
+  .nav-bar {
+    height: 44px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    position: sticky;
+    top: 44px;
+    z-index: 100;
+    border-bottom: 0.5px solid #F0F0F0;
+  }
+
+  .nav-bar .nav-back {
+    position: absolute;
+    left: 16px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #1A1A1A;
+    font-size: 18px;
+    transition: opacity 0.2s;
+  }
+
+  .nav-bar .nav-back:active { opacity: 0.5; }
+
+  .nav-bar .nav-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1A1A1A;
+  }
+
+  /* ========== 时间切换 ========== */
+  .time-filter {
+    display: flex;
+    gap: 0;
+    background: #fff;
+    padding: 10px 16px;
+    border-bottom: 0.5px solid #F0F0F0;
+  }
+
+  .time-tab {
+    flex: 1;
+    text-align: center;
+    font-size: 13px;
+    color: #999;
+    padding: 6px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+
+  .time-tab.active {
+    color: #FF6B4A;
+    font-weight: 600;
+    background: #FFF3F0;
+  }
+
+  .time-tab:active { opacity: 0.7; }
+
+  /* ========== 数据概览 ========== */
+  .data-overview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 12px 16px;
+  }
+
+  .data-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .data-card-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1A1A1A;
+  }
+
+  .data-card-value.orange { color: #FF6B4A; }
+  .data-card-value.blue { color: #4A90D9; }
+  .data-card-value.green { color: #52C41A; }
+  .data-card-value.red { color: #FF4D4F; }
+
+  .data-card-label {
+    font-size: 12px;
+    color: #94A3B8;
+    margin-top: 4px;
+  }
+
+  /* ========== 转化漏斗 ========== */
+  .funnel-section {
+    background: #fff;
+    border-radius: 12px;
+    margin: 0 16px;
+    padding: 16px;
+  }
+
+  .section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1A1A1A;
+    margin-bottom: 16px;
+  }
+
+  .funnel-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .funnel-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .funnel-label {
+    width: 56px;
+    font-size: 13px;
+    color: #666;
+    flex-shrink: 0;
+  }
+
+  .funnel-bar-wrap {
+    flex: 1;
+    height: 28px;
+    background: #F5F6FA;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .funnel-bar {
+    height: 100%;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
+    font-size: 12px;
+    color: #fff;
+    font-weight: 600;
+    transition: width 0.6s ease;
+  }
+
+  .funnel-bar.b1 { background: linear-gradient(90deg, #FF6B4A, #FF9A76); width: 100%; }
+  .funnel-bar.b2 { background: linear-gradient(90deg, #FF9A76, #FFB899); width: 16.4%; justify-content: flex-start; min-width: 60px; }
+  .funnel-bar.b3 { background: linear-gradient(90deg, #4A90D9, #76B5FF); width: 14.8%; justify-content: flex-start; min-width: 60px; }
+  .funnel-bar.b4 { background: linear-gradient(90deg, #FF4D4F, #FF7875); width: 1.2%; justify-content: flex-start; min-width: 50px; }
+
+  .funnel-meta {
+    width: 80px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .funnel-count {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1A1A1A;
+  }
+
+  .funnel-rate {
+    font-size: 11px;
+    color: #999;
+  }
+
+  .funnel-arrow {
+    text-align: center;
+    color: #C0C4CC;
+    font-size: 12px;
+    margin: -6px 0 -6px 66px;
+  }
+
+  /* ========== 热门推广排行 ========== */
+  .rank-section {
+    background: #fff;
+    border-radius: 12px;
+    margin: 12px 16px;
+    padding: 16px;
+  }
+
+  .rank-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #F1F5F9;
+    margin-bottom: 4px;
+  }
+
+  .rank-header span {
+    font-size: 12px;
+    color: #94A3B8;
+    font-weight: 500;
+  }
+
+  .rank-col-name { flex: 1; padding-left: 28px; }
+  .rank-col-visitor { width: 50px; text-align: center; }
+  .rank-col-order { width: 50px; text-align: center; }
+  .rank-col-rate { width: 60px; text-align: right; }
+
+  .rank-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 0.5px solid #F5F5F5;
+  }
+
+  .rank-item:last-child { border-bottom: none; }
+
+  .rank-num {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    background: #F1F5F9;
+    color: #94A3B8;
+  }
+
+  .rank-num.top1 { background: #FFF3F0; color: #FF6B4A; }
+  .rank-num.top2 { background: #FEF3C7; color: #F59E0B; }
+  .rank-num.top3 { background: #DBEAFE; color: #3B82F6; }
+
+  .rank-name {
+    flex: 1;
+    font-size: 13px;
+    color: #1A1A1A;
+    font-weight: 500;
+    margin-left: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .rank-visitor,
+  .rank-order {
+    width: 50px;
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+  }
+
+  .rank-rate {
+    width: 60px;
+    text-align: right;
+    font-size: 13px;
+    color: #FF6B4A;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+
+  <!-- 状态栏 -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="status-icons">
+      <i class="fas fa-signal"></i>
+      <i class="fas fa-wifi"></i>
+      <div class="battery"><div class="battery-inner"></div></div>
+    </div>
+  </div>
+
+  <!-- 导航栏 -->
+  <div class="nav-bar">
+    <div class="nav-back" onclick="history.back()"><i class="fas fa-chevron-left"></i></div>
+    <span class="nav-title">推广数据</span>
+  </div>
+
+  <!-- 时间切换 -->
+  <div class="time-filter">
+    <div class="time-tab active">今日</div>
+    <div class="time-tab">本周</div>
+    <div class="time-tab">本月</div>
+  </div>
+
+  <!-- 数据概览 -->
+  <div class="data-overview">
+    <div class="data-card">
+      <div class="data-card-value orange">256</div>
+      <div class="data-card-label">访客数</div>
+    </div>
+    <div class="data-card">
+      <div class="data-card-value blue">42</div>
+      <div class="data-card-label">下单数</div>
+    </div>
+    <div class="data-card">
+      <div class="data-card-value green">38</div>
+      <div class="data-card-label">支付数</div>
+    </div>
+    <div class="data-card">
+      <div class="data-card-value red">3</div>
+      <div class="data-card-label">退款数</div>
+    </div>
+  </div>
+
+  <!-- 转化漏斗 -->
+  <div class="funnel-section">
+    <div class="section-title">转化漏斗</div>
+    <div class="funnel-list">
+      <div class="funnel-row">
+        <span class="funnel-label">访客</span>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar b1">256人</div>
+        </div>
+        <div class="funnel-meta">
+          <div class="funnel-count">256人</div>
+        </div>
+      </div>
+      <div class="funnel-arrow"><i class="fas fa-arrow-down"></i> 16.4%</div>
+      <div class="funnel-row">
+        <span class="funnel-label">下单</span>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar b2">42人</div>
+        </div>
+        <div class="funnel-meta">
+          <div class="funnel-count">42人</div>
+          <div class="funnel-rate">16.4%</div>
+        </div>
+      </div>
+      <div class="funnel-arrow"><i class="fas fa-arrow-down"></i> 90.5%</div>
+      <div class="funnel-row">
+        <span class="funnel-label">支付</span>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar b3">38人</div>
+        </div>
+        <div class="funnel-meta">
+          <div class="funnel-count">38人</div>
+          <div class="funnel-rate">90.5%</div>
+        </div>
+      </div>
+      <div class="funnel-arrow"><i class="fas fa-arrow-down"></i> 7.9%</div>
+      <div class="funnel-row">
+        <span class="funnel-label">退款</span>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar b4">3人</div>
+        </div>
+        <div class="funnel-meta">
+          <div class="funnel-count">3人</div>
+          <div class="funnel-rate">7.9%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 热门推广排行 -->
+  <div class="rank-section">
+    <div class="section-title">热门推广排行</div>
+    <div class="rank-header">
+      <span style="width:20px;"></span>
+      <span class="rank-col-name">演出名称</span>
+      <span class="rank-col-visitor">访客</span>
+      <span class="rank-col-order">下单</span>
+      <span class="rank-col-rate">转化率</span>
+    </div>
+
+    <div class="rank-item">
+      <span class="rank-num top1">1</span>
+      <span class="rank-name">《天涯海角》大型歌舞秀</span>
+      <span class="rank-visitor">128</span>
+      <span class="rank-order">24</span>
+      <span class="rank-rate">18.8%</span>
+    </div>
+
+    <div class="rank-item">
+      <span class="rank-num top2">2</span>
+      <span class="rank-name">《椰风海韵》情景音乐会</span>
+      <span class="rank-visitor">76</span>
+      <span class="rank-order">11</span>
+      <span class="rank-rate">14.5%</span>
+    </div>
+
+    <div class="rank-item">
+      <span class="rank-num top3">3</span>
+      <span class="rank-name">《南海奇缘》儿童剧</span>
+      <span class="rank-visitor">52</span>
+      <span class="rank-order">7</span>
+      <span class="rank-rate">13.5%</span>
+    </div>
+
+    <div class="rank-item">
+      <span class="rank-num">4</span>
+      <span class="rank-name">《海岛之夜》脱口秀</span>
+      <span class="rank-visitor">35</span>
+      <span class="rank-order">4</span>
+      <span class="rank-rate">11.4%</span>
+    </div>
+
+    <div class="rank-item">
+      <span class="rank-num">5</span>
+      <span class="rank-name">《丝路风情》民族舞剧</span>
+      <span class="rank-visitor">28</span>
+      <span class="rank-order">3</span>
+      <span class="rank-rate">10.7%</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // 时间切换
+  document.querySelectorAll('.time-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      this.parentElement.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

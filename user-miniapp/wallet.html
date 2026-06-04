@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>海南演艺票务系统 - 钱包</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #F5F6FA;
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 375px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: #F5F6FA;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ========== Top Nav ========== */
+    .top-nav {
+      height: 44px;
+      background: linear-gradient(135deg, #0A1628 0%, #132240 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 16px;
+    }
+
+    .top-nav .back-btn {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+
+    .top-nav .back-btn:hover { background: rgba(255,255,255,0.1); }
+
+    .top-nav .nav-title {
+      color: #fff;
+      font-size: 17px;
+      font-weight: 500;
+    }
+
+    .top-nav .nav-link {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.8);
+      font-size: 14px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .top-nav .nav-link:active { color: #fff; }
+
+    /* ========== Balance Card ========== */
+    .balance-card {
+      background: linear-gradient(135deg, #0A1628 0%, #132240 50%, #1a2d50 100%);
+      padding: 24px 20px 36px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .balance-card::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -30px;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle, rgba(212, 168, 83, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .balance-card::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: -20px;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, rgba(255, 107, 74, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .balance-label {
+      color: rgba(255,255,255,0.6);
+      font-size: 13px;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .balance-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      position: relative;
+      z-index: 1;
+    }
+
+    .balance-amount {
+      color: #fff;
+      font-size: 36px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .balance-amount .unit {
+      font-size: 18px;
+      font-weight: 500;
+      margin-right: 2px;
+    }
+
+    .recharge-btn {
+      background: linear-gradient(135deg, #FF6B4A, #FF8A6A);
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 22px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      box-shadow: 0 4px 12px rgba(255, 107, 74, 0.4);
+    }
+
+    .recharge-btn:active { transform: scale(0.96); }
+
+    .balance-sub {
+      display: flex;
+      gap: 24px;
+      margin-top: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .balance-sub-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .balance-sub-item .label {
+      color: rgba(255,255,255,0.5);
+      font-size: 11px;
+    }
+
+    .balance-sub-item .value {
+      color: rgba(255,255,255,0.9);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* ========== Quick Actions ========== */
+    .quick-actions {
+      display: flex;
+      gap: 12px;
+      padding: 16px 16px 0;
+      margin-top: -12px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .action-card {
+      flex: 1;
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 2px 12px rgba(10, 22, 40, 0.06);
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+
+    .action-card:active { transform: scale(0.97); }
+
+    .action-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .action-icon.recharge { background: linear-gradient(135deg, #FFF0EB, #FFE0D6); color: #FF6B4A; }
+    .action-icon.withdraw { background: linear-gradient(135deg, #E8F9F5, #D0F5EC); color: #00C9A7; }
+    .action-icon.bills { background: linear-gradient(135deg, #EBF0FF, #D6E0FF); color: #4A7AFF; }
+
+    .action-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #0A1628;
+    }
+
+    /* ========== Recent Transactions Preview ========== */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 16px 12px;
+    }
+
+    .section-header .title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0A1628;
+    }
+
+    .section-header .more {
+      font-size: 13px;
+      color: #8E95A9;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+    }
+
+    .tx-list {
+      padding: 0 16px 8px;
+    }
+
+    .tx-item {
+      display: flex;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid #F0F1F5;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .tx-item:last-child { border-bottom: none; }
+
+    .tx-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    .tx-icon.income { background: #E8F9F5; color: #00C9A7; }
+    .tx-icon.expense { background: #FFF0EB; color: #FF6B4A; }
+    .tx-icon.refund { background: #EBF0FF; color: #4A7AFF; }
+    .tx-icon.withdraw { background: #FFF8E7; color: #D4A853; }
+
+    .tx-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tx-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #0A1628;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tx-time {
+      font-size: 12px;
+      color: #8E95A9;
+      margin-top: 3px;
+    }
+
+    .tx-amount {
+      font-size: 16px;
+      font-weight: 600;
+      flex-shrink: 0;
+      margin-left: 12px;
+    }
+
+    .tx-amount.positive { color: #00C9A7; }
+    .tx-amount.negative { color: #0A1628; }
+
+    /* ========== Wallet Tools Section ========== */
+    .tools-section {
+      padding: 0 16px 8px;
+    }
+
+    .tools-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 4px 0;
+      box-shadow: 0 2px 12px rgba(10, 22, 40, 0.06);
+    }
+
+    .tool-item {
+      display: flex;
+      align-items: center;
+      padding: 15px 16px;
+      cursor: pointer;
+      transition: background 0.15s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .tool-item:active { background: #F8F9FC; }
+
+    .tool-item:not(:last-child) {
+      border-bottom: 1px solid #F0F1F5;
+    }
+
+    .tool-icon-wrap {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      margin-right: 14px;
+      flex-shrink: 0;
+    }
+
+    .tool-icon-wrap.card-bind { background: linear-gradient(135deg, #FFF0EB, #FFE0D6); color: #FF6B4A; }
+    .tool-icon-wrap.export { background: linear-gradient(135deg, #EBF0FF, #D6E0FF); color: #4A7AFF; }
+    .tool-icon-wrap.security { background: linear-gradient(135deg, #FFF8E7, #FFEDC2); color: #D4A853; }
+    .tool-icon-wrap.help { background: linear-gradient(135deg, #E8F9F5, #D0F5EC); color: #00C9A7; }
+
+    .tool-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .tool-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #0A1628;
+    }
+
+    .tool-desc {
+      font-size: 12px;
+      color: #8E95A9;
+      margin-top: 2px;
+    }
+
+    .tool-arrow {
+      font-size: 14px;
+      color: #C8CCD8;
+      flex-shrink: 0;
+      margin-left: 8px;
+    }
+
+    .tool-badge {
+      background: #FF6B4A;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 10px;
+      margin-left: 8px;
+      flex-shrink: 0;
+    }
+
+    /* ========== Promo Banner ========== */
+    .promo-banner {
+      margin: 12px 16px 8px;
+      background: linear-gradient(135deg, #FFF8E7 0%, #FFEDC2 100%);
+      border-radius: 14px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(212, 168, 83, 0.15);
+    }
+
+    .promo-banner::after {
+      content: '';
+      position: absolute;
+      right: -20px;
+      top: -20px;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, rgba(212, 168, 83, 0.2) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .promo-left {
+      position: relative;
+      z-index: 1;
+    }
+
+    .promo-tag {
+      display: inline-block;
+      background: linear-gradient(135deg, #D4A853, #E8C478);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .promo-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #5A4A1E;
+    }
+
+    .promo-desc {
+      font-size: 12px;
+      color: #8A7A4E;
+      margin-top: 3px;
+    }
+
+    .promo-action {
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(135deg, #D4A853, #C49A45);
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 3px 10px rgba(212, 168, 83, 0.35);
+      white-space: nowrap;
+    }
+
+    .promo-action:active { transform: scale(0.96); }
+
+    /* ========== Recharge Modal ========== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal-content {
+      width: 100%;
+      max-width: 375px;
+      background: #fff;
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px;
+      padding-bottom: calc(24px + env(safe-area-inset-bottom, 0));
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .modal-header .title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #0A1628;
+    }
+
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #F5F6FA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #8E95A9;
+      font-size: 14px;
+      border: none;
+      transition: background 0.2s;
+    }
+
+    .modal-close:hover { background: #E8E9ED; }
+
+    .amount-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .amount-option {
+      padding: 16px 8px;
+      border: 2px solid #E8E9ED;
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fff;
+    }
+
+    .amount-option:hover { border-color: #FF6B4A; }
+
+    .amount-option.selected {
+      border-color: #FF6B4A;
+      background: #FFF5F2;
+    }
+
+    .amount-option .value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0A1628;
+    }
+
+    .amount-option .value .unit {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .amount-option .desc {
+      font-size: 11px;
+      color: #8E95A9;
+      margin-top: 4px;
+    }
+
+    .custom-input-wrap {
+      margin-bottom: 20px;
+    }
+
+    .custom-input-wrap label {
+      font-size: 13px;
+      color: #5A6178;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .custom-input {
+      width: 100%;
+      height: 48px;
+      border: 2px solid #E8E9ED;
+      border-radius: 12px;
+      padding: 0 16px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #0A1628;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    .custom-input:focus { border-color: #FF6B4A; }
+    .custom-input::placeholder { color: #C8CCD8; font-weight: 400; }
+
+    .confirm-btn {
+      width: 100%;
+      height: 48px;
+      background: linear-gradient(135deg, #FF6B4A, #FF8A6A);
+      color: #fff;
+      border: none;
+      border-radius: 24px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+      box-shadow: 0 4px 16px rgba(255, 107, 74, 0.3);
+    }
+
+    .confirm-btn:active { transform: scale(0.98); }
+
+    /* ========== Animations ========== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .quick-actions { animation: fadeInUp 0.4s ease 0.1s both; }
+    .tx-list { animation: fadeInUp 0.4s ease 0.2s both; }
+    .tools-section { animation: fadeInUp 0.4s ease 0.3s both; }
+    .promo-banner { animation: fadeInUp 0.4s ease 0.35s both; }
+
+    .page::-webkit-scrollbar { width: 0; }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Top Nav -->
+  <div class="top-nav">
+    <a class="back-btn" href="profile.html"><i class="fas fa-chevron-left"></i></a>
+    <span class="nav-title">我的钱包</span>
+  </div>
+
+  <!-- Balance Card -->
+  <div class="balance-card">
+    <div class="balance-label">账户余额（元）</div>
+    <div class="balance-row">
+      <div class="balance-amount"><span class="unit">&yen;</span>1,280.00</div>
+      <button class="recharge-btn" onclick="openRecharge()">充值</button>
+    </div>
+    <div class="balance-sub">
+      <div class="balance-sub-item">
+        <span class="label">冻结金额</span>
+        <span class="value">&yen;0.00</span>
+      </div>
+      <div class="balance-sub-item">
+        <span class="label">累计充值</span>
+        <span class="value">&yen;3,500.00</span>
+      </div>
+      <div class="balance-sub-item">
+        <span class="label">累计消费</span>
+        <span class="value">&yen;2,220.00</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <div class="action-card" onclick="openRecharge()">
+      <div class="action-icon recharge"><i class="fas fa-plus"></i></div>
+      <span class="action-label">充值</span>
+    </div>
+    <div class="action-card">
+      <div class="action-icon withdraw"><i class="fas fa-arrow-up"></i></div>
+      <span class="action-label">提现</span>
+    </div>
+    <div class="action-card" onclick="location.href='transaction-record.html'">
+      <div class="action-icon bills"><i class="fas fa-receipt"></i></div>
+      <span class="action-label">交易记录</span>
+    </div>
+  </div>
+
+  <!-- Promo Banner -->
+  <div class="promo-banner" onclick="openRecharge()">
+    <div class="promo-left">
+      <span class="promo-tag">限时活动</span>
+      <div class="promo-title">充值满500送50</div>
+      <div class="promo-desc">活动截止至 2026-05-31</div>
+    </div>
+    <button class="promo-action">去充值</button>
+  </div>
+
+  <!-- Wallet Tools -->
+  <div class="tools-section">
+    <div class="tools-card">
+      <a class="tool-item" href="recharge-card-bind.html">
+        <div class="tool-icon-wrap card-bind"><i class="fas fa-credit-card"></i></div>
+        <div class="tool-info">
+          <div class="tool-name">充值卡绑定</div>
+          <div class="tool-desc">绑定实体充值卡，快速到账</div>
+        </div>
+        <span class="tool-badge">新</span>
+        <span class="tool-arrow"><i class="fas fa-chevron-right"></i></span>
+      </a>
+      <div class="tool-item">
+        <div class="tool-icon-wrap security"><i class="fas fa-shield-alt"></i></div>
+        <div class="tool-info">
+          <div class="tool-name">支付安全</div>
+          <div class="tool-desc">管理支付密码与安全设置</div>
+        </div>
+        <span class="tool-arrow"><i class="fas fa-chevron-right"></i></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Spacer -->
+  <div style="height: 24px;"></div>
+
+</div>
+
+<!-- Recharge Modal -->
+<div class="modal-overlay" id="rechargeModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="title">选择充值金额</span>
+      <button class="modal-close" onclick="closeRecharge()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="amount-grid">
+      <div class="amount-option" onclick="selectAmount(this, 50)">
+        <div class="value"><span class="unit">&yen;</span>50</div>
+        <div class="desc">无赠送</div>
+      </div>
+      <div class="amount-option" onclick="selectAmount(this, 100)">
+        <div class="value"><span class="unit">&yen;</span>100</div>
+        <div class="desc">赠&yen;5</div>
+      </div>
+      <div class="amount-option" onclick="selectAmount(this, 200)">
+        <div class="value"><span class="unit">&yen;</span>200</div>
+        <div class="desc">赠&yen;15</div>
+      </div>
+      <div class="amount-option" onclick="selectAmount(this, 500)">
+        <div class="value"><span class="unit">&yen;</span>500</div>
+        <div class="desc">赠&yen;50</div>
+      </div>
+      <div class="amount-option" onclick="selectAmount(this, 1000)">
+        <div class="value"><span class="unit">&yen;</span>1000</div>
+        <div class="desc">赠&yen;120</div>
+      </div>
+      <div class="amount-option" onclick="selectAmount(this, 0)">
+        <div class="value">自定义</div>
+        <div class="desc">输入金额</div>
+      </div>
+    </div>
+    <div class="custom-input-wrap" id="customInputWrap" style="display:none;">
+      <label>输入充值金额（元）</label>
+      <input type="number" class="custom-input" id="customAmount" placeholder="请输入充值金额">
+    </div>
+    <button class="confirm-btn" onclick="confirmRecharge()">确认充值</button>
+  </div>
+</div>
+
+<script>
+  let selectedAmount = 0;
+
+  function openRecharge() {
+    document.getElementById('rechargeModal').classList.add('active');
+  }
+
+  function closeRecharge() {
+    document.getElementById('rechargeModal').classList.remove('active');
+    selectedAmount = 0;
+    document.querySelectorAll('.amount-option').forEach(el => el.classList.remove('selected'));
+    document.getElementById('customInputWrap').style.display = 'none';
+    document.getElementById('customAmount').value = '';
+  }
+
+  function selectAmount(el, amount) {
+    document.querySelectorAll('.amount-option').forEach(opt => opt.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedAmount = amount;
+
+    if (amount === 0) {
+      document.getElementById('customInputWrap').style.display = 'block';
+      document.getElementById('customAmount').focus();
+    } else {
+      document.getElementById('customInputWrap').style.display = 'none';
+    }
+  }
+
+  function confirmRecharge() {
+    let amount = selectedAmount;
+    if (amount === 0) {
+      amount = parseFloat(document.getElementById('customAmount').value);
+    }
+    if (!amount || amount <= 0) {
+      alert('请选择或输入充值金额');
+      return;
+    }
+    alert('充值成功！已充值 ¥' + amount.toFixed(2));
+    closeRecharge();
+  }
+
+  document.getElementById('rechargeModal').addEventListener('click', function(e) {
+    if (e.target === this) closeRecharge();
+  });
+</script>
+
+</body>
+</html>

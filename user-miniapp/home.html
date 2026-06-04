@@ -1,0 +1,2093 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>海南演艺票务系统 - 首页</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ========== Reset & Base ========== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #1a1a2e;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ========== Phone Frame ========== */
+    .phone-frame {
+      width: 100%;
+      max-width: 375px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: #F5F6FA;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(0,0,0,0.4), 0 0 120px rgba(10,22,40,0.3);
+      border-radius: 0;
+    }
+
+    /* ========== Status Bar ========== */
+    .status-bar {
+      height: 44px;
+      padding: 10px 24px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      position: relative;
+      z-index: 10;
+      background: linear-gradient(135deg, #0A1628 0%, #132744 50%, #0A1628 100%);
+    }
+
+    .status-bar .time {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .status-bar .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .status-bar .status-icons i {
+      font-size: 13px;
+    }
+
+    .status-bar .battery {
+      width: 22px;
+      height: 10px;
+      border: 1.5px solid #fff;
+      border-radius: 2px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .status-bar .battery::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 2px;
+      width: 2px;
+      height: 5px;
+      background: #fff;
+      border-radius: 0 1px 1px 0;
+    }
+
+    .status-bar .battery-fill {
+      width: 75%;
+      height: 100%;
+      background: #00C9A7;
+      border-radius: 1px;
+    }
+
+    /* ========== Header / Search Area ========== */
+    .header-area {
+      background: linear-gradient(135deg, #0A1628 0%, #132744 50%, #0A1628 100%);
+      padding: 8px 16px 20px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .header-area::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: linear-gradient(135deg, #0A1628 0%, #132744 50%, #0A1628 100%);
+      border-radius: 0 0 50% 50%;
+      z-index: 5;
+    }
+
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-bar {
+      flex: 1;
+      height: 36px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 8px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: background 0.3s;
+    }
+
+    .search-bar:hover {
+      background: rgba(255,255,255,0.18);
+    }
+
+    .search-bar i {
+      color: rgba(255,255,255,0.5);
+      font-size: 14px;
+    }
+
+    .search-bar span {
+      color: rgba(255,255,255,0.4);
+      font-size: 13px;
+    }
+
+    .scan-btn {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .scan-btn:hover {
+      transform: scale(1.1);
+    }
+
+    /* ========== Scan View ========== */
+    .scan-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #0A1628;
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .scan-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .scan-nav {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      position: relative;
+      z-index: 5;
+    }
+    .scan-back {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .scan-back svg { width: 20px; height: 20px; stroke: #fff; fill: none; }
+    .scan-nav-title {
+      flex: 1;
+      text-align: center;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      margin-right: 36px;
+    }
+
+    .scan-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .scan-area {
+      width: 260px; height: 260px;
+      position: relative;
+      margin-top: 20px;
+    }
+    .scan-area .corner {
+      position: absolute;
+      width: 28px; height: 28px;
+    }
+    .scan-area .corner::before,
+    .scan-area .corner::after {
+      content: '';
+      position: absolute;
+      background: #FF6B4A;
+      border-radius: 2px;
+    }
+    .scan-area .corner::before { width: 28px; height: 3px; }
+    .scan-area .corner::after { width: 3px; height: 28px; }
+    .scan-area .corner.tl { top: 0; left: 0; }
+    .scan-area .corner.tr { top: 0; right: 0; }
+    .scan-area .corner.tr::before { right: 0; }
+    .scan-area .corner.tr::after { right: 0; }
+    .scan-area .corner.bl { bottom: 0; left: 0; }
+    .scan-area .corner.bl::before { bottom: 0; }
+    .scan-area .corner.bl::after { bottom: 0; }
+    .scan-area .corner.br { bottom: 0; right: 0; }
+    .scan-area .corner.br::before { right: 0; bottom: 0; }
+    .scan-area .corner.br::after { right: 0; bottom: 0; }
+
+    .scan-frame-inner {
+      position: absolute;
+      top: 4px; left: 4px; right: 4px; bottom: 4px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .scan-line {
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #FF6B4A, transparent);
+      box-shadow: 0 0 12px rgba(255,107,74,0.6);
+      animation: scanMove 2.5s ease-in-out infinite;
+    }
+    @keyframes scanMove {
+      0%, 100% { top: 10px; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      50% { top: calc(100% - 12px); }
+    }
+
+    .scan-area .grid-lines {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 30px 30px;
+    }
+
+    .scan-hint {
+      color: rgba(255,255,255,0.5);
+      font-size: 13px;
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .scan-actions {
+      display: flex;
+      gap: 32px;
+      margin-top: 32px;
+    }
+    .scan-action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .scan-action-btn .icon-wrap {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .scan-action-btn:hover .icon-wrap {
+      background: rgba(255,255,255,0.2);
+    }
+    .scan-action-btn .icon-wrap svg {
+      width: 20px; height: 20px;
+      stroke: #fff; fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .scan-action-btn .icon-wrap.flash-on {
+      background: rgba(255,200,50,0.3);
+    }
+    .scan-action-btn span {
+      color: rgba(255,255,255,0.6);
+      font-size: 11px;
+    }
+
+    /* Scan result modal */
+    .scan-result-modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .scan-result-modal.show { display: flex; }
+    .scan-result-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px 24px;
+      width: 300px;
+      text-align: center;
+    }
+    .scan-result-icon {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .scan-result-icon.success {
+      background: rgba(0,201,167,0.1);
+    }
+    .scan-result-icon.success svg {
+      width: 28px; height: 28px;
+      stroke: #00C9A7; fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .scan-result-icon.fail {
+      background: rgba(255,107,74,0.1);
+    }
+    .scan-result-icon.fail svg {
+      width: 28px; height: 28px;
+      stroke: #FF6B4A; fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .scan-result-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #0A1628;
+      margin-bottom: 6px;
+    }
+    .scan-result-subtitle {
+      font-size: 13px;
+      color: #8E95A9;
+      margin-bottom: 20px;
+    }
+    .scan-result-info {
+      text-align: left;
+      background: #F5F6FA;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+    }
+    .scan-result-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 13px;
+    }
+    .scan-result-row .lbl { color: #8E95A9; }
+    .scan-result-row .val { color: #0A1628; font-weight: 500; }
+    .scan-result-close {
+      width: 100%;
+      padding: 12px;
+      background: #0A1628;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .header-icons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ========== Main Content ========== */
+    .main-content {
+      position: relative;
+      z-index: 6;
+      padding-bottom: 80px;
+    }
+
+    /* ========== Banner / Carousel ========== */
+    .banner-section {
+      padding: 0 16px;
+      margin-top: 4px;
+      position: relative;
+    }
+
+    .carousel-container {
+      position: relative;
+      height: 200px;
+      perspective: 1000px;
+    }
+
+    .carousel-track {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .carousel-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      transform: scale(0.88) translateX(60px);
+      z-index: 0;
+      box-shadow: 0 4px 20px rgba(10,22,40,0.2);
+    }
+
+    .carousel-slide.active {
+      opacity: 1;
+      transform: scale(1) translateX(0);
+      z-index: 3;
+      box-shadow: 0 6px 24px rgba(10,22,40,0.25), 0 0 0 1px rgba(255,255,255,0.08);
+    }
+
+    .carousel-slide.prev {
+      opacity: 0.5;
+      transform: scale(0.85) translateX(-40px);
+      z-index: 1;
+    }
+
+    .carousel-slide.next {
+      opacity: 0.4;
+      transform: scale(0.85) translateX(40px);
+      z-index: 1;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 6s ease-out;
+    }
+
+    .carousel-slide.active img {
+      transform: scale(1.08);
+    }
+
+    /* Multi-layer overlay */
+    .carousel-slide .slide-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 40px 18px 16px;
+      background: linear-gradient(
+        to top,
+        rgba(10,22,40,0.92) 0%,
+        rgba(10,22,40,0.6) 40%,
+        transparent 100%
+      );
+      color: #fff;
+      z-index: 2;
+    }
+
+    /* Decorative top-right gradient blob */
+    .carousel-slide .slide-overlay::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -20px;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(255,107,74,0.25) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* Decorative line accent */
+    .carousel-slide .slide-overlay::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 18px;
+      width: 32px;
+      height: 3px;
+      background: linear-gradient(90deg, #FF6B4A, #D4A853);
+      border-radius: 2px;
+    }
+
+    .slide-overlay .slide-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+      font-size: 10px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .slide-tag .tag-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #FF6B4A;
+      animation: tag-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes tag-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .slide-overlay .slide-title {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      letter-spacing: 0.5px;
+    }
+
+    .slide-overlay .slide-desc {
+      font-size: 11px;
+      color: rgba(255,255,255,0.7);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .slide-overlay .slide-desc i {
+      font-size: 10px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* Glassmorphism info card */
+    .slide-info-card {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 8px 12px;
+      color: #fff;
+      z-index: 3;
+      text-align: center;
+    }
+
+    .slide-info-card .info-price {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #FF6B4A;
+    }
+
+    .slide-info-card .info-price .yen {
+      font-size: 12px;
+    }
+
+    .slide-info-card .info-label {
+      font-size: 9px;
+      color: rgba(255,255,255,0.6);
+      margin-top: 1px;
+    }
+
+    /* Progress bar style dots */
+    .carousel-progress {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 0 4px;
+    }
+
+    .carousel-progress-bar {
+      flex: 1;
+      max-width: 40px;
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(10,22,40,0.1);
+      overflow: hidden;
+      cursor: pointer;
+      transition: max-width 0.3s;
+    }
+
+    .carousel-progress-bar.active {
+      max-width: 56px;
+    }
+
+    .carousel-progress-bar .bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #FF6B4A, #D4A853);
+      border-radius: 2px;
+      transition: width 0.1s linear;
+    }
+
+    .carousel-progress-bar.active .bar-fill {
+      width: 100%;
+      transition: width 3.5s linear;
+    }
+
+    /* Slide counter */
+    .carousel-counter {
+      position: absolute;
+      bottom: 14px;
+      right: 18px;
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      z-index: 5;
+      letter-spacing: 1px;
+    }
+
+    .carousel-counter .counter-current {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* ========== Function Entry Area ========== */
+
+    /* ========== Coupon Package Section ========== */
+    .coupon-section {
+      padding: 12px 16px 4px;
+    }
+
+    .coupon-scroll {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+    }
+
+    .coupon-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .coupon-card {
+      min-width: 280px;
+      background: linear-gradient(135deg, #0A1628 0%, #162544 100%);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(10,22,40,0.15);
+      scroll-snap-align: start;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .coupon-card::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, rgba(255,107,74,0.2) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .coupon-card::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: -20px;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, rgba(212,168,83,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .coupon-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(10,22,40,0.25);
+    }
+
+    .coupon-card-inner {
+      position: relative;
+      z-index: 1;
+      padding: 14px 16px;
+    }
+
+    .coupon-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .coupon-card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 9px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .coupon-card-badge.hot {
+      background: linear-gradient(135deg, #FF6B4A, #FF8F6B);
+      color: #fff;
+    }
+
+    .coupon-card-badge.new {
+      background: linear-gradient(135deg, #D4A853, #E8C97A);
+      color: #fff;
+    }
+
+    .coupon-card-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 3px;
+    }
+
+    .coupon-card-count {
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .coupon-shows-list {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .coupon-show-chip {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.75);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .coupon-show-chip i {
+      font-size: 8px;
+      color: #FF6B4A;
+    }
+
+    .coupon-card-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .coupon-price-area {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .coupon-price {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #FF6B4A;
+    }
+
+    .coupon-price .yen {
+      font-size: 13px;
+    }
+
+    .coupon-original {
+      font-size: 11px;
+      color: rgba(255,255,255,0.3);
+      text-decoration: line-through;
+    }
+
+    .coupon-save-tag {
+      font-size: 10px;
+      color: #00C9A7;
+      font-weight: 600;
+      background: rgba(0,201,167,0.12);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .coupon-buy-btn {
+      padding: 7px 20px;
+      background: linear-gradient(135deg, #FF6B4A, #FF8F6B);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 12px rgba(255,107,74,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .coupon-buy-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transform: skewX(-20deg);
+      animation: btn-shine 3s ease-in-out infinite;
+    }
+
+    @keyframes btn-shine {
+      0%, 100% { left: -100%; }
+      50% { left: 150%; }
+    }
+
+    .coupon-buy-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 16px rgba(255,107,74,0.45);
+    }
+
+    .coupon-buy-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* ========== Section Header ========== */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px 8px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0A1628;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 3px;
+      height: 14px;
+      background: linear-gradient(180deg, #FF6B4A, #D4A853);
+      border-radius: 2px;
+    }
+
+    .section-more {
+      font-size: 11px;
+      color: #999;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .section-more:hover {
+      color: #FF6B4A;
+    }
+
+    /* ========== Hot Recommend ========== */
+    .hot-section {
+      position: relative;
+    }
+
+    .hot-scroll {
+      display: flex;
+      gap: 10px;
+      padding: 0 16px 4px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .hot-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hot-card {
+      min-width: 180px;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(10,22,40,0.05);
+      scroll-snap-align: start;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      flex-shrink: 0;
+    }
+
+    .hot-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(10,22,40,0.1);
+    }
+
+    .hot-card .card-img {
+      width: 100%;
+      height: 110px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hot-card .card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+
+    .hot-card:hover .card-img img {
+      transform: scale(1.05);
+    }
+
+    .hot-card .card-tag {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 500;
+      color: #fff;
+    }
+
+    .card-tag.tag-soon {
+      background: linear-gradient(135deg, #FF6B4A, #FF8F6B);
+    }
+
+    .card-tag.tag-vip {
+      background: linear-gradient(135deg, #D4A853, #E8C97A);
+    }
+
+    .card-tag.tag-sale {
+      background: linear-gradient(135deg, #00C9A7, #4EDCB8);
+    }
+
+    .card-tag.tag-hot {
+      background: linear-gradient(135deg, #E74C3C, #FF6B6B);
+    }
+
+    .hot-card .card-info {
+      padding: 8px 10px 10px;
+    }
+
+    .hot-card .card-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .hot-card .card-date {
+      font-size: 10px;
+      color: #999;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .hot-card .card-date i {
+      font-size: 9px;
+      color: #bbb;
+    }
+
+    .hot-card .card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hot-card .card-price {
+      font-size: 14px;
+      font-weight: 700;
+      color: #FF6B4A;
+    }
+
+    .hot-card .card-price .currency {
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .hot-card .card-price .original {
+      font-size: 10px;
+      color: #ccc;
+      text-decoration: line-through;
+      font-weight: 400;
+      margin-left: 3px;
+    }
+
+    .hot-card .card-buy {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #FF6B4A, #FF8F6B);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      box-shadow: 0 2px 6px rgba(255,107,74,0.25);
+      transition: transform 0.2s;
+    }
+
+    .hot-card .card-buy:hover {
+      transform: scale(1.15);
+    }
+
+    /* ========== Theater Section ========== */
+    .theater-section {
+      padding-bottom: 16px;
+    }
+
+    .theater-scroll {
+      display: flex;
+      gap: 12px;
+      padding: 0 16px 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+    }
+
+    .theater-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .theater-card {
+      min-width: 200px;
+      background: #fff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(10,22,40,0.06);
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      position: relative;
+    }
+
+    .theater-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(10,22,40,0.12);
+    }
+
+    .theater-card .theater-img {
+      width: 100%;
+      height: 120px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .theater-card .theater-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s;
+    }
+
+    .theater-card:hover .theater-img img {
+      transform: scale(1.08);
+    }
+
+    .theater-card .theater-img::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background: linear-gradient(transparent, rgba(10,22,40,0.4));
+      pointer-events: none;
+    }
+
+    .theater-card .theater-img .theater-location {
+      position: absolute;
+      bottom: 8px;
+      left: 10px;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.85);
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 3px 8px;
+      border-radius: 12px;
+    }
+
+    .theater-card .theater-img .theater-location i {
+      font-size: 8px;
+      color: #FF6B4A;
+    }
+
+    .theater-card .theater-info {
+      padding: 10px 12px 12px;
+    }
+
+    .theater-card .theater-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .theater-card .theater-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .theater-card .theater-schedule {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .theater-card .schedule-badge {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(255,107,74,0.1), rgba(255,107,74,0.05));
+      color: #FF6B4A;
+      font-weight: 600;
+    }
+
+    .theater-card .schedule-count {
+      font-size: 11px;
+      color: #999;
+    }
+
+    .theater-card .theater-arrow {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #F5F6FA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #999;
+      transition: all 0.2s;
+    }
+
+    .theater-card:hover .theater-arrow {
+      background: #FF6B4A;
+      color: #fff;
+    }
+
+    /* ========== Bottom TabBar ========== */
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 375px;
+  height: 64px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: 0 -1px 20px rgba(10,22,40,0.06);
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.tab-bar .tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  text-decoration: none;
+  color: #999;
+  font-size: 10px;
+  font-weight: 500;
+  position: relative;
+  padding: 6px 0;
+  transition: color 0.25s;
+  cursor: pointer;
+}
+
+.tab-bar .tab-item i {
+  font-size: 20px;
+  transition: transform 0.25s, color 0.25s;
+}
+
+.tab-bar .tab-item.active {
+  color: #FF6B4A;
+}
+
+.tab-bar .tab-item.active i {
+  transform: scale(1.1);
+}
+
+.tab-bar .tab-item.active::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 3px;
+  background: linear-gradient(90deg, #FF6B4A, #D4A853);
+  border-radius: 0 0 3px 3px;
+}
+
+.tab-bar .tab-item:hover {
+  color: #FF6B4A;
+}
+
+    /* ========== Decorative Elements ========== */
+    .wave-decoration {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
+      background: linear-gradient(135deg, #0A1628 0%, #132744 50%, #0A1628 100%);
+      z-index: 1;
+    }
+
+    .wave-decoration::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 375 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 15 Q93.75 0 187.5 15 Q281.25 30 375 15 V30 H0 Z' fill='%23F5F6FA'/%3E%3C/svg%3E") no-repeat;
+      background-size: 100% 100%;
+    }
+
+    /* ========== Animations ========== */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .animate-in {
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+
+    .delay-1 { animation-delay: 0.1s; opacity: 0; }
+    .delay-2 { animation-delay: 0.2s; opacity: 0; }
+    .delay-3 { animation-delay: 0.3s; opacity: 0; }
+    .delay-4 { animation-delay: 0.4s; opacity: 0; }
+    .delay-5 { animation-delay: 0.5s; opacity: 0; }
+
+    /* ========== Floating Particles ========== */
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 200px;
+      overflow: hidden;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      animation: float-up linear infinite;
+    }
+
+    @keyframes float-up {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-180px) scale(0.3);
+        opacity: 0;
+      }
+    }
+
+    /* ========== Scroll fade masks ========== */
+    .hot-section::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 40px;
+      background: linear-gradient(90deg, transparent, #F5F6FA);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* ========== Page Background ========== */
+    .page-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, #0d0d1a 0%, #1a1a2e 50%, #0d0d1a 100%);
+      z-index: -1;
+    }
+
+    .page-bg::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255,107,74,0.03) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    /* ===== WeChat Capsule Button ===== */
+    .wx-capsule {
+      width: 87px; height: 32px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      border: 0.5px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+    .wx-capsule .capsule-more {
+      width: 50%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; position: relative;
+    }
+    .wx-capsule .capsule-more::before {
+      content: ''; width: 4px; height: 4px;
+      background: rgba(255, 255, 255, 0.9); border-radius: 50%;
+      box-shadow: -6px 0 0 rgba(255, 255, 255, 0.9), 6px 0 0 rgba(255, 255, 255, 0.9);
+    }
+    .wx-capsule .capsule-divider {
+      width: 0.5px; height: 18px;
+      background: rgba(255, 255, 255, 0.25); flex-shrink: 0;
+    }
+    .wx-capsule .capsule-close {
+      width: 50%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+    .wx-capsule .capsule-close::before {
+      content: ''; width: 14px; height: 14px;
+      border: 1.5px solid rgba(255, 255, 255, 0.9); border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-bg"></div>
+
+<div class="phone-frame">
+  <!-- Wave Decoration Background -->
+  <div class="wave-decoration"></div>
+
+  <!-- Floating Particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="status-icons">
+      <i class="fas fa-signal"></i>
+      <i class="fas fa-wifi"></i>
+      <span class="battery"><span class="battery-fill"></span></span>
+    </div>
+  </div>
+
+  <!-- Header / Search -->
+  <div class="header-area">
+    <div class="search-row">
+      <div class="search-bar" onclick="window.location.href='search.html'" style="cursor:pointer;">
+        <i class="fas fa-search"></i>
+        <span>搜索演出、场馆</span>
+      </div>
+      <div class="header-icons">
+        <div class="scan-btn" onclick="openScanView()">
+          <i class="fas fa-qrcode"></i>
+        </div>
+      </div>
+      <div class="wx-capsule">
+        <div class="capsule-more"></div>
+        <div class="capsule-divider"></div>
+        <div class="capsule-close"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+
+    <!-- Banner Carousel -->
+    <div class="banner-section animate-in delay-1">
+      <div class="carousel-container" id="carouselContainer">
+        <div class="carousel-track" id="carouselTrack">
+          <!-- Slide 1 -->
+          <div class="carousel-slide active" data-index="0">
+            <img src="https://picsum.photos/seed/hainan-concert/750/400.jpg" alt="年终音乐盛典">
+            <div class="slide-info-card">
+              <div class="info-price"><span class="yen">¥</span>280<span class="yen">起</span></div>
+              <div class="info-label">限时特惠</div>
+            </div>
+            <div class="slide-overlay">
+              <span class="slide-tag"><span class="tag-dot"></span>限时特惠</span>
+              <div class="slide-title">年终音乐盛典</div>
+              <div class="slide-desc"><i class="fas fa-map-marker-alt"></i>海南国际会展中心 · 12月31日跨年之夜</div>
+            </div>
+          </div>
+          <!-- Slide 2 -->
+          <div class="carousel-slide next" data-index="1">
+            <img src="https://picsum.photos/seed/tropical-show/750/400.jpg" alt="热带风情歌舞剧">
+            <div class="slide-info-card">
+              <div class="info-price"><span class="yen">¥</span>180<span class="yen">起</span></div>
+              <div class="info-label">新剧首演</div>
+            </div>
+            <div class="slide-overlay">
+              <span class="slide-tag"><span class="tag-dot"></span>新剧首演</span>
+              <div class="slide-title">热带风情歌舞剧</div>
+              <div class="slide-desc"><i class="fas fa-map-marker-alt"></i>三亚大剧院 · 沉浸式热带文化体验</div>
+            </div>
+          </div>
+          <!-- Slide 3 -->
+          <div class="carousel-slide" data-index="2">
+            <img src="https://picsum.photos/seed/comedy-night/750/400.jpg" alt="脱口秀嘉年华">
+            <div class="slide-info-card">
+              <div class="info-price"><span class="yen">¥</span>128<span class="yen">起</span></div>
+              <div class="info-label">会员专享</div>
+            </div>
+            <div class="slide-overlay">
+              <span class="slide-tag"><span class="tag-dot"></span>会员专享</span>
+              <div class="slide-title">脱口秀嘉年华</div>
+              <div class="slide-desc"><i class="fas fa-map-marker-alt"></i>海口湾演艺中心 · 爆笑全场</div>
+            </div>
+          </div>
+          <!-- Slide 4 -->
+          <div class="carousel-slide" data-index="3">
+            <img src="https://picsum.photos/seed/children-theater/750/400.jpg" alt="亲子童话季">
+            <div class="slide-info-card">
+              <div class="info-price"><span class="yen">¥</span>88<span class="yen">起</span></div>
+              <div class="info-label">亲子推荐</div>
+            </div>
+            <div class="slide-overlay">
+              <span class="slide-tag"><span class="tag-dot"></span>亲子推荐</span>
+              <div class="slide-title">亲子童话季</div>
+              <div class="slide-desc"><i class="fas fa-map-marker-alt"></i>全省巡演 · 给孩子最好的艺术启蒙</div>
+            </div>
+          </div>
+        </div>
+        <!-- Slide Counter -->
+        <div class="carousel-counter">
+          <span class="counter-current" id="counterCurrent">01</span>
+          <span>/ 04</span>
+        </div>
+      </div>
+      <div class="carousel-progress" id="carouselProgress">
+        <div class="carousel-progress-bar active" data-index="0"><div class="bar-fill"></div></div>
+        <div class="carousel-progress-bar" data-index="1"><div class="bar-fill"></div></div>
+        <div class="carousel-progress-bar" data-index="2"><div class="bar-fill"></div></div>
+        <div class="carousel-progress-bar" data-index="3"><div class="bar-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- Hot Recommend -->
+    <div class="hot-section animate-in delay-2">
+      <div class="section-header">
+        <div class="section-title">热门推荐</div>
+        <a class="section-more" href="show-list-detail.html" style="text-decoration:none;">
+          查看更多 <i class="fas fa-chevron-right"></i>
+        </a>
+      </div>
+      <div class="hot-scroll">
+        <!-- Card 1 -->
+        <div class="hot-card" onclick="window.location.href='show-detail.html'" style="cursor:pointer;">
+          <div class="card-img">
+            <img src="https://picsum.photos/seed/show-piano/400/260.jpg" alt="钢琴独奏音乐会">
+            <span class="card-tag tag-soon">即将开演</span>
+          </div>
+          <div class="card-info">
+            <div class="card-name">世界名曲钢琴独奏音乐会</div>
+            <div class="card-date"><i class="far fa-calendar-alt"></i> 2025.01.15 20:00</div>
+            <div class="card-bottom">
+              <div class="card-price">
+                <span class="currency">&yen;</span>280<span class="original">480</span>
+              </div>
+              <div class="card-buy"><i class="fas fa-plus"></i></div>
+            </div>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="hot-card" onclick="window.location.href='show-detail.html'" style="cursor:pointer;">
+          <div class="card-img">
+            <img src="https://picsum.photos/seed/show-ballet/400/260.jpg" alt="天鹅湖芭蕾舞">
+            <span class="card-tag tag-vip">会员专享</span>
+          </div>
+          <div class="card-info">
+            <div class="card-name">经典芭蕾《天鹅湖》</div>
+            <div class="card-date"><i class="far fa-calendar-alt"></i> 2025.01.20 19:30</div>
+            <div class="card-bottom">
+              <div class="card-price">
+                <span class="currency">&yen;</span>380<span class="original">680</span>
+              </div>
+              <div class="card-buy"><i class="fas fa-plus"></i></div>
+            </div>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="hot-card" onclick="window.location.href='show-detail.html'" style="cursor:pointer;">
+          <div class="card-img">
+            <img src="https://picsum.photos/seed/show-jazz/400/260.jpg" alt="爵士之夜">
+            <span class="card-tag tag-sale">限时特惠</span>
+          </div>
+          <div class="card-info">
+            <div class="card-name">三亚爵士之夜</div>
+            <div class="card-date"><i class="far fa-calendar-alt"></i> 2025.02.01 21:00</div>
+            <div class="card-bottom">
+              <div class="card-price">
+                <span class="currency">&yen;</span>168<span class="original">328</span>
+              </div>
+              <div class="card-buy"><i class="fas fa-plus"></i></div>
+            </div>
+          </div>
+        </div>
+        <!-- Card 4 -->
+        <div class="hot-card" onclick="window.location.href='show-detail.html'" style="cursor:pointer;">
+          <div class="card-img">
+            <img src="https://picsum.photos/seed/show-drama/400/260.jpg" alt="话剧雷雨">
+            <span class="card-tag tag-hot">爆款热演</span>
+          </div>
+          <div class="card-info">
+            <div class="card-name">经典话剧《雷雨》</div>
+            <div class="card-date"><i class="far fa-calendar-alt"></i> 2025.02.14 19:30</div>
+            <div class="card-bottom">
+              <div class="card-price">
+                <span class="currency">&yen;</span>220<span class="original">380</span>
+              </div>
+              <div class="card-buy"><i class="fas fa-plus"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coupon Package Section -->
+    <div class="coupon-section animate-in delay-3">
+      <div class="section-header">
+        <div class="section-title">超值券包</div>
+        <a class="section-more" href="coupon-package.html" style="text-decoration:none;">
+          全部券包 <i class="fas fa-chevron-right"></i>
+        </a>
+      </div>
+      <div class="coupon-scroll">
+        <!-- Coupon Package 1 -->
+        <div class="coupon-card">
+          <div class="coupon-card-inner">
+            <div class="coupon-card-top">
+              <div>
+                <div class="coupon-card-name">跨年演出畅享包</div>
+                <div class="coupon-card-count">含3场热门演出</div>
+              </div>
+              <span class="coupon-card-badge hot"><i class="fas fa-fire" style="font-size:9px"></i> 热卖</span>
+            </div>
+            <div class="coupon-shows-list">
+              <div class="coupon-show-chip"><i class="fas fa-ticket-alt"></i> 年终音乐盛典</div>
+              <div class="coupon-show-chip"><i class="fas fa-ticket-alt"></i> 热带风情歌舞剧</div>
+              <div class="coupon-show-chip"><i class="fas fa-ticket-alt"></i> 脱口秀嘉年华</div>
+            </div>
+            <div class="coupon-card-bottom">
+              <div class="coupon-price-area">
+                <span class="coupon-price"><span class="yen">¥</span>399</span>
+                <span class="coupon-original">¥680</span>
+                <span class="coupon-save-tag">省¥281</span>
+              </div>
+              <button class="coupon-buy-btn">立即抢购</button>
+            </div>
+          </div>
+        </div>
+        <!-- Coupon Package 2 -->
+        <div class="coupon-card">
+          <div class="coupon-card-inner">
+            <div class="coupon-card-top">
+              <div>
+                <div class="coupon-card-name">经典艺术精选包</div>
+                <div class="coupon-card-count">含2场经典演出</div>
+              </div>
+              <span class="coupon-card-badge new"><i class="fas fa-star" style="font-size:9px"></i> 新品</span>
+            </div>
+            <div class="coupon-shows-list">
+              <div class="coupon-show-chip"><i class="fas fa-ticket-alt"></i> 经典芭蕾《天鹅湖》</div>
+              <div class="coupon-show-chip"><i class="fas fa-ticket-alt"></i> 经典话剧《雷雨》</div>
+            </div>
+            <div class="coupon-card-bottom">
+              <div class="coupon-price-area">
+                <span class="coupon-price"><span class="yen">¥</span>520</span>
+                <span class="coupon-original">¥960</span>
+                <span class="coupon-save-tag">省¥440</span>
+              </div>
+              <button class="coupon-buy-btn">立即抢购</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Theater Navigation -->
+    <div class="theater-section animate-in delay-4">
+      <div class="section-header">
+        <div class="section-title">合作剧院</div>
+        <a class="section-more" href="theater-list.html" style="text-decoration:none;">
+          全部剧院 <i class="fas fa-chevron-right"></i>
+        </a>
+      </div>
+      <div class="theater-scroll">
+        <!-- Theater 1 -->
+        <div class="theater-card">
+          <div class="theater-img">
+            <img src="https://picsum.photos/seed/theater-haikou/400/240.jpg" alt="海口湾演艺中心">
+            <div class="theater-location"><i class="fas fa-map-marker-alt"></i> 海口市龙华区</div>
+          </div>
+          <div class="theater-info">
+            <div class="theater-name">海口湾演艺中心</div>
+            <div class="theater-meta">
+              <div class="theater-schedule">
+                <span class="schedule-badge">近期排期</span>
+                <span class="schedule-count">12场</span>
+              </div>
+              <div class="theater-arrow"><i class="fas fa-chevron-right"></i></div>
+            </div>
+          </div>
+        </div>
+        <!-- Theater 2 -->
+        <div class="theater-card">
+          <div class="theater-img">
+            <img src="https://picsum.photos/seed/theater-sanya/400/240.jpg" alt="三亚大剧院">
+            <div class="theater-location"><i class="fas fa-map-marker-alt"></i> 三亚市吉阳区</div>
+          </div>
+          <div class="theater-info">
+            <div class="theater-name">三亚大剧院</div>
+            <div class="theater-meta">
+              <div class="theater-schedule">
+                <span class="schedule-badge">近期排期</span>
+                <span class="schedule-count">8场</span>
+              </div>
+              <div class="theater-arrow"><i class="fas fa-chevron-right"></i></div>
+            </div>
+          </div>
+        </div>
+        <!-- Theater 3 -->
+        <div class="theater-card">
+          <div class="theater-img">
+            <img src="https://picsum.photos/seed/theater-qionghai/400/240.jpg" alt="琼海文化中心">
+            <div class="theater-location"><i class="fas fa-map-marker-alt"></i> 琼海市嘉积镇</div>
+          </div>
+          <div class="theater-info">
+            <div class="theater-name">琼海文化中心大剧院</div>
+            <div class="theater-meta">
+              <div class="theater-schedule">
+                <span class="schedule-badge">近期排期</span>
+                <span class="schedule-count">5场</span>
+              </div>
+              <div class="theater-arrow"><i class="fas fa-chevron-right"></i></div>
+            </div>
+          </div>
+        </div>
+        <!-- Theater 4 -->
+        <div class="theater-card">
+          <div class="theater-img">
+            <img src="https://picsum.photos/seed/theater-danzhou/400/240.jpg" alt="儋州大剧院">
+            <div class="theater-location"><i class="fas fa-map-marker-alt"></i> 儋州市那大镇</div>
+          </div>
+          <div class="theater-info">
+            <div class="theater-name">儋州市大剧院</div>
+            <div class="theater-meta">
+              <div class="theater-schedule">
+                <span class="schedule-badge">近期排期</span>
+                <span class="schedule-count">3场</span>
+              </div>
+              <div class="theater-arrow"><i class="fas fa-chevron-right"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom TabBar -->
+  <div class="tab-bar">
+    <a class="tab-item active" href="home.html">
+      <i class="fas fa-home"></i>
+      <span>首页</span>
+    </a>
+    <a class="tab-item" href="show-list-detail.html">
+      <i class="fas fa-theater-masks"></i>
+      <span>演出</span>
+    </a>
+    <a class="tab-item" href="shop.html">
+      <i class="fas fa-shopping-bag"></i>
+      <span>商城</span>
+    </a>
+    <a class="tab-item" href="member-center.html">
+      <i class="fas fa-crown"></i>
+      <span>会员</span>
+    </a>
+    <a class="tab-item" href="profile.html">
+      <i class="fas fa-user"></i>
+      <span>我的</span>
+    </a>
+  </div>
+
+</div>
+
+<script>
+  // ========== Carousel Auto-play ==========
+  const slides = document.querySelectorAll('.carousel-slide');
+  const progressBars = document.querySelectorAll('.carousel-progress-bar');
+  const counterCurrent = document.getElementById('counterCurrent');
+  const totalSlides = slides.length;
+  let currentSlide = 0;
+  let autoPlayTimer;
+  let progressTimer;
+
+  function updateSlides() {
+    slides.forEach((slide, i) => {
+      slide.classList.remove('active', 'prev', 'next');
+      if (i === currentSlide) {
+        slide.classList.add('active');
+      } else if (i === (currentSlide - 1 + totalSlides) % totalSlides) {
+        slide.classList.add('prev');
+      } else if (i === (currentSlide + 1) % totalSlides) {
+        slide.classList.add('next');
+      }
+    });
+
+    // Update progress bars
+    progressBars.forEach((bar, i) => {
+      bar.classList.remove('active');
+      const fill = bar.querySelector('.bar-fill');
+      fill.style.transition = 'none';
+      fill.style.width = '0%';
+      if (i === currentSlide) {
+        bar.classList.add('active');
+        // Trigger reflow then animate
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            fill.style.transition = 'width 3.5s linear';
+            fill.style.width = '100%';
+          });
+        });
+      }
+    });
+
+    // Update counter
+    counterCurrent.textContent = String(currentSlide + 1).padStart(2, '0');
+  }
+
+  function goToSlide(index) {
+    currentSlide = index;
+    updateSlides();
+  }
+
+  function nextSlide() {
+    goToSlide((currentSlide + 1) % totalSlides);
+  }
+
+  function startAutoPlay() {
+    stopAutoPlay();
+    autoPlayTimer = setInterval(nextSlide, 3500);
+  }
+
+  function stopAutoPlay() {
+    clearInterval(autoPlayTimer);
+  }
+
+  // Progress bar click
+  progressBars.forEach(bar => {
+    bar.addEventListener('click', () => {
+      stopAutoPlay();
+      goToSlide(parseInt(bar.dataset.index));
+      startAutoPlay();
+    });
+  });
+
+  // Touch support for carousel
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  const carouselContainer = document.getElementById('carouselContainer');
+  carouselContainer.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    stopAutoPlay();
+  }, { passive: true });
+
+  carouselContainer.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        goToSlide((currentSlide + 1) % totalSlides);
+      } else {
+        goToSlide((currentSlide - 1 + totalSlides) % totalSlides);
+      }
+    }
+    startAutoPlay();
+  }, { passive: true });
+
+  // Initialize
+  updateSlides();
+  startAutoPlay();
+
+  // ========== Floating Particles ==========
+  const particlesContainer = document.getElementById('particles');
+
+  function createParticle() {
+    const particle = document.createElement('div');
+    particle.classList.add('particle');
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.top = (150 + Math.random() * 50) + 'px';
+    particle.style.width = (2 + Math.random() * 4) + 'px';
+    particle.style.height = particle.style.width;
+    particle.style.animationDuration = (3 + Math.random() * 4) + 's';
+    particle.style.animationDelay = Math.random() * 2 + 's';
+    particlesContainer.appendChild(particle);
+
+    setTimeout(() => {
+      particle.remove();
+    }, 8000);
+  }
+
+  // Create initial particles
+  for (let i = 0; i < 8; i++) {
+    setTimeout(createParticle, i * 300);
+  }
+
+  // Continue creating particles
+  setInterval(createParticle, 800);
+
+  // ========== Tab Bar Interaction ==========
+  const tabItems = document.querySelectorAll('.tab-bar .tab-item');
+  tabItems.forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      tabItems.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  // ========== Intersection Observer for Animations ==========
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('.animate-in').forEach(el => {
+    observer.observe(el);
+  });
+</script>
+
+<!-- Scan View Overlay -->
+<div class="scan-overlay" id="scanOverlay">
+  <div class="scan-nav">
+    <button class="scan-back" onclick="closeScanView()">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+    </button>
+    <div class="scan-nav-title">扫一扫</div>
+  </div>
+
+  <div class="scan-body">
+    <div class="scan-area" id="homeScanArea">
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+      <div class="scan-frame-inner">
+        <div class="grid-lines"></div>
+        <div class="scan-line"></div>
+      </div>
+    </div>
+
+    <div class="scan-hint">将二维码放入框内，自动扫描</div>
+
+    <div class="scan-actions">
+      <button class="scan-action-btn" id="flashBtn" onclick="toggleFlash()">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <span>手电筒</span>
+      </button>
+      <button class="scan-action-btn" onclick="openScanView()">
+        <div class="icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <span>相册</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Scan Result Modal (Success) -->
+<div class="scan-result-modal" id="scanSuccessModal">
+  <div class="scan-result-card">
+    <div class="scan-result-icon success">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="scan-result-title">识别成功</div>
+    <div class="scan-result-subtitle">已跳转至演出详情页</div>
+    <div class="scan-result-info">
+      <div class="scan-result-row">
+        <span class="lbl">演出名称</span>
+        <span class="val">《天涯故事》大型原创舞剧</span>
+      </div>
+      <div class="scan-result-row">
+        <span class="lbl">演出时间</span>
+        <span class="val">2025-06-15 14:30</span>
+      </div>
+      <div class="scan-result-row">
+        <span class="lbl">演出场馆</span>
+        <span class="val">海口湾演艺中心</span>
+      </div>
+    </div>
+    <button class="scan-result-close" onclick="closeScanResult('scanSuccessModal')">立即购票</button>
+  </div>
+</div>
+
+<!-- Scan Result Modal (Fail) -->
+<div class="scan-result-modal" id="scanFailModal">
+  <div class="scan-result-card">
+    <div class="scan-result-icon fail">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </div>
+    <div class="scan-result-title">无法识别</div>
+    <div class="scan-result-subtitle">未检测到有效二维码，请重试</div>
+    <button class="scan-result-close" onclick="closeScanResult('scanFailModal')" style="margin-top:24px;">重新扫描</button>
+  </div>
+</div>
+
+<script>
+  // ===== Scan View =====
+  function openScanView() {
+    document.getElementById('scanOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeScanView() {
+    document.getElementById('scanOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function toggleFlash() {
+    const btn = document.getElementById('flashBtn');
+    const iconWrap = btn.querySelector('.icon-wrap');
+    iconWrap.classList.toggle('flash-on');
+  }
+
+  function closeScanResult(id) {
+    document.getElementById(id).classList.remove('show');
+    closeScanView();
+  }
+
+  // Simulate scan on click
+  document.getElementById('homeScanArea').addEventListener('click', function() {
+    const isFail = Math.random() < 0.15;
+    setTimeout(() => {
+      if (isFail) {
+        document.getElementById('scanFailModal').classList.add('show');
+      } else {
+        document.getElementById('scanSuccessModal').classList.add('show');
+      }
+    }, 800);
+  });
+
+  // Close modals on overlay click
+  document.querySelectorAll('.scan-result-modal').forEach(overlay => {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.remove('show');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

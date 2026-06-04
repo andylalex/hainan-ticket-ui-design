@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>充值 - 海南演艺票务系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* ========== Reset & Base ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #F5F6FA;
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* ========== Phone Frame ========== */
+        .phone-frame {
+            width: 100%;
+            max-width: 375px;
+            min-height: 100vh;
+            min-height: 100dvh;
+            background: #F5F6FA;
+            position: relative;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+
+        /* ========== Status Bar ========== */
+        .status-bar {
+            height: 44px;
+            background: linear-gradient(135deg, #0A1628 0%, #132240 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-bar .time { font-weight: 600; font-size: 14px; }
+
+        .status-bar .icons {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-bar .icons svg { width: 16px; height: 16px; fill: #fff; }
+
+        /* ========== Navigation Bar ========== */
+        .nav-bar {
+            height: 48px;
+            background: linear-gradient(135deg, #0A1628 0%, #132240 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 0 16px;
+        }
+
+        .nav-bar .back-btn {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-bar .back-btn:hover { background: rgba(255,255,255,0.1); }
+
+        .nav-bar .back-btn svg {
+            width: 22px;
+            height: 22px;
+            stroke: #fff;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .nav-bar .title {
+            color: #fff;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        /* ========== Balance Display ========== */
+        .balance-display {
+            background: linear-gradient(135deg, #0A1628 0%, #132240 50%, #1a2d50 100%);
+            padding: 24px 20px 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-display::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -30px;
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, rgba(212, 168, 83, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .balance-label {
+            color: rgba(255,255,255,0.6);
+            font-size: 13px;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .balance-amount {
+            color: #fff;
+            font-size: 36px;
+            font-weight: 700;
+            line-height: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .balance-amount .unit {
+            font-size: 18px;
+            font-weight: 500;
+            margin-right: 2px;
+        }
+
+        /* ========== Section ========== */
+        .section {
+            margin: 16px;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(10, 22, 40, 0.06);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 16px 16px 0;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0A1628;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            font-size: 18px;
+            color: #D4A853;
+        }
+
+        .section-body {
+            padding: 16px;
+        }
+
+        /* ========== Amount Grid ========== */
+        .amount-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .amount-option {
+            padding: 18px 8px;
+            border: 2px solid #E8E9ED;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fff;
+            position: relative;
+        }
+
+        .amount-option:hover {
+            border-color: #D4A853;
+        }
+
+        .amount-option.selected {
+            border-color: #D4A853;
+            background: linear-gradient(135deg, #FFFDF8, #FFF8E7);
+            box-shadow: 0 2px 12px rgba(212, 168, 83, 0.2);
+        }
+
+        .amount-option .value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0A1628;
+        }
+
+        .amount-option .value .unit {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .amount-option .bonus {
+            font-size: 11px;
+            color: #FF6B4A;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .amount-option .no-bonus {
+            font-size: 11px;
+            color: #BBB;
+            margin-top: 4px;
+        }
+
+        .amount-option .hot-tag {
+            position: absolute;
+            top: -1px;
+            right: -1px;
+            background: linear-gradient(135deg, #FF6B4A, #FF8A6A);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 0 10px 0 8px;
+        }
+
+        /* ========== Custom Amount ========== */
+        .custom-amount {
+            display: none;
+        }
+
+        .custom-amount.show {
+            display: block;
+        }
+
+        .custom-input {
+            width: 100%;
+            height: 48px;
+            background: #F5F6FA;
+            border: 2px solid #E8E9ED;
+            border-radius: 12px;
+            padding: 0 16px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #0A1628;
+            outline: none;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .custom-input:focus {
+            border-color: #D4A853;
+            background: #fff;
+        }
+
+        .custom-input::placeholder {
+            color: #C8CCD8;
+            font-weight: 400;
+            font-size: 14px;
+        }
+
+        /* ========== Payment Methods ========== */
+        .payment-method {
+            display: flex;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #F5F6FA;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .payment-method:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .payment-method:first-child {
+            padding-top: 0;
+        }
+
+        .payment-method:active {
+            background: #FAFBFD;
+        }
+
+        .payment-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+            font-size: 20px;
+        }
+
+        .payment-icon.wechat {
+            background: linear-gradient(135deg, #E8F9F5, #D0F5EC);
+            color: #07C160;
+        }
+
+        .payment-icon.alipay {
+            background: linear-gradient(135deg, #EBF0FF, #D6E0FF);
+            color: #1677FF;
+        }
+
+        .payment-info {
+            flex: 1;
+        }
+
+        .payment-name {
+            font-size: 15px;
+            font-weight: 500;
+            color: #0A1628;
+        }
+
+        .payment-desc {
+            font-size: 12px;
+            color: #8E95A9;
+            margin-top: 2px;
+        }
+
+        .payment-radio {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid #D8DAE0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .payment-radio.selected {
+            border-color: #D4A853;
+            background: #D4A853;
+        }
+
+        .payment-radio.selected::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+        /* ========== Recharge Notice ========== */
+        .recharge-notice {
+            margin: 16px;
+            background: linear-gradient(135deg, rgba(212, 168, 83, 0.08), rgba(212, 168, 83, 0.03));
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
+
+        .recharge-notice-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #D4A853;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .recharge-notice-title i {
+            font-size: 14px;
+        }
+
+        .recharge-notice-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .recharge-notice-list li {
+            font-size: 12px;
+            color: #5A6178;
+            line-height: 1.8;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .recharge-notice-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 9px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #D4A853;
+        }
+
+        /* ========== Submit Button ========== */
+        .submit-section {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px;
+            padding: 16px;
+            background: #fff;
+            box-shadow: 0 -2px 20px rgba(10,22,40,0.06);
+        }
+
+        .submit-btn {
+            width: 100%;
+            height: 48px;
+            background: linear-gradient(135deg, #D4A853, #E8C97A);
+            border: none;
+            border-radius: 24px;
+            color: #1A1A1A;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 4px 16px rgba(212,168,83,0.35);
+            transition: all 0.2s;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .submit-btn:disabled {
+            background: #E0E0E0;
+            color: #999;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* ========== Toast ========== */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(10, 22, 40, 0.85);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* ========== Animations ========== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section:nth-of-type(1) { animation: fadeInUp 0.4s ease both; }
+        .section:nth-of-type(2) { animation: fadeInUp 0.4s ease 0.1s both; }
+        .recharge-notice { animation: fadeInUp 0.4s ease 0.2s both; }
+    
+    
+    
+    
+    
+    
+  </style>
+</head>
+<body>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Phone Frame -->
+<div class="phone-frame">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+    
+        <span class="time">9:41</span>
+        <div class="icons">
+            <svg viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+        <a class="back-btn" href="wallet.html">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </a>
+        <span class="title">充值</span>
+    </div>
+
+    <!-- Balance Display -->
+    <div class="balance-display">
+        <div class="balance-label">当前余额</div>
+        <div class="balance-amount"><span class="unit">&yen;</span>1,280.00</div>
+    </div>
+
+    <!-- Amount Selection Section -->
+    <div class="section">
+        <div class="section-header">
+            <span class="section-title">
+                <i class="fas fa-coins"></i>
+                选择充值金额
+            </span>
+        </div>
+        <div class="section-body">
+            <div class="amount-grid">
+                <div class="amount-option" onclick="selectAmount(this, 50)">
+                    <div class="value"><span class="unit">&yen;</span>50</div>
+                    <div class="no-bonus">无赠送</div>
+                </div>
+                <div class="amount-option" onclick="selectAmount(this, 100)">
+                    <div class="value"><span class="unit">&yen;</span>100</div>
+                    <div class="bonus">赠 &yen;5</div>
+                </div>
+                <div class="amount-option" onclick="selectAmount(this, 200)">
+                    <div class="value"><span class="unit">&yen;</span>200</div>
+                    <div class="bonus">赠 &yen;15</div>
+                    <span class="hot-tag">热门</span>
+                </div>
+                <div class="amount-option" onclick="selectAmount(this, 500)">
+                    <div class="value"><span class="unit">&yen;</span>500</div>
+                    <div class="bonus">赠 &yen;50</div>
+                </div>
+                <div class="amount-option" onclick="selectAmount(this, 0)">
+                    <div class="value">自定义</div>
+                    <div class="no-bonus">输入金额</div>
+                </div>
+            </div>
+            <div class="custom-amount" id="customAmountWrap">
+                <input type="number" class="custom-input" id="customAmount" placeholder="请输入充值金额（最低10元）">
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Method Section -->
+    <div class="section">
+        <div class="section-header">
+            <span class="section-title">
+                <i class="fas fa-wallet"></i>
+                支付方式
+            </span>
+        </div>
+        <div class="section-body">
+            <div class="payment-method" onclick="selectPayment(this, 'wechat')">
+                <div class="payment-icon wechat">
+                    <i class="fab fa-weixin"></i>
+                </div>
+                <div class="payment-info">
+                    <div class="payment-name">微信支付</div>
+                    <div class="payment-desc">推荐使用微信快捷支付</div>
+                </div>
+                <div class="payment-radio selected" id="radio-wechat">
+                </div>
+            </div>
+            <div class="payment-method" onclick="selectPayment(this, 'alipay')">
+                <div class="payment-icon alipay">
+                    <i class="fab fa-alipay"></i>
+                </div>
+                <div class="payment-info">
+                    <div class="payment-name">支付宝</div>
+                    <div class="payment-desc">支持花呗分期</div>
+                </div>
+                <div class="payment-radio" id="radio-alipay">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recharge Notice -->
+    <div class="recharge-notice">
+        <div class="recharge-notice-title">
+            <i class="fas fa-info-circle"></i>
+            充值说明
+        </div>
+        <ul class="recharge-notice-list">
+            <li>充值金额实时到账，不可提现至银行卡</li>
+            <li>充值赠送金额仅限购票使用，不可退款</li>
+            <li>单笔充值限额：最低10元，最高5000元</li>
+            <li>如有充值问题，请联系客服 400-888-0000</li>
+        </ul>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="submit-section">
+        <button class="submit-btn" id="submitBtn" onclick="submitRecharge()">立即充值</button>
+    </div>
+
+</div>
+
+<script>
+    let selectedAmount = 0;
+    let selectedPayment = 'wechat';
+
+    // ========== Amount Selection ==========
+    function selectAmount(el, amount) {
+        document.querySelectorAll('.amount-option').forEach(opt => opt.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedAmount = amount;
+
+        const customWrap = document.getElementById('customAmountWrap');
+        if (amount === 0) {
+            customWrap.classList.add('show');
+            document.getElementById('customAmount').focus();
+        } else {
+            customWrap.classList.remove('show');
+        }
+    }
+
+    // ========== Payment Selection ==========
+    function selectPayment(el, method) {
+        document.querySelectorAll('.payment-radio').forEach(radio => radio.classList.remove('selected'));
+        document.getElementById('radio-' + method).classList.add('selected');
+        selectedPayment = method;
+    }
+
+    // ========== Submit Recharge ==========
+    function submitRecharge() {
+        let amount = selectedAmount;
+        if (amount === 0) {
+            amount = parseFloat(document.getElementById('customAmount').value);
+        }
+
+        if (!amount || amount < 10) {
+            showToast('充值金额最低10元');
+            return;
+        }
+
+        if (amount > 5000) {
+            showToast('单笔充值最高5000元');
+            return;
+        }
+
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.textContent = '支付中...';
+
+        setTimeout(() => {
+            const paymentName = selectedPayment === 'wechat' ? '微信支付' : '支付宝';
+            btn.disabled = false;
+            btn.textContent = '立即充值';
+            showToast('充值成功！已通过' + paymentName + '充值 ¥' + amount.toFixed(2));
+        }, 1500);
+    }
+
+    // ========== Toast ==========
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2857 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>海南演艺票务 - 选座购票</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ========== CSS Reset & Base ========== */
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :root {
+    --deep-blue: #0A1628;
+    --coral-orange: #FF6B4A;
+    --gold: #D4A853;
+    --emerald: #00C9A7;
+    --light-gray: #F5F6FA;
+    --mid-gray: #C8CCD8;
+    --dark-gray: #4A4E5A;
+    --sold-gray: #2A2D38;
+    --seat-available: #3A3F52;
+    --seat-available-hover: #4E5470;
+    --seat-selected: #FF6B4A;
+    --seat-vip-border: #D4A853;
+    --bg-dark: #0E1A2E;
+    --bg-card: rgba(15, 25, 50, 0.85);
+    --text-primary: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.65);
+    --text-muted: rgba(255, 255, 255, 0.4);
+    --glass-bg: rgba(10, 22, 40, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.08);
+  }
+
+  html, body {
+    font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #1a1a2e;
+    color: var(--text-primary);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    padding: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+  }
+
+  /* ========== Phone Frame ========== */
+  .phone-frame {
+    width: 375px;
+    height: 812px;
+    margin: 0 auto;
+    background: var(--bg-dark);
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 2px rgba(255,255,255,0.06),
+      0 20px 80px rgba(0,0,0,0.6),
+      0 0 120px rgba(10, 22, 40, 0.4);
+    border-radius: 32px;
+    transform: translateX(0);
+    contain: layout;
+  }
+
+  @media (max-width: 400px) {
+    html, body {
+      padding: 0;
+      background: #060B14;
+    }
+    .phone-frame {
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      border-radius: 0;
+      box-shadow: none;
+    }
+  }
+
+  /* ========== Top Navigation ========== */
+  .top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 16px;
+    position: relative;
+    z-index: 10;
+    background: transparent;
+  }
+
+  .nav-back {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.2s;
+  }
+
+  .nav-back:active {
+    background: rgba(255,255,255,0.08);
+  }
+
+  .nav-back svg {
+    width: 22px;
+    height: 22px;
+    stroke: var(--text-primary);
+    stroke-width: 2.2;
+    fill: none;
+  }
+
+  .nav-title {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--text-primary);
+  }
+
+  .nav-share {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background 0.2s;
+  }
+
+  .nav-share:active {
+    background: rgba(255,255,255,0.08);
+  }
+
+  .nav-share svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--text-secondary);
+    stroke-width: 1.8;
+    fill: none;
+  }
+
+  /* ========== Event Info Bar ========== */
+  .event-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px 12px;
+    background: transparent;
+  }
+
+  .event-info .event-poster {
+    width: 44px;
+    height: 58px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #1a2a4a, #0d1b30);
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .event-poster .poster-icon {
+    font-size: 22px;
+    opacity: 0.7;
+  }
+
+  .event-info .event-detail {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .event-info .event-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 3px;
+  }
+
+  .event-info .event-meta {
+    font-size: 11px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .event-info .event-meta .dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--text-muted);
+  }
+
+  /* ========== Scrollable Content ========== */
+  .scroll-content {
+    height: calc(100vh - 44px - 70px);
+    height: calc(100dvh - 44px - 70px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 20px;
+  }
+
+  .scroll-content::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ========== Stage Area ========== */
+  .stage-wrapper {
+    padding: 8px 24px 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .stage {
+    width: 240px;
+    height: 52px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+  }
+
+  .stage-shape {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 240px;
+    height: 44px;
+    border-radius: 0 0 50% 50% / 0 0 100% 100%;
+    background: linear-gradient(180deg, rgba(212, 168, 83, 0.25) 0%, rgba(212, 168, 83, 0.06) 100%);
+    border: 1px solid rgba(212, 168, 83, 0.2);
+    border-top: none;
+  }
+
+  .stage-shape::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(212, 168, 83, 0.6), transparent);
+    border-radius: 1px;
+  }
+
+  /* Stage lighting effect */
+  .stage-lights {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 260px;
+    height: 20px;
+    pointer-events: none;
+  }
+
+  .stage-lights::before,
+  .stage-lights::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow:
+      0 0 8px 2px rgba(212, 168, 83, 0.5),
+      0 0 20px 4px rgba(212, 168, 83, 0.2);
+  }
+
+  .stage-lights::before { left: 20px; }
+  .stage-lights::after { right: 20px; }
+
+  .stage-light-center {
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--coral-orange);
+    box-shadow:
+      0 0 10px 3px rgba(255, 107, 74, 0.4),
+      0 0 30px 6px rgba(255, 107, 74, 0.15);
+    animation: pulse-light 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-light {
+    0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+  }
+
+  /* Light beams */
+  .light-beam {
+    position: absolute;
+    top: 4px;
+    width: 40px;
+    height: 30px;
+    clip-path: polygon(45% 0%, 55% 0%, 70% 100%, 30% 100%);
+    opacity: 0.08;
+    pointer-events: none;
+  }
+
+  .light-beam:nth-child(1) {
+    left: 30px;
+    background: linear-gradient(180deg, var(--gold), transparent);
+  }
+
+  .light-beam:nth-child(2) {
+    left: 110px;
+    background: linear-gradient(180deg, var(--coral-orange), transparent);
+  }
+
+  .light-beam:nth-child(3) {
+    right: 30px;
+    background: linear-gradient(180deg, var(--gold), transparent);
+  }
+
+  .stage-label {
+    position: relative;
+    z-index: 1;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 6px;
+    color: rgba(212, 168, 83, 0.7);
+    text-transform: uppercase;
+  }
+
+  /* ========== Seat Map Container ========== */
+  .seat-map-container {
+    padding: 12px 8px 0;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .seat-map-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 4px;
+    max-width: 375px;
+  }
+
+  .seat-map-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .seat-map {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 0;
+    transform-origin: top center;
+    transition: transform 0.3s ease;
+  }
+
+  .seat-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .row-label {
+    width: 18px;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-align: center;
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  .row-label-right {
+    width: 18px;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-align: center;
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  .seats-in-row {
+    display: flex;
+    gap: 4px;
+  }
+
+  /* Gap in middle for aisle */
+  .seat-gap {
+    width: 14px;
+    flex-shrink: 0;
+  }
+
+  /* ========== Individual Seat ========== */
+  .seat {
+    width: 20px;
+    height: 20px;
+    border-radius: 5px 5px 3px 3px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  .seat::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    right: 3px;
+    height: 3px;
+    border-radius: 2px 2px 0 0;
+    opacity: 0.3;
+    transition: opacity 0.2s;
+  }
+
+  /* Available seat */
+  .seat.available {
+    background: var(--seat-available);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .seat.available::before {
+    background: rgba(255,255,255,0.3);
+  }
+
+  .seat.available:hover {
+    background: var(--seat-available-hover);
+    transform: scale(1.15);
+    border-color: rgba(255,255,255,0.12);
+  }
+
+  .seat.available:active {
+    transform: scale(0.92);
+  }
+
+  /* Sold seat */
+  .seat.sold {
+    background: var(--sold-gray);
+    border: 1px solid rgba(255,255,255,0.02);
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  .seat.sold::before {
+    background: transparent;
+  }
+
+  /* Selected seat */
+  .seat.selected {
+    background: var(--seat-selected);
+    border: 1.5px solid rgba(255, 107, 74, 0.6);
+    box-shadow: 0 0 10px rgba(255, 107, 74, 0.3);
+    animation: seat-bounce 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .seat.selected::before {
+    background: rgba(255,255,255,0.4);
+    opacity: 0.5;
+  }
+
+  @keyframes seat-bounce {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.3); }
+    50% { transform: scale(0.9); }
+    70% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+
+  /* VIP seat */
+  .seat.vip {
+    background: var(--seat-available);
+    border: 1.5px solid var(--seat-vip-border);
+    position: relative;
+  }
+
+  .seat.vip::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 6px;
+    height: 6px;
+    border-radius: 0 4px 0 3px;
+    background: var(--gold);
+    opacity: 0.8;
+  }
+
+  .seat.vip::before {
+    background: rgba(212, 168, 83, 0.3);
+  }
+
+  .seat.vip:hover {
+    background: var(--seat-available-hover);
+    transform: scale(1.15);
+    box-shadow: 0 0 8px rgba(212, 168, 83, 0.2);
+  }
+
+  .seat.vip.selected {
+    background: var(--seat-selected);
+    border-color: var(--gold);
+    box-shadow: 0 0 12px rgba(255, 107, 74, 0.3), 0 0 6px rgba(212, 168, 83, 0.2);
+  }
+
+  .seat.vip.selected::after {
+    background: var(--gold);
+  }
+
+  /* ========== Legend ========== */
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 14px 16px 8px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px 3px 2px 2px;
+    flex-shrink: 0;
+  }
+
+  .legend-dot.available {
+    background: var(--seat-available);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .legend-dot.sold {
+    background: var(--sold-gray);
+    opacity: 0.45;
+  }
+
+  .legend-dot.selected {
+    background: var(--seat-selected);
+    box-shadow: 0 0 4px rgba(255, 107, 74, 0.3);
+  }
+
+  .legend-dot.vip {
+    background: var(--seat-available);
+    border: 1.5px solid var(--gold);
+  }
+
+  .legend-text {
+    font-size: 10px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  /* ========== Ticket Tier Selector ========== */
+  .tier-section {
+    padding: 12px 0 4px;
+  }
+
+  .tier-scroll {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: wrap;
+  }
+
+  .tier-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tier-tag {
+    flex: 1 1 auto;
+    min-width: fit-content;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+    color: var(--text-secondary);
+    white-space: nowrap;
+    user-select: none;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .tier-tag:active {
+    transform: scale(0.95);
+  }
+
+  .tier-tag.active {
+    background: linear-gradient(135deg, var(--coral-orange), #FF8A6E);
+    border-color: transparent;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 4px 14px rgba(255, 107, 74, 0.3);
+  }
+
+  .tier-tag .tier-price {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-weight: 700;
+    margin-left: 2px;
+  }
+
+  .tier-tag .tier-price .original-price {
+    text-decoration: line-through;
+    opacity: 0.5;
+    font-weight: 400;
+    font-size: 11px;
+    margin-left: 4px;
+  }
+
+  /* ========== Ticket Policy Banner ========== */
+  .policy-banner {
+    margin: 8px 16px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+  }
+
+  .policy-banner.early-bird {
+    background: linear-gradient(135deg, rgba(255, 107, 74, 0.15), rgba(255, 138, 110, 0.1));
+    border: 1px solid rgba(255, 107, 74, 0.25);
+    color: var(--coral-orange);
+  }
+
+  .policy-banner.priority {
+    background: linear-gradient(135deg, rgba(212, 168, 83, 0.15), rgba(212, 168, 83, 0.1));
+    border: 1px solid rgba(212, 168, 83, 0.25);
+    color: var(--gold);
+  }
+
+  .policy-banner .policy-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .policy-banner.early-bird .policy-icon {
+    background: rgba(255, 107, 74, 0.2);
+  }
+
+  .policy-banner.priority .policy-icon {
+    background: rgba(212, 168, 83, 0.2);
+  }
+
+  .policy-banner .policy-content {
+    flex: 1;
+  }
+
+  .policy-banner .policy-title {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  .policy-banner .policy-desc {
+    opacity: 0.85;
+    font-size: 11px;
+  }
+
+  .policy-banner .policy-badge {
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .policy-banner.early-bird .policy-badge {
+    background: var(--coral-orange);
+    color: #fff;
+  }
+
+  .policy-banner.priority .policy-badge {
+    background: var(--gold);
+    color: #1a1a2e;
+  }
+
+  /* ========== Divider ========== */
+  .section-divider {
+    height: 1px;
+    margin: 10px 16px;
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+  }
+
+  /* ========== Selected Info Panel (Glassmorphism) ========== */
+  .info-panel {
+    margin: 4px 12px 12px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+  }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .panel-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .panel-count {
+    font-size: 11px;
+    color: var(--coral-orange);
+    font-weight: 500;
+  }
+
+  .selected-seats-display {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+    min-height: 28px;
+  }
+
+  .seat-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background: rgba(255, 107, 74, 0.12);
+    border: 1px solid rgba(255, 107, 74, 0.2);
+    font-size: 11px;
+    color: var(--coral-orange);
+    font-weight: 500;
+    animation: chip-in 0.25s ease;
+  }
+
+  @keyframes chip-in {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .seat-chip .chip-remove {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    color: rgba(255, 107, 74, 0.6);
+    transition: all 0.2s;
+    line-height: 1;
+  }
+
+  .seat-chip .chip-remove:hover {
+    color: #fff;
+    background: rgba(255, 107, 74, 0.3);
+  }
+
+  .no-seat-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 4px 0;
+  }
+
+  /* Price breakdown */
+  .price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+  }
+
+  .price-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .price-value {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .price-value.discount {
+    color: var(--emerald);
+  }
+
+  /* Coupon / Points entries */
+  .entry-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .entry-row:active {
+    opacity: 0.7;
+  }
+
+  .entry-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .entry-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+  }
+
+  .entry-icon.coupon {
+    background: rgba(255, 107, 74, 0.15);
+    color: var(--coral-orange);
+  }
+
+  .entry-icon.points {
+    background: rgba(212, 168, 83, 0.15);
+    color: var(--gold);
+  }
+
+  .entry-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .entry-arrow {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* ========== Bottom Action Bar ========== */
+  .bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    background: linear-gradient(180deg, rgba(10, 22, 40, 0) 0%, rgba(10, 22, 40, 0.95) 20%, var(--bg-dark) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 20;
+  }
+
+  .bottom-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 16px;
+    right: 16px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  }
+
+  .total-section {
+    flex: 1;
+  }
+
+  .total-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+  }
+
+  .total-price {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+  }
+
+  .total-price .currency {
+    font-size: 15px;
+    font-weight: 600;
+    margin-right: 1px;
+    color: var(--coral-orange);
+  }
+
+  .total-price .amount {
+    color: var(--coral-orange);
+  }
+
+  .confirm-btn {
+    width: 140px;
+    height: 44px;
+    border: none;
+    border-radius: 22px;
+    background: linear-gradient(135deg, var(--coral-orange), #FF8A6E);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Noto Sans SC', sans-serif;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 4px 20px rgba(255, 107, 74, 0.35);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+    margin-left: 12px;
+  }
+
+  .confirm-btn:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 10px rgba(255, 107, 74, 0.25);
+  }
+
+  .confirm-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    animation: btn-shine 3s ease-in-out infinite;
+  }
+
+  @keyframes btn-shine {
+    0%, 100% { left: -100%; }
+    50% { left: 100%; }
+  }
+
+  .confirm-btn:disabled {
+    background: rgba(255,255,255,0.08);
+    box-shadow: none;
+    color: var(--text-muted);
+    cursor: not-allowed;
+  }
+
+  .confirm-btn:disabled::after {
+    display: none;
+  }
+
+  /* ========== Zoom Controls ========== */
+  .zoom-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 6px 0 2px;
+  }
+
+  .zoom-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04);
+    color: var(--text-secondary);
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .zoom-btn:active {
+    background: rgba(255,255,255,0.1);
+    transform: scale(0.9);
+  }
+
+  .zoom-level {
+    font-size: 10px;
+    color: var(--text-muted);
+    min-width: 30px;
+    text-align: center;
+  }
+
+  /* ========== Empty state for panel ========== */
+  .empty-panel {
+    text-align: center;
+    padding: 8px 0;
+  }
+
+  .empty-panel .empty-icon {
+    font-size: 28px;
+    margin-bottom: 4px;
+    opacity: 0.3;
+  }
+
+  /* ========== Toast Notification ========== */
+  .toast {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    padding: 8px 18px;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ========== Screen indicator ========== */
+  .screen-indicator {
+    text-align: center;
+    padding: 2px 0 6px;
+  }
+
+  .screen-indicator span {
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  /* ========== Subtle background decoration ========== */
+  .bg-glow {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .bg-glow.glow-1 {
+    top: -60px;
+    right: -40px;
+    background: rgba(255, 107, 74, 0.06);
+  }
+
+  .bg-glow.glow-2 {
+    top: 200px;
+    left: -60px;
+    background: rgba(212, 168, 83, 0.04);
+  }
+
+  .bg-glow.glow-3 {
+    bottom: 200px;
+    right: -40px;
+    background: rgba(0, 201, 167, 0.03);
+  }
+
+  /* ========== Row curve effect ========== */
+  .seat-row[data-row="0"] .seats-in-row { transform: perspective(400px) rotateX(2deg); }
+  .seat-row[data-row="1"] .seats-in-row { transform: perspective(400px) rotateX(1.5deg); }
+
+  /* ========== Coupon Bottom Sheet ========== */
+  .coupon-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .coupon-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .coupon-sheet {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 65%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--glass-border);
+    border-bottom: none;
+    border-radius: 20px 20px 0 0;
+    z-index: 51;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .coupon-sheet.show {
+    transform: translateY(0);
+  }
+
+  .coupon-sheet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 16px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+  }
+
+  .coupon-sheet-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .coupon-sheet-close {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 18px;
+    transition: background 0.2s;
+  }
+
+  .coupon-sheet-close:active {
+    background: rgba(255,255,255,0.08);
+  }
+
+  .coupon-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 16px 20px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .coupon-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .coupon-card {
+    display: flex;
+    align-items: stretch;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.03);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .coupon-card:active {
+    transform: scale(0.98);
+  }
+
+  .coupon-card.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    filter: grayscale(0.6);
+  }
+
+  .coupon-card.selected {
+    border-color: var(--coral-orange);
+    background: rgba(255, 107, 74, 0.08);
+  }
+
+  .coupon-card.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--coral-orange);
+    color: #fff;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+
+  .coupon-amount {
+    width: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(255, 107, 74, 0.18), rgba(255, 138, 110, 0.08));
+    flex-shrink: 0;
+    padding: 12px 8px;
+    position: relative;
+  }
+
+  .coupon-card.disabled .coupon-amount {
+    background: rgba(255,255,255,0.04);
+  }
+
+  .coupon-amount .amount-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--coral-orange);
+    line-height: 1;
+  }
+
+  .coupon-card.disabled .coupon-amount .amount-value {
+    color: var(--text-muted);
+  }
+
+  .coupon-amount .amount-unit {
+    font-size: 10px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  .coupon-info {
+    flex: 1;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+  }
+
+  .coupon-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .coupon-condition {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+  }
+
+  .coupon-expire {
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .coupon-disabled-reason {
+    font-size: 10px;
+    color: var(--coral-orange);
+    margin-top: 2px;
+  }
+
+  .coupon-none-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    margin-top: 4px;
+    border-radius: 12px;
+    border: 1px dashed rgba(255,255,255,0.12);
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .coupon-none-btn:active {
+    background: rgba(255,255,255,0.04);
+  }
+
+  /* ========== Expandable Panel ========== */
+  .expand-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.25s ease;
+    opacity: 0;
+  }
+
+  .expand-panel.open {
+    max-height: 300px;
+    opacity: 1;
+  }
+
+  .expand-content {
+    padding: 10px 0 6px;
+  }
+
+  .expand-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 0;
+  }
+
+  .expand-label {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .expand-value {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .expand-desc {
+    font-size: 10px;
+    color: var(--text-muted);
+    padding: 4px 0;
+    line-height: 1.5;
+  }
+
+  /* ========== Toggle Switch ========== */
+  .toggle-switch {
+    position: relative;
+    width: 40px;
+    height: 22px;
+    border-radius: 11px;
+    background: rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: background 0.3s;
+    flex-shrink: 0;
+  }
+
+  .toggle-switch.on {
+    background: var(--emerald);
+  }
+
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+
+  .toggle-switch.on::after {
+    transform: translateX(18px);
+  }
+
+  /* ========== Range Slider ========== */
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+  }
+
+  .slider-row input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.1);
+    outline: none;
+  }
+
+  .slider-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--gold);
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(212, 168, 83, 0.4);
+    border: 2px solid #fff;
+  }
+
+  .slider-row input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--gold);
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(212, 168, 83, 0.4);
+    border: 2px solid #fff;
+  }
+
+  .slider-value {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gold);
+    min-width: 50px;
+    text-align: right;
+  }
+
+  /* ========== Balance Input ========== */
+  .balance-input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+  }
+
+  .balance-input {
+    flex: 1;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Noto Sans SC', sans-serif;
+    padding: 0 10px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .balance-input:focus {
+    border-color: var(--emerald);
+  }
+
+  .balance-input::placeholder {
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  .balance-use-all-btn {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 201, 167, 0.3);
+    background: rgba(0, 201, 167, 0.1);
+    color: var(--emerald);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .balance-use-all-btn:active {
+    background: rgba(0, 201, 167, 0.2);
+  }
+
+  /* ========== Wallet Icon ========== */
+  .entry-icon.wallet {
+    background: rgba(0, 201, 167, 0.15);
+    color: var(--emerald);
+  }
+
+  /* ========== Entry Row Active State ========== */
+  .entry-row .entry-status {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--coral-orange);
+  }
+
+  .entry-row .entry-status.points-active {
+    color: var(--gold);
+  }
+
+  .entry-row .entry-status.balance-active {
+    color: var(--emerald);
+  }
+
+  .entry-row .entry-arrow-down {
+    font-size: 10px;
+    color: var(--text-muted);
+    transition: transform 0.3s;
+  }
+
+  .entry-row .entry-arrow-down.open {
+    transform: rotate(180deg);
+  }
+
+  /* ========== Recharge Card Styles ========== */
+  .entry-icon.recharge-card {
+    background: rgba(212, 168, 83, 0.15);
+    color: var(--gold);
+  }
+
+  .entry-row .entry-status.recharge-card-active {
+    color: var(--gold);
+  }
+
+  .recharge-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 6px 0;
+  }
+
+  .recharge-card-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1.5px solid rgba(255,255,255,0.06);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .recharge-card-item:hover {
+    border-color: rgba(212, 168, 83, 0.3);
+  }
+
+  .recharge-card-item.selected {
+    border-color: var(--gold);
+    background: rgba(212, 168, 83, 0.08);
+  }
+
+  .recharge-card-checkbox {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .recharge-card-item.selected .recharge-card-checkbox {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+
+  .recharge-card-checkbox i {
+    font-size: 10px;
+    color: #fff;
+    display: none;
+  }
+
+  .recharge-card-item.selected .recharge-card-checkbox i {
+    display: block;
+  }
+
+  .recharge-card-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .recharge-card-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .recharge-card-no {
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .recharge-card-balance {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+
+  .recharge-card-expand-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.25s ease;
+    opacity: 0;
+  }
+
+  .recharge-card-expand-panel.open {
+    max-height: 500px;
+    opacity: 1;
+  }
+
+  .recharge-card-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+  }
+
+  .recharge-card-summary .expand-label {
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  .recharge-card-summary .expand-value {
+    color: var(--gold);
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-frame" id="phoneFrame">
+  <!-- Background glows -->
+  <div class="bg-glow glow-1"></div>
+  <div class="bg-glow glow-2"></div>
+  <div class="bg-glow glow-3"></div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Top Navigation -->
+  <div class="top-nav">
+    <div class="nav-back" onclick="window.location.href='show-detail.html'">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </div>
+    <span class="nav-title">选择座位</span>
+    <div class="nav-share" onclick="showToast('分享功能')">
+      <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    </div>
+  </div>
+
+  <!-- Scrollable Content -->
+  <div class="scroll-content" id="scrollContent">
+    <!-- Event Info -->
+    <div class="event-info">
+      <div class="event-poster">
+        <span class="poster-icon">&#127917;</span>
+      </div>
+      <div class="event-detail">
+        <div class="event-name">《天涯故事》大型沉浸式歌舞秀</div>
+        <div class="event-meta">
+          <span>2026.05.20</span>
+          <span class="dot"></span>
+          <span>19:30</span>
+          <span class="dot"></span>
+          <span>海南大剧院</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage -->
+    <div class="stage-wrapper">
+      <div class="stage">
+        <div class="stage-lights">
+          <div class="stage-light-center"></div>
+          <div class="light-beam"></div>
+          <div class="light-beam"></div>
+          <div class="light-beam"></div>
+        </div>
+        <div class="stage-shape"></div>
+        <span class="stage-label">舞 台</span>
+      </div>
+    </div>
+
+    <div class="screen-indicator">
+      <span>—— 前方视野 ——</span>
+    </div>
+
+    <!-- Seat Map -->
+    <div class="seat-map-container">
+      <div class="seat-map-scroll" id="seatMapScroll">
+        <div class="seat-map" id="seatMap">
+          <!-- Seats generated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Zoom Controls -->
+    <div class="zoom-controls">
+      <div class="zoom-btn" onclick="zoomOut()">−</div>
+      <span class="zoom-level" id="zoomLevel">100%</span>
+      <div class="zoom-btn" onclick="zoomIn()">+</div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-dot available"></div>
+        <span class="legend-text">可选</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot sold"></div>
+        <span class="legend-text">已售</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot selected"></div>
+        <span class="legend-text">已选</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot vip"></div>
+        <span class="legend-text">VIP</span>
+      </div>
+    </div>
+
+    <!-- Ticket Policy Banner -->
+    <div id="ticketPolicyBanner" style="display:none;">
+      <!-- 动态插入早鸟票或优先购提示 -->
+    </div>
+
+    <!-- Ticket Tier Selector -->
+    <div class="tier-section">
+      <div class="tier-scroll" id="tierScroll">
+        <div class="tier-tag active" data-tier="all" onclick="selectTier(this)">全部票档</div>
+        <div class="tier-tag" data-tier="vip" onclick="selectTier(this)">VIP区 <span class="tier-price" data-original="880">¥880</span></div>
+        <div class="tier-tag" data-tier="a" onclick="selectTier(this)">A区 <span class="tier-price" data-original="580">¥580</span></div>
+        <div class="tier-tag" data-tier="b" onclick="selectTier(this)">B区 <span class="tier-price" data-original="380">¥380</span></div>
+        <div class="tier-tag" data-tier="c" onclick="selectTier(this)">C区 <span class="tier-price" data-original="180">¥180</span></div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Selected Info Panel -->
+    <div class="info-panel" id="infoPanel">
+      <div class="panel-header">
+        <span class="panel-title">已选座位</span>
+        <span class="panel-count" id="panelCount">最多可选4个</span>
+      </div>
+
+      <div class="selected-seats-display" id="selectedDisplay">
+        <div class="no-seat-hint" id="noSeatHint">点击座位进行选择</div>
+      </div>
+
+      <!-- Price breakdown -->
+      <div id="priceBreakdown" style="display:none;">
+        <div class="price-row">
+          <span class="price-label" id="priceUnitLabel">单价 × 数量</span>
+          <span class="price-value" id="priceSubtotal">¥0</span>
+        </div>
+        <div class="price-row" id="earlyBirdDiscountRow" style="display:none;">
+          <span class="price-label">早鸟优惠</span>
+          <span class="price-value discount" id="priceEarlyBirdDiscount" style="color:var(--coral-orange);">-¥0</span>
+        </div>
+        <div class="price-row" id="couponDiscountRow" style="display:none;">
+          <span class="price-label">优惠减免</span>
+          <span class="price-value discount" id="priceCouponDiscount">-¥0</span>
+        </div>
+        <div class="price-row" id="pointsDiscountRow" style="display:none;">
+          <span class="price-label">积分抵扣</span>
+          <span class="price-value discount" id="pricePointsDiscount" style="color:var(--gold);">-¥0.00</span>
+        </div>
+        <div class="price-row" id="balanceDiscountRow" style="display:none;">
+          <span class="price-label">余额支付</span>
+          <span class="price-value discount" id="priceBalanceDiscount" style="color:var(--emerald);">-¥0.00</span>
+        </div>
+        <div class="price-row" id="rechargeCardDiscountRow" style="display:none;">
+          <span class="price-label">充值卡抵扣</span>
+          <span class="price-value discount" id="priceRechargeCardDiscount" style="color:var(--gold);">-¥0.00</span>
+        </div>
+      </div>
+
+      <!-- Coupon entry -->
+      <div class="entry-row" id="couponEntry" onclick="openCouponSheet()">
+        <div class="entry-left">
+          <div class="entry-icon coupon">&#127873;</div>
+          <span class="entry-text" id="couponEntryText">使用优惠券</span>
+        </div>
+        <span class="entry-arrow" id="couponEntryArrow">›</span>
+      </div>
+
+      <!-- Balance entry -->
+      <div class="entry-row" id="balanceEntry" onclick="toggleBalancePanel()">
+        <div class="entry-left">
+          <div class="entry-icon wallet">&#128179;</div>
+          <span class="entry-text" id="balanceEntryText">余额支付（可用¥1,280.00）</span>
+        </div>
+        <span class="entry-arrow-down" id="balanceEntryArrow">▾</span>
+      </div>
+
+      <!-- Balance expand panel -->
+      <div class="expand-panel" id="balancePanel">
+        <div class="expand-content">
+          <div class="expand-row">
+            <span class="expand-label">当前余额</span>
+            <span class="expand-value">¥1,280.00</span>
+          </div>
+          <div class="expand-row">
+            <span class="expand-label">启用余额支付</span>
+            <div class="toggle-switch" id="balanceToggle" onclick="event.stopPropagation(); toggleBalanceSwitch()"></div>
+          </div>
+          <div id="balanceInputArea" style="display:none;">
+            <div class="balance-input-row">
+              <input type="number" class="balance-input" id="balanceInput" placeholder="输入使用金额" min="0" step="0.01" oninput="onBalanceInput()">
+              <button class="balance-use-all-btn" onclick="event.stopPropagation(); useAllBalance()">全部使用</button>
+            </div>
+            <div class="expand-row">
+              <span class="expand-label">使用余额抵扣</span>
+              <span class="expand-value" id="balanceDeductDisplay" style="color:var(--emerald);">¥0.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recharge Card entry -->
+      <div class="entry-row" id="rechargeCardEntry" onclick="toggleRechargeCardPanel()">
+        <div class="entry-left">
+          <div class="entry-icon recharge-card"><i class="fas fa-credit-card" style="font-size:11px"></i></div>
+          <span class="entry-text" id="rechargeCardEntryText">充值卡支付（可用¥1,700.00）</span>
+        </div>
+        <span class="entry-arrow-down" id="rechargeCardEntryArrow">▾</span>
+      </div>
+
+      <!-- Recharge Card expand panel -->
+      <div class="recharge-card-expand-panel" id="rechargeCardPanel">
+        <div class="expand-content">
+          <div class="expand-desc" style="margin-bottom:8px;">选择要使用的充值卡，支持多张卡组合支付</div>
+          <div class="recharge-card-list" id="rechargeCardList">
+            <!-- Generated by JS -->
+          </div>
+          <div class="recharge-card-summary" id="rechargeCardSummary" style="display:none;">
+            <span class="expand-label">充值卡合计抵扣</span>
+            <span class="expand-value" id="rechargeCardDeductDisplay">¥0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Points entry -->
+      <div class="entry-row" id="pointsEntry" onclick="togglePointsPanel()">
+        <div class="entry-left">
+          <div class="entry-icon points">&#9733;</div>
+          <span class="entry-text" id="pointsEntryText">积分抵扣（可用1,280积分）</span>
+        </div>
+        <span class="entry-arrow-down" id="pointsEntryArrow">▾</span>
+      </div>
+
+      <!-- Points expand panel -->
+      <div class="expand-panel" id="pointsPanel">
+        <div class="expand-content">
+          <div class="expand-row">
+            <span class="expand-label">当前可用积分</span>
+            <span class="expand-value">1,280积分</span>
+          </div>
+          <div class="expand-desc">1积分=¥0.01，本单最多可抵扣订单金额的10%</div>
+          <div class="expand-row">
+            <span class="expand-label">启用积分抵扣</span>
+            <div class="toggle-switch" id="pointsToggle" onclick="event.stopPropagation(); togglePointsSwitch()"></div>
+          </div>
+          <div id="pointsSliderArea" style="display:none;">
+            <div class="slider-row">
+              <input type="range" id="pointsSlider" min="0" max="0" value="0" oninput="onPointsSliderChange()">
+              <span class="slider-value" id="pointsSliderValue">0积分</span>
+            </div>
+            <div class="expand-row">
+              <span class="expand-label">积分抵扣</span>
+              <span class="expand-value" id="pointsDeductDisplay" style="color:var(--gold);">¥0.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom spacer for fixed bar -->
+    <div style="height: 80px;"></div>
+  </div>
+
+  <!-- Coupon Bottom Sheet -->
+  <div class="coupon-overlay" id="couponOverlay" onclick="closeCouponSheet()"></div>
+  <div class="coupon-sheet" id="couponSheet">
+    <div class="coupon-sheet-header">
+      <span class="coupon-sheet-title">选择优惠券</span>
+      <div class="coupon-sheet-close" onclick="closeCouponSheet()">×</div>
+    </div>
+    <div class="coupon-list" id="couponList">
+      <!-- Generated by JS -->
+    </div>
+  </div>
+
+  <!-- Bottom Action Bar -->
+  <div class="bottom-bar">
+    <div class="total-section">
+      <div class="total-label">合计</div>
+      <div class="total-price">
+        <span class="currency">¥</span><span class="amount" id="totalAmount">0</span>
+      </div>
+    </div>
+    <button class="confirm-btn" id="confirmBtn" disabled onclick="confirmSeats()">确认选座</button>
+  </div>
+</div>
+
+<script>
+  // ========== Configuration ==========
+  const ROWS = 10;
+  const COLS = 15;
+  const MAX_SELECT = 4;
+  const ROW_LABELS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K'];
+
+  // Pricing per tier
+  const PRICES = {
+    vip: 880,
+    a: 580,
+    b: 380,
+    c: 180
+  };
+
+  // Row to tier mapping
+  const ROW_TIERS = {
+    'A': 'vip', 'B': 'vip',
+    'C': 'a', 'D': 'a', 'E': 'a',
+    'F': 'b', 'G': 'b',
+    'H': 'c', 'J': 'c', 'K': 'c'
+  };
+
+  // Pre-defined sold seats (simulated)
+  const SOLD_SEATS = new Set([
+    'A-3', 'A-4', 'A-11', 'A-12',
+    'B-6', 'B-7', 'B-8',
+    'C-2', 'C-5', 'C-10', 'C-13',
+    'D-1', 'D-4', 'D-9', 'D-14',
+    'E-3', 'E-7', 'E-8', 'E-12',
+    'F-2', 'F-6', 'F-11', 'F-15',
+    'G-4', 'G-5', 'G-9', 'G-10',
+    'H-1', 'H-3', 'H-8', 'H-13',
+    'J-5', 'J-7', 'J-12',
+    'K-2', 'K-6', 'K-9', 'K-14'
+  ]);
+
+  // State
+  let selectedSeats = [];
+  let currentZoom = 1;
+  let currentTier = 'all';
+
+  // ========== Coupon Data ==========
+  const COUPONS = [
+    { id: 1, amount: 50, minAmount: 300, name: '满300减50', scope: '全场通用', expire: '2026-06-30', disabled: false, reason: '' },
+    { id: 2, amount: 30, minAmount: 200, name: '满200减30', scope: '仅限演出票', expire: '2026-05-31', disabled: false, reason: '' },
+    { id: 3, amount: 100, minAmount: 800, name: '满800减100', scope: 'VIP专享', expire: '2026-07-31', disabled: false, reason: '' },
+    { id: 4, amount: 20, minAmount: 100, name: '满100减20', scope: '全场通用', expire: '2025-12-31', disabled: true, reason: '已过期' },
+    { id: 5, amount: 80, minAmount: 500, name: '满500减80', scope: '全场通用', expire: '2026-08-31', disabled: true, reason: '不满足金额条件' }
+  ];
+
+  let selectedCoupon = null;
+
+  // ========== Points State ==========
+  const AVAILABLE_POINTS = 1280;
+  const POINTS_RATE = 0.01; // 1 point = ¥0.01
+  const POINTS_MAX_PERCENT = 0.10; // max 10% of order
+  let pointsEnabled = false;
+  let pointsUsed = 0;
+
+  // ========== Balance State ==========
+  const AVAILABLE_BALANCE = 1280.00;
+  let balanceEnabled = false;
+  let balanceUsed = 0;
+
+  // ========== Early Bird & Priority Purchase ==========
+  // 模拟从后台获取的早鸟票和优先购配置
+  const TICKET_POLICY = {
+    earlyBird: {
+      enabled: true,
+      advanceDays: 7,
+      discountPercent: 85, // 85折
+      limitPerUser: 4,
+      endDate: '2026-05-20' // 早鸟票结束日期
+    },
+    memberPriority: {
+      enabled: true,
+      memberLevels: ['gold', 'platinum', 'diamond'],
+      advanceDays: 3,
+      limitPerMember: 6
+    }
+  };
+
+  // 当前用户会员等级 (null-非会员, gold-黄金, platinum-铂金, diamond-钻石)
+  const CURRENT_MEMBER_LEVEL = 'gold'; // 模拟当前用户为黄金会员
+
+  // 计算是否处于早鸟票期间
+  function isEarlyBirdPeriod() {
+    if (!TICKET_POLICY.earlyBird.enabled) return false;
+    const today = new Date();
+    const endDate = new Date(TICKET_POLICY.earlyBird.endDate);
+    return today <= endDate;
+  }
+
+  // 计算是否处于优先购期间
+  function isPriorityPeriod() {
+    if (!TICKET_POLICY.memberPriority.enabled) return false;
+    // 检查当前用户会员等级是否有优先购资格
+    return TICKET_POLICY.memberPriority.memberLevels.includes(CURRENT_MEMBER_LEVEL);
+  }
+
+  // 获取当前生效的折扣比例 (100 = 无折扣)
+  function getCurrentDiscount() {
+    if (isEarlyBirdPeriod()) {
+      return TICKET_POLICY.earlyBird.discountPercent;
+    }
+    return 100;
+  }
+
+  // 获取当前限购数量
+  function getPurchaseLimit() {
+    if (isEarlyBirdPeriod()) {
+      return TICKET_POLICY.earlyBird.limitPerUser;
+    }
+    if (isPriorityPeriod()) {
+      return TICKET_POLICY.memberPriority.limitPerMember;
+    }
+    return 6; // 默认限购6张
+  }
+
+  // 计算折扣后价格
+  function getDiscountedPrice(originalPrice) {
+    const discount = getCurrentDiscount();
+    return Math.round(originalPrice * discount / 100);
+  }
+
+  // 渲染政策横幅
+  function renderTicketPolicyBanner() {
+    const banner = document.getElementById('ticketPolicyBanner');
+    if (!banner) return;
+
+    // 早鸟票优先显示
+    if (isEarlyBirdPeriod()) {
+      const discount = TICKET_POLICY.earlyBird.discountPercent;
+      const limit = TICKET_POLICY.earlyBird.limitPerUser;
+      const endDate = new Date(TICKET_POLICY.earlyBird.endDate);
+      const daysLeft = Math.ceil((endDate - new Date()) / (1000 * 60 * 60 * 24));
+
+      banner.innerHTML = `
+        <div class="policy-banner early-bird">
+          <div class="policy-icon">🐦</div>
+          <div class="policy-content">
+            <div class="policy-title">早鸟特惠 ${discount}折</div>
+            <div class="policy-desc">剩余${daysLeft}天 · 每人限购${limit}张</div>
+          </div>
+          <div class="policy-badge">-${100 - discount}%</div>
+        </div>
+      `;
+      banner.style.display = 'block';
+      return;
+    }
+
+    // 优先购显示
+    if (isPriorityPeriod()) {
+      const limit = TICKET_POLICY.memberPriority.limitPerMember;
+      const memberLevelName = {
+        'gold': '黄金会员',
+        'platinum': '铂金会员',
+        'diamond': '钻石会员'
+      }[CURRENT_MEMBER_LEVEL] || '会员';
+
+      banner.innerHTML = `
+        <div class="policy-banner priority">
+          <div class="policy-icon">👑</div>
+          <div class="policy-content">
+            <div class="policy-title">${memberLevelName}优先购</div>
+            <div class="policy-desc">提前${TICKET_POLICY.memberPriority.advanceDays}天 · 限购${limit}张</div>
+          </div>
+          <div class="policy-badge">专享</div>
+        </div>
+      `;
+      banner.style.display = 'block';
+      return;
+    }
+
+    // 无特殊政策
+    banner.style.display = 'none';
+  }
+
+  // 更新票档价格显示（折扣后）
+  function updateTierPrices() {
+    const discount = getCurrentDiscount();
+    const priceElements = document.querySelectorAll('.tier-price');
+
+    priceElements.forEach(el => {
+      const originalPrice = parseInt(el.getAttribute('data-original'));
+      if (originalPrice && discount < 100) {
+        const discountedPrice = getDiscountedPrice(originalPrice);
+        el.innerHTML = `¥${discountedPrice}<span class="original-price">¥${originalPrice}</span>`;
+      }
+    });
+  }
+
+  // 更新限购提示
+  function updatePurchaseLimit() {
+    const limit = getPurchaseLimit();
+    const panelCount = document.getElementById('panelCount');
+    if (panelCount) {
+      panelCount.textContent = `最多可选${limit}张`;
+    }
+  }
+
+  // ========== Generate Seat Map ==========
+  function generateSeats() {
+    const map = document.getElementById('seatMap');
+    map.innerHTML = '';
+
+    for (let r = 0; r < ROWS; r++) {
+      const rowLabel = ROW_LABELS[r];
+      const tier = ROW_TIERS[rowLabel];
+      const isVip = tier === 'vip';
+      const row = document.createElement('div');
+      row.className = 'seat-row';
+      row.setAttribute('data-row', r);
+
+      // Left label
+      const leftLabel = document.createElement('div');
+      leftLabel.className = 'row-label';
+      leftLabel.textContent = rowLabel;
+      row.appendChild(leftLabel);
+
+      // Seats container
+      const seatsInRow = document.createElement('div');
+      seatsInRow.className = 'seats-in-row';
+
+      // Vary seat count per row for realistic curve
+      const seatCount = r < 2 ? 13 : (r < 5 ? 15 : (r < 7 ? 15 : 17));
+      const offset = Math.floor((17 - seatCount) / 2);
+
+      for (let c = 0; c < seatCount; c++) {
+        const actualCol = c + offset + 1;
+        const seatId = `${rowLabel}-${actualCol}`;
+
+        // Add aisle gap
+        if (c === Math.floor(seatCount / 2)) {
+          const gap = document.createElement('div');
+          gap.className = 'seat-gap';
+          seatsInRow.appendChild(gap);
+        }
+
+        const seat = document.createElement('div');
+        seat.className = 'seat';
+        seat.setAttribute('data-id', seatId);
+        seat.setAttribute('data-row', rowLabel);
+        seat.setAttribute('data-col', actualCol);
+        seat.setAttribute('data-tier', tier);
+
+        if (SOLD_SEATS.has(seatId)) {
+          seat.classList.add('sold');
+        } else {
+          seat.classList.add('available');
+          if (isVip) seat.classList.add('vip');
+          seat.addEventListener('click', () => toggleSeat(seat));
+        }
+
+        seatsInRow.appendChild(seat);
+      }
+
+      row.appendChild(seatsInRow);
+
+      // Right label
+      const rightLabel = document.createElement('div');
+      rightLabel.className = 'row-label-right';
+      rightLabel.textContent = rowLabel;
+      row.appendChild(rightLabel);
+
+      map.appendChild(row);
+    }
+  }
+
+  // ========== Toggle Seat Selection ==========
+  function toggleSeat(seatEl) {
+    const seatId = seatEl.getAttribute('data-id');
+
+    if (seatEl.classList.contains('selected')) {
+      // Deselect
+      seatEl.classList.remove('selected');
+      selectedSeats = selectedSeats.filter(s => s.id !== seatId);
+      // Re-trigger bounce animation
+      void seatEl.offsetWidth;
+    } else {
+      // Check max (使用动态限购数量)
+      const maxSelect = getPurchaseLimit();
+      if (selectedSeats.length >= maxSelect) {
+        showToast(`最多可选择${maxSelect}个座位`);
+        // Shake animation
+        seatEl.style.animation = 'none';
+        void seatEl.offsetWidth;
+        seatEl.style.animation = 'shake 0.4s ease';
+        setTimeout(() => { seatEl.style.animation = ''; }, 400);
+        return;
+      }
+
+      // Check tier filter
+      const tier = seatEl.getAttribute('data-tier');
+      if (currentTier !== 'all' && tier !== currentTier) {
+        showToast('当前筛选模式下不可选此区域座位');
+        return;
+      }
+
+      seatEl.classList.add('selected');
+      const originalPrice = PRICES[tier];
+      const discountedPrice = getDiscountedPrice(originalPrice);
+      selectedSeats.push({
+        id: seatId,
+        row: seatEl.getAttribute('data-row'),
+        col: seatEl.getAttribute('data-col'),
+        tier: tier,
+        price: discountedPrice,
+        originalPrice: originalPrice
+      });
+    }
+
+    updatePanel();
+    recalcPrice();
+  }
+
+  // ========== Update Info Panel ==========
+  function updatePanel() {
+    const display = document.getElementById('selectedDisplay');
+    const hint = document.getElementById('noSeatHint');
+    const countEl = document.getElementById('panelCount');
+    const breakdown = document.getElementById('priceBreakdown');
+    const subtotalEl = document.getElementById('priceSubtotal');
+    const unitLabel = document.getElementById('priceUnitLabel');
+    const totalEl = document.getElementById('totalAmount');
+    const confirmBtn = document.getElementById('confirmBtn');
+
+    const maxSelect = getPurchaseLimit();
+
+    if (selectedSeats.length === 0) {
+      display.innerHTML = '<div class="no-seat-hint" id="noSeatHint">点击座位进行选择</div>';
+      countEl.textContent = `最多可选${maxSelect}张`;
+      breakdown.style.display = 'none';
+      totalEl.textContent = '0';
+      confirmBtn.disabled = true;
+      return;
+    }
+
+    confirmBtn.disabled = false;
+    countEl.textContent = `已选 ${selectedSeats.length}/${maxSelect} 张`;
+    breakdown.style.display = 'block';
+
+    // Build chips
+    display.innerHTML = '';
+    selectedSeats.forEach((s, i) => {
+      const chip = document.createElement('div');
+      chip.className = 'seat-chip';
+      chip.innerHTML = `
+        <span>${s.row}排${s.col}座</span>
+        <span class="chip-remove" onclick="removeSeat(${i})">×</span>
+      `;
+      display.appendChild(chip);
+    });
+
+    // Calculate prices
+    const total = selectedSeats.reduce((sum, s) => sum + s.price, 0);
+
+    // Group by tier for display
+    const tierGroups = {};
+    selectedSeats.forEach(s => {
+      if (!tierGroups[s.tier]) tierGroups[s.tier] = { count: 0, price: s.price };
+      tierGroups[s.tier].count++;
+    });
+
+    const parts = Object.entries(tierGroups).map(([tier, info]) => {
+      const tierName = { vip: 'VIP', a: 'A区', b: 'B区', c: 'C区' }[tier];
+      return `${tierName} ¥${info.price}×${info.count}`;
+    });
+    unitLabel.textContent = parts.join(' + ');
+
+    subtotalEl.textContent = `¥${total}`;
+  }
+
+  // ========== Remove Seat ==========
+  function removeSeat(index) {
+    const seat = selectedSeats[index];
+    const seatEl = document.querySelector(`.seat[data-id="${seat.id}"]`);
+    if (seatEl) {
+      seatEl.classList.remove('selected');
+    }
+    selectedSeats.splice(index, 1);
+    updatePanel();
+    recalcPrice();
+  }
+
+  // ========== Tier Filter ==========
+  function selectTier(el) {
+    document.querySelectorAll('.tier-tag').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    currentTier = el.getAttribute('data-tier');
+
+    // Highlight matching seats, dim others
+    document.querySelectorAll('.seat.available, .seat.selected').forEach(seat => {
+      const tier = seat.getAttribute('data-tier');
+      if (currentTier === 'all' || tier === currentTier) {
+        seat.style.opacity = '1';
+      } else {
+        seat.style.opacity = '0.2';
+      }
+    });
+  }
+
+  // ========== Zoom ==========
+  function zoomIn() {
+    if (currentZoom >= 1.5) return;
+    currentZoom = Math.min(1.5, currentZoom + 0.1);
+    applyZoom();
+  }
+
+  function zoomOut() {
+    if (currentZoom <= 0.6) return;
+    currentZoom = Math.max(0.6, currentZoom - 0.1);
+    applyZoom();
+  }
+
+  function applyZoom() {
+    const map = document.getElementById('seatMap');
+    map.style.transform = `scale(${currentZoom})`;
+    document.getElementById('zoomLevel').textContent = Math.round(currentZoom * 100) + '%';
+  }
+
+  // ========== Touch pinch zoom ==========
+  let initialPinchDistance = 0;
+  let initialZoom = 1;
+
+  document.getElementById('seatMapScroll').addEventListener('touchstart', function(e) {
+    if (e.touches.length === 2) {
+      initialPinchDistance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      initialZoom = currentZoom;
+    }
+  }, { passive: true });
+
+  document.getElementById('seatMapScroll').addEventListener('touchmove', function(e) {
+    if (e.touches.length === 2) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const scale = dist / initialPinchDistance;
+      currentZoom = Math.min(1.5, Math.max(0.6, initialZoom * scale));
+      applyZoom();
+    }
+  }, { passive: true });
+
+  // ========== Toast ==========
+  let toastTimer;
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 1800);
+  }
+
+  // ========== Confirm ==========
+  function confirmSeats() {
+    if (selectedSeats.length === 0) return;
+    const seatNames = selectedSeats.map(s => `${s.row}排${s.col}座`).join('、');
+    const finalTotal = getFinalTotal();
+    showToast(`已选 ${seatNames}，应付 ¥${finalTotal.toFixed(2)}`);
+  }
+
+  // ========== Coupon Logic ==========
+  function getOriginalTotal() {
+    // 返回折扣后的总价（实际应付）
+    return selectedSeats.reduce((sum, s) => sum + s.price, 0);
+  }
+
+  function getOriginalPriceTotal() {
+    // 返回原始总价（折扣前）
+    return selectedSeats.reduce((sum, s) => sum + (s.originalPrice || s.price), 0);
+  }
+
+  function openCouponSheet() {
+    const overlay = document.getElementById('couponOverlay');
+    const sheet = document.getElementById('couponSheet');
+    const list = document.getElementById('couponList');
+
+    const originalTotal = getOriginalTotal();
+    if (originalTotal === 0) {
+      showToast('请先选择座位');
+      return;
+    }
+
+    // Build coupon list
+    list.innerHTML = '';
+    COUPONS.forEach(coupon => {
+      // Check if disabled due to amount condition
+      let isDisabled = coupon.disabled;
+      let reason = coupon.reason;
+
+      if (!isDisabled && originalTotal < coupon.minAmount) {
+        isDisabled = true;
+        reason = `需满¥${coupon.minAmount}可用`;
+      }
+
+      const card = document.createElement('div');
+      card.className = 'coupon-card';
+      if (isDisabled) card.classList.add('disabled');
+      if (selectedCoupon && selectedCoupon.id === coupon.id) card.classList.add('selected');
+
+      card.innerHTML = `
+        <div class="coupon-amount">
+          <span class="amount-value">¥${coupon.amount}</span>
+          <span class="amount-unit">满${coupon.minAmount}可用</span>
+        </div>
+        <div class="coupon-info">
+          <div class="coupon-name">${coupon.name}</div>
+          <div class="coupon-condition">${coupon.scope}</div>
+          <div class="coupon-expire">有效期至 ${coupon.expire}</div>
+          ${isDisabled && reason ? `<div class="coupon-disabled-reason">${reason}</div>` : ''}
+        </div>
+      `;
+
+      if (!isDisabled) {
+        card.addEventListener('click', () => selectCoupon(coupon));
+      }
+
+      list.appendChild(card);
+    });
+
+    // "Don't use coupon" button
+    const noneBtn = document.createElement('div');
+    noneBtn.className = 'coupon-none-btn';
+    noneBtn.textContent = selectedCoupon ? '不使用优惠券' : '不使用优惠券';
+    noneBtn.addEventListener('click', () => {
+      selectedCoupon = null;
+      closeCouponSheet();
+      updateCouponEntry();
+      recalcPrice();
+    });
+    list.appendChild(noneBtn);
+
+    overlay.classList.add('show');
+    sheet.classList.add('show');
+  }
+
+  function closeCouponSheet() {
+    document.getElementById('couponOverlay').classList.remove('show');
+    document.getElementById('couponSheet').classList.remove('show');
+  }
+
+  function selectCoupon(coupon) {
+    selectedCoupon = coupon;
+    closeCouponSheet();
+    updateCouponEntry();
+    recalcPrice();
+  }
+
+  function updateCouponEntry() {
+    const text = document.getElementById('couponEntryText');
+    const arrow = document.getElementById('couponEntryArrow');
+    if (selectedCoupon) {
+      text.textContent = `已选 -¥${selectedCoupon.amount}`;
+      text.style.color = 'var(--coral-orange)';
+      arrow.textContent = '›';
+    } else {
+      text.textContent = '使用优惠券';
+      text.style.color = '';
+      arrow.textContent = '›';
+    }
+  }
+
+  // ========== Points Logic ==========
+  function togglePointsPanel() {
+    const panel = document.getElementById('pointsPanel');
+    const arrow = document.getElementById('pointsEntryArrow');
+    panel.classList.toggle('open');
+    arrow.classList.toggle('open');
+  }
+
+  function togglePointsSwitch() {
+    const toggle = document.getElementById('pointsToggle');
+    const sliderArea = document.getElementById('pointsSliderArea');
+
+    if (selectedSeats.length === 0) {
+      showToast('请先选择座位');
+      return;
+    }
+
+    pointsEnabled = !pointsEnabled;
+    toggle.classList.toggle('on', pointsEnabled);
+
+    if (pointsEnabled) {
+      sliderArea.style.display = 'block';
+      updatePointsSlider();
+    } else {
+      sliderArea.style.display = 'none';
+      pointsUsed = 0;
+      document.getElementById('pointsSlider').value = 0;
+      document.getElementById('pointsSliderValue').textContent = '0积分';
+    }
+
+    updatePointsEntry();
+    recalcPrice();
+  }
+
+  function updatePointsSlider() {
+    const slider = document.getElementById('pointsSlider');
+    const originalTotal = getOriginalTotal();
+    const couponDeduct = selectedCoupon ? selectedCoupon.amount : 0;
+    const balanceDeduct = balanceEnabled ? balanceUsed : 0;
+    const currentPayable = Math.max(0, originalTotal - couponDeduct - balanceDeduct);
+    const maxPointsDeduct = Math.floor(currentPayable * POINTS_MAX_PERCENT / POINTS_RATE);
+    const maxUsable = Math.min(AVAILABLE_POINTS, maxPointsDeduct);
+
+    slider.max = maxUsable;
+    if (pointsUsed > maxUsable) {
+      pointsUsed = maxUsable;
+    }
+    slider.value = pointsUsed;
+
+    const deductValue = (pointsUsed * POINTS_RATE).toFixed(2);
+    document.getElementById('pointsSliderValue').textContent = `${pointsUsed}积分`;
+    document.getElementById('pointsDeductDisplay').textContent = `¥${deductValue}`;
+  }
+
+  function onPointsSliderChange() {
+    const slider = document.getElementById('pointsSlider');
+    pointsUsed = parseInt(slider.value);
+    const deductValue = (pointsUsed * POINTS_RATE).toFixed(2);
+    document.getElementById('pointsSliderValue').textContent = `${pointsUsed}积分`;
+    document.getElementById('pointsDeductDisplay').textContent = `¥${deductValue}`;
+    recalcPrice();
+  }
+
+  function updatePointsEntry() {
+    const text = document.getElementById('pointsEntryText');
+    if (pointsEnabled && pointsUsed > 0) {
+      text.textContent = `积分抵扣（已用${pointsUsed}积分）`;
+      text.style.color = 'var(--gold)';
+    } else if (pointsEnabled) {
+      text.textContent = '积分抵扣（已启用）';
+      text.style.color = 'var(--gold)';
+    } else {
+      text.textContent = '积分抵扣（可用1,280积分）';
+      text.style.color = '';
+    }
+  }
+
+  // ========== Balance Logic ==========
+  function toggleBalancePanel() {
+    const panel = document.getElementById('balancePanel');
+    const arrow = document.getElementById('balanceEntryArrow');
+    panel.classList.toggle('open');
+    arrow.classList.toggle('open');
+  }
+
+  function toggleBalanceSwitch() {
+    const toggle = document.getElementById('balanceToggle');
+    const inputArea = document.getElementById('balanceInputArea');
+
+    if (selectedSeats.length === 0) {
+      showToast('请先选择座位');
+      return;
+    }
+
+    balanceEnabled = !balanceEnabled;
+    toggle.classList.toggle('on', balanceEnabled);
+
+    if (balanceEnabled) {
+      inputArea.style.display = 'block';
+    } else {
+      inputArea.style.display = 'none';
+      balanceUsed = 0;
+      document.getElementById('balanceInput').value = '';
+      document.getElementById('balanceDeductDisplay').textContent = '¥0.00';
+    }
+
+    updateBalanceEntry();
+    recalcPrice();
+  }
+
+  function onBalanceInput() {
+    const input = document.getElementById('balanceInput');
+    let val = parseFloat(input.value) || 0;
+    const originalTotal = getOriginalTotal();
+    const couponDeduct = selectedCoupon ? selectedCoupon.amount : 0;
+    const pointsDeduct = pointsEnabled ? pointsUsed * POINTS_RATE : 0;
+    const currentPayable = Math.max(0, originalTotal - couponDeduct - pointsDeduct);
+    const maxUsable = Math.min(AVAILABLE_BALANCE, currentPayable);
+
+    if (val > maxUsable) {
+      val = maxUsable;
+      input.value = val.toFixed(2);
+    }
+    if (val < 0) {
+      val = 0;
+      input.value = '';
+    }
+
+    balanceUsed = val;
+    document.getElementById('balanceDeductDisplay').textContent = `¥${balanceUsed.toFixed(2)}`;
+    recalcPrice();
+  }
+
+  function useAllBalance() {
+    const originalTotal = getOriginalTotal();
+    const couponDeduct = selectedCoupon ? selectedCoupon.amount : 0;
+    const pointsDeduct = pointsEnabled ? pointsUsed * POINTS_RATE : 0;
+    const currentPayable = Math.max(0, originalTotal - couponDeduct - pointsDeduct);
+    const maxUsable = Math.min(AVAILABLE_BALANCE, currentPayable);
+
+    balanceUsed = maxUsable;
+    document.getElementById('balanceInput').value = balanceUsed.toFixed(2);
+    document.getElementById('balanceDeductDisplay').textContent = `¥${balanceUsed.toFixed(2)}`;
+    recalcPrice();
+  }
+
+  function updateBalanceEntry() {
+    const text = document.getElementById('balanceEntryText');
+    if (balanceEnabled && balanceUsed > 0) {
+      text.textContent = `余额支付（已用¥${balanceUsed.toFixed(2)}）`;
+      text.style.color = 'var(--emerald)';
+    } else if (balanceEnabled) {
+      text.textContent = '余额支付（已启用）';
+      text.style.color = 'var(--emerald)';
+    } else {
+      text.textContent = '余额支付（可用¥1,280.00）';
+      text.style.color = '';
+    }
+  }
+
+  // ========== Recharge Card Logic ==========
+  const RECHARGE_CARDS = [
+    { id: 'rc001', name: 'VIP充值卡', balance: 500, cardNo: '8888****1234' },
+    { id: 'rc002', name: '礼品卡', balance: 200, cardNo: '8888****5678' },
+    { id: 'rc003', name: '会员储值卡', balance: 1000, cardNo: '8888****9012' }
+  ];
+  const TOTAL_RECHARGE_BALANCE = RECHARGE_CARDS.reduce((sum, c) => sum + c.balance, 0);
+  let selectedRechargeCards = new Set();
+
+  function renderRechargeCards() {
+    const container = document.getElementById('rechargeCardList');
+    if (RECHARGE_CARDS.length === 0) {
+      container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:12px;font-size:11px;">暂无绑定的充值卡</div>';
+      return;
+    }
+    container.innerHTML = RECHARGE_CARDS.map(card => {
+      const isSelected = selectedRechargeCards.has(card.id);
+      return `
+        <div class="recharge-card-item ${isSelected ? 'selected' : ''}" onclick="event.stopPropagation(); toggleRechargeCard('${card.id}')">
+          <div class="recharge-card-checkbox"><i class="fas fa-check"></i></div>
+          <div class="recharge-card-info">
+            <div class="recharge-card-name">${card.name}</div>
+            <div class="recharge-card-no">${card.cardNo}</div>
+          </div>
+          <div class="recharge-card-balance">¥${card.balance}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function toggleRechargeCardPanel() {
+    const panel = document.getElementById('rechargeCardPanel');
+    const arrow = document.getElementById('rechargeCardEntryArrow');
+    panel.classList.toggle('open');
+    arrow.classList.toggle('open');
+  }
+
+  function toggleRechargeCard(cardId) {
+    if (selectedRechargeCards.has(cardId)) {
+      selectedRechargeCards.delete(cardId);
+    } else {
+      selectedRechargeCards.add(cardId);
+    }
+    renderRechargeCards();
+    updateRechargeCardEntry();
+    recalcPrice();
+  }
+
+  function getRechargeCardDeduct() {
+    const totalCardBalance = RECHARGE_CARDS
+      .filter(c => selectedRechargeCards.has(c.id))
+      .reduce((sum, c) => sum + c.balance, 0);
+    const originalTotal = getOriginalTotal();
+    const couponDeduct = selectedCoupon ? selectedCoupon.amount : 0;
+    const pointsDeduct = pointsEnabled ? pointsUsed * POINTS_RATE : 0;
+    const balanceDeduct = balanceEnabled ? balanceUsed : 0;
+    const currentPayable = Math.max(0, originalTotal - couponDeduct - pointsDeduct - balanceDeduct);
+    return Math.min(totalCardBalance, currentPayable);
+  }
+
+  function updateRechargeCardEntry() {
+    const text = document.getElementById('rechargeCardEntryText');
+    const deduct = getRechargeCardDeduct();
+    const summary = document.getElementById('rechargeCardSummary');
+    const deductDisplay = document.getElementById('rechargeCardDeductDisplay');
+
+    if (selectedRechargeCards.size > 0 && deduct > 0) {
+      text.textContent = `充值卡支付（已选${selectedRechargeCards.size}张，抵扣¥${deduct.toFixed(2)}）`;
+      text.style.color = 'var(--gold)';
+      summary.style.display = 'flex';
+      deductDisplay.textContent = `¥${deduct.toFixed(2)}`;
+    } else if (selectedRechargeCards.size > 0) {
+      text.textContent = `充值卡支付（已选${selectedRechargeCards.size}张）`;
+      text.style.color = 'var(--gold)';
+      summary.style.display = 'none';
+    } else {
+      text.textContent = `充值卡支付（可用¥${TOTAL_RECHARGE_BALANCE.toFixed(2)}）`;
+      text.style.color = '';
+      summary.style.display = 'none';
+    }
+  }
+
+  // ========== Price Calculation ==========
+  function recalcPrice() {
+    const originalTotal = getOriginalTotal();
+    const couponDeduct = selectedCoupon ? selectedCoupon.amount : 0;
+    const pointsDeduct = pointsEnabled ? pointsUsed * POINTS_RATE : 0;
+    const balanceDeduct = balanceEnabled ? balanceUsed : 0;
+    const rechargeCardDeduct = getRechargeCardDeduct();
+    const finalTotal = Math.max(0, originalTotal - couponDeduct - pointsDeduct - balanceDeduct - rechargeCardDeduct);
+
+    // Update discount rows visibility
+    const earlyBirdRow = document.getElementById('earlyBirdDiscountRow');
+    const couponRow = document.getElementById('couponDiscountRow');
+    const pointsRow = document.getElementById('pointsDiscountRow');
+    const balanceRow = document.getElementById('balanceDiscountRow');
+
+    // 计算早鸟票折扣金额
+    let earlyBirdDeduct = 0;
+    if (isEarlyBirdPeriod()) {
+      const originalTotal = selectedSeats.reduce((sum, s) => sum + (s.originalPrice || s.price), 0);
+      const discountedTotal = selectedSeats.reduce((sum, s) => sum + s.price, 0);
+      earlyBirdDeduct = originalTotal - discountedTotal;
+    }
+
+    if (earlyBirdDeduct > 0) {
+      earlyBirdRow.style.display = 'flex';
+      document.getElementById('priceEarlyBirdDiscount').textContent = `-¥${earlyBirdDeduct}`;
+    } else {
+      earlyBirdRow.style.display = 'none';
+    }
+
+    if (selectedCoupon && couponDeduct > 0) {
+      couponRow.style.display = 'flex';
+      document.getElementById('priceCouponDiscount').textContent = `-¥${couponDeduct}`;
+    } else {
+      couponRow.style.display = 'none';
+    }
+
+    if (pointsEnabled && pointsDeduct > 0) {
+      pointsRow.style.display = 'flex';
+      document.getElementById('pricePointsDiscount').textContent = `-¥${pointsDeduct.toFixed(2)}`;
+    } else {
+      pointsRow.style.display = 'none';
+    }
+
+    if (balanceEnabled && balanceDeduct > 0) {
+      balanceRow.style.display = 'flex';
+      document.getElementById('priceBalanceDiscount').textContent = `-¥${balanceDeduct.toFixed(2)}`;
+    } else {
+      balanceRow.style.display = 'none';
+    }
+
+    // Recharge card discount row
+    const rechargeCardRow = document.getElementById('rechargeCardDiscountRow');
+    if (selectedRechargeCards.size > 0 && rechargeCardDeduct > 0) {
+      rechargeCardRow.style.display = 'flex';
+      document.getElementById('priceRechargeCardDiscount').textContent = `-¥${rechargeCardDeduct.toFixed(2)}`;
+    } else {
+      rechargeCardRow.style.display = 'none';
+    }
+
+    // Update total
+    const totalEl = document.getElementById('totalAmount');
+    totalEl.textContent = finalTotal.toFixed(2);
+
+    // Update points slider max when balance changes
+    if (pointsEnabled) {
+      updatePointsSlider();
+    }
+
+    // Clamp balance input if points or recharge card changed
+    if (balanceEnabled) {
+      const currentPayable = Math.max(0, originalTotal - couponDeduct - pointsDeduct - rechargeCardDeduct);
+      const maxUsable = Math.min(AVAILABLE_BALANCE, currentPayable);
+      if (balanceUsed > maxUsable) {
+        balanceUsed = maxUsable;
+        document.getElementById('balanceInput').value = balanceUsed.toFixed(2);
+        document.getElementById('balanceDeductDisplay').textContent = `¥${balanceUsed.toFixed(2)}`;
+      }
+    }
+  }
+
+  function getFinalTotal() {
+    const originalTotal = getOriginalTotal();
+    const couponDeduct = selectedCoupon ? selectedCoupon.amount : 0;
+    const pointsDeduct = pointsEnabled ? pointsUsed * POINTS_RATE : 0;
+    const balanceDeduct = balanceEnabled ? balanceUsed : 0;
+    const rechargeCardDeduct = getRechargeCardDeduct();
+    return Math.max(0, originalTotal - couponDeduct - pointsDeduct - balanceDeduct - rechargeCardDeduct);
+  }
+
+  // ========== Shake Animation (injected) ==========
+  const shakeStyle = document.createElement('style');
+  shakeStyle.textContent = `
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-3px); }
+      40% { transform: translateX(3px); }
+      60% { transform: translateX(-2px); }
+      80% { transform: translateX(2px); }
+    }
+  `;
+  document.head.appendChild(shakeStyle);
+
+  // ========== Init ==========
+  renderTicketPolicyBanner();
+  updateTierPrices();
+  updatePurchaseLimit();
+  generateSeats();
+  renderRechargeCards();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>代理中心 - 小程序端</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif;
+    background: #E8E8ED;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .phone-frame {
+    width: 375px;
+    min-height: 100vh;
+    background: #F5F6FA;
+    position: relative;
+    overflow-x: hidden;
+    padding-bottom: 24px;
+  }
+
+  /* ========== 状态栏 ========== */
+  .status-bar {
+    height: 44px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1A1A1A;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .status-bar .time { font-size: 15px; font-weight: 700; }
+
+  .status-bar .status-icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+  }
+
+  .status-bar .status-icons i { font-size: 14px; }
+
+  .status-bar .battery {
+    width: 24px;
+    height: 11px;
+    border: 1.5px solid #1A1A1A;
+    border-radius: 2px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 1.5px;
+  }
+
+  .status-bar .battery::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 5px;
+    background: #1A1A1A;
+    border-radius: 0 1px 1px 0;
+  }
+
+  .status-bar .battery-inner {
+    width: 75%;
+    height: 100%;
+    background: #1A1A1A;
+    border-radius: 1px;
+  }
+
+  /* ========== 导航栏 ========== */
+  .nav-bar {
+    height: 44px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    position: sticky;
+    top: 44px;
+    z-index: 100;
+    border-bottom: 0.5px solid #F0F0F0;
+  }
+
+  .nav-bar .nav-left,
+  .nav-bar .nav-right {
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #1A1A1A;
+    font-size: 18px;
+    transition: opacity 0.2s;
+  }
+
+  .nav-bar .nav-left:active,
+  .nav-bar .nav-right:active {
+    opacity: 0.5;
+  }
+
+  .nav-bar .nav-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1A1A1A;
+  }
+
+  /* ========== 内容区 ========== */
+  .content {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .card-title h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1A1A1A;
+  }
+
+  .card-title .more {
+    font-size: 13px;
+    color: #999;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    transition: color 0.2s;
+  }
+
+  .card-title .more:active { color: #FF6B4A; }
+
+  /* ========== 代理角色信息卡片 ========== */
+  .agent-profile-card {
+    background: #fff;
+    border-radius: 12px;
+    margin: 12px 16px;
+    padding: 20px;
+  }
+
+  .agent-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .agent-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #D4A853, #F0D78C);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .agent-detail {
+    flex: 1;
+  }
+
+  .agent-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1A1A1A;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .agent-level-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    vertical-align: middle;
+  }
+
+  .agent-level-tag.normal { background: #F1F5F9; color: #94A3B8; }
+  .agent-level-tag.bronze { background: #FEF3C7; color: #F59E0B; }
+  .agent-level-tag.silver { background: #DBEAFE; color: #3B82F6; }
+  .agent-level-tag.gold { background: #FEF3C7; color: #D4A853; }
+  .agent-level-tag.diamond { background: #EDE9FE; color: #8B5CF6; }
+
+  .agent-id {
+    font-size: 12px;
+    color: #94A3B8;
+    margin-top: 4px;
+  }
+
+  .agent-type {
+    font-size: 12px;
+    color: #94A3B8;
+    margin-top: 2px;
+  }
+
+  .agent-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #F1F5F9;
+  }
+
+  .agent-stat {
+    text-align: center;
+    position: relative;
+  }
+
+  .agent-stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1A1A1A;
+  }
+
+  .agent-stat-value.highlight {
+    color: #FF6B4A;
+  }
+
+  .agent-stat-label {
+    font-size: 12px;
+    color: #94A3B8;
+    margin-top: 4px;
+  }
+
+  .agent-stat-divider {
+    width: 1px;
+    height: 32px;
+    background: #E2E8F0;
+  }
+
+  .withdraw-btn {
+    display: block;
+    margin: 4px auto 0;
+    padding: 4px 16px;
+    border-radius: 12px;
+    background: #FF6B4A;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.2s;
+  }
+
+  .withdraw-btn:active { opacity: 0.7; }
+
+  /* ========== 操作入口列表 ========== */
+  .action-list {
+    background: #fff;
+    border-radius: 12px;
+    margin: 0 12px;
+    overflow: hidden;
+  }
+
+  .action-list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+  }
+
+  .action-list-item:active { background: #F9FAFB; }
+
+  .action-list-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 52px;
+    right: 16px;
+    height: 0.5px;
+    background: #F0F0F0;
+  }
+
+  .action-list-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .action-list-icon.orange { background: #FFF3F0; color: #FF6B4A; }
+  .action-list-icon.blue { background: #F0F5FF; color: #4A90D9; }
+  .action-list-icon.green { background: #F0FFF5; color: #52C41A; }
+  .action-list-icon.purple { background: #F5F0FF; color: #9B6BFF; }
+  .action-list-icon.pink { background: #FFF0F5; color: #FF6BA4; }
+  .action-list-icon.teal { background: #F0FFFE; color: #36CFC9; }
+  .action-list-icon.amber { background: #FFFBEB; color: #F59E0B; }
+
+  .action-list-text {
+    flex: 1;
+    font-size: 14px;
+    color: #1A1A1A;
+    font-weight: 500;
+  }
+
+  .action-list-arrow {
+    color: #C0C4CC;
+    font-size: 14px;
+  }
+
+  /* ========== 热门推广 ========== */
+  .show-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .show-card:active { opacity: 0.7; }
+
+  .show-card:not(:last-child) {
+    border-bottom: 0.5px solid #F5F5F5;
+  }
+
+  .show-cover {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #fff;
+  }
+
+  .show-cover.c1 { background: linear-gradient(135deg, #FF6B4A, #FF9A76); }
+  .show-cover.c2 { background: linear-gradient(135deg, #4A90D9, #76B5FF); }
+  .show-cover.c3 { background: linear-gradient(135deg, #9B6BFF, #C49BFF); }
+
+  .show-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .show-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1A1A1A;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .show-time {
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 8px;
+  }
+
+  .show-commission {
+    display: inline-block;
+    font-size: 11px;
+    color: #FF6B4A;
+    background: #FFF3F0;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-weight: 500;
+  }
+
+  .btn-promote {
+    flex-shrink: 0;
+    font-size: 13px;
+    color: #FF6B4A;
+    border: 1px solid #FF6B4A;
+    border-radius: 16px;
+    padding: 5px 16px;
+    cursor: pointer;
+    background: transparent;
+    font-family: inherit;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .btn-promote:active {
+    background: #FF6B4A;
+    color: #fff;
+  }
+
+  /* ========== 推广数据 ========== */
+  .tab-switch {
+    display: flex;
+    gap: 0;
+    background: #F5F6FA;
+    border-radius: 8px;
+    padding: 3px;
+    margin-bottom: 16px;
+  }
+
+  .tab-item {
+    flex: 1;
+    text-align: center;
+    font-size: 13px;
+    color: #999;
+    padding: 6px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+
+  .tab-item.active {
+    background: #fff;
+    color: #1A1A1A;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  .tab-item:active { opacity: 0.7; }
+
+  .funnel-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .funnel-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .funnel-label {
+    width: 60px;
+    font-size: 13px;
+    color: #666;
+    flex-shrink: 0;
+  }
+
+  .funnel-bar-wrap {
+    flex: 1;
+    height: 24px;
+    background: #F5F6FA;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .funnel-bar {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    font-size: 11px;
+    color: #fff;
+    font-weight: 500;
+    transition: width 0.6s ease;
+  }
+
+  .funnel-bar.b1 { background: #FF6B4A; width: 100%; }
+  .funnel-bar.b2 { background: #FF9A76; width: 16.4%; justify-content: flex-start; }
+  .funnel-bar.b3 { background: #4A90D9; width: 14.8%; justify-content: flex-start; }
+  .funnel-bar.b4 { background: #999; width: 1.2%; min-width: 40px; justify-content: flex-start; }
+
+  .funnel-meta {
+    width: 70px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .funnel-count {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1A1A1A;
+  }
+
+  .funnel-rate {
+    font-size: 11px;
+    color: #999;
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+
+  <!-- 状态栏 -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="status-icons">
+      <i class="fas fa-signal"></i>
+      <i class="fas fa-wifi"></i>
+      <div class="battery"><div class="battery-inner"></div></div>
+    </div>
+  </div>
+
+  <!-- 导航栏 -->
+  <div class="nav-bar">
+    <div class="nav-left" onclick="history.back()"><i class="fas fa-chevron-left"></i></div>
+    <span class="nav-title">代理中心</span>
+    <div class="nav-right"><i class="fas fa-share-nodes"></i></div>
+  </div>
+
+  <!-- 代理角色信息 -->
+  <div class="agent-profile-card">
+    <div class="agent-info">
+      <div class="agent-avatar">王</div>
+      <div class="agent-detail">
+        <div class="agent-name">王建华 <span class="agent-level-tag gold">金牌代理</span></div>
+        <div class="agent-id">代理编号：A20260001</div>
+        <div class="agent-type">员工代理 · 2024年3月加入</div>
+      </div>
+    </div>
+    <div class="agent-stats">
+      <div class="agent-stat">
+        <div class="agent-stat-value">&yen;15,420</div>
+        <div class="agent-stat-label">累计佣金</div>
+      </div>
+      <div class="agent-stat-divider"></div>
+      <div class="agent-stat">
+        <div class="agent-stat-value">&yen;3,200</div>
+        <div class="agent-stat-label">待结算</div>
+      </div>
+      <div class="agent-stat-divider"></div>
+      <div class="agent-stat">
+        <div class="agent-stat-value highlight">&yen;12,200</div>
+        <div class="agent-stat-label">可提现</div>
+        <button class="withdraw-btn" onclick="location.href='agent-miniapp-withdraw.html'">提现</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 操作入口列表 -->
+  <div class="action-list">
+    <div class="action-list-item" onclick="location.href='agent-miniapp-qrcode.html'">
+      <div class="action-list-icon orange"><i class="fas fa-qrcode"></i></div>
+      <span class="action-list-text">我的分销码</span>
+      <i class="fas fa-chevron-right action-list-arrow"></i>
+    </div>
+    <div class="action-list-item" onclick="location.href='agent-miniapp-poster.html'">
+      <div class="action-list-icon blue"><i class="fas fa-image"></i></div>
+      <span class="action-list-text">分享海报</span>
+      <i class="fas fa-chevron-right action-list-arrow"></i>
+    </div>
+    <div class="action-list-item" onclick="copyLink()">
+      <div class="action-list-icon green"><i class="fas fa-link"></i></div>
+      <span class="action-list-text">推广链接</span>
+      <i class="fas fa-chevron-right action-list-arrow"></i>
+    </div>
+    <div class="action-list-item" onclick="location.href='agent-miniapp-commission.html'">
+      <div class="action-list-icon purple"><i class="fas fa-list-ul"></i></div>
+      <span class="action-list-text">佣金明细</span>
+      <i class="fas fa-chevron-right action-list-arrow"></i>
+    </div>
+    <div class="action-list-item" onclick="location.href='agent-miniapp-withdraw.html#records'">
+      <div class="action-list-icon pink"><i class="fas fa-wallet"></i></div>
+      <span class="action-list-text">提现记录</span>
+      <i class="fas fa-chevron-right action-list-arrow"></i>
+    </div>
+    <div class="action-list-item" onclick="location.href='agent-miniapp-stats.html'">
+      <div class="action-list-icon teal"><i class="fas fa-chart-line"></i></div>
+      <span class="action-list-text">推广数据</span>
+      <i class="fas fa-chevron-right action-list-arrow"></i>
+    </div>
+    <div class="action-list-item" onclick="location.href='agent-miniapp-rules.html'">
+      <div class="action-list-icon amber"><i class="fas fa-file-lines"></i></div>
+      <span class="action-list-text">分销规则</span>
+      <i class="fas fa-chevron-right action-list-arrow"></i>
+    </div>
+  </div>
+
+  <!-- 热门推广 -->
+  <div class="card" style="margin: 0 12px;">
+    <div class="card-title">
+      <h3>热门推广</h3>
+      <span class="more">更多 <i class="fas fa-chevron-right" style="font-size:10px"></i></span>
+    </div>
+
+    <div class="show-card">
+      <div class="show-cover c1"><i class="fas fa-masks-theater"></i></div>
+      <div class="show-info">
+        <div class="show-name">《天涯海角》大型歌舞秀</div>
+        <div class="show-time">4月25日 - 5月31日</div>
+        <span class="show-commission">佣金 10%</span>
+      </div>
+      <button class="btn-promote">推广</button>
+    </div>
+
+    <div class="show-card">
+      <div class="show-cover c2"><i class="fas fa-music"></i></div>
+      <div class="show-info">
+        <div class="show-name">《椰风海韵》情景音乐会</div>
+        <div class="show-time">4月28日 - 5月15日</div>
+        <span class="show-commission">佣金 8%</span>
+      </div>
+      <button class="btn-promote">推广</button>
+    </div>
+
+    <div class="show-card">
+      <div class="show-cover c3"><i class="fas fa-wand-magic-sparkles"></i></div>
+      <div class="show-info">
+        <div class="show-name">《南海奇缘》儿童剧</div>
+        <div class="show-time">5月1日 - 5月20日</div>
+        <span class="show-commission">佣金 12%</span>
+      </div>
+      <button class="btn-promote">推广</button>
+    </div>
+  </div>
+
+  <!-- 推广数据 -->
+  <div class="card" style="margin: 0 12px;">
+    <div class="card-title">
+      <h3>推广数据</h3>
+      <span class="more" onclick="location.href='agent-miniapp-stats.html'">查看详情 <i class="fas fa-chevron-right" style="font-size:10px"></i></span>
+    </div>
+    <div class="tab-switch">
+      <div class="tab-item active">今日</div>
+      <div class="tab-item">本周</div>
+      <div class="tab-item">本月</div>
+    </div>
+    <div class="funnel-list">
+      <div class="funnel-row">
+        <span class="funnel-label">访客数</span>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar b1">256</div>
+        </div>
+        <div class="funnel-meta">
+          <div class="funnel-count">256人</div>
+        </div>
+      </div>
+      <div class="funnel-row">
+        <span class="funnel-label">下单数</span>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar b2">42</div>
+        </div>
+        <div class="funnel-meta">
+          <div class="funnel-count">42人</div>
+          <div class="funnel-rate">转化率 16.4%</div>
+        </div>
+      </div>
+      <div class="funnel-row">
+        <span class="funnel-label">支付数</span>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar b3">38</div>
+        </div>
+        <div class="funnel-meta">
+          <div class="funnel-count">38人</div>
+          <div class="funnel-rate">转化率 90.5%</div>
+        </div>
+      </div>
+      <div class="funnel-row">
+        <span class="funnel-label">退款数</span>
+        <div class="funnel-bar-wrap">
+          <div class="funnel-bar b4">3</div>
+        </div>
+        <div class="funnel-meta">
+          <div class="funnel-count">3人</div>
+          <div class="funnel-rate">退款率 7.9%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Tab 切换
+  document.querySelectorAll('.tab-switch .tab-item').forEach(tab => {
+    tab.addEventListener('click', function() {
+      this.parentElement.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  // 复制推广链接
+  function copyLink() {
+    var link = 'https://ticket.example.com/invite/A20260001';
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(link).then(function() {
+        showToast('推广链接已复制到剪贴板');
+      });
+    } else {
+      var input = document.createElement('input');
+      input.value = link;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+      showToast('推广链接已复制到剪贴板');
+    }
+  }
+
+  // Toast 提示
+  function showToast(msg) {
+    var toast = document.createElement('div');
+    toast.textContent = msg;
+    toast.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.75);color:#fff;padding:10px 20px;border-radius:8px;font-size:14px;z-index:9999;pointer-events:none;';
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 2000);
+  }
+</script>
+
+</body>
+</html>

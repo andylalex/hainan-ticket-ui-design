@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>演出列表 - 海南演艺</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+/* ========== Reset & Base ========== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --deep-blue: #0A1628;
+  --coral-orange: #FF6B4A;
+  --coral-orange-light: #FF8A6E;
+  --gold: #D4A853;
+  --emerald: #00C9A7;
+  --light-gray: #F5F6FA;
+  --white: #FFFFFF;
+  --text-primary: #1A1A2E;
+  --text-secondary: #6B7280;
+  --text-light: #9CA3AF;
+  --border-color: #E5E7EB;
+  --card-shadow: 0 2px 12px rgba(10, 22, 40, 0.08);
+  --card-shadow-hover: 0 6px 24px rgba(10, 22, 40, 0.15);
+}
+
+body {
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #E8EAF0;
+  margin: 0;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ========== Page Container ========== */
+.page-container {
+  position: relative;
+  width: 375px;
+  height: 812px;
+  overflow: hidden;
+  border-radius: 32px;
+  box-shadow: 0 8px 40px rgba(10,22,40,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+  /* 创建fixed定位的包含块，让子元素fixed定位相对于容器 */
+  transform: translateX(0);
+  contain: layout;
+}
+
+.page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.page::-webkit-scrollbar { display: none; }
+
+.page.active {
+  transform: translateX(0);
+  opacity: 1;
+  z-index: 2;
+}
+
+.page.slide-left {
+  transform: translateX(-100%);
+  opacity: 0;
+  z-index: 1;
+}
+
+.page.slide-right {
+  transform: translateX(100%);
+  opacity: 0;
+  z-index: 1;
+}
+
+/* ========== List Page ========== */
+.list-page {
+  background: var(--light-gray);
+  padding-bottom: 70px;
+}
+
+/* Top Navigation */
+.top-nav {
+  background: var(--white);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+.top-nav .back-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--text-primary);
+  font-size: 18px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.top-nav .back-btn:hover { background: var(--light-gray); }
+
+.top-nav .title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--deep-blue);
+  letter-spacing: 0.5px;
+}
+
+.top-nav .search-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--text-primary);
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.top-nav .search-btn:hover { background: var(--light-gray); }
+
+/* Category Filter */
+.category-bar {
+  background: var(--white);
+  padding: 14px 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+.category-bar::-webkit-scrollbar { display: none; }
+
+.category-bar .inner {
+  display: inline-flex;
+  gap: 10px;
+  padding: 0 16px;
+}
+
+.category-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--light-gray);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  border: 1.5px solid transparent;
+  user-select: none;
+}
+
+.category-tag:hover {
+  color: var(--coral-orange);
+  border-color: rgba(255, 107, 74, 0.2);
+}
+
+.category-tag.active {
+  background: linear-gradient(135deg, var(--coral-orange), var(--coral-orange-light));
+  color: var(--white);
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(255, 107, 74, 0.35);
+  transform: scale(1.02);
+}
+
+/* Sort / Filter Bar */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--white);
+  margin-top: 8px;
+}
+
+.filter-bar .filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  border: none;
+  background: transparent;
+}
+
+.filter-bar .filter-btn:hover {
+  background: var(--light-gray);
+  color: var(--coral-orange);
+}
+
+.filter-bar .filter-btn.active {
+  color: var(--coral-orange);
+  font-weight: 600;
+}
+
+.filter-bar .filter-btn i { font-size: 11px; }
+
+.filter-bar .result-count {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+/* Show Cards */
+.show-list {
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.show-card {
+  display: flex;
+  gap: 14px;
+  background: var(--white);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: var(--card-shadow);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.show-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transition: left 0.6s;
+}
+
+.show-card:hover::after { left: 100%; }
+
+.show-card:hover {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.show-card:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.show-card .cover {
+  width: 110px;
+  height: 150px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.show-card .cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s;
+}
+
+.show-card:hover .cover img { transform: scale(1.05); }
+
+.show-card .cover .tag-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--white);
+  backdrop-filter: blur(4px);
+}
+
+.show-card .cover .tag-badge.hot {
+  background: linear-gradient(135deg, var(--coral-orange), #FF4757);
+}
+
+.show-card .cover .tag-badge.vip {
+  background: linear-gradient(135deg, var(--gold), #E8C547);
+}
+
+.show-card .cover .tag-badge.new {
+  background: linear-gradient(135deg, var(--emerald), #00E5BF);
+}
+
+.show-card .info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 2px 0;
+}
+
+.show-card .info .name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.2s;
+}
+
+.show-card:hover .info .name { color: var(--coral-orange); }
+
+.show-card .info .venue {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.show-card .info .venue i {
+  color: var(--coral-orange);
+  font-size: 10px;
+}
+
+.show-card .info .datetime {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.show-card .info .datetime i {
+  font-size: 10px;
+  color: var(--emerald);
+}
+
+.show-card .info .bottom-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+.show-card .info .price {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--coral-orange);
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+.show-card .info .price span {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.show-card .info .labels {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.show-card .info .label {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.show-card .info .label.soon {
+  background: rgba(255, 107, 74, 0.1);
+  color: var(--coral-orange);
+}
+
+.show-card .info .label.member {
+  background: rgba(212, 168, 83, 0.1);
+  color: var(--gold);
+}
+
+.show-card .info .label.discount {
+  background: rgba(0, 201, 167, 0.1);
+  color: var(--emerald);
+}
+
+/* ========== Detail Page ========== */
+.detail-page {
+  background: var(--light-gray);
+  padding-bottom: 120px;
+}
+
+/* Hero Image */
+.detail-hero {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+}
+
+.detail-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-hero .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 22, 40, 0.5) 0%,
+    rgba(10, 22, 40, 0.1) 40%,
+    rgba(10, 22, 40, 0) 60%,
+    rgba(10, 22, 40, 0.02) 100%
+  );
+}
+
+.detail-hero .hero-actions {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+.detail-hero .hero-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(10, 22, 40, 0.45);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.detail-hero .hero-btn:hover {
+  background: rgba(10, 22, 40, 0.65);
+  transform: scale(1.08);
+}
+
+.detail-hero .hero-bottom {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+}
+
+.detail-hero .hero-bottom .show-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(255, 107, 74, 0.9);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+}
+
+/* Detail Info Section */
+.detail-info {
+  background: var(--white);
+  padding: 20px 16px;
+  margin-top: -20px;
+  border-radius: 20px 20px 0 0;
+  position: relative;
+  z-index: 5;
+}
+
+.detail-info .show-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--deep-blue);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+
+.detail-info .meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.detail-info .meta-tag {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  background: var(--light-gray);
+  color: var(--text-secondary);
+}
+
+.detail-info .meta-tag.highlight {
+  background: linear-gradient(135deg, rgba(255,107,74,0.1), rgba(255,138,110,0.1));
+  color: var(--coral-orange);
+}
+
+.detail-info .rating-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-info .rating-stars {
+  display: flex;
+  gap: 2px;
+}
+
+.detail-info .rating-stars i {
+  font-size: 13px;
+  color: var(--gold);
+}
+
+.detail-info .rating-stars i.empty { color: #DDD; }
+
+.detail-info .rating-score {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gold);
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+.detail-info .rating-count {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+/* Session Selection */
+.session-section {
+  background: var(--white);
+  padding: 18px 16px;
+  margin-top: 8px;
+}
+
+.session-section .section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--deep-blue);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.session-section .section-title i {
+  color: var(--coral-orange);
+  font-size: 14px;
+}
+
+.session-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.session-scroll::-webkit-scrollbar { display: none; }
+
+.session-card {
+  flex-shrink: 0;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: var(--light-gray);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+  min-width: 120px;
+}
+
+.session-card:hover {
+  border-color: rgba(255, 107, 74, 0.3);
+  transform: translateY(-2px);
+}
+
+.session-card.active {
+  background: linear-gradient(135deg, var(--coral-orange), var(--coral-orange-light));
+  border-color: transparent;
+  box-shadow: 0 6px 16px rgba(255, 107, 74, 0.35);
+  transform: translateY(-2px);
+}
+
+.session-card .date {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.session-card .weekday {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-bottom: 4px;
+}
+
+.session-card .time {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--coral-orange);
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+.session-card.active .date,
+.session-card.active .weekday,
+.session-card.active .time {
+  color: var(--white);
+}
+
+.session-card .status {
+  font-size: 10px;
+  margin-top: 4px;
+  color: var(--text-light);
+}
+
+.session-card.active .status { color: rgba(255,255,255,0.85); }
+
+/* Detail Tabs */
+.detail-tabs {
+  background: var(--white);
+  margin-top: 8px;
+}
+
+.tabs-header {
+  display: flex;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  background: var(--white);
+  z-index: 10;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 14px 0;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s;
+  border: none;
+  background: transparent;
+}
+
+.tab-btn::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--coral-orange), var(--coral-orange-light));
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-btn.active {
+  color: var(--coral-orange);
+  font-weight: 700;
+}
+
+.tab-btn.active::after { width: 28px; }
+
+.tab-btn:hover { color: var(--coral-orange); }
+
+.tab-content {
+  display: none;
+  padding: 16px;
+  animation: fadeInUp 0.35s ease;
+}
+
+.tab-content.active { display: block; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Detail Tab Content */
+.detail-content .desc-text {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.detail-content .desc-image {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.detail-content .info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.detail-content .info-item {
+  background: var(--light-gray);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.detail-content .info-item .label {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-bottom: 4px;
+}
+
+.detail-content .info-item .value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.detail-content .info-item .value i {
+  margin-right: 4px;
+  color: var(--coral-orange);
+  font-size: 12px;
+}
+
+/* Venue Info */
+.venue-card {
+  background: var(--light-gray);
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 16px;
+  display: flex;
+  gap: 12px;
+}
+
+.venue-card .venue-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.venue-card .venue-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.venue-card .venue-info {
+  flex: 1;
+}
+
+.venue-card .venue-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.venue-card .venue-addr {
+  font-size: 12px;
+  color: var(--text-light);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.venue-card .venue-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--coral-orange);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Reviews Tab */
+.review-summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(212,168,83,0.08), rgba(255,107,74,0.05));
+  border-radius: 14px;
+  margin-bottom: 16px;
+}
+
+.review-summary .big-score {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--gold);
+  font-family: 'Noto Sans SC', sans-serif;
+  line-height: 1;
+}
+
+.review-summary .summary-info .stars {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+.review-summary .summary-info .stars i {
+  font-size: 12px;
+  color: var(--gold);
+}
+
+.review-summary .summary-info .count {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.review-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.review-item:last-child { border-bottom: none; }
+
+.review-item .review-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.review-item .avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.review-item .avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.review-item .reviewer-info {
+  flex: 1;
+}
+
+.review-item .reviewer-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.review-item .reviewer-stars {
+  display: flex;
+  gap: 1px;
+  margin-top: 2px;
+}
+
+.review-item .reviewer-stars i {
+  font-size: 10px;
+  color: var(--gold);
+}
+
+.review-item .reviewer-stars i.empty { color: #DDD; }
+
+.review-item .review-time {
+  font-size: 11px;
+  color: var(--text-light);
+}
+
+.review-item .review-text {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.review-item .review-images {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.review-item .review-images img {
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* Notice Tab */
+.notice-section {
+  margin-bottom: 20px;
+}
+
+.notice-section .notice-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--deep-blue);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.notice-section .notice-title i {
+  color: var(--coral-orange);
+  font-size: 13px;
+}
+
+.notice-section .notice-list {
+  list-style: none;
+}
+
+.notice-section .notice-list li {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  padding-left: 16px;
+  position: relative;
+}
+
+.notice-section .notice-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--coral-orange);
+}
+
+/* Bottom Action Bar */
+.bottom-action {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 12px 16px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0));
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid var(--border-color);
+  z-index: 200;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+}
+
+.bottom-action .action-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: transform 0.2s;
+}
+
+.bottom-action .action-icon:hover { transform: scale(1.1); }
+.bottom-action .action-icon:active { transform: scale(0.95); }
+
+.bottom-action .action-icon i {
+  font-size: 20px;
+  color: var(--text-secondary);
+  transition: color 0.3s;
+}
+
+.bottom-action .action-icon.liked i { color: var(--coral-orange); }
+
+.bottom-action .action-icon span {
+  font-size: 10px;
+  color: var(--text-light);
+}
+
+.bottom-action .buy-btn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--coral-orange), var(--coral-orange-light));
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 6px 20px rgba(255, 107, 74, 0.4);
+  position: relative;
+  overflow: hidden;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+.bottom-action .buy-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.bottom-action .buy-btn:hover::before { left: 100%; }
+
+.bottom-action .buy-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(255, 107, 74, 0.5);
+}
+
+.bottom-action .buy-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.bottom-action .price-display {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 13px;
+  margin-right: 4px;
+}
+
+/* ========== TabBar ========== */
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 64px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: 0 -1px 20px rgba(10,22,40,0.06);
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.tab-bar .tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  text-decoration: none;
+  color: #999;
+  font-size: 10px;
+  font-weight: 500;
+  position: relative;
+  padding: 6px 0;
+  transition: color 0.25s;
+  cursor: pointer;
+}
+.tab-bar .tab-item i {
+  font-size: 20px;
+  transition: transform 0.25s, color 0.25s;
+}
+.tab-bar .tab-item.active {
+  color: #FF6B4A;
+}
+.tab-bar .tab-item.active i {
+  transform: scale(1.1);
+}
+.tab-bar .tab-item.active::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 3px;
+  background: linear-gradient(90deg, #FF6B4A, #D4A853);
+  border-radius: 0 0 3px 3px;
+}
+.tab-bar .tab-item:hover {
+  color: #FF6B4A;
+}
+
+/* ========== Animations ========== */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Loading skeleton */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* ========== Toast ========== */
+.toast {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: rgba(10, 22, 40, 0.88);
+  color: var(--white);
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ========== Scrollbar ========== */
+::-webkit-scrollbar { width: 0; height: 0; }
+
+/* ========== Responsive ========== */
+@media (max-width: 400px) {
+  body {
+    padding: 0;
+    background: var(--light-gray);
+  }
+  .page-container {
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .tab-bar, .bottom-action {
+    width: 100%;
+    max-width: 100%;
+  }
+  .show-card {
+    gap: 10px;
+    padding: 10px;
+    border-radius: 12px;
+  }
+  .show-card .cover {
+    width: 90px;
+    height: 120px;
+    border-radius: 8px;
+  }
+  .show-card .info .name {
+    font-size: 14px;
+    -webkit-line-clamp: 2;
+  }
+  .show-card .info .venue {
+    font-size: 11px;
+  }
+  .show-card .info .datetime {
+    font-size: 11px;
+  }
+  .show-card .info .price {
+    font-size: 15px;
+  }
+  .show-card .info .price span {
+    font-size: 10px;
+  }
+  .show-card .info .label {
+    font-size: 9px;
+    padding: 1px 5px;
+  }
+  .show-card .info .bottom-row {
+    gap: 6px;
+  }
+  .show-card .info .labels {
+    gap: 4px;
+  }
+  .search-bar {
+    height: 36px;
+    border-radius: 18px;
+    font-size: 13px;
+  }
+  .filter-tags {
+    gap: 6px;
+  }
+  .filter-tag {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 14px;
+  }
+  /* Detail page responsive */
+  .detail-cover {
+    height: 200px;
+  }
+  .detail-info {
+    padding: 14px 16px;
+  }
+  .detail-info .title {
+    font-size: 18px;
+  }
+  .detail-info .meta-item {
+    font-size: 12px;
+  }
+  .ticket-tier-card {
+    padding: 12px;
+    border-radius: 10px;
+  }
+  .ticket-tier-card .tier-name {
+    font-size: 14px;
+  }
+  .ticket-tier-card .tier-price {
+    font-size: 20px;
+  }
+  .session-chip {
+    font-size: 11px;
+    padding: 5px 12px;
+  }
+  .buy-bar {
+    padding: 10px 16px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0));
+  }
+  .buy-bar .total-price {
+    font-size: 20px;
+  }
+  .buy-bar .buy-btn {
+    height: 40px;
+    font-size: 14px;
+    border-radius: 20px;
+  }
+}
+</style>
+</head>
+<body>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Page Container -->
+  <div class="page-container">
+
+    <!-- ==================== LIST PAGE ==================== -->
+    <div class="page list-page active" id="listPage">
+      <!-- Top Navigation -->
+      <div class="top-nav">
+        <div class="title">演出</div>
+        <div class="search-btn" onclick="showToast('搜索演出')">
+          <i class="fas fa-search"></i>
+        </div>
+      </div>
+
+      <!-- Category Filter -->
+      <div class="category-bar">
+        <div class="inner">
+          <div class="category-tag active" onclick="selectCategory(this)">全部</div>
+          <div class="category-tag" onclick="selectCategory(this)">演唱会</div>
+          <div class="category-tag" onclick="selectCategory(this)">话剧</div>
+          <div class="category-tag" onclick="selectCategory(this)">音乐剧</div>
+          <div class="category-tag" onclick="selectCategory(this)">体育赛事</div>
+          <div class="category-tag" onclick="selectCategory(this)">儿童亲子</div>
+          <div class="category-tag" onclick="selectCategory(this)">舞蹈芭蕾</div>
+          <div class="category-tag" onclick="selectCategory(this)">脱口秀</div>
+          <div class="category-tag" onclick="selectCategory(this)">展览</div>
+        </div>
+      </div>
+
+      <!-- Show List -->
+      <div class="show-list">
+
+        <!-- Card 1 -->
+        <div class="show-card" onclick="window.location.href='show-detail.html'">
+          <div class="cover">
+            <img src="https://picsum.photos/seed/show-concert1/220/300" alt="演出封面">
+            <span class="tag-badge hot">热卖</span>
+          </div>
+          <div class="info">
+            <div>
+              <div class="name">2026海南热带音乐节 - 三亚站</div>
+              <div class="venue"><i class="fas fa-map-marker-alt"></i> 三亚海棠湾演艺中心</div>
+              <div class="datetime"><i class="far fa-calendar"></i> 12月25日 周三 19:30</div>
+            </div>
+            <div class="bottom-row">
+              <div class="price"><span>&yen;</span>280<span>起</span></div>
+              <div class="labels">
+                <span class="label soon">即将开演</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="show-card" onclick="window.location.href='show-detail.html'">
+          <div class="cover">
+            <img src="https://picsum.photos/seed/show-theatre2/220/300" alt="演出封面">
+            <span class="tag-badge vip">会员</span>
+          </div>
+          <div class="info">
+            <div>
+              <div class="name">百老汇经典音乐剧《猫》中文版</div>
+              <div class="venue"><i class="fas fa-map-marker-alt"></i> 海口湾演艺中心大剧场</div>
+              <div class="datetime"><i class="far fa-calendar"></i> 01月08日 周四 20:00</div>
+            </div>
+            <div class="bottom-row">
+              <div class="price"><span>&yen;</span>180<span>起</span></div>
+              <div class="labels">
+                <span class="label member">会员专享</span>
+                <span class="label discount">9折</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="show-card" onclick="window.location.href='show-detail.html'">
+          <div class="cover">
+            <img src="https://picsum.photos/seed/show-dance3/220/300" alt="演出封面">
+            <span class="tag-badge new">新上</span>
+          </div>
+          <div class="info">
+            <div>
+              <div class="name">俄罗斯国家芭蕾舞团《天鹅湖》</div>
+              <div class="venue"><i class="fas fa-map-marker-alt"></i> 海南省歌舞剧院</div>
+              <div class="datetime"><i class="far fa-calendar"></i> 01月15日 周四 19:30</div>
+            </div>
+            <div class="bottom-row">
+              <div class="price"><span>&yen;</span>380<span>起</span></div>
+              <div class="labels">
+                <span class="label soon">即将开演</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="show-card" onclick="window.location.href='show-detail.html'">
+          <div class="cover">
+            <img src="https://picsum.photos/seed/show-comedy4/220/300" alt="演出封面">
+          </div>
+          <div class="info">
+            <div>
+              <div class="name">脱口秀大会 - 海口专场</div>
+              <div class="venue"><i class="fas fa-map-marker-alt"></i> 海口观澜湖新城剧场</div>
+              <div class="datetime"><i class="far fa-calendar"></i> 01月20日 周二 20:00</div>
+            </div>
+            <div class="bottom-row">
+              <div class="price"><span>&yen;</span>99<span>起</span></div>
+              <div class="labels">
+                <span class="label discount">限时特惠</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="show-card" onclick="window.location.href='show-detail.html'">
+          <div class="cover">
+            <img src="https://picsum.photos/seed/show-kids5/220/300" alt="演出封面">
+            <span class="tag-badge hot">热卖</span>
+          </div>
+          <div class="info">
+            <div>
+              <div class="name">大型亲子互动剧《冰雪奇缘》</div>
+              <div class="venue"><i class="fas fa-map-marker-alt"></i> 三亚亚特兰蒂斯剧场</div>
+              <div class="datetime"><i class="far fa-calendar"></i> 02月01日 周六 10:30</div>
+            </div>
+            <div class="bottom-row">
+              <div class="price"><span>&yen;</span>128<span>起</span></div>
+              <div class="labels">
+                <span class="label member">会员专享</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="show-card" onclick="window.location.href='show-detail.html'">
+          <div class="cover">
+            <img src="https://picsum.photos/seed/show-sport6/220/300" alt="演出封面">
+            <span class="tag-badge new">新上</span>
+          </div>
+          <div class="info">
+            <div>
+              <div class="name">2026海南国际沙滩排球邀请赛</div>
+              <div class="venue"><i class="fas fa-map-marker-alt"></i> 三亚天涯海角沙滩赛场</div>
+              <div class="datetime"><i class="far fa-calendar"></i> 02月14日 周五 09:00</div>
+            </div>
+            <div class="bottom-row">
+              <div class="price"><span>&yen;</span>60<span>起</span></div>
+              <div class="labels">
+                <span class="label discount">早鸟价</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 7 -->
+        <div class="show-card" onclick="window.location.href='show-detail.html'">
+          <div class="cover">
+            <img src="https://picsum.photos/seed/show-jazz7/220/300" alt="演出封面">
+          </div>
+          <div class="info">
+            <div>
+              <div class="name">三亚爵士之夜 - 海边音乐会</div>
+              <div class="venue"><i class="fas fa-map-marker-alt"></i> 三亚大东海沙滩舞台</div>
+              <div class="datetime"><i class="far fa-calendar"></i> 02月22日 周六 18:30</div>
+            </div>
+            <div class="bottom-row">
+              <div class="price"><span>&yen;</span>168<span>起</span></div>
+              <div class="labels">
+                <span class="label soon">即将开演</span>
+                <span class="label member">会员专享</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TabBar -->
+    <div class="tab-bar" id="tabBar">
+      <a class="tab-item" href="home.html">
+        <i class="fas fa-home"></i>
+        <span>首页</span>
+      </a>
+      <a class="tab-item active" href="show-list-detail.html">
+        <i class="fas fa-theater-masks"></i>
+        <span>演出</span>
+      </a>
+      <a class="tab-item" href="shop.html">
+        <i class="fas fa-shopping-bag"></i>
+        <span>商城</span>
+      </a>
+      <a class="tab-item" href="member-center.html">
+        <i class="fas fa-crown"></i>
+        <span>会员</span>
+      </a>
+      <a class="tab-item" href="profile.html">
+        <i class="fas fa-user"></i>
+        <span>我的</span>
+      </a>
+    </div>
+
+  </div>
+
+<script>
+// ========== Category Selection ==========
+function selectCategory(el) {
+  document.querySelectorAll('.category-tag').forEach(tag => tag.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ========== Filter Toggle ==========
+function toggleFilter(el) {
+  el.classList.toggle('active');
+}
+
+// ========== Wishlist Toggle ==========
+function toggleWishlist(el) {
+  el.classList.toggle('liked');
+  const icon = el.querySelector('i');
+  if (el.classList.contains('liked')) {
+    icon.classList.remove('far');
+    icon.classList.add('fas');
+    showToast('已加入心愿单');
+  } else {
+    icon.classList.remove('fas');
+    icon.classList.add('far');
+    showToast('已移出心愿单');
+  }
+}
+
+// ========== TabBar ==========
+function switchTabBar(el, name) {
+  document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
+  el.classList.add('active');
+  showToast('切换到' + name);
+}
+
+// ========== Toast ==========
+let toastTimer;
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2000);
+}
+</script>
+
+</body>
+</html>

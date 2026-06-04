@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>实名认证 - 海南演艺票务系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* ========== Reset & Base ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #F5F6FA;
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* ========== Phone Frame ========== */
+        .phone-frame {
+            width: 100%;
+            max-width: 375px;
+            min-height: 100vh;
+            min-height: 100dvh;
+            background: #F5F6FA;
+            position: relative;
+            overflow-x: hidden;
+            padding-bottom: 100px;
+        }
+
+        /* ========== Status Bar ========== */
+        .status-bar {
+            height: 44px;
+            background: linear-gradient(135deg, #0A1628 0%, #132240 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-bar .time { font-weight: 600; font-size: 14px; }
+
+        .status-bar .icons {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-bar .icons svg { width: 16px; height: 16px; fill: #fff; }
+
+        /* ========== Navigation Bar ========== */
+        .nav-bar {
+            height: 48px;
+            background: linear-gradient(135deg, #0A1628 0%, #132240 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 0 16px;
+        }
+
+        .nav-bar .back-btn {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-bar .back-btn:hover { background: rgba(255,255,255,0.1); }
+
+        .nav-bar .back-btn svg {
+            width: 22px;
+            height: 22px;
+            stroke: #fff;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .nav-bar .title {
+            color: #fff;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        /* ========== Auth Status Card ========== */
+        .auth-status-card {
+            margin: 16px;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(10, 22, 40, 0.06);
+            overflow: hidden;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .auth-status-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 22px;
+        }
+
+        .auth-status-icon.unverified {
+            background: linear-gradient(135deg, #FFF0EB, #FFE0D6);
+            color: #FF6B4A;
+        }
+
+        .auth-status-icon.verified {
+            background: linear-gradient(135deg, #E8F9F5, #D0F5EC);
+            color: #00C9A7;
+        }
+
+        .auth-status-info {
+            flex: 1;
+        }
+
+        .auth-status-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0A1628;
+            margin-bottom: 4px;
+        }
+
+        .auth-status-desc {
+            font-size: 13px;
+            color: #8E95A9;
+        }
+
+        /* ========== Section ========== */
+        .section {
+            margin: 16px;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px rgba(10, 22, 40, 0.06);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 16px 16px 0;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0A1628;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            font-size: 18px;
+            color: #D4A853;
+        }
+
+        .section-body {
+            padding: 16px;
+        }
+
+        /* ========== Form ========== */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #5A6178;
+            margin-bottom: 8px;
+        }
+
+        .form-label .required {
+            color: #FF6B4A;
+            margin-left: 2px;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 46px;
+            background: #F5F6FA;
+            border: 1.5px solid #E8E8E8;
+            border-radius: 10px;
+            padding: 0 14px;
+            font-size: 14px;
+            color: #0A1628;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #D4A853;
+            background: #fff;
+        }
+
+        .form-input::placeholder {
+            color: #BBB;
+        }
+
+        .form-input:disabled {
+            background: #F0F1F5;
+            color: #8E95A9;
+            border-color: #E8E8E8;
+        }
+
+        /* ========== Upload Area ========== */
+        .upload-area {
+            width: 100%;
+            height: 120px;
+            background: #F5F6FA;
+            border: 2px dashed #D8DAE0;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area:hover {
+            border-color: #D4A853;
+            background: #FFFDF8;
+        }
+
+        .upload-area .upload-icon {
+            font-size: 28px;
+            color: #C8CCD8;
+        }
+
+        .upload-area .upload-text {
+            font-size: 13px;
+            color: #8E95A9;
+        }
+
+        .upload-area .upload-hint {
+            font-size: 11px;
+            color: #BBB;
+        }
+
+        .upload-area.has-image {
+            border-style: solid;
+            border-color: #00C9A7;
+            background: #F0FBF8;
+        }
+
+        .upload-area.has-image .upload-icon {
+            color: #00C9A7;
+        }
+
+        .upload-area.has-image .upload-text {
+            color: #00C9A7;
+        }
+
+        .upload-area input[type="file"] {
+            display: none;
+        }
+
+        /* ========== Auth Notice ========== */
+        .auth-notice {
+            margin: 16px;
+            background: linear-gradient(135deg, rgba(212, 168, 83, 0.08), rgba(212, 168, 83, 0.03));
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
+
+        .auth-notice-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #D4A853;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .auth-notice-title i {
+            font-size: 14px;
+        }
+
+        .auth-notice-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .auth-notice-list li {
+            font-size: 12px;
+            color: #5A6178;
+            line-height: 1.8;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .auth-notice-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 9px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #D4A853;
+        }
+
+        /* ========== Submit Button ========== */
+        .submit-section {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 375px;
+            padding: 16px;
+            background: #fff;
+            box-shadow: 0 -2px 20px rgba(10,22,40,0.06);
+        }
+
+        .submit-btn {
+            width: 100%;
+            height: 48px;
+            background: linear-gradient(135deg, #D4A853, #E8C97A);
+            border: none;
+            border-radius: 24px;
+            color: #1A1A1A;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 4px 16px rgba(212,168,83,0.35);
+            transition: all 0.2s;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .submit-btn:disabled {
+            background: #E0E0E0;
+            color: #999;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* ========== Toast ========== */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(10, 22, 40, 0.85);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* ========== Animations ========== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-status-card { animation: fadeInUp 0.4s ease both; }
+        .section:nth-of-type(1) { animation: fadeInUp 0.4s ease 0.1s both; }
+        .auth-notice { animation: fadeInUp 0.4s ease 0.2s both; }
+    
+    
+    
+    
+    
+    
+  </style>
+</head>
+<body>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Phone Frame -->
+<div class="phone-frame">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+    
+        <span class="time">9:41</span>
+        <div class="icons">
+            <svg viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+        <a class="back-btn" href="profile.html">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        </a>
+        <span class="title">实名认证</span>
+    </div>
+
+    <!-- Auth Status Card -->
+    <div class="auth-status-card" id="authStatusCard">
+        <div class="auth-status-icon unverified" id="authStatusIcon">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <div class="auth-status-info">
+            <div class="auth-status-title" id="authStatusTitle">未完成实名认证</div>
+            <div class="auth-status-desc" id="authStatusDesc">完成认证后可享受购票、入场等全部服务</div>
+        </div>
+    </div>
+
+    <!-- Auth Form Section -->
+    <div class="section" id="authFormSection">
+        <div class="section-header">
+            <span class="section-title">
+                <i class="fas fa-edit"></i>
+                填写认证信息
+            </span>
+        </div>
+        <div class="section-body">
+            <div class="form-group">
+                <label class="form-label">真实姓名<span class="required">*</span></label>
+                <input type="text" class="form-input" placeholder="请输入真实姓名" id="realName" maxlength="20">
+            </div>
+            <div class="form-group">
+                <label class="form-label">身份证号<span class="required">*</span></label>
+                <input type="text" class="form-input" placeholder="请输入18位身份证号码" id="idCard" maxlength="18">
+            </div>
+            <div class="form-group">
+                <label class="form-label">身份证正面<span class="required">*</span></label>
+                <div class="upload-area" id="uploadFront" onclick="document.getElementById('fileFront').click()">
+                    <i class="fas fa-camera upload-icon"></i>
+                    <span class="upload-text">点击上传身份证人像面</span>
+                    <span class="upload-hint">支持 JPG/PNG，大小不超过 5MB</span>
+                    <input type="file" id="fileFront" accept="image/jpeg,image/png" onchange="handleUpload(this, 'uploadFront')">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">身份证反面<span class="required">*</span></label>
+                <div class="upload-area" id="uploadBack" onclick="document.getElementById('fileBack').click()">
+                    <i class="fas fa-camera upload-icon"></i>
+                    <span class="upload-text">点击上传身份证国徽面</span>
+                    <span class="upload-hint">支持 JPG/PNG，大小不超过 5MB</span>
+                    <input type="file" id="fileBack" accept="image/jpeg,image/png" onchange="handleUpload(this, 'uploadBack')">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Notice -->
+    <div class="auth-notice">
+        <div class="auth-notice-title">
+            <i class="fas fa-info-circle"></i>
+            认证说明
+        </div>
+        <ul class="auth-notice-list">
+            <li>实名认证信息仅用于购票及入场核验，不会泄露给第三方</li>
+            <li>请确保填写的信息与身份证件一致，否则将无法通过审核</li>
+            <li>认证审核通常在1-3个工作日内完成，届时将通过消息通知您</li>
+            <li>每人仅可绑定一个实名账号，认证通过后不可随意更改</li>
+            <li>如有疑问，请联系客服 400-888-0000</li>
+        </ul>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="submit-section">
+        <button class="submit-btn" id="submitBtn" onclick="submitAuth()">提交认证</button>
+    </div>
+
+</div>
+
+<script>
+    // ========== Upload Handler ==========
+    function handleUpload(input, areaId) {
+        const file = input.files[0];
+        if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+            showToast('图片大小不能超过 5MB');
+            return;
+        }
+
+        const area = document.getElementById(areaId);
+        area.classList.add('has-image');
+        area.querySelector('.upload-text').textContent = file.name;
+        area.querySelector('.upload-hint').textContent = '已选择，点击重新上传';
+        area.querySelector('.upload-icon').className = 'fas fa-check-circle upload-icon';
+    }
+
+    // ========== ID Card Format ==========
+    document.getElementById('idCard').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9Xx]/g, '').toUpperCase();
+    });
+
+    // ========== Submit Auth ==========
+    function submitAuth() {
+        const realName = document.getElementById('realName').value.trim();
+        const idCard = document.getElementById('idCard').value.trim();
+        const frontUploaded = document.getElementById('uploadFront').classList.contains('has-image');
+        const backUploaded = document.getElementById('uploadBack').classList.contains('has-image');
+
+        if (!realName) {
+            showToast('请输入真实姓名');
+            return;
+        }
+        if (!idCard || idCard.length !== 18) {
+            showToast('请输入正确的18位身份证号码');
+            return;
+        }
+        if (!frontUploaded) {
+            showToast('请上传身份证正面照片');
+            return;
+        }
+        if (!backUploaded) {
+            showToast('请上传身份证反面照片');
+            return;
+        }
+
+        // Simulate submit
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.textContent = '提交中...';
+
+        setTimeout(() => {
+            // Update status to verified
+            const icon = document.getElementById('authStatusIcon');
+            icon.className = 'auth-status-icon verified';
+            icon.innerHTML = '<i class="fas fa-check-circle"></i>';
+            document.getElementById('authStatusTitle').textContent = '认证审核中';
+            document.getElementById('authStatusDesc').textContent = '您的认证信息已提交，预计1-3个工作日完成审核';
+
+            // Disable form
+            document.getElementById('realName').disabled = true;
+            document.getElementById('idCard').disabled = true;
+            document.getElementById('realName').value = realName;
+            document.getElementById('idCard').value = idCard.replace(/^(.{6})(.+)(.{4})$/, '$1********$3');
+
+            btn.textContent = '已提交';
+            showToast('认证信息已提交');
+        }, 1500);
+    }
+
+    // ========== Toast ==========
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+</script>
+
+</body>
+</html>

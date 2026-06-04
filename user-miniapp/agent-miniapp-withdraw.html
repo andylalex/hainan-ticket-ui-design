@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>佣金管理 - 代理中心</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif;
+    background: #E8E8ED;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .phone-frame {
+    width: 375px;
+    min-height: 100vh;
+    background: #F5F6FA;
+    position: relative;
+    overflow-x: hidden;
+    padding-bottom: 24px;
+  }
+
+  /* ========== 状态栏 ========== */
+  .status-bar {
+    height: 44px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1A1A1A;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .status-bar .time { font-size: 15px; font-weight: 700; }
+
+  .status-bar .status-icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+  }
+
+  .status-bar .status-icons i { font-size: 14px; }
+
+  .status-bar .battery {
+    width: 24px;
+    height: 11px;
+    border: 1.5px solid #1A1A1A;
+    border-radius: 2px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 1.5px;
+  }
+
+  .status-bar .battery::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 5px;
+    background: #1A1A1A;
+    border-radius: 0 1px 1px 0;
+  }
+
+  .status-bar .battery-inner {
+    width: 75%;
+    height: 100%;
+    background: #1A1A1A;
+    border-radius: 1px;
+  }
+
+  /* ========== 导航栏 ========== */
+  .nav-bar {
+    height: 44px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    position: sticky;
+    top: 44px;
+    z-index: 100;
+    border-bottom: 0.5px solid #F0F0F0;
+  }
+
+  .nav-bar .nav-back {
+    position: absolute;
+    left: 16px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #1A1A1A;
+    font-size: 18px;
+    transition: opacity 0.2s;
+  }
+
+  .nav-bar .nav-back:active { opacity: 0.5; }
+
+  .nav-bar .nav-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1A1A1A;
+  }
+
+  /* ========== 子Tab ========== */
+  .sub-tabs {
+    display: flex;
+    background: #fff;
+    border-bottom: 0.5px solid #F0F0F0;
+  }
+
+  .sub-tab {
+    flex: 1;
+    text-align: center;
+    font-size: 14px;
+    color: #999;
+    padding: 12px 0;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+    position: relative;
+  }
+
+  .sub-tab.active {
+    color: #FF6B4A;
+    font-weight: 600;
+  }
+
+  .sub-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 2px;
+    background: #FF6B4A;
+    border-radius: 1px;
+  }
+
+  .sub-tab:active { opacity: 0.7; }
+
+  .tab-panel {
+    display: none;
+  }
+
+  .tab-panel.active {
+    display: block;
+  }
+
+  /* ========== 提现申请 ========== */
+  .balance-card {
+    background: linear-gradient(135deg, #FF6B4A, #FF9A76);
+    margin: 16px;
+    border-radius: 12px;
+    padding: 24px;
+    color: #fff;
+  }
+
+  .balance-label {
+    font-size: 13px;
+    opacity: 0.9;
+    margin-bottom: 8px;
+  }
+
+  .balance-value {
+    font-size: 36px;
+    font-weight: 700;
+  }
+
+  .balance-value .currency {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .withdraw-form {
+    margin: 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .input-group {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .input-label {
+    font-size: 13px;
+    color: #94A3B8;
+    margin-bottom: 10px;
+  }
+
+  .input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .input-prefix {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1A1A1A;
+  }
+
+  .input-field {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1A1A1A;
+    font-family: inherit;
+    background: transparent;
+  }
+
+  .input-field::placeholder {
+    color: #E2E8F0;
+    font-weight: 400;
+    font-size: 16px;
+  }
+
+  .quick-amounts {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .quick-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #E2E8F0;
+    background: #fff;
+    color: #666;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+
+  .quick-btn:active,
+  .quick-btn.active {
+    background: #FFF3F0;
+    border-color: #FF6B4A;
+    color: #FF6B4A;
+  }
+
+  .withdraw-to {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .withdraw-to-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #07C160;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .withdraw-to-info {
+    flex: 1;
+  }
+
+  .withdraw-to-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1A1A1A;
+  }
+
+  .withdraw-to-desc {
+    font-size: 12px;
+    color: #94A3B8;
+    margin-top: 2px;
+  }
+
+  .withdraw-tips {
+    font-size: 12px;
+    color: #C0C4CC;
+    line-height: 1.8;
+    padding: 0 4px;
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    background: #FF6B4A;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity 0.2s;
+    margin-top: 8px;
+  }
+
+  .btn-submit:active { opacity: 0.8; }
+
+  /* ========== 提现记录 ========== */
+  .record-list {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .record-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .record-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .record-amount {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1A1A1A;
+  }
+
+  .record-status {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  .record-status.reviewing { background: #FFF7E6; color: #F59E0B; }
+  .record-status.success { background: #F0FFF5; color: #52C41A; }
+  .record-status.rejected { background: #FFF1F0; color: #FF4D4F; }
+
+  .record-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .record-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+  }
+
+  .record-label {
+    color: #94A3B8;
+  }
+
+  .record-value {
+    color: #666;
+  }
+
+    
+    
+    
+    
+    
+  </style>
+</head>
+<body>
+
+<div class="phone-frame">
+
+  <!-- 状态栏 -->
+  <div class="status-bar">
+    
+    <span class="time">9:41</span>
+    <div class="status-icons">
+      <i class="fas fa-signal"></i>
+      <i class="fas fa-wifi"></i>
+      <div class="battery"><div class="battery-inner"></div></div>
+    </div>
+  </div>
+
+  <!-- 导航栏 -->
+  <div class="nav-bar">
+    <div class="nav-back" onclick="history.back()"><i class="fas fa-chevron-left"></i></div>
+    <span class="nav-title">佣金管理</span>
+  </div>
+
+  <!-- 子Tab -->
+  <div class="sub-tabs">
+    <div class="sub-tab active" data-tab="apply">提现申请</div>
+    <div class="sub-tab" data-tab="records">提现记录</div>
+  </div>
+
+  <!-- 提现申请面板 -->
+  <div class="tab-panel active" id="panel-apply">
+
+    <!-- 可提现余额 -->
+    <div class="balance-card">
+      <div class="balance-label">可提现余额</div>
+      <div class="balance-value"><span class="currency">&yen;</span>12,200.00</div>
+    </div>
+
+    <!-- 提现表单 -->
+    <div class="withdraw-form">
+      <div class="input-group">
+        <div class="input-label">提现金额</div>
+        <div class="input-row">
+          <span class="input-prefix">&yen;</span>
+          <input type="number" class="input-field" id="withdrawAmount" placeholder="请输入提现金额">
+        </div>
+      </div>
+
+      <div class="quick-amounts">
+        <button class="quick-btn" onclick="setAmount(50)">&yen;50</button>
+        <button class="quick-btn" onclick="setAmount(100)">&yen;100</button>
+        <button class="quick-btn" onclick="setAmount(500)">&yen;500</button>
+        <button class="quick-btn" onclick="setAmount(1000)">&yen;1000</button>
+        <button class="quick-btn" onclick="setAmount(12200)">全部提现</button>
+      </div>
+
+      <div class="withdraw-to">
+        <div class="withdraw-to-icon"><i class="fab fa-weixin"></i></div>
+        <div class="withdraw-to-info">
+          <div class="withdraw-to-label">微信零钱</div>
+          <div class="withdraw-to-desc">绑定手机 138****2356</div>
+        </div>
+        <i class="fas fa-chevron-right" style="color:#C0C4CC;font-size:14px;"></i>
+      </div>
+
+      <div class="withdraw-tips">
+        提现规则：<br>
+        1. 最低提现金额 &yen;50，每日可申请一次<br>
+        2. 提现审核通过后自动转入微信零钱<br>
+        3. 预计1-3个工作日到账
+      </div>
+
+      <button class="btn-submit" onclick="submitWithdraw()">确认提现</button>
+    </div>
+
+  </div>
+
+  <!-- 提现记录面板 -->
+  <div class="tab-panel" id="panel-records">
+    <div class="record-list" id="records">
+
+      <!-- 记录1 -->
+      <div class="record-card">
+        <div class="record-header">
+          <span class="record-amount">&yen;2,000.00</span>
+          <span class="record-status success">已到账</span>
+        </div>
+        <div class="record-detail">
+          <div class="record-row">
+            <span class="record-label">申请时间</span>
+            <span class="record-value">2026-04-22 10:30</span>
+          </div>
+          <div class="record-row">
+            <span class="record-label">到账方式</span>
+            <span class="record-value">微信零钱</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 记录2 -->
+      <div class="record-card">
+        <div class="record-header">
+          <span class="record-amount">&yen;1,500.00</span>
+          <span class="record-status reviewing">审核中</span>
+        </div>
+        <div class="record-detail">
+          <div class="record-row">
+            <span class="record-label">申请时间</span>
+            <span class="record-value">2026-04-24 09:15</span>
+          </div>
+          <div class="record-row">
+            <span class="record-label">到账方式</span>
+            <span class="record-value">微信零钱</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 记录3 -->
+      <div class="record-card">
+        <div class="record-header">
+          <span class="record-amount">&yen;3,000.00</span>
+          <span class="record-status success">已到账</span>
+        </div>
+        <div class="record-detail">
+          <div class="record-row">
+            <span class="record-label">申请时间</span>
+            <span class="record-value">2026-04-18 14:20</span>
+          </div>
+          <div class="record-row">
+            <span class="record-label">到账方式</span>
+            <span class="record-value">微信零钱</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 记录4 -->
+      <div class="record-card">
+        <div class="record-header">
+          <span class="record-amount">&yen;500.00</span>
+          <span class="record-status rejected">已驳回</span>
+        </div>
+        <div class="record-detail">
+          <div class="record-row">
+            <span class="record-label">申请时间</span>
+            <span class="record-value">2026-04-15 16:45</span>
+          </div>
+          <div class="record-row">
+            <span class="record-label">到账方式</span>
+            <span class="record-value">微信零钱</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 记录5 -->
+      <div class="record-card">
+        <div class="record-header">
+          <span class="record-amount">&yen;2,500.00</span>
+          <span class="record-status success">已到账</span>
+        </div>
+        <div class="record-detail">
+          <div class="record-row">
+            <span class="record-label">申请时间</span>
+            <span class="record-value">2026-04-10 11:00</span>
+          </div>
+          <div class="record-row">
+            <span class="record-label">到账方式</span>
+            <span class="record-value">微信零钱</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 记录6 -->
+      <div class="record-card">
+        <div class="record-header">
+          <span class="record-amount">&yen;1,000.00</span>
+          <span class="record-status success">已到账</span>
+        </div>
+        <div class="record-detail">
+          <div class="record-row">
+            <span class="record-label">申请时间</span>
+            <span class="record-value">2026-04-05 09:30</span>
+          </div>
+          <div class="record-row">
+            <span class="record-label">到账方式</span>
+            <span class="record-value">微信零钱</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // 子Tab切换
+  document.querySelectorAll('.sub-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      var target = this.getAttribute('data-tab');
+      document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + target).classList.add('active');
+    });
+  });
+
+  // 快捷金额
+  function setAmount(amount) {
+    document.getElementById('withdrawAmount').value = amount;
+    document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+
+  // 提交提现
+  function submitWithdraw() {
+    var amount = document.getElementById('withdrawAmount').value;
+    if (!amount || amount < 50) {
+      showToast('最低提现金额 ¥50');
+      return;
+    }
+    if (amount > 12200) {
+      showToast('超出可提现余额');
+      return;
+    }
+    showToast('提现申请已提交');
+  }
+
+  // Toast 提示
+  function showToast(msg) {
+    var toast = document.createElement('div');
+    toast.textContent = msg;
+    toast.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.75);color:#fff;padding:10px 20px;border-radius:8px;font-size:14px;z-index:9999;pointer-events:none;';
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 2000);
+  }
+
+  // Hash跳转支持
+  if (window.location.hash === '#records') {
+    document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.sub-tab[data-tab="records"]').classList.add('active');
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-records').classList.add('active');
+  }
+</script>
+
+</body>
+</html>

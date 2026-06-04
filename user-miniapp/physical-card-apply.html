@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>实体卡申请 - 海南演艺票务系统</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #F5F6FA;
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 375px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: #F5F6FA;
+      position: relative;
+      overflow-x: hidden;
+      padding-bottom: 100px;
+    }
+
+    /* ========== Top Nav ========== */
+    .top-nav {
+      height: 44px;
+      background: linear-gradient(135deg, #0A1628 0%, #132240 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 16px;
+    }
+
+    .top-nav .back-btn {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+
+    .top-nav .back-btn:hover { background: rgba(255,255,255,0.1); }
+    .top-nav .nav-title { color: #fff; font-size: 17px; font-weight: 500; }
+
+    /* ========== Current Level Banner ========== */
+    .level-banner {
+      background: linear-gradient(135deg, #0A1628 0%, #132240 50%, #1a2d50 100%);
+      padding: 20px 20px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .level-banner::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle, rgba(212,168,83,0.25) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .level-info {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .level-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .level-icon.gold {
+      background: linear-gradient(135deg, #D4A853, #F0D48A);
+      color: #1A1A1A;
+    }
+
+    .level-text {
+      flex: 1;
+    }
+
+    .level-label {
+      color: rgba(255,255,255,0.6);
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .level-name {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .level-name .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #D4A853, #F0C75E);
+      color: #1A1A1A;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    /* ========== Card Selection Section ========== */
+    .card-select-section {
+      padding: 20px 16px 0;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0A1628;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 3px;
+      height: 16px;
+      background: linear-gradient(180deg, #D4A853, #F0D48A);
+      border-radius: 2px;
+    }
+
+    .card-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card-option {
+      background: #fff;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 2px 12px rgba(10,22,40,0.06);
+      display: flex;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-option:active {
+      transform: scale(0.98);
+    }
+
+    .card-option.available {
+      border-color: transparent;
+    }
+
+    .card-option.available:hover {
+      border-color: #D4A853;
+    }
+
+    .card-option.selected {
+      border-color: #D4A853;
+      background: linear-gradient(135deg, #FFFDF8, #FFF8E7);
+      box-shadow: 0 4px 20px rgba(212,168,83,0.2);
+    }
+
+    .card-option.locked {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .card-option.locked:active {
+      transform: none;
+    }
+
+    .card-option .check-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid #D8DAE0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .card-option.selected .check-badge {
+      background: #D4A853;
+      border-color: #D4A853;
+    }
+
+    .card-option.selected .check-badge::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #fff;
+    }
+
+    .card-option.locked .check-badge {
+      display: none;
+    }
+
+    .card-option .lock-overlay {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: #8E95A9;
+      background: rgba(255,255,255,0.9);
+      padding: 3px 8px;
+      border-radius: 8px;
+    }
+
+    .card-option .lock-overlay i {
+      font-size: 10px;
+    }
+
+    /* Card Preview Thumbnail */
+    .card-thumb {
+      width: 100px;
+      height: 64px;
+      border-radius: 8px;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-thumb.normal {
+      background: linear-gradient(135deg, #8E9EAB, #EFEFEF);
+    }
+
+    .card-thumb.gold {
+      background: linear-gradient(135deg, #1A2A4A 0%, #2A3A5A 50%, #1A2A4A 100%);
+    }
+
+    .card-thumb.diamond {
+      background: linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
+    }
+
+    .card-thumb .card-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .card-thumb.normal .card-label { color: #5A6178; }
+    .card-thumb.gold .card-label { color: #D4A853; }
+    .card-thumb.diamond .card-label {
+      background: linear-gradient(135deg, #D4A853, #F0D48A, #D4A853);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .card-thumb .card-chip {
+      position: absolute;
+      bottom: 6px;
+      left: 8px;
+      width: 18px;
+      height: 14px;
+      border-radius: 2px;
+    }
+
+    .card-thumb.normal .card-chip { background: #C0C0C0; }
+    .card-thumb.gold .card-chip { background: linear-gradient(135deg, #D4A853, #F0D48A); }
+    .card-thumb.diamond .card-chip { background: linear-gradient(135deg, #D4A853, #F0D48A); }
+
+    .card-detail {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-detail-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0A1628;
+      margin-bottom: 4px;
+    }
+
+    .card-detail-req {
+      font-size: 12px;
+      color: #D4A853;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-detail-req i {
+      font-size: 11px;
+    }
+
+    .card-detail-benefits {
+      font-size: 12px;
+      color: #8E95A9;
+      line-height: 1.5;
+    }
+
+    /* ========== Benefits Section ========== */
+    .benefits-section {
+      padding: 20px 16px 0;
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .benefit-item {
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 2px 8px rgba(10,22,40,0.04);
+    }
+
+    .benefit-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .benefit-icon.discount { background: rgba(255,107,74,0.1); }
+    .benefit-icon.priority { background: rgba(212,168,83,0.1); }
+    .benefit-icon.gift { background: rgba(0,201,167,0.1); }
+    .benefit-icon.service { background: rgba(74,122,255,0.1); }
+
+    .benefit-text { flex: 1; }
+
+    .benefit-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #0A1628;
+    }
+
+    .benefit-desc {
+      font-size: 11px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    /* ========== Form Section ========== */
+    .form-section {
+      padding: 20px 16px 0;
+    }
+
+    .form-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 2px 12px rgba(10,22,40,0.06);
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group:last-child { margin-bottom: 0; }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #0A1628;
+      margin-bottom: 8px;
+    }
+
+    .form-label .required { color: #FF6B4A; margin-left: 2px; }
+
+    .form-input {
+      width: 100%;
+      height: 44px;
+      background: #F5F6FA;
+      border: 1.5px solid #E8E8E8;
+      border-radius: 10px;
+      padding: 0 14px;
+      font-size: 14px;
+      color: #0A1628;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #D4A853;
+      background: #fff;
+    }
+
+    .form-input::placeholder { color: #BBB; }
+
+    .form-textarea {
+      height: 80px;
+      padding: 12px 14px;
+      resize: none;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .form-row .form-group { flex: 1; }
+
+    /* ========== Apply Records ========== */
+    .records-section {
+      padding: 20px 16px 0;
+    }
+
+    .record-entry {
+      background: linear-gradient(135deg, #FFF8E7, #FFEDC2);
+      border-radius: 14px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      border: 1px solid rgba(212,168,83,0.2);
+      transition: transform 0.2s;
+    }
+
+    .record-entry:active { transform: scale(0.98); }
+
+    .record-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .record-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(212,168,83,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .record-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0A1628;
+    }
+
+    .record-desc {
+      font-size: 12px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    .record-arrow {
+      color: #D4A853;
+      font-size: 14px;
+    }
+
+    /* ========== Submit Button ========== */
+    .submit-section {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 375px;
+      padding: 16px;
+      background: #fff;
+      box-shadow: 0 -2px 20px rgba(10,22,40,0.06);
+    }
+
+    .submit-btn {
+      width: 100%;
+      height: 48px;
+      background: linear-gradient(135deg, #D4A853, #E8C97A);
+      border: none;
+      border-radius: 24px;
+      color: #1A1A1A;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 4px 16px rgba(212,168,83,0.35);
+      transition: all 0.2s;
+    }
+
+    .submit-btn:active { transform: scale(0.98); }
+
+    .submit-btn:disabled {
+      background: #E0E0E0;
+      color: #999;
+      box-shadow: none;
+    }
+
+    /* ========== Success Modal ========== */
+    .success-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .success-modal-overlay.show { display: flex; }
+
+    .success-modal {
+      width: 100%;
+      max-width: 300px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 32px 24px;
+      text-align: center;
+      animation: modalIn 0.3s ease;
+    }
+
+    @keyframes modalIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #00C9A7, #00E5BE);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 28px;
+      color: #fff;
+    }
+
+    .success-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #0A1628;
+      margin-bottom: 8px;
+    }
+
+    .success-desc {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .success-btn {
+      width: 100%;
+      padding: 12px 0;
+      background: linear-gradient(135deg, #D4A853, #E8C97A);
+      border: none;
+      border-radius: 24px;
+      color: #1A1A1A;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* ========== Animations ========== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .level-banner { animation: fadeInUp 0.4s ease both; }
+    .card-select-section { animation: fadeInUp 0.4s ease 0.1s both; }
+    .benefits-section { animation: fadeInUp 0.4s ease 0.2s both; }
+    .form-section { animation: fadeInUp 0.4s ease 0.3s both; }
+    .records-section { animation: fadeInUp 0.4s ease 0.4s both; }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <!-- Top Nav -->
+  <div class="top-nav">
+    <a class="back-btn" href="member-center.html"><i class="fas fa-chevron-left"></i></a>
+    <span class="nav-title">申请实体卡</span>
+  </div>
+
+  <!-- Current Level Banner -->
+  <div class="level-banner">
+    <div class="level-info">
+      <div class="level-icon gold">
+        <i class="fas fa-crown"></i>
+      </div>
+      <div class="level-text">
+        <div class="level-label">当前会员等级</div>
+        <div class="level-name">金卡会员 <span class="badge">VIP 3</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Selection -->
+  <div class="card-select-section">
+    <div class="section-title">选择卡片类型</div>
+    <div class="card-options">
+      <!-- Gold Card - Available (current level) -->
+      <div class="card-option selected" id="card-gold" onclick="selectCard('gold')">
+        <div class="check-badge"></div>
+        <div class="card-thumb gold">
+          <span class="card-label">HAINAN ARTS</span>
+          <div class="card-chip"></div>
+        </div>
+        <div class="card-detail">
+          <div class="card-detail-name">金卡</div>
+          <div class="card-detail-req"><i class="fas fa-check-circle"></i> 金卡会员可申请</div>
+          <div class="card-detail-benefits">专属折扣95折、优先购票、生日礼品、专属客服</div>
+        </div>
+      </div>
+
+      <!-- Diamond Card - Locked -->
+      <div class="card-option locked" id="card-diamond">
+        <div class="lock-overlay"><i class="fas fa-lock"></i> 升级后可申请</div>
+        <div class="card-thumb diamond">
+          <span class="card-label">HAINAN ARTS</span>
+          <div class="card-chip"></div>
+        </div>
+        <div class="card-detail">
+          <div class="card-detail-name">钻石卡</div>
+          <div class="card-detail-req" style="color: #8E95A9;"><i class="fas fa-lock"></i> 需钻石会员等级</div>
+          <div class="card-detail-benefits">全场9折、VIP专属座位、免费演出票、1对1管家服务</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Benefits Section -->
+  <div class="benefits-section" id="benefitsSection">
+    <div class="section-title">金卡专属权益</div>
+    <div class="benefits-grid">
+      <div class="benefit-item">
+        <div class="benefit-icon discount"><i class="fas fa-ticket-alt"></i></div>
+        <div class="benefit-text">
+          <div class="benefit-name">专属折扣</div>
+          <div class="benefit-desc">全场演出额外95折</div>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon priority"><i class="fas fa-bolt"></i></div>
+        <div class="benefit-text">
+          <div class="benefit-name">优先购票</div>
+          <div class="benefit-desc">开票前24小时优先选座</div>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon gift"><i class="fas fa-gift"></i></div>
+        <div class="benefit-text">
+          <div class="benefit-name">生日礼遇</div>
+          <div class="benefit-desc">生日月专属礼品</div>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon service"><i class="fas fa-headset"></i></div>
+        <div class="benefit-text">
+          <div class="benefit-name">专属客服</div>
+          <div class="benefit-desc">1对1专属服务通道</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Section -->
+  <div class="form-section">
+    <div class="section-title">填写申请信息</div>
+    <div class="form-card">
+      <div class="form-group">
+        <label class="form-label">姓名<span class="required">*</span></label>
+        <input type="text" class="form-input" placeholder="请输入真实姓名" id="nameInput">
+      </div>
+      <div class="form-group">
+        <label class="form-label">手机号码<span class="required">*</span></label>
+        <input type="tel" class="form-input" placeholder="请输入手机号码" id="phoneInput" maxlength="11">
+      </div>
+      <div class="form-group">
+        <label class="form-label">所在地区<span class="required">*</span></label>
+        <div class="form-row">
+          <select class="form-input" id="provinceSelect">
+            <option value="">选择省份</option>
+            <option value="hainan">海南省</option>
+            <option value="guangdong">广东省</option>
+            <option value="beijing">北京市</option>
+          </select>
+          <select class="form-input" id="citySelect">
+            <option value="">选择城市</option>
+            <option value="haikou">海口市</option>
+            <option value="sanya">三亚市</option>
+            <option value="qionghai">琼海市</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">详细地址<span class="required">*</span></label>
+        <textarea class="form-input form-textarea" placeholder="请输入详细收货地址" id="addressInput"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Apply Records -->
+  <div class="records-section">
+    <div class="record-entry" onclick="viewRecords()">
+      <div class="record-left">
+        <div class="record-icon"><i class="fas fa-history"></i></div>
+        <div>
+          <div class="record-text">申请记录</div>
+          <div class="record-desc">查看历史申请及物流状态</div>
+        </div>
+      </div>
+      <span class="record-arrow"><i class="fas fa-chevron-right"></i></span>
+    </div>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="submit-section">
+    <button class="submit-btn" id="submitBtn" onclick="submitApply()">提交申请</button>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="success-modal-overlay" id="successModal">
+    <div class="success-modal">
+      <div class="success-icon">
+        <i class="fas fa-check"></i>
+      </div>
+      <div class="success-title">申请提交成功</div>
+      <div class="success-desc">您的金卡实体会员卡申请已提交，预计7个工作日内寄出，请保持手机畅通。</div>
+      <button class="success-btn" onclick="closeModal()">我知道了</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Card data
+  const cardData = {
+    normal: {
+      name: '普通会员卡',
+      level: '注册会员',
+      benefits: '基础购票折扣、积分累积、生日祝福'
+    },
+    gold: {
+      name: '金卡',
+      level: '金卡会员',
+      benefits: '专属折扣95折、优先购票、生日礼品、专属客服'
+    },
+    diamond: {
+      name: '钻石卡',
+      level: '钻石会员',
+      benefits: '全场9折、VIP专属座位、免费演出票、1对1管家服务'
+    }
+  };
+
+  let selectedCard = 'gold';
+
+  function selectCard(type) {
+    // Check if locked
+    const el = document.getElementById('card-' + type);
+    if (el.classList.contains('locked')) {
+      return;
+    }
+
+    // Deselect all
+    document.querySelectorAll('.card-option').forEach(opt => opt.classList.remove('selected'));
+    // Select clicked
+    el.classList.add('selected');
+    selectedCard = type;
+
+    // Update benefits section title
+    const benefitsTitle = document.querySelector('#benefitsSection .section-title');
+    benefitsTitle.textContent = cardData[type].name + '专属权益';
+  }
+
+  function viewRecords() {
+    alert('正在查看申请记录...');
+  }
+
+  function submitApply() {
+    const name = document.getElementById('nameInput').value.trim();
+    const phone = document.getElementById('phoneInput').value.trim();
+    const address = document.getElementById('addressInput').value.trim();
+
+    if (!name) {
+      alert('请输入姓名');
+      return;
+    }
+    if (!phone || phone.length !== 11) {
+      alert('请输入正确的手机号码');
+      return;
+    }
+    if (!address) {
+      alert('请输入详细地址');
+      return;
+    }
+
+    const cardName = cardData[selectedCard].name;
+    document.getElementById('successModal').querySelector('.success-desc').textContent =
+      '您的' + cardName + '实体会员卡申请已提交，预计7个工作日内寄出，请保持手机畅通。';
+
+    document.getElementById('successModal').classList.add('show');
+  }
+
+  function closeModal() {
+    document.getElementById('successModal').classList.remove('show');
+  }
+
+  document.getElementById('successModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeModal();
+    }
+  });
+</script>
+
+</body>
+</html>

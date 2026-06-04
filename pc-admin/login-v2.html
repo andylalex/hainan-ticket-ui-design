@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登录 - 海南演艺管理平台</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* ========== Reset & Base ========== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --deep-blue: #0A1628;
+      --deep-blue-light: #122240;
+      --deep-blue-lighter: #1A2E4A;
+      --coral: #FF6B4A;
+      --coral-hover: #E85A3A;
+      --gold: #D4A853;
+      --emerald: #00C9A7;
+      --light-gray: #F5F6FA;
+      --border-color: #E8EAF0;
+      --text-primary: #1A1A2E;
+      --text-secondary: #6B7280;
+      --text-muted: #9CA3AF;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(160deg, #060B14 0%, #0A1628 40%, #122240 100%);
+      overflow: hidden;
+      color: #fff;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* ========== Particles ========== */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,168,83,0.8), rgba(255,107,74,0.4));
+      animation: particleFloat linear infinite;
+    }
+
+    @keyframes particleFloat {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100vh) translateX(30px); opacity: 0; }
+    }
+
+    /* ========== SVG Curtain ========== */
+    .curtain-svg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ========== Login Page Container ========== */
+    .login-page {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* ========== Glass Card ========== */
+    .login-card {
+      width: 420px;
+      padding: 48px 40px;
+      backdrop-filter: blur(40px);
+      -webkit-backdrop-filter: blur(40px);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      box-shadow:
+        0 32px 64px rgba(0,0,0,0.4),
+        0 0 0 1px rgba(255,255,255,0.04) inset,
+        0 1px 0 rgba(255,255,255,0.06) inset;
+      animation: cardAppear 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+    }
+
+    @keyframes cardAppear {
+      from { opacity: 0; transform: translateY(30px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ========== Brand Area ========== */
+    .brand-area {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .brand-icon {
+      font-size: 48px;
+      background: linear-gradient(135deg, #D4A853, #FF6B4A);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+      display: inline-block;
+      filter: drop-shadow(0 4px 16px rgba(255,107,74,0.25));
+      animation: iconPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes iconPulse {
+      0%, 100% { filter: drop-shadow(0 4px 16px rgba(255,107,74,0.25)); }
+      50% { filter: drop-shadow(0 4px 24px rgba(255,107,74,0.4)); }
+    }
+
+    .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+
+    .brand-tagline {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      font-weight: 300;
+      letter-spacing: 3px;
+    }
+
+    /* ========== Tab Switching ========== */
+    .login-tabs {
+      display: flex;
+      position: relative;
+      margin-bottom: 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px 0;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.4);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+
+    .tab-btn.active {
+      color: #fff;
+    }
+
+    .tab-btn:hover:not(.active) {
+      color: rgba(255,255,255,0.6);
+    }
+
+    .tab-indicator {
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 50%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--coral), var(--gold));
+      border-radius: 2px;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .tab-indicator.right {
+      transform: translateX(100%);
+    }
+
+    /* ========== Tab Content ========== */
+    .tab-content {
+      position: relative;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ========== Input Groups ========== */
+    .login-input-group {
+      position: relative;
+      margin-bottom: 18px;
+    }
+
+    .login-input-group .input-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 14px;
+      transition: color 0.2s;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .login-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 16px 0 44px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      font-family: 'Noto Sans SC', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .login-input::placeholder {
+      color: rgba(255,255,255,0.3);
+    }
+
+    .login-input:focus {
+      outline: none;
+      border-color: var(--coral);
+      background: rgba(255,107,74,0.05);
+      box-shadow: 0 0 0 3px rgba(255,107,74,0.1);
+    }
+
+    .login-input:focus ~ .input-icon {
+      color: var(--coral);
+    }
+
+    /* ========== Toggle Password ========== */
+    .toggle-password {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px;
+      transition: color 0.2s;
+      z-index: 2;
+    }
+
+    .toggle-password:hover {
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ========== Captcha Row ========== */
+    .captcha-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .captcha-input {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    .captcha-canvas-wrap {
+      position: relative;
+      width: 120px;
+      height: 48px;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+      transition: border-color 0.2s;
+    }
+
+    .captcha-canvas-wrap:hover {
+      border-color: var(--coral);
+    }
+
+    .captcha-canvas-wrap canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .captcha-refresh {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: rgba(255,255,255,0);
+      font-size: 14px;
+      transition: color 0.2s;
+      pointer-events: none;
+    }
+
+    .captcha-canvas-wrap:hover .captcha-refresh {
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* ========== SMS Row ========== */
+    .sms-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .sms-row .login-input-group {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    .sms-btn {
+      height: 48px;
+      padding: 0 18px;
+      border-radius: 10px;
+      border: 1px solid var(--coral);
+      background: transparent;
+      color: var(--coral);
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+
+    .sms-btn:hover:not(:disabled) {
+      background: rgba(255,107,74,0.1);
+    }
+
+    .sms-btn:disabled {
+      border-color: rgba(255,255,255,0.1);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    /* ========== Login Options Row ========== */
+    .login-options {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    /* Custom Checkbox */
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      user-select: none;
+    }
+
+    .remember-me input[type="checkbox"] {
+      display: none;
+    }
+
+    .custom-checkbox {
+      width: 16px;
+      height: 16px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .custom-checkbox i {
+      font-size: 9px;
+      color: #fff;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.2s;
+    }
+
+    .remember-me input[type="checkbox"]:checked + .custom-checkbox {
+      background: var(--coral);
+      border-color: var(--coral);
+    }
+
+    .remember-me input[type="checkbox"]:checked + .custom-checkbox i {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .forgot-password {
+      font-size: 13px;
+      color: var(--coral);
+      transition: color 0.2s;
+    }
+
+    .forgot-password:hover {
+      color: var(--coral-hover);
+    }
+
+    /* ========== Login Button ========== */
+    .login-btn {
+      width: 100%;
+      height: 48px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--coral), var(--gold));
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Noto Sans SC', sans-serif;
+      cursor: pointer;
+      transition: all 0.25s;
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255,107,74,0.35);
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+    }
+
+    .login-btn:disabled {
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* ========== Divider ========== */
+    .login-divider {
+      display: flex;
+      align-items: center;
+      margin: 28px 0;
+      gap: 16px;
+    }
+
+    .login-divider::before,
+    .login-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .login-divider span {
+      font-size: 12px;
+      color: rgba(255,255,255,0.3);
+      white-space: nowrap;
+    }
+
+    /* ========== Social Login ========== */
+    .social-login {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .social-btn-circle {
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.03);
+      color: rgba(255,255,255,0.5);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .social-btn-circle:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.8);
+      transform: translateY(-2px);
+    }
+
+    .social-btn-circle.wechat:hover {
+      color: #07C160;
+      border-color: rgba(7,193,96,0.3);
+      background: rgba(7,193,96,0.08);
+    }
+
+    /* ========== Copyright ========== */
+    .copyright {
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.5px;
+    }
+
+    /* ========== Toast ========== */
+    .toast {
+      position: fixed;
+      top: 40px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      padding: 10px 24px;
+      background: rgba(239,68,68,0.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #fff;
+      border-radius: 10px;
+      font-size: 13px;
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 1000;
+      pointer-events: none;
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ========== Animations ========== */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    /* ========== Responsive ========== */
+    @media (max-width: 768px) {
+      .login-card {
+        width: 100%;
+        max-width: 420px;
+        padding: 36px 24px;
+        border-radius: 20px;
+      }
+
+      .brand-icon {
+        font-size: 40px;
+      }
+
+      .brand-name {
+        font-size: 20px;
+      }
+
+      .captcha-canvas-wrap {
+        width: 100px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .login-card {
+        padding: 28px 20px;
+      }
+
+      .sms-btn {
+        padding: 0 14px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- SVG Curtain Curves -->
+  <svg class="curtain-svg" viewBox="0 0 1440 900" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="curtainGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:rgba(255,107,74,0.06)"/>
+        <stop offset="100%" style="stop-color:rgba(212,168,83,0.02)"/>
+      </linearGradient>
+      <linearGradient id="curtainGrad2" x1="100%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" style="stop-color:rgba(0,201,167,0.04)"/>
+        <stop offset="100%" style="stop-color:rgba(59,130,246,0.02)"/>
+      </linearGradient>
+    </defs>
+    <path class="curtain-path curtain-1" d="M0,300 C360,100 720,500 1440,200" fill="none" stroke="url(#curtainGrad1)" stroke-width="1.5"/>
+    <path class="curtain-path curtain-2" d="M0,500 C400,300 800,700 1440,400" fill="none" stroke="url(#curtainGrad2)" stroke-width="1"/>
+    <path class="curtain-path curtain-3" d="M0,700 C300,500 600,800 1440,600" fill="none" stroke="rgba(212,168,83,0.03)" stroke-width="1"/>
+    <path class="curtain-path curtain-4" d="M0,150 C480,350 960,50 1440,450" fill="none" stroke="rgba(255,107,74,0.025)" stroke-width="0.8"/>
+  </svg>
+
+  <!-- Login Page -->
+  <div class="login-page">
+    <div class="login-card">
+      <!-- Brand Area -->
+      <div class="brand-area">
+        <div class="brand-icon">
+          <i class="fas fa-masks-theater"></i>
+        </div>
+        <div class="brand-name">海南演艺</div>
+        <div class="brand-tagline">智慧票务管理平台</div>
+      </div>
+
+      <!-- Tab Switching -->
+      <div class="login-tabs">
+        <button class="tab-btn active" data-tab="account" onclick="switchTab('account')">
+          <i class="fas fa-user-lock"></i> 账号登录
+        </button>
+        <button class="tab-btn" data-tab="phone" onclick="switchTab('phone')">
+          <i class="fas fa-mobile-screen"></i> 手机登录
+        </button>
+        <div class="tab-indicator"></div>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="tab-content">
+        <!-- Account Login Panel -->
+        <div class="tab-panel active" id="panel-account">
+          <div class="login-input-group">
+            <input type="text" id="username" class="login-input" placeholder="请输入账号" autocomplete="username">
+            <i class="fas fa-user input-icon"></i>
+          </div>
+
+          <div class="login-input-group">
+            <input type="password" id="password" class="login-input" placeholder="请输入密码" style="padding-right: 44px;" autocomplete="current-password">
+            <i class="fas fa-lock input-icon"></i>
+            <button class="toggle-password" onclick="togglePassword()" type="button" aria-label="切换密码可见性">
+              <i class="fas fa-eye" id="togglePwdIcon"></i>
+            </button>
+          </div>
+
+          <!-- Captcha Row -->
+          <div class="captcha-row">
+            <div class="login-input-group captcha-input">
+              <input type="text" id="captcha" class="login-input" placeholder="请输入验证码" maxlength="4" autocomplete="off">
+              <i class="fas fa-shield-halved input-icon"></i>
+            </div>
+            <div class="captcha-canvas-wrap" onclick="generateCaptcha()" title="点击刷新">
+              <canvas id="captchaCanvas" width="120" height="44"></canvas>
+              <i class="fas fa-rotate captcha-refresh"></i>
+            </div>
+          </div>
+
+          <div class="login-options">
+            <label class="remember-me">
+              <input type="checkbox" checked>
+              <span class="custom-checkbox"><i class="fas fa-check"></i></span>
+              <span>记住我</span>
+            </label>
+            <a href="#" class="forgot-password">忘记密码？</a>
+          </div>
+
+          <button class="login-btn" onclick="handleAccountLogin()">登录</button>
+        </div>
+
+        <!-- Phone Login Panel -->
+        <div class="tab-panel" id="panel-phone">
+          <div class="login-input-group">
+            <input type="tel" id="phone" class="login-input" placeholder="请输入手机号" maxlength="11" autocomplete="tel">
+            <i class="fas fa-mobile-screen input-icon"></i>
+          </div>
+
+          <!-- SMS Code Row -->
+          <div class="sms-row">
+            <div class="login-input-group">
+              <input type="text" id="smsCode" class="login-input" placeholder="请输入验证码" maxlength="6" autocomplete="one-time-code">
+              <i class="fas fa-comment-sms input-icon"></i>
+            </div>
+            <button class="sms-btn" id="smsBtn" onclick="sendSmsCode()">获取验证码</button>
+          </div>
+
+          <div style="margin-bottom: 24px;"></div>
+
+          <button class="login-btn" onclick="handlePhoneLogin()">登录</button>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="login-divider">
+        <span>其他登录方式</span>
+      </div>
+
+      <!-- Social Login -->
+      <div class="social-login">
+        <button class="social-btn-circle wechat" type="button" title="微信登录">
+          <i class="fab fa-weixin"></i>
+        </button>
+      </div>
+
+      <!-- Copyright -->
+      <p class="copyright">&copy; 2026 海南演艺 &middot; 智慧票务管理平台</p>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ========== Generate Particles ========== */
+    (function() {
+      var container = document.getElementById('particles');
+      for (var i = 0; i < 25; i++) {
+        var dot = document.createElement('div');
+        dot.className = 'particle';
+        dot.style.left = Math.random() * 100 + '%';
+        dot.style.top = Math.random() * 100 + '%';
+        dot.style.width = dot.style.height = (2 + Math.random() * 3) + 'px';
+        dot.style.opacity = (0.1 + Math.random() * 0.3);
+        dot.style.animationDuration = (15 + Math.random() * 20) + 's';
+        dot.style.animationDelay = -(Math.random() * 20) + 's';
+        container.appendChild(dot);
+      }
+    })();
+
+    /* ========== Animate Curtain Curves ========== */
+    (function() {
+      var paths = document.querySelectorAll('.curtain-path');
+      var time = 0;
+
+      /* Base positions for each curtain path */
+      var bases = [
+        { y1: 300, y2: 100, y3: 500, y4: 200 },
+        { y1: 500, y2: 300, y3: 700, y4: 400 },
+        { y1: 700, y2: 500, y3: 800, y4: 600 },
+        { y1: 150, y2: 350, y3: 50,  y4: 450 }
+      ];
+
+      function update() {
+        time += 0.003;
+        paths.forEach(function(path, i) {
+          var b = bases[i];
+          var offset = i * 2.1;
+          var y1 = b.y1 + Math.sin(time + offset) * 100;
+          var y2 = b.y2 + Math.cos(time + offset + 1) * 80;
+          var y3 = b.y3 + Math.sin(time + offset + 2) * 120;
+          var y4 = b.y4 + Math.cos(time + offset + 3) * 60;
+          path.setAttribute('d', 'M0,' + y1 + ' C360,' + y2 + ' 720,' + y3 + ' 1440,' + y4);
+        });
+        requestAnimationFrame(update);
+      }
+      update();
+    })();
+
+    /* ========== Tab Switching ========== */
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === tab);
+      });
+      document.querySelectorAll('.tab-panel').forEach(function(panel) {
+        panel.classList.toggle('active', panel.id === 'panel-' + tab);
+      });
+      var indicator = document.querySelector('.tab-indicator');
+      indicator.classList.toggle('right', tab === 'phone');
+    }
+
+    /* ========== Toggle Password ========== */
+    function togglePassword() {
+      var input = document.getElementById('password');
+      var icon = document.getElementById('togglePwdIcon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fas fa-eye';
+      }
+    }
+
+    /* ========== Canvas Captcha ========== */
+    function generateCaptcha() {
+      var canvas = document.getElementById('captchaCanvas');
+      var ctx = canvas.getContext('2d');
+      var width = 120, height = 44;
+      canvas.width = width;
+      canvas.height = height;
+
+      /* Background */
+      ctx.fillStyle = '#0F1D32';
+      ctx.fillRect(0, 0, width, height);
+
+      /* Interference lines */
+      for (var i = 0; i < 5; i++) {
+        ctx.beginPath();
+        ctx.moveTo(Math.random() * width, Math.random() * height);
+        ctx.lineTo(Math.random() * width, Math.random() * height);
+        ctx.strokeStyle = 'rgba(' + Math.floor(Math.random()*100+100) + ',' + Math.floor(Math.random()*100+100) + ',' + Math.floor(Math.random()*100+155) + ',0.3)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      /* Interference dots */
+      for (var i = 0; i < 40; i++) {
+        ctx.fillStyle = 'rgba(255,255,255,' + (Math.random() * 0.3) + ')';
+        ctx.fillRect(Math.random() * width, Math.random() * height, 2, 2);
+      }
+
+      /* Captcha text (4 alphanumeric) */
+      var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      var code = '';
+      var colors = ['#FF6B4A', '#D4A853', '#00C9A7', '#3B82F6'];
+      for (var i = 0; i < 4; i++) {
+        var char = chars[Math.floor(Math.random() * chars.length)];
+        code += char;
+        ctx.save();
+        ctx.font = (18 + Math.random() * 6) + 'px "Playfair Display", serif';
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.translate(20 + i * 24, 28 + Math.random() * 8 - 4);
+        ctx.rotate((Math.random() - 0.5) * 0.4);
+        ctx.fillText(char, 0, 0);
+        ctx.restore();
+      }
+
+      window.captchaCode = code;
+    }
+
+    /* ========== SMS Code Countdown ========== */
+    var smsTimer = null;
+    function sendSmsCode() {
+      var phone = document.getElementById('phone').value.trim();
+      if (!phone || phone.length < 11) {
+        shakeInput('phone');
+        return;
+      }
+      var btn = document.getElementById('smsBtn');
+      var seconds = 60;
+      btn.disabled = true;
+      btn.textContent = seconds + 's';
+      smsTimer = setInterval(function() {
+        seconds--;
+        btn.textContent = seconds + 's';
+        if (seconds <= 0) {
+          clearInterval(smsTimer);
+          btn.disabled = false;
+          btn.textContent = '重新获取';
+        }
+      }, 1000);
+    }
+
+    /* ========== Shake Animation ========== */
+    function shakeInput(id) {
+      var input = document.getElementById(id);
+      input.style.borderColor = '#EF4444';
+      input.style.animation = 'shake 0.4s ease';
+      setTimeout(function() {
+        input.style.borderColor = '';
+        input.style.animation = '';
+      }, 500);
+    }
+
+    /* ========== Toast ========== */
+    function showToast(msg) {
+      var toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(function() { toast.classList.remove('show'); }, 2500);
+    }
+
+    /* ========== Loading Effect ========== */
+    function showLoading() {
+      var btn = document.querySelector('.tab-panel.active .login-btn');
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      btn.disabled = true;
+      btn.style.opacity = '0.7';
+      setTimeout(function() {
+        window.location.href = 'show-management.html';
+      }, 1500);
+    }
+
+    /* ========== Account Login ========== */
+    function handleAccountLogin() {
+      var username = document.getElementById('username').value.trim();
+      var password = document.getElementById('password').value.trim();
+      var captcha = document.getElementById('captcha').value.trim().toUpperCase();
+
+      if (!username) { shakeInput('username'); return; }
+      if (!password) { shakeInput('password'); return; }
+      if (!captcha) { shakeInput('captcha'); return; }
+      if (captcha !== window.captchaCode) {
+        shakeInput('captcha');
+        generateCaptcha();
+        showToast('验证码错误');
+        return;
+      }
+
+      showLoading();
+    }
+
+    /* ========== Phone Login ========== */
+    function handlePhoneLogin() {
+      var phone = document.getElementById('phone').value.trim();
+      var smsCode = document.getElementById('smsCode').value.trim();
+
+      if (!phone || phone.length < 11) { shakeInput('phone'); return; }
+      if (!smsCode || smsCode.length < 4) { shakeInput('smsCode'); return; }
+
+      showLoading();
+    }
+
+    /* ========== Enter Key Submit ========== */
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        var activePanel = document.querySelector('.tab-panel.active');
+        if (activePanel.id === 'panel-account') {
+          handleAccountLogin();
+        } else {
+          handlePhoneLogin();
+        }
+      }
+    });
+
+    /* ========== Init ========== */
+    generateCaptcha();
+  </script>
+</body>
+</html>

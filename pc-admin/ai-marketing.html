@@ -1,0 +1,3771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+<title>AI智能营销 - 海南演艺票务系统</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+/* Force mobile viewport */
+@-ms-viewport { width: device-width; }
+@viewport { width: device-width; }
+@-webkit-viewport { width: device-width; }
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+/* ========== Sidebar ========== */
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: linear-gradient(180deg, #0A1628 0%, #0F2035 50%, #0A1628 100%);
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  overflow: hidden;
+}
+
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at 20% 0%, rgba(255,107,74,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.sidebar-logo {
+  padding: 24px 20px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #FF6B4A, #D4A853);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(255,107,74,0.3);
+  flex-shrink: 0;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.logo-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.logo-sub {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 0;
+  scrollbar-width: none;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-group {
+  margin-bottom: 8px;
+}
+
+.nav-group-label {
+  padding: 8px 24px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.25);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  margin: 2px 12px;
+  border-radius: 10px;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.nav-item i {
+  width: 20px;
+  text-align: center;
+  font-size: 15px;
+  transition: color 0.25s, transform 0.25s;
+}
+
+.nav-item:hover {
+  color: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.05);
+}
+
+.nav-item:hover i {
+  transform: scale(1.1);
+}
+
+.nav-item.active {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(255,107,74,0.2), rgba(255,107,74,0.08));
+  box-shadow: 0 2px 8px rgba(255,107,74,0.1);
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background: linear-gradient(180deg, #FF6B4A, #D4A853);
+  border-radius: 0 3px 3px 0;
+}
+
+.nav-item.active i {
+  color: #FF6B4A;
+}
+
+.nav-item .badge {
+  margin-left: auto;
+  background: rgba(255,107,74,0.2);
+  color: #FF6B4A;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #FF6B4A, #D4A853);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.admin-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.admin-role {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+}
+
+.logout-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: rgba(255,107,74,0.15);
+  color: #FF6B4A;
+}
+
+/* ========== CSS Variables ========== */
+:root {
+  --primary: #0A1628;
+  --primary-light: #132240;
+  --primary-lighter: #1a2d50;
+  --accent: #FF6B4A;
+  --accent-hover: #e85a3a;
+  --accent-light: rgba(255, 107, 74, 0.1);
+  --gold: #D4A853;
+  --gold-light: rgba(212, 168, 83, 0.1);
+  --green: #00C9A7;
+  --green-light: rgba(0, 201, 167, 0.1);
+  --purple: #8B5CF6;
+  --purple-light: rgba(139, 92, 246, 0.1);
+  --bg: #F5F6FA;
+  --white: #FFFFFF;
+  --text-primary: #1a1a2e;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --border: #e5e7eb;
+  --border-light: #f0f0f5;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --sidebar-width: 240px;
+  --header-height: 64px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========== Reset & Base ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body {
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; outline: none; font-family: inherit; }
+input, select, textarea { font-family: inherit; outline: none; }
+table { border-collapse: collapse; width: 100%; }
+
+/* ========== Layout ========== */
+.layout { display: flex; min-height: 100vh; }
+
+/* ========== Main Content ========== */
+.main-content {
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #F0F2F5;
+}
+
+/* ========== Top Header ========== */
+.top-header {
+  height: var(--header-height);
+  background: var(--white);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--text-secondary);
+}
+.breadcrumb a { color: var(--text-secondary); transition: var(--transition); }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb .current { color: var(--text-primary); font-weight: 500; }
+.breadcrumb .sep { color: var(--text-muted); }
+.header-actions { display: flex; align-items: center; gap: 16px; }
+.search-box {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 7px 14px;
+  width: 260px;
+  transition: var(--transition);
+}
+.search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+.search-box i { color: var(--text-muted); font-size: 13px; }
+.search-box input {
+  border: none; background: none; font-size: 13px; color: var(--text-primary);
+  width: 100%;
+}
+.search-box input::placeholder { color: var(--text-muted); }
+.header-icon-btn {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-secondary);
+  background: var(--bg);
+  transition: var(--transition);
+  position: relative;
+}
+.header-icon-btn:hover { color: var(--accent); background: var(--accent-light); }
+.header-icon-btn .dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 7px; height: 7px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: 1.5px solid var(--white);
+}
+.admin-profile {
+  display: flex; align-items: center; gap: 10px;
+  padding: 4px 8px 4px 4px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.admin-profile:hover { background: var(--bg); }
+.admin-profile .avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--gold));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 12px; font-weight: 600;
+}
+.admin-profile .name { font-size: 13px; font-weight: 500; }
+
+/* ========== Page Content ========== */
+.page-content { flex: 1; padding: 28px 32px; }
+.page-title-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px;
+}
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex; align-items: center; gap: 10px;
+}
+.page-title .icon-circle {
+  width: 38px; height: 38px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #8B5CF6, #6366F1);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 16px;
+}
+
+/* ========== Tab Navigation ========== */
+.tab-nav {
+  display: flex;
+  gap: 4px;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 5px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 24px;
+  border: 1px solid var(--border-light);
+}
+.tab-btn {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  transition: var(--transition);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  position: relative;
+}
+.tab-btn:hover { color: var(--text-primary); background: var(--bg); }
+.tab-btn.active {
+  color: #fff;
+  background: var(--primary);
+  box-shadow: 0 4px 12px rgba(10, 22, 40, 0.25);
+}
+.tab-btn i { font-size: 14px; }
+
+/* ========== Tab Panels ========== */
+.tab-panel { display: none; animation: fadeIn 0.3s ease; }
+.tab-panel.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ========== Stats Cards (KPI Style) ========== */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.3s, transform 0.3s;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s ease forwards;
+}
+.stat-card:nth-child(1) { animation-delay: 0s; }
+.stat-card:nth-child(2) { animation-delay: 0.05s; }
+.stat-card:nth-child(3) { animation-delay: 0.1s; }
+.stat-card:nth-child(4) { animation-delay: 0.15s; }
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+.stat-card:nth-child(1)::before { background: linear-gradient(90deg, var(--accent), #ff9a7a); }
+.stat-card:nth-child(2)::before { background: linear-gradient(90deg, var(--green), #4dd9c0); }
+.stat-card:nth-child(3)::before { background: linear-gradient(90deg, var(--gold), #e8c97a); }
+.stat-card:nth-child(4)::before { background: linear-gradient(90deg, var(--purple), #a78bfa); }
+.stat-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.stat-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.stat-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+.stat-icon {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.stat-icon.orange { background: var(--accent-light); color: var(--accent); }
+.stat-icon.green { background: var(--green-light); color: var(--green); }
+.stat-icon.gold { background: var(--gold-light); color: var(--gold); }
+.stat-icon.purple { background: var(--purple-light); color: var(--purple); }
+.stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+.stat-trend, .stat-change {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+.stat-trend.up, .stat-change.up { color: var(--green); }
+.stat-trend.down, .stat-change.down { color: var(--accent); }
+.stat-trend i, .stat-change i { font-size: 11px; }
+.stat-trend .trend-text, .stat-change .trend-text { color: var(--text-muted); margin-left: 2px; }
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== Card Container ========== */
+.card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border-light);
+}
+.card-title {
+  font-size: 15px; font-weight: 600; color: var(--text-primary);
+  display: flex; align-items: center; gap: 8px;
+}
+.card-title i { color: var(--accent); font-size: 14px; }
+.card-body { padding: 24px; }
+
+/* ========== Buttons ========== */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--accent-hover); box-shadow: 0 4px 12px rgba(255, 107, 74, 0.3); }
+.btn-secondary {
+  background: var(--bg);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 6px 10px;
+}
+.btn-ghost:hover { color: var(--accent); background: var(--accent-light); }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn-success { background: var(--green); color: #fff; }
+.btn-success:hover { background: #00b396; }
+.btn-purple { background: var(--purple); color: #fff; }
+.btn-purple:hover { background: #7c3aed; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3); }
+
+/* ========== User Profile Section ========== */
+.profile-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.profile-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+}
+.profile-card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.profile-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.profile-card-title i { color: var(--purple); }
+.profile-card-body { padding: 20px; }
+
+/* Dimension Analysis */
+.dimension-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.dimension-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.dimension-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.dimension-icon.age { background: rgba(59, 130, 246, 0.1); color: #3B82F6; }
+.dimension-icon.gender { background: rgba(236, 72, 153, 0.1); color: #EC4899; }
+.dimension-icon.location { background: rgba(34, 197, 94, 0.1); color: #22C55E; }
+.dimension-icon.interest { background: rgba(168, 85, 247, 0.1); color: #A855F7; }
+.dimension-icon.consume { background: rgba(245, 158, 11, 0.1); color: #F59E0B; }
+.dimension-info { flex: 1; }
+.dimension-name { font-size: 13px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
+.dimension-bar {
+  height: 6px;
+  background: var(--bg);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.dimension-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+.dimension-bar-fill.blue { background: linear-gradient(90deg, #3B82F6, #60A5FA); }
+.dimension-bar-fill.pink { background: linear-gradient(90deg, #EC4899, #F472B6); }
+.dimension-bar-fill.green { background: linear-gradient(90deg, #22C55E, #4ADE80); }
+.dimension-bar-fill.purple { background: linear-gradient(90deg, #A855F7, #C084FC); }
+.dimension-bar-fill.orange { background: linear-gradient(90deg, #F59E0B, #FBBF24); }
+.dimension-value {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Tag Management */
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tag-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--bg);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  transition: var(--transition);
+  cursor: pointer;
+}
+.tag-item:hover {
+  border-color: var(--purple);
+  color: var(--purple);
+  background: var(--purple-light);
+}
+.tag-item.active {
+  background: var(--purple);
+  color: #fff;
+  border-color: var(--purple);
+}
+.tag-item .count {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.2);
+}
+.tag-item.active .count {
+  background: rgba(255,255,255,0.25);
+}
+.tag-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px dashed var(--border);
+  transition: var(--transition);
+}
+.tag-add-btn:hover {
+  border-color: var(--purple);
+  color: var(--purple);
+}
+
+/* ========== Precision Push Section ========== */
+.push-config {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+}
+.push-sidebar {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+}
+.push-sidebar-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.push-target-list {
+  padding: 12px;
+}
+.push-target-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition);
+  margin-bottom: 4px;
+}
+.push-target-item:hover { background: var(--bg); }
+.push-target-item.active {
+  background: var(--accent-light);
+}
+.push-target-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+.push-target-icon.all { background: rgba(99, 102, 241, 0.1); color: #6366F1; }
+.push-target-icon.new { background: rgba(34, 197, 94, 0.1); color: #22C55E; }
+.push-target-icon.vip { background: rgba(212, 168, 83, 0.1); color: #D4A853; }
+.push-target-icon.inactive { background: rgba(239, 68, 68, 0.1); color: #EF4444; }
+.push-target-info { flex: 1; }
+.push-target-name { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+.push-target-count { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.push-target-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 10px;
+  transition: var(--transition);
+}
+.push-target-item.active .push-target-check {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.push-main {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+}
+.push-main-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.push-main-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.push-main-body { padding: 20px; }
+
+/* Form Styles */
+.form-group { margin-bottom: 18px; }
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--text-primary);
+  background: var(--white);
+  transition: var(--transition);
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+.form-input::placeholder { color: var(--text-muted); }
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-hint { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; }
+
+/* Channel Select */
+.channel-select {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.channel-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.channel-item:hover { border-color: var(--accent); }
+.channel-item.active {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+.channel-item i { font-size: 16px; color: var(--text-muted); }
+.channel-item.active i { color: var(--accent); }
+.channel-item span { font-size: 13px; color: var(--text-secondary); }
+.channel-item.active span { color: var(--accent); font-weight: 500; }
+
+/* ========== Automated Marketing Section (Optimized) ========== */
+.auto-scene-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  padding: 6px;
+}
+.auto-scene-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.auto-scene-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.5); }
+.auto-scene-btn.active {
+  background: var(--white);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+}
+.auto-scene-btn i { font-size: 15px; }
+.auto-scene-badge {
+  font-size: 11px;
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: var(--purple-light);
+  color: var(--purple);
+  font-weight: 600;
+}
+.auto-scene-btn.active .auto-scene-badge {
+  background: var(--purple);
+  color: #fff;
+}
+.auto-scene-panel { display: none; }
+.auto-scene-panel.active { display: block; animation: fadeIn 0.3s ease; }
+
+/* AI Insight Bar */
+.auto-ai-insight {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(99,102,241,0.04));
+  border: 1px solid rgba(139,92,246,0.15);
+  border-radius: var(--radius-lg);
+  margin-bottom: 20px;
+}
+.auto-ai-insight-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--purple), #6366F1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.auto-ai-insight-icon.ongoing {
+  background: linear-gradient(135deg, var(--accent), #ff9a7a);
+}
+.auto-ai-insight-content { flex: 1; }
+.auto-ai-insight-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.auto-ai-insight-text {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* Show Card List */
+.auto-show-list { display: flex; flex-direction: column; gap: 12px; }
+.auto-show-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.auto-show-card:hover { border-color: var(--purple); box-shadow: 0 2px 12px rgba(139,92,246,0.08); }
+.auto-show-card-left { display: flex; align-items: center; gap: 14px; flex: 1; }
+.auto-show-card-right { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+.auto-show-cover {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+.auto-show-cover img { width: 100%; height: 100%; object-fit: cover; }
+.auto-show-status {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 9px;
+  font-weight: 600;
+  text-align: center;
+  padding: 2px 0;
+  color: #fff;
+}
+.auto-show-status.new { background: var(--purple); }
+.auto-show-status.warning { background: var(--accent); }
+.auto-show-status.good { background: var(--green); }
+.auto-show-status.hot { background: var(--gold); }
+.auto-show-info { flex: 1; }
+.auto-show-name { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+.auto-show-meta {
+  display: flex;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.auto-show-meta i { margin-right: 3px; }
+.auto-show-sales {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.auto-show-sales strong { font-weight: 600; }
+.auto-sales-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg);
+  padding: 2px 10px 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.auto-sales-bar {
+  display: inline-block;
+  width: 40px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+.auto-sales-bar.good { background: var(--green); }
+.auto-sales-bar.hot { background: var(--gold); }
+.auto-show-expand-icon {
+  font-size: 12px;
+  color: var(--text-muted);
+  transition: transform 0.3s;
+}
+.auto-show-card.expanded .auto-show-expand-icon { transform: rotate(180deg); }
+
+/* AI Score Ring */
+.auto-show-ai-score { text-align: center; }
+.auto-show-ai-score-ring {
+  width: 52px;
+  height: 52px;
+  position: relative;
+}
+.auto-show-ai-score-ring svg { width: 100%; height: 100%; }
+.auto-show-ai-score-num {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--purple);
+}
+.auto-show-ai-score-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Show Detail Panel */
+.auto-show-detail {
+  margin: -4px 0 12px;
+  padding: 0 20px 20px;
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  border-top: none;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  display: none;
+  animation: slideDown 0.3s ease;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.auto-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0 12px;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 16px;
+}
+.auto-detail-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.auto-detail-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--green-light);
+  color: var(--green);
+  font-weight: 500;
+}
+.auto-detail-badge.warning { background: var(--accent-light); color: var(--accent); }
+.auto-detail-badge.hot { background: var(--gold-light); color: var(--gold); }
+.auto-detail-actions { display: flex; gap: 8px; }
+
+/* Insight Cards */
+.auto-insight-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.auto-insight-card {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+}
+.auto-insight-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.auto-insight-card-body { flex: 1; }
+.auto-insight-card-title {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.auto-insight-card-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+.auto-insight-card-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Plan Group */
+.auto-plan-group { margin-bottom: 16px; }
+.auto-plan-group-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.auto-plan-group-title i { color: var(--purple); font-size: 14px; }
+
+/* Plan Card */
+.auto-plan-card {
+  background: var(--bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: var(--transition);
+}
+.auto-plan-card:hover { border-color: rgba(139,92,246,0.3); }
+.auto-plan-card.recommended {
+  border-color: rgba(139,92,246,0.3);
+  background: linear-gradient(135deg, rgba(139,92,246,0.03), rgba(99,102,241,0.02));
+}
+.auto-plan-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.auto-plan-card-badge {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.auto-plan-card-badge.recommended {
+  background: linear-gradient(135deg, var(--purple), #6366F1);
+  color: #fff;
+}
+.auto-plan-card-badge.urgent {
+  background: linear-gradient(135deg, var(--accent), #ff9a7a);
+  color: #fff;
+}
+.auto-plan-card-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.auto-plan-card-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 14px;
+}
+.auto-plan-card-metrics {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 12px;
+  background: var(--white);
+  border-radius: var(--radius-sm);
+}
+.auto-metric { text-align: center; }
+.auto-metric-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.auto-metric-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.auto-metric-unit {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+.auto-plan-card-tools {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.auto-tool-tag {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--white);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.auto-tool-tag i { font-size: 10px; color: var(--purple); }
+
+/* Checkbox */
+.auto-check-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.auto-check-input { display: none; }
+.auto-check-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  font-size: 10px;
+  color: transparent;
+}
+.auto-check-input:checked + .auto-check-box {
+  background: var(--purple);
+  border-color: var(--purple);
+  color: #fff;
+}
+
+/* Detail Footer */
+.auto-detail-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--border-light);
+  margin-top: 4px;
+}
+.auto-detail-footer-left {
+  display: flex;
+  gap: 20px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.auto-detail-footer-right { display: flex; gap: 8px; }
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .auto-insight-cards { grid-template-columns: 1fr 1fr; }
+  .auto-plan-card-metrics { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+  .auto-insight-cards { grid-template-columns: 1fr; }
+  .auto-plan-card-metrics { grid-template-columns: repeat(2, 1fr); }
+  .auto-show-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .auto-show-card-right { width: 100%; justify-content: flex-end; }
+  .auto-detail-footer { flex-direction: column; gap: 12px; align-items: flex-start; }
+}
+
+/* ========== New Left-Right Layout ========== */
+.auto-main-layout {
+  display: flex;
+  gap: 20px;
+  min-height: 600px;
+}
+
+/* Left Panel - Show List */
+.auto-left-panel {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.auto-left-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 8px;
+}
+.auto-left-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.auto-left-title i { color: var(--purple); }
+.auto-list-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+.auto-list-badge.new {
+  background: var(--purple-light);
+  color: var(--purple);
+}
+.auto-list-badge.ongoing {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+/* Show List - Compact Items */
+.auto-left-panel .auto-show-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  padding: 12px;
+}
+.auto-show-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  border: 1px solid transparent;
+}
+.auto-show-item:hover {
+  background: var(--bg);
+}
+.auto-show-item.selected {
+  background: linear-gradient(135deg, rgba(139,92,246,0.06), rgba(99,102,241,0.04));
+  border-color: rgba(139,92,246,0.2);
+}
+.auto-show-item-indicator {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 0;
+  background: var(--purple);
+  border-radius: 0 2px 2px 0;
+  transition: height 0.2s;
+}
+.auto-show-item.selected .auto-show-item-indicator {
+  height: 24px;
+}
+.auto-show-item-cover {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+.auto-show-item-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.auto-show-status-sm {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 8px;
+  font-weight: 600;
+  text-align: center;
+  padding: 1px 0;
+  color: #fff;
+}
+.auto-show-status-sm.new { background: var(--purple); }
+.auto-show-status-sm.warning { background: var(--accent); }
+.auto-show-status-sm.good { background: var(--green); }
+.auto-show-status-sm.hot { background: var(--gold); }
+.auto-show-item-info {
+  flex: 1;
+  min-width: 0;
+}
+.auto-show-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+.auto-show-item-meta {
+  display: flex;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.auto-show-item-meta i { margin-right: 2px; }
+.auto-progress-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+}
+.auto-progress-bar {
+  display: inline-block;
+  width: 24px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+.auto-progress-bar.good { background: var(--green); }
+.auto-progress-bar.hot { background: var(--gold); }
+.auto-show-item-score {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.auto-score-label {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.auto-score-value {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Right Panel - Detail Content */
+.auto-right-panel {
+  flex: 1;
+  min-width: 0;
+}
+.auto-empty-state {
+  height: 100%;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  text-align: center;
+  padding: 40px;
+}
+.auto-empty-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.auto-empty-icon i {
+  font-size: 24px;
+  color: var(--text-muted);
+}
+.auto-empty-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.auto-empty-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Detail Content */
+.auto-detail-content {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  padding: 20px;
+}
+.auto-detail-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 16px;
+}
+.auto-detail-show-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.auto-detail-cover {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+.auto-detail-show-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.auto-detail-show-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.auto-detail-show-meta i { margin-right: 3px; }
+.auto-detail-actions-top {
+  display: flex;
+  gap: 8px;
+}
+
+/* Left Panel Scene Tabs (Inside Left Panel) */
+.left-scene-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 0 0 12px;
+  background: transparent;
+  border-radius: 0;
+  margin-bottom: 8px;
+}
+.left-scene-tabs .auto-scene-btn {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 12px;
+  gap: 4px;
+}
+.left-scene-tabs .auto-scene-btn i {
+  font-size: 12px;
+}
+.left-scene-tabs .auto-scene-badge {
+  font-size: 9px;
+  padding: 1px 5px;
+}
+
+/* Sales Analysis Section */
+.auto-sales-analysis {
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.auto-analysis-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(99,102,241,0.04));
+  border-bottom: 1px solid var(--border-light);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.auto-analysis-header i { color: var(--purple); }
+.auto-analysis-status {
+  margin-left: auto;
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+.auto-analysis-status.urgent { background: var(--accent-light); color: var(--accent); }
+.auto-analysis-status.warning { background: var(--gold-light); color: var(--gold); }
+.auto-analysis-status.good { background: var(--green-light); color: var(--green); }
+.auto-analysis-status.normal { background: var(--bg); color: var(--text-muted); }
+.auto-analysis-content { padding: 16px; }
+.auto-analysis-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.auto-analysis-metric { text-align: center; }
+.auto-analysis-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.auto-analysis-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.auto-analysis-bar {
+  height: 6px;
+  background: var(--border-light);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.auto-analysis-progress {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+.auto-analysis-progress.low { background: var(--accent); }
+.auto-analysis-progress.medium { background: var(--gold); }
+.auto-analysis-progress.high { background: var(--green); }
+.auto-analysis-insight {
+  padding: 12px;
+  background: var(--white);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.auto-analysis-insight strong { color: var(--text-primary); }
+
+/* Left-Right Layout Responsive */
+@media (max-width: 1024px) {
+  .auto-main-layout {
+    flex-direction: column;
+  }
+  .auto-left-panel {
+    width: 100%;
+    max-height: 300px;
+  }
+}
+
+.ai-input-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+}
+.ai-input-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ai-input-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ai-input-title i { color: var(--purple); }
+.ai-input-body { padding: 20px; }
+
+.ai-prompt-box {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(99, 102, 241, 0.05));
+  border: 1px dashed var(--purple);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.ai-prompt-label {
+  font-size: 12px;
+  color: var(--purple);
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ai-prompt-text {
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.7;
+}
+
+.ai-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.ai-option-item {
+  padding: 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.ai-option-item:hover { border-color: var(--purple); }
+.ai-option-item.active {
+  border-color: var(--purple);
+  background: var(--purple-light);
+}
+.ai-option-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+.ai-option-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.ai-result-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+}
+.ai-result-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ai-result-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.ai-result-body { padding: 20px; }
+
+.ai-plan-item {
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border-light);
+}
+.ai-plan-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.ai-plan-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ai-plan-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--green-light);
+  color: var(--green);
+}
+.ai-plan-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.ai-plan-meta {
+  display: flex;
+  gap: 16px;
+}
+.ai-plan-meta-item {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ai-plan-meta-item i { font-size: 11px; }
+
+/* ========== Effect Tracking Section ========== */
+.effect-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.time-filter {
+  display: flex;
+  gap: 4px;
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  padding: 4px;
+}
+.time-filter-btn {
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: transparent;
+  transition: var(--transition);
+}
+.time-filter-btn:hover { color: var(--text-primary); }
+.time-filter-btn.active {
+  background: var(--white);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.effect-charts {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.chart-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+}
+.chart-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.chart-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.chart-body { padding: 20px; }
+.chart-placeholder {
+  height: 280px;
+  background: linear-gradient(180deg, rgba(139, 92, 246, 0.03) 0%, rgba(255, 107, 74, 0.03) 100%);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+.chart-placeholder i { font-size: 48px; margin-bottom: 12px; opacity: 0.3; }
+.chart-placeholder span { font-size: 13px; }
+
+/* Pie Chart Placeholder */
+.pie-chart-placeholder {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.pie-chart-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-left: 20px;
+}
+.pie-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+.pie-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.pie-legend-dot.orange { background: var(--accent); }
+.pie-legend-dot.green { background: var(--green); }
+.pie-legend-dot.gold { background: var(--gold); }
+.pie-legend-dot.purple { background: var(--purple); }
+.pie-legend-label { color: var(--text-secondary); }
+.pie-legend-value { color: var(--text-primary); font-weight: 600; margin-left: auto; }
+
+.effect-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.effect-table th {
+  background: var(--bg);
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border-light);
+}
+.effect-table td {
+  padding: 14px 16px;
+  font-size: 13px;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-light);
+}
+.effect-table tbody tr:hover { background: rgba(255, 107, 74, 0.02); }
+.effect-table tbody tr:last-child td { border-bottom: none; }
+
+.activity-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.activity-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+.activity-icon.push { background: var(--accent-light); color: var(--accent); }
+.activity-icon.coupon { background: var(--green-light); color: var(--green); }
+.activity-icon.lottery { background: var(--gold-light); color: var(--gold); }
+.activity-icon.sms { background: var(--purple-light); color: var(--purple); }
+
+.conversion-rate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rate-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--bg);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.rate-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+}
+.rate-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  min-width: 40px;
+  text-align: right;
+}
+
+/* ========== Modal ========== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 22, 40, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  animation: modalFadeIn 0.2s ease;
+}
+.modal-overlay.show { display: flex; }
+@keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  width: 580px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl);
+  animation: modalSlideIn 0.3s ease;
+}
+@keyframes modalSlideIn { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-light);
+}
+.modal-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+.modal-close {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-muted);
+  background: var(--bg);
+  transition: var(--transition);
+}
+.modal-close:hover { color: var(--accent); background: var(--accent-light); }
+.modal-body { padding: 24px; }
+.modal-footer {
+  display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-light);
+}
+
+/* ========== Toggle Switch ========== */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #E5E7EB;
+  border-radius: 24px;
+  transition: 0.3s;
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+.toggle-switch input:checked + .toggle-slider {
+  background: var(--accent);
+}
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 1200px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .profile-section { grid-template-columns: 1fr; }
+  .push-config { grid-template-columns: 1fr; }
+  .ai-generate-section { grid-template-columns: 1fr; }
+  .effect-charts { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .main-content { margin-left: 0; width: 100%; }
+  .page-content { padding: 16px; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .tab-nav { flex-wrap: wrap; }
+  .tab-btn { flex: none; padding: 10px 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- ==================== Sidebar ==================== -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <i class="fas fa-masks-theater"></i>
+      </div>
+      <div class="logo-text">
+        <span class="logo-title">海南演艺票务</span>
+        <span class="logo-sub">管理后台</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-label">核心功能</div>
+        <a class="nav-item" href="dashboard.html">
+          <i class="fas fa-chart-pie"></i>
+          <span>数据看板</span>
+        </a>
+        <a class="nav-item" href="show-management.html">
+          <i class="fas fa-theater-masks"></i>
+          <span>演出管理</span>
+        </a>
+        <a class="nav-item" href="ticket-sales.html">
+          <i class="fas fa-ticket"></i>
+          <span>售票管理</span>
+        </a>
+        <a class="nav-item" href="order-management.html">
+          <i class="fas fa-receipt"></i>
+          <span>订单管理</span>
+        </a>
+        <a class="nav-item" href="member-management.html">
+          <i class="fas fa-crown"></i>
+          <span>会员管理</span>
+        </a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">运营管理</div>
+        <a class="nav-item" href="marketing-center.html">
+          <i class="fas fa-bullhorn"></i>
+          <span>营销中心</span>
+        </a>
+        <a class="nav-item active" href="ai-marketing.html">
+          <i class="fas fa-robot"></i>
+          <span>AI智能营销</span>
+        </a>
+        <a class="nav-item" href="banner-management.html">
+          <i class="fas fa-images"></i>
+          <span>轮播图管理</span>
+        </a>
+        <a class="nav-item" href="product-service.html">
+          <i class="fas fa-store"></i>
+          <span>商品管理</span>
+        </a>
+        <a class="nav-item" href="activity-decoration.html">
+          <i class="fas fa-calendar-check"></i>
+          <span>运营活动</span>
+        </a>
+        <a class="nav-item" href="agent-management.html">
+          <i class="fas fa-handshake"></i>
+          <span>代理管理</span>
+        </a>
+        <a class="nav-item" href="statistics.html">
+          <i class="fas fa-chart-bar"></i>
+          <span>报表中心</span>
+        </a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-label">系统设置</div>
+        <a class="nav-item" href="activity-decoration.html#decoration">
+          <i class="fas fa-palette"></i>
+          <span>首页装修</span>
+        </a>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="admin-avatar">陈</div>
+      <div class="admin-info">
+        <div class="admin-name">陈思远</div>
+        <div class="admin-role">超级管理员</div>
+      </div>
+      <button class="logout-btn" title="退出登录">
+        <i class="fas fa-sign-out-alt"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ========== Main Content ========== -->
+  <div class="main-content">
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="breadcrumb">
+        <a href="dashboard.html">首页</a>
+        <span class="sep"><i class="fas fa-chevron-right"></i></span>
+        <span class="current">AI智能营销</span>
+      </div>
+      <div class="header-actions">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="搜索活动、用户群体...">
+        </div>
+        <button class="header-icon-btn">
+          <i class="fas fa-bell"></i>
+          <span class="dot"></span>
+        </button>
+        <div class="admin-profile">
+          <div class="avatar">陈</div>
+          <span class="name">陈思远</span>
+          <i class="fas fa-chevron-down" style="font-size: 11px; color: var(--text-muted);"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <div class="page-content">
+      <div class="page-title-row">
+        <h1 class="page-title">
+          <span class="icon-circle"><i class="fas fa-robot"></i></span>
+          AI智能营销
+        </h1>
+        <button class="btn btn-primary">
+          <i class="fas fa-plus"></i>
+          新建营销活动
+        </button>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon orange"><i class="fas fa-users"></i></div>
+          <div class="stat-label">用户画像覆盖</div>
+          <div class="stat-value">28,456</div>
+          <div class="stat-change up"><i class="fas fa-arrow-up"></i> 12.5% 较上月</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green"><i class="fas fa-paper-plane"></i></div>
+          <div class="stat-label">精准推送次数</div>
+          <div class="stat-value">1,892</div>
+          <div class="stat-change up"><i class="fas fa-arrow-up"></i> 8.3% 较上月</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon gold"><i class="fas fa-bullseye"></i></div>
+          <div class="stat-label">平均转化率</div>
+          <div class="stat-value">23.6%</div>
+          <div class="stat-change up"><i class="fas fa-arrow-up"></i> 5.2% 较上月</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple"><i class="fas fa-magic"></i></div>
+          <div class="stat-label">AI生成方案</div>
+          <div class="stat-value">156</div>
+          <div class="stat-change up"><i class="fas fa-arrow-up"></i> 32.1% 较上月</div>
+        </div>
+      </div>
+
+      <!-- Tab Navigation -->
+      <nav class="tab-nav">
+        <button class="tab-btn active" data-tab="profile">
+          <i class="fas fa-user-circle"></i>
+          <span>用户画像</span>
+        </button>
+        <button class="tab-btn" data-tab="push">
+          <i class="fas fa-paper-plane"></i>
+          <span>精准推送</span>
+        </button>
+        <button class="tab-btn" data-tab="auto">
+          <i class="fas fa-wand-magic-sparkles"></i>
+          <span>自动化营销</span>
+        </button>
+        <button class="tab-btn" data-tab="tracking">
+          <i class="fas fa-chart-line"></i>
+          <span>效果追踪</span>
+        </button>
+      </nav>
+
+      <!-- Tab 1: 用户画像 -->
+      <div class="tab-panel active" id="panel-profile">
+        <div class="profile-section">
+          <!-- 多维度数据分析 -->
+          <div class="profile-card">
+            <div class="profile-card-header">
+              <div class="profile-card-title">
+                <i class="fas fa-chart-radar"></i>
+                多维度数据分析
+              </div>
+              <button class="btn btn-ghost btn-sm">
+                <i class="fas fa-sync-alt"></i>
+                刷新数据
+              </button>
+            </div>
+            <div class="profile-card-body">
+              <div class="dimension-list">
+                <div class="dimension-item">
+                  <div class="dimension-icon age"><i class="fas fa-user-clock"></i></div>
+                  <div class="dimension-info">
+                    <div class="dimension-name">年龄分布</div>
+                    <div class="dimension-bar">
+                      <div class="dimension-bar-fill blue" style="width: 75%;"></div>
+                    </div>
+                    <div class="dimension-value">主力用户 25-35岁，占比 45.2%</div>
+                  </div>
+                </div>
+                <div class="dimension-item">
+                  <div class="dimension-icon gender"><i class="fas fa-venus-mars"></i></div>
+                  <div class="dimension-info">
+                    <div class="dimension-name">性别比例</div>
+                    <div class="dimension-bar">
+                      <div class="dimension-bar-fill pink" style="width: 62%;"></div>
+                    </div>
+                    <div class="dimension-value">女性 62%，男性 38%</div>
+                  </div>
+                </div>
+                <div class="dimension-item">
+                  <div class="dimension-icon location"><i class="fas fa-map-marker-alt"></i></div>
+                  <div class="dimension-info">
+                    <div class="dimension-name">地域分布</div>
+                    <div class="dimension-bar">
+                      <div class="dimension-bar-fill green" style="width: 68%;"></div>
+                    </div>
+                    <div class="dimension-value">海口 42%，三亚 26%，其他 32%</div>
+                  </div>
+                </div>
+                <div class="dimension-item">
+                  <div class="dimension-icon interest"><i class="fas fa-heart"></i></div>
+                  <div class="dimension-info">
+                    <div class="dimension-name">兴趣偏好</div>
+                    <div class="dimension-bar">
+                      <div class="dimension-bar-fill purple" style="width: 58%;"></div>
+                    </div>
+                    <div class="dimension-value">音乐会 35%，话剧 28%，舞蹈 22%</div>
+                  </div>
+                </div>
+                <div class="dimension-item">
+                  <div class="dimension-icon consume"><i class="fas fa-coins"></i></div>
+                  <div class="dimension-info">
+                    <div class="dimension-name">消费能力</div>
+                    <div class="dimension-bar">
+                      <div class="dimension-bar-fill orange" style="width: 52%;"></div>
+                    </div>
+                    <div class="dimension-value">客单价 280-580元，占比 38%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 标签管理 -->
+          <div class="profile-card">
+            <div class="profile-card-header">
+              <div class="profile-card-title">
+                <i class="fas fa-tags"></i>
+                标签管理
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="openModal('modalAddTag')">
+                <i class="fas fa-plus"></i>
+                添加标签
+              </button>
+            </div>
+            <div class="profile-card-body">
+              <div class="tag-cloud">
+                <span class="tag-item active">
+                  <i class="fas fa-check"></i> 音乐爱好者
+                  <span class="count">3,256</span>
+                </span>
+                <span class="tag-item active">
+                  <i class="fas fa-check"></i> 高消费
+                  <span class="count">1,892</span>
+                </span>
+                <span class="tag-item">
+                  话剧迷
+                  <span class="count">2,145</span>
+                </span>
+                <span class="tag-item">
+                  家庭用户
+                  <span class="count">1,567</span>
+                </span>
+                <span class="tag-item">
+                  VIP会员
+                  <span class="count">892</span>
+                </span>
+                <span class="tag-item">
+                  新用户
+                  <span class="count">4,521</span>
+                </span>
+                <span class="tag-item">
+                  活跃用户
+                  <span class="count">2,890</span>
+                </span>
+                <span class="tag-item">
+                  优惠券敏感
+                  <span class="count">1,234</span>
+                </span>
+                <span class="tag-item">
+                  周末观演
+                  <span class="count">1,876</span>
+                </span>
+                <span class="tag-item">
+                  亲子活动
+                  <span class="count">945</span>
+                </span>
+                <button class="tag-add-btn">
+                  <i class="fas fa-plus"></i>
+                  添加标签
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 用户画像详情卡片 -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-users"></i>
+              用户群体分布
+            </div>
+            <button class="btn btn-secondary btn-sm">
+              <i class="fas fa-download"></i>
+              导出报告
+            </button>
+          </div>
+          <div class="card-body">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+              <div style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(99, 102, 241, 0.05)); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+                <div style="width: 60px; height: 60px; margin: 0 auto 12px; background: linear-gradient(135deg, #8B5CF6, #6366F1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                  <i class="fas fa-gem" style="color: #fff; font-size: 24px;"></i>
+                </div>
+                <div style="font-size: 20px; font-weight: 700; color: var(--text-primary);">3,256</div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">音乐发烧友</div>
+                <div style="font-size: 11px; color: var(--purple); margin-top: 8px;">客单价 ¥680+</div>
+              </div>
+              <div style="background: linear-gradient(135deg, rgba(212, 168, 83, 0.1), rgba(184, 134, 11, 0.05)); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+                <div style="width: 60px; height: 60px; margin: 0 auto 12px; background: linear-gradient(135deg, #D4A853, #B8922F); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                  <i class="fas fa-theater-masks" style="color: #fff; font-size: 24px;"></i>
+                </div>
+                <div style="font-size: 20px; font-weight: 700; color: var(--text-primary);">2,145</div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">话剧爱好者</div>
+                <div style="font-size: 11px; color: var(--gold); margin-top: 8px;">复购率 68%</div>
+              </div>
+              <div style="background: linear-gradient(135deg, rgba(0, 201, 167, 0.1), rgba(5, 150, 105, 0.05)); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+                <div style="width: 60px; height: 60px; margin: 0 auto 12px; background: linear-gradient(135deg, #00C9A7, #059669); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                  <i class="fas fa-users" style="color: #fff; font-size: 24px;"></i>
+                </div>
+                <div style="font-size: 20px; font-weight: 700; color: var(--text-primary);">1,567</div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">家庭用户</div>
+                <div style="font-size: 11px; color: var(--green); margin-top: 8px;">周末活跃度高</div>
+              </div>
+              <div style="background: linear-gradient(135deg, rgba(255, 107, 74, 0.1), rgba(234, 88, 12, 0.05)); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+                <div style="width: 60px; height: 60px; margin: 0 auto 12px; background: linear-gradient(135deg, #FF6B4A, #EA580C); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                  <i class="fas fa-fire" style="color: #fff; font-size: 24px;"></i>
+                </div>
+                <div style="font-size: 20px; font-weight: 700; color: var(--text-primary);">892</div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">VIP会员</div>
+                <div style="font-size: 11px; color: var(--accent); margin-top: 8px;">贡献营收 42%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: 精准推送 -->
+      <div class="tab-panel" id="panel-push">
+        <div class="push-config">
+          <!-- 推送目标选择 -->
+          <div class="push-sidebar">
+            <div class="push-sidebar-header">
+              <i class="fas fa-users" style="margin-right: 8px; color: var(--accent);"></i>
+              选择推送目标
+            </div>
+            <div class="push-target-list">
+              <div class="push-target-item active">
+                <div class="push-target-icon all"><i class="fas fa-globe"></i></div>
+                <div class="push-target-info">
+                  <div class="push-target-name">全部用户</div>
+                  <div class="push-target-count">28,456 人</div>
+                </div>
+                <div class="push-target-check"><i class="fas fa-check"></i></div>
+              </div>
+              <div class="push-target-item">
+                <div class="push-target-icon new"><i class="fas fa-user-plus"></i></div>
+                <div class="push-target-info">
+                  <div class="push-target-name">新用户（30天内）</div>
+                  <div class="push-target-count">4,521 人</div>
+                </div>
+                <div class="push-target-check"><i class="fas fa-check"></i></div>
+              </div>
+              <div class="push-target-item">
+                <div class="push-target-icon vip"><i class="fas fa-crown"></i></div>
+                <div class="push-target-info">
+                  <div class="push-target-name">VIP会员</div>
+                  <div class="push-target-count">892 人</div>
+                </div>
+                <div class="push-target-check"><i class="fas fa-check"></i></div>
+              </div>
+              <div class="push-target-item">
+                <div class="push-target-icon inactive"><i class="fas fa-user-clock"></i></div>
+                <div class="push-target-info">
+                  <div class="push-target-name">沉睡用户（60天未活跃）</div>
+                  <div class="push-target-count">2,134 人</div>
+                </div>
+                <div class="push-target-check"><i class="fas fa-check"></i></div>
+              </div>
+              <div class="push-target-item">
+                <div class="push-target-icon" style="background: rgba(168, 85, 247, 0.1); color: #A855F7;"><i class="fas fa-music"></i></div>
+                <div class="push-target-info">
+                  <div class="push-target-name">音乐爱好者</div>
+                  <div class="push-target-count">3,256 人</div>
+                </div>
+                <div class="push-target-check"><i class="fas fa-check"></i></div>
+              </div>
+              <div class="push-target-item">
+                <div class="push-target-icon" style="background: rgba(245, 158, 11, 0.1); color: #F59E0B;"><i class="fas fa-ticket"></i></div>
+                <div class="push-target-info">
+                  <div class="push-target-name">优惠券敏感用户</div>
+                  <div class="push-target-count">1,234 人</div>
+                </div>
+                <div class="push-target-check"><i class="fas fa-check"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 推送配置 -->
+          <div class="push-main">
+            <div class="push-main-header">
+              <div class="push-main-title">
+                <i class="fas fa-cog" style="margin-right: 8px; color: var(--accent);"></i>
+                推送配置
+              </div>
+              <button class="btn btn-ghost btn-sm">
+                <i class="fas fa-history"></i>
+                推送历史
+              </button>
+            </div>
+            <div class="push-main-body">
+              <div class="form-group">
+                <label class="form-label">推送渠道</label>
+                <div class="channel-select">
+                  <div class="channel-item active">
+                    <i class="fab fa-weixin"></i>
+                    <span>微信</span>
+                  </div>
+                  <div class="channel-item">
+                    <i class="fas fa-sms"></i>
+                    <span>短信</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">推送标题</label>
+                <input type="text" class="form-input" placeholder="请输入推送标题" value="新演出上线：《海南之声》音乐会">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">推送内容</label>
+                <textarea class="form-textarea" rows="4" placeholder="请输入推送内容">亲爱的用户，我们为您精心准备的《海南之声》音乐会即将开票！作为我们的尊贵会员，您可享受优先购票权益。点击立即预订，感受音乐的魅力！</textarea>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">推送时间</label>
+                  <select class="form-select">
+                    <option value="now">立即推送</option>
+                    <option value="scheduled">定时推送</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">跳转页面</label>
+                  <select class="form-select">
+                    <option value="show">演出详情页</option>
+                    <option value="coupon">优惠券领取页</option>
+                    <option value="home">首页</option>
+                    <option value="custom">自定义链接</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">关联演出</label>
+                <select class="form-select">
+                  <option value="">请选择关联演出</option>
+                  <option value="1" selected>《海南之声》交响音乐会 - 2026.05.20</option>
+                  <option value="2">《椰风海韵》民族舞剧 - 2026.05.25</option>
+                  <option value="3">《星光之夜》话剧演出 - 2026.06.01</option>
+                </select>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px;">
+                <button class="btn btn-secondary">
+                  <i class="fas fa-eye"></i>
+                  预览效果
+                </button>
+                <button class="btn btn-primary">
+                  <i class="fas fa-paper-plane"></i>
+                  发送推送
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: 自动化营销（优化版） -->
+      <div class="tab-panel" id="panel-auto">
+        <!-- ========== 左右分栏主布局 ========== -->
+        <div class="auto-main-layout">
+          
+          <!-- ========== 左侧面板：场景Tab + 演出列表 ========== -->
+          <div class="auto-left-panel">
+            <!-- 场景Tab切换 -->
+            <div class="auto-scene-tabs left-scene-tabs">
+              <button class="auto-scene-btn active" data-scene="new" onclick="switchAutoSceneInList('new')">
+                <i class="fas fa-rocket"></i>
+                <span>新演出</span>
+                <span class="auto-scene-badge">3</span>
+              </button>
+              <button class="auto-scene-btn" data-scene="ongoing" onclick="switchAutoSceneInList('ongoing')">
+                <i class="fas fa-fire"></i>
+                <span>已开始</span>
+                <span class="auto-scene-badge">5</span>
+              </button>
+            </div>
+
+            <!-- 新演出列表 -->
+            <div class="auto-show-list" id="list-new">
+              <div class="auto-show-item selected" onclick="selectShowItem(this, 'new-1')">
+                <div class="auto-show-item-cover">
+                  <img src="https://picsum.photos/seed/concert-hn/48/48" alt="">
+                  <span class="auto-show-status-sm new">待营销</span>
+                </div>
+                <div class="auto-show-item-info">
+                  <div class="auto-show-item-name">《海南之声》交响音乐会</div>
+                  <div class="auto-show-item-meta">
+                    <span><i class="fas fa-calendar"></i> 07-15</span>
+                    <span><i class="fas fa-tag"></i> 音乐会</span>
+                  </div>
+                  <div class="auto-show-item-score">
+                    <span class="auto-score-label">营销潜力</span>
+                    <span class="auto-score-value" style="color:var(--purple)">78</span>
+                  </div>
+                </div>
+                <div class="auto-show-item-indicator"></div>
+              </div>
+
+              <div class="auto-show-item" onclick="selectShowItem(this, 'new-2')">
+                <div class="auto-show-item-cover">
+                  <img src="https://picsum.photos/seed/drama-hn/48/48" alt="">
+                  <span class="auto-show-status-sm new">待营销</span>
+                </div>
+                <div class="auto-show-item-info">
+                  <div class="auto-show-item-name">《天涯故事》原创话剧</div>
+                  <div class="auto-show-item-meta">
+                    <span><i class="fas fa-calendar"></i> 07-28</span>
+                    <span><i class="fas fa-tag"></i> 话剧</span>
+                  </div>
+                  <div class="auto-show-item-score">
+                    <span class="auto-score-label">营销潜力</span>
+                    <span class="auto-score-value" style="color:var(--green)">85</span>
+                  </div>
+                </div>
+                <div class="auto-show-item-indicator"></div>
+              </div>
+
+              <!-- 新演出项3 -->
+              <div class="auto-show-item" onclick="selectShowItem(this, 'new-3')" data-type="new">
+                <div class="auto-show-item-cover">
+                  <img src="https://picsum.photos/seed/dance-hn/48/48" alt="">
+                  <span class="auto-show-status-sm new">待营销</span>
+                </div>
+                <div class="auto-show-item-info">
+                  <div class="auto-show-item-name">《椰风海韵》大型舞蹈史诗</div>
+                  <div class="auto-show-item-meta">
+                    <span><i class="fas fa-calendar"></i> 08-10</span>
+                    <span><i class="fas fa-tag"></i> 舞蹈</span>
+                  </div>
+                  <div class="auto-show-item-score">
+                    <span class="auto-score-label">营销潜力</span>
+                    <span class="auto-score-value" style="color:var(--gold)">72</span>
+                  </div>
+                </div>
+                <div class="auto-show-item-indicator"></div>
+              </div>
+            </div>
+
+            <!-- 已开始演出列表（默认隐藏） -->
+            <div class="auto-show-list" id="list-ongoing" style="display:none;">
+              <div class="auto-show-item" onclick="selectShowItem(this, 'ongoing-1')">
+                <div class="auto-show-item-cover">
+                  <img src="https://picsum.photos/seed/kids-rain/48/48" alt="">
+                  <span class="auto-show-status-sm warning">需加速</span>
+                </div>
+                <div class="auto-show-item-info">
+                  <div class="auto-show-item-name">《热带雨林》儿童剧</div>
+                  <div class="auto-show-item-meta">
+                    <span><i class="fas fa-calendar"></i> 06-20</span>
+                    <span class="auto-progress-sm"><span class="auto-progress-bar" style="width:31%"></span>31%</span>
+                  </div>
+                  <div class="auto-show-item-score">
+                    <span class="auto-score-label">售出进度</span>
+                    <span class="auto-score-value" style="color:var(--accent)">31</span>
+                  </div>
+                </div>
+                <div class="auto-show-item-indicator"></div>
+              </div>
+
+              <div class="auto-show-item" onclick="selectShowItem(this, 'ongoing-2')">
+                <div class="auto-show-item-cover">
+                  <img src="https://picsum.photos/seed/folk-hn/48/48" alt="">
+                  <span class="auto-show-status-sm warning">需加速</span>
+                </div>
+                <div class="auto-show-item-info">
+                  <div class="auto-show-item-name">《海南民谣》演唱会</div>
+                  <div class="auto-show-item-meta">
+                    <span><i class="fas fa-calendar"></i> 06-25</span>
+                    <span class="auto-progress-sm"><span class="auto-progress-bar" style="width:29%"></span>29%</span>
+                  </div>
+                  <div class="auto-show-item-score">
+                    <span class="auto-score-label">售出进度</span>
+                    <span class="auto-score-value" style="color:var(--accent)">42</span>
+                  </div>
+                </div>
+                <div class="auto-show-item-indicator"></div>
+              </div>
+
+              <div class="auto-show-item" onclick="selectShowItem(this, 'ongoing-3')">
+                <div class="auto-show-item-cover">
+                  <img src="https://picsum.photos/seed/magic-hn/48/48" alt="">
+                  <span class="auto-show-status-sm good">良好</span>
+                </div>
+                <div class="auto-show-item-info">
+                  <div class="auto-show-item-name">《幻境》沉浸式魔术秀</div>
+                  <div class="auto-show-item-meta">
+                    <span><i class="fas fa-calendar"></i> 06-18</span>
+                    <span class="auto-progress-sm"><span class="auto-progress-bar good" style="width:78%"></span>78%</span>
+                  </div>
+                  <div class="auto-show-item-score">
+                    <span class="auto-score-label">售出进度</span>
+                    <span class="auto-score-value" style="color:var(--green)">78</span>
+                  </div>
+                </div>
+                <div class="auto-show-item-indicator"></div>
+              </div>
+
+              <div class="auto-show-item" onclick="selectShowItem(this, 'ongoing-4')">
+                <div class="auto-show-item-cover">
+                  <img src="https://picsum.photos/seed/comedy-hn/48/48" alt="">
+                  <span class="auto-show-status-sm hot">售罄</span>
+                </div>
+                <div class="auto-show-item-info">
+                  <div class="auto-show-item-name">《笑动海南》脱口秀专场</div>
+                  <div class="auto-show-item-meta">
+                    <span><i class="fas fa-calendar"></i> 06-15</span>
+                    <span class="auto-progress-sm"><span class="auto-progress-bar hot" style="width:95%"></span>95%</span>
+                  </div>
+                  <div class="auto-show-item-score">
+                    <span class="auto-score-label">售出进度</span>
+                    <span class="auto-score-value" style="color:var(--gold)">95</span>
+                  </div>
+                </div>
+                <div class="auto-show-item-indicator"></div>
+              </div>
+
+              <div class="auto-show-item" onclick="selectShowItem(this, 'ongoing-5')">
+                <div class="auto-show-item-cover">
+                  <img src="https://picsum.photos/seed/classic-hn/48/48" alt="">
+                  <span class="auto-show-status-sm good">良好</span>
+                </div>
+                <div class="auto-show-item-info">
+                  <div class="auto-show-item-name">《红色娘子军》经典芭蕾舞剧</div>
+                  <div class="auto-show-item-meta">
+                    <span><i class="fas fa-calendar"></i> 07-01</span>
+                    <span class="auto-progress-sm"><span class="auto-progress-bar good" style="width:68%"></span>68%</span>
+                  </div>
+                  <div class="auto-show-item-score">
+                    <span class="auto-score-label">售出进度</span>
+                    <span class="auto-score-value" style="color:var(--green)">68</span>
+                  </div>
+                </div>
+                <div class="auto-show-item-indicator"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========== 右侧面板：AI方案详情 ========== -->
+          <div class="auto-right-panel">
+            <!-- 空状态 -->
+            <div class="auto-empty-state" id="auto-empty-state">
+              <div class="auto-empty-icon">
+                <i class="fas fa-mouse-pointer"></i>
+              </div>
+              <div class="auto-empty-text">请从左侧选择一个演出</div>
+              <div class="auto-empty-hint">AI将为您分析该演出的营销潜力并推荐方案</div>
+            </div>
+
+            <!-- AI方案详情内容 -->
+            <div class="auto-detail-content" id="auto-detail-content" style="display:none;">
+              
+              <!-- 演出基本信息 -->
+              <div class="auto-detail-header-bar">
+                <div class="auto-detail-show-info">
+                  <img class="auto-detail-cover" src="" alt="" id="detail-cover">
+                  <div class="auto-detail-show-text">
+                    <div class="auto-detail-show-name" id="detail-name"></div>
+                    <div class="auto-detail-show-meta" id="detail-meta"></div>
+                  </div>
+                </div>
+                <div class="auto-detail-actions-top">
+                  <button class="btn btn-ghost btn-sm" onclick="regeneratePlan()"><i class="fas fa-redo"></i> 重新分析</button>
+                </div>
+              </div>
+
+              <!-- 销售数据分析 -->
+              <div class="auto-sales-analysis" id="sales-analysis">
+                <div class="auto-analysis-header">
+                  <i class="fas fa-chart-pie"></i>
+                  <span>销售数据分析</span>
+                  <span class="auto-analysis-status" id="analysis-status"></span>
+                </div>
+                <div class="auto-analysis-content">
+                  <div class="auto-analysis-metrics">
+                    <div class="auto-analysis-metric">
+                      <div class="auto-analysis-label">当前售出进度</div>
+                      <div class="auto-analysis-value" id="sales-progress"></div>
+                      <div class="auto-analysis-bar">
+                        <div class="auto-analysis-progress" id="sales-progress-bar"></div>
+                      </div>
+                    </div>
+                    <div class="auto-analysis-metric">
+                      <div class="auto-analysis-label" id="label-metric2">距离开演</div>
+                      <div class="auto-analysis-value" id="days-to-show"></div>
+                    </div>
+                    <div class="auto-analysis-metric">
+                      <div class="auto-analysis-label" id="label-metric3">预计上座率</div>
+                      <div class="auto-analysis-value" id="projected-occupancy"></div>
+                    </div>
+                  </div>
+                  <div class="auto-analysis-insight" id="sales-insight"></div>
+                </div>
+              </div>
+
+              <!-- AI营销建议 -->
+              <div class="auto-ai-insight" id="detail-ai-insight">
+                <div class="auto-ai-insight-icon">
+                  <i class="fas fa-brain"></i>
+                </div>
+                <div class="auto-ai-insight-content">
+                  <div class="auto-ai-insight-title">AI 营销诊断</div>
+                  <div class="auto-ai-insight-text" id="detail-insight-text"></div>
+                </div>
+              </div>
+
+              <!-- 推荐方案 -->
+              <div class="auto-plan-group">
+                <div class="auto-plan-group-title">
+                  <i class="fas fa-layer-group"></i>
+                  <span id="plan-group-title">推荐营销方案</span>
+                </div>
+                
+                <!-- 动态方案容器 -->
+                <div id="dynamic-plans"></div>
+              </div>
+              </div>
+
+              <!-- 底部操作栏 -->
+              <div class="auto-detail-footer">
+                <div class="auto-detail-footer-left">
+                  <span class="auto-selected-count" id="selected-count">已选 <strong>1</strong> 个方案</span>
+                  <span class="auto-budget-total" id="total-budget">总预算 <strong>¥18,500</strong></span>
+                  <span class="auto-revenue-total" id="total-revenue">预计营收 <strong style="color:var(--green)">¥142,680</strong></span>
+                </div>
+                <div class="auto-detail-footer-right">
+                  <button class="btn btn-secondary"><i class="fas fa-eye"></i> 预览方案</button>
+                  <button class="btn btn-primary"><i class="fas fa-rocket"></i> 一键执行</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: 效果追踪 -->
+      <div class="tab-panel" id="panel-tracking">
+        <div class="effect-header">
+          <div class="time-filter">
+            <button class="time-filter-btn active">今日</button>
+            <button class="time-filter-btn">本周</button>
+            <button class="time-filter-btn">本月</button>
+            <button class="time-filter-btn">本年</button>
+          </div>
+          <button class="btn btn-secondary">
+            <i class="fas fa-download"></i>
+            导出报告
+          </button>
+        </div>
+
+        <div class="effect-charts">
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title">
+                <i class="fas fa-chart-area" style="margin-right: 8px; color: var(--accent);"></i>
+                活动效果趋势
+              </div>
+              <div style="display: flex; gap: 16px;">
+                <span style="font-size: 12px; color: var(--text-muted);">
+                  <span style="display: inline-block; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; margin-right: 4px;"></span>
+                  推送量
+                </span>
+                <span style="font-size: 12px; color: var(--text-muted);">
+                  <span style="display: inline-block; width: 8px; height: 8px; background: var(--green); border-radius: 50%; margin-right: 4px;"></span>
+                  转化量
+                </span>
+              </div>
+            </div>
+            <div class="chart-body">
+              <div class="chart-placeholder">
+                <i class="fas fa-chart-area"></i>
+                <span>活动效果趋势图表</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title">
+                <i class="fas fa-chart-pie" style="margin-right: 8px; color: var(--purple);"></i>
+                渠道转化分布
+              </div>
+            </div>
+            <div class="chart-body">
+              <div class="pie-chart-placeholder">
+                <div style="width: 160px; height: 160px; border-radius: 50%; background: conic-gradient(var(--accent) 0deg 126deg, var(--green) 126deg 216deg, var(--gold) 216deg 288deg, var(--purple) 288deg 360deg);"></div>
+                <div class="pie-chart-legend">
+                  <div class="pie-legend-item">
+                    <span class="pie-legend-dot orange"></span>
+                    <span class="pie-legend-label">APP推送</span>
+                    <span class="pie-legend-value">35%</span>
+                  </div>
+                  <div class="pie-legend-item">
+                    <span class="pie-legend-dot green"></span>
+                    <span class="pie-legend-label">微信</span>
+                    <span class="pie-legend-value">25%</span>
+                  </div>
+                  <div class="pie-legend-item">
+                    <span class="pie-legend-dot gold"></span>
+                    <span class="pie-legend-label">短信</span>
+                    <span class="pie-legend-value">20%</span>
+                  </div>
+                  <div class="pie-legend-item">
+                    <span class="pie-legend-dot purple"></span>
+                    <span class="pie-legend-label">其他</span>
+                    <span class="pie-legend-value">20%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fas fa-list"></i>
+              活动效果明细
+            </div>
+          </div>
+          <div class="card-body" style="padding: 0;">
+            <table class="effect-table">
+              <thead>
+                <tr>
+                  <th>活动名称</th>
+                  <th>推送时间</th>
+                  <th>推送人数</th>
+                  <th>打开率</th>
+                  <th>转化率</th>
+                  <th>营收</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="activity-name">
+                      <div class="activity-icon push"><i class="fas fa-bell"></i></div>
+                      <span>新演出上线通知</span>
+                    </div>
+                  </td>
+                  <td>2026-04-27 10:00</td>
+                  <td>3,256</td>
+                  <td>42.5%</td>
+                  <td>
+                    <div class="conversion-rate">
+                      <div class="rate-bar">
+                        <div class="rate-bar-fill" style="width: 28%;"></div>
+                      </div>
+                      <span class="rate-value">28.3%</span>
+                    </div>
+                  </td>
+                  <td style="color: var(--green); font-weight: 600;">¥86,520</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="activity-name">
+                      <div class="activity-icon coupon"><i class="fas fa-ticket"></i></div>
+                      <span>优惠券发放活动</span>
+                    </div>
+                  </td>
+                  <td>2026-04-26 14:30</td>
+                  <td>1,892</td>
+                  <td>38.2%</td>
+                  <td>
+                    <div class="conversion-rate">
+                      <div class="rate-bar">
+                        <div class="rate-bar-fill" style="width: 22%;"></div>
+                      </div>
+                      <span class="rate-value">22.1%</span>
+                    </div>
+                  </td>
+                  <td style="color: var(--green); font-weight: 600;">¥45,680</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="activity-name">
+                      <div class="activity-icon lottery"><i class="fas fa-gift"></i></div>
+                      <span>抽奖活动推送</span>
+                    </div>
+                  </td>
+                  <td>2026-04-25 09:00</td>
+                  <td>4,521</td>
+                  <td>56.8%</td>
+                  <td>
+                    <div class="conversion-rate">
+                      <div class="rate-bar">
+                        <div class="rate-bar-fill" style="width: 18%;"></div>
+                      </div>
+                      <span class="rate-value">18.5%</span>
+                    </div>
+                  </td>
+                  <td style="color: var(--green); font-weight: 600;">¥32,150</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="activity-name">
+                      <div class="activity-icon sms"><i class="fas fa-sms"></i></div>
+                      <span>会员专属提醒</span>
+                    </div>
+                  </td>
+                  <td>2026-04-24 18:00</td>
+                  <td>892</td>
+                  <td>68.5%</td>
+                  <td>
+                    <div class="conversion-rate">
+                      <div class="rate-bar">
+                        <div class="rate-bar-fill" style="width: 35%;"></div>
+                      </div>
+                      <span class="rate-value">35.2%</span>
+                    </div>
+                  </td>
+                  <td style="color: var(--green); font-weight: 600;">¥128,900</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: 添加标签 -->
+<div class="modal-overlay" id="modalAddTag">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">添加用户标签</h3>
+      <button class="modal-close" onclick="closeModal('modalAddTag')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">标签名称</label>
+        <input type="text" class="form-input" placeholder="请输入标签名称">
+      </div>
+      <div class="form-group">
+        <label class="form-label">标签规则</label>
+        <select class="form-select">
+          <option value="">请选择规则类型</option>
+          <option value="consume">消费金额</option>
+          <option value="frequency">观演频次</option>
+          <option value="category">演出类型偏好</option>
+          <option value="time">活跃时间段</option>
+          <option value="custom">自定义规则</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">标签描述</label>
+        <textarea class="form-textarea" rows="3" placeholder="请输入标签描述..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modalAddTag')">取消</button>
+      <button class="btn btn-primary" onclick="closeModal('modalAddTag')"><i class="fas fa-check"></i> 确定</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Tab Navigation
+document.querySelectorAll('.tab-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var tabId = this.getAttribute('data-tab');
+    
+    // Update tab buttons
+    document.querySelectorAll('.tab-btn').forEach(function(b) {
+      b.classList.remove('active');
+    });
+    this.classList.add('active');
+    
+    // Update tab panels
+    document.querySelectorAll('.tab-panel').forEach(function(panel) {
+      panel.classList.remove('active');
+    });
+    document.getElementById('panel-' + tabId).classList.add('active');
+  });
+});
+
+// Push Target Selection
+document.querySelectorAll('.push-target-item').forEach(function(item) {
+  item.addEventListener('click', function() {
+    document.querySelectorAll('.push-target-item').forEach(function(i) {
+      i.classList.remove('active');
+    });
+    this.classList.add('active');
+  });
+});
+
+// Channel Selection
+document.querySelectorAll('.channel-item').forEach(function(item) {
+  item.addEventListener('click', function() {
+    this.classList.toggle('active');
+  });
+});
+
+// Tag Selection
+document.querySelectorAll('.tag-item').forEach(function(item) {
+  item.addEventListener('click', function() {
+    this.classList.toggle('active');
+  });
+});
+
+// AI Option Selection
+document.querySelectorAll('.ai-option-item').forEach(function(item) {
+  item.addEventListener('click', function() {
+    this.classList.toggle('active');
+  });
+});
+
+// Time Filter
+document.querySelectorAll('.time-filter-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.time-filter-btn').forEach(function(b) {
+      b.classList.remove('active');
+    });
+    this.classList.add('active');
+  });
+});
+
+// Modal Functions
+function openModal(id) {
+  document.getElementById(id).classList.add('show');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+// ==================== 演出数据模型 ====================
+var showData = {
+  // 新演出
+  'new-1': {
+    name: '《海南之声》交响音乐会',
+    date: '2026-07-15',
+    venue: '海口大剧院',
+    totalSeats: 1200,
+    sold: 86,
+    type: '音乐会',
+    imageSeed: 'concert-hn',
+    category: 'new'
+  },
+  'new-2': {
+    name: '《天涯故事》原创话剧',
+    date: '2026-07-28',
+    venue: '三亚艺术中心',
+    totalSeats: 800,
+    sold: 42,
+    type: '话剧',
+    imageSeed: 'drama-hn',
+    category: 'new'
+  },
+  'new-3': {
+    name: '《椰风海韵》大型舞蹈史诗',
+    date: '2026-08-10',
+    venue: '海口大剧院',
+    totalSeats: 1500,
+    sold: 28,
+    type: '舞蹈',
+    imageSeed: 'dance-hn',
+    category: 'new'
+  },
+  // 已开始演出（含距最后场次结束时间、日均售票、销售趋势）
+  'ongoing-1': {
+    name: '《热带雨林》儿童剧',
+    date: '2026-06-20',
+    venue: '海口大剧院',
+    totalSeats: 600,
+    sold: 186,
+    type: '儿童剧',
+    imageSeed: 'kids-rain',
+    category: 'ongoing',
+    lastShowEnd: '2026-06-20T21:30:00',  // 最后场次结束时间
+    dailyAvg: 10.3,                      // 日均售票
+    trend: 'declining',                  // declining / stable / rising
+    peakDay: '首日42张'                  // 峰值日
+  },
+  'ongoing-2': {
+    name: '《海南民谣》演唱会',
+    date: '2026-06-25',
+    venue: '琼海文化宫',
+    totalSeats: 500,
+    sold: 145,
+    type: '演唱会',
+    imageSeed: 'folk-hn',
+    category: 'ongoing',
+    lastShowEnd: '2026-06-25T22:00:00',
+    dailyAvg: 6.6,
+    trend: 'stable',
+    peakDay: '首日38张'
+  },
+  'ongoing-3': {
+    name: '《幻境》沉浸式魔术秀',
+    date: '2026-06-18',
+    venue: '海口大剧院',
+    totalSeats: 400,
+    sold: 312,
+    type: '魔术',
+    imageSeed: 'magic-hn',
+    category: 'ongoing',
+    lastShowEnd: '2026-06-20T21:00:00',  // 连演3天，最后一场6月20日晚
+    dailyAvg: 12.5,
+    trend: 'rising',
+    peakDay: '第18天28张'
+  },
+  'ongoing-4': {
+    name: '《笑动海南》脱口秀专场',
+    date: '2026-06-15',
+    venue: '三亚艺术中心',
+    totalSeats: 300,
+    sold: 285,
+    type: '脱口秀',
+    imageSeed: 'comedy-hn',
+    category: 'ongoing',
+    lastShowEnd: '2026-06-15T22:30:00',
+    dailyAvg: 14.3,
+    trend: 'rising',
+    peakDay: '近3天日均22张'
+  },
+  'ongoing-5': {
+    name: '《红色娘子军》经典芭蕾舞剧',
+    date: '2026-07-01',
+    venue: '海口大剧院',
+    totalSeats: 1000,
+    sold: 680,
+    type: '舞蹈',
+    imageSeed: 'classic-hn',
+    category: 'ongoing',
+    lastShowEnd: '2026-07-01T22:00:00',
+    dailyAvg: 22.7,
+    trend: 'stable',
+    peakDay: '首日56张'
+  }
+};
+
+// ==================== 营销方案模板（每类1~3个） ====================
+var planTemplates = {
+  // ---- 新演出方案 ----
+  new: {
+    early: {
+      name: '预热推广 + 早鸟票 + 社交裂变',
+      icon: 'fa-bullhorn',
+      color: 'var(--purple)',
+      badge: 'AI首推',
+      desc: '<strong>阶段一（开演前14天）</strong>：精准推送通知目标人群 → APP弹窗+微信模板消息触达潜在用户<br><strong>阶段二（开演前14-7天）</strong>：早鸟票8折上线 → 限时优惠刺激首波转化<br><strong>阶段三（开演前7天）</strong>：分享好友得积分 → 社交裂变扩大覆盖',
+      tools: ['精准推送', '票品折扣', '分享积分', '优惠券'],
+      budgetRate: 0.15,
+      roi: '1:6.5',
+      conversionRate: 0.60
+    },
+    member: {
+      name: '会员优先购 + 券包捆绑',
+      icon: 'fa-crown',
+      color: 'var(--gold)',
+      badge: '方案B',
+      desc: '<strong>阶段一</strong>：VIP会员提前3天优先选座 → 提升会员权益感知<br><strong>阶段二</strong>：推出同类演出联票券包 → 捆绑销售提升客单价<br><strong>阶段三</strong>：新用户首购立减20元 → 降低决策门槛',
+      tools: ['会员优先', '演出券包', '新人券'],
+      budgetRate: 0.08,
+      roi: '1:8.2',
+      conversionRate: 0.40
+    },
+    viral: {
+      name: '抽奖引流 + KOL合作',
+      icon: 'fa-gift',
+      color: 'var(--green)',
+      badge: '方案C',
+      desc: '<strong>阶段一</strong>：APP抽奖活动（门票+周边）→ 吸引新用户注册和活跃<br><strong>阶段二</strong>：合作本地KOL发布演出预告 → 扩大品牌曝光<br><strong>阶段三</strong>：抽奖中奖用户专属优惠券 → 二次转化',
+      tools: ['抽奖活动', 'KOL合作', '优惠券'],
+      budgetRate: 0.25,
+      roi: '1:2.8',
+      conversionRate: 0.35
+    },
+    urgent: {
+      name: '紧急启动 + 全渠道投放 + 限时特惠',
+      icon: 'fa-rocket',
+      color: 'var(--accent)',
+      badge: '紧急推荐',
+      desc: '<strong>立即执行</strong>：全渠道推送演出上线通知 → 覆盖全部潜在用户<br><strong>24小时内</strong>：限时7折早鸟票上线 → 快速刺激转化<br><strong>48小时内</strong>：启动朋友圈广告投放 → 扩大曝光',
+      tools: ['精准推送', '朋友圈广告', '限时折扣', '短信通知'],
+      budgetRate: 0.22,
+      roi: '1:4.5',
+      conversionRate: 0.55
+    }
+  },
+  // ---- 已开始演出方案 ----
+  ongoing: {
+    // 进度<40%：加速方案
+    accelerate: {
+      name: '限时折扣 + 追加投放 + 口碑裂变',
+      icon: 'fa-fire',
+      color: 'var(--accent)',
+      badge: '加速推荐',
+      desc: '<strong>立即执行</strong>：全量推送限时7折通知 → 覆盖目标用户<br><strong>24小时内</strong>：追加朋友圈广告投放 → 扩大曝光覆盖<br><strong>48小时内</strong>：已购用户分享得双倍积分 → 口碑裂变获客',
+      tools: ['精准推送', '朋友圈广告', '限时折扣', '分享积分'],
+      budgetRate: 0.18,
+      roi: '1:5.5',
+      conversionRate: 0.55
+    },
+    crossSell: {
+      name: '跨城推广 + 拼团优惠',
+      icon: 'fa-bus',
+      color: 'var(--purple)',
+      badge: '方案B',
+      desc: '<strong>立即执行</strong>：向周边城市潜在用户推送观演信息 → 扩大辐射范围<br><strong>24小时内</strong>：上线3人拼团7.5折 → 刺激社交裂变<br><strong>48小时内</strong>：联合旅游平台推出"演出+景区"套票',
+      tools: ['跨城推送', '拼团优惠', '旅游套票'],
+      budgetRate: 0.20,
+      roi: '1:3.8',
+      conversionRate: 0.40
+    },
+    // 进度40-70%：稳定增长方案
+    stable: {
+      name: '会员专享 + 团购优惠 + 口碑引导',
+      icon: 'fa-chart-line',
+      color: 'var(--green)',
+      badge: '稳定策略',
+      desc: '<strong>策略一</strong>：VIP会员专享95折 → 提升会员权益感知<br><strong>策略二</strong>：3人团购享9折 → 刺激团体购票<br><strong>策略三</strong>：引导已购用户发布观演期待 → 社交传播带动尾票',
+      tools: ['会员专享', '团购优惠', '口碑引导'],
+      budgetRate: 0.08,
+      roi: '1:8.5',
+      conversionRate: 0.45
+    },
+    upgrade: {
+      name: '座位升级 + 捆绑销售',
+      icon: 'fa-arrow-up',
+      color: 'var(--gold)',
+      badge: '方案B',
+      desc: '<strong>策略一</strong>：C档余票"加30元升级B档" → 提升客单价<br><strong>策略二</strong>：推出"演出+周边"捆绑包 → 增加额外收入',
+      tools: ['座位升级', '捆绑销售'],
+      budgetRate: 0.03,
+      roi: '1:15',
+      conversionRate: 0.30
+    },
+    // 进度70-90%：尾票冲刺方案
+    final: {
+      name: '尾票冲刺 + 限时特惠 + 售罄营销',
+      icon: 'fa-bolt',
+      color: 'var(--gold)',
+      badge: '冲刺方案',
+      desc: '<strong>立即执行</strong>：推送"仅剩XX张"紧迫通知 → 制造稀缺感<br><strong>24小时内</strong>：尾票限时8.5折 → 加速清仓<br><strong>同步启动</strong>：售罄预告 → 为下一场引流',
+      tools: ['紧迫通知', '限时折扣', '售罄营销'],
+      budgetRate: 0.05,
+      roi: '1:12',
+      conversionRate: 0.70
+    },
+    scarcity: {
+      name: '倒计时抢票 + 社交传播',
+      icon: 'fa-hourglass-half',
+      color: 'var(--accent)',
+      badge: '方案B',
+      desc: '<strong>立即执行</strong>：开启倒计时抢票页面 → 营造紧迫氛围<br><strong>同步</strong>：已购用户分享观演期待 → 社交传播带动尾票<br><strong>售罄后</strong>：自动推送加场通知 → 收集需求',
+      tools: ['倒计时抢票', '社交传播', '加场通知'],
+      budgetRate: 0.04,
+      roi: '1:10',
+      conversionRate: 0.50
+    },
+    // 进度>90%：即将售罄方案
+    soldout: {
+      name: '售罄冲刺 + 加场预热',
+      icon: 'fa-trophy',
+      color: 'var(--gold)',
+      badge: '即将售罄',
+      desc: '<strong>立即执行</strong>：推送"仅剩少量"紧迫通知 → 加速尾票销售<br><strong>售罄后</strong>：自动推送"加场投票" → 收集需求+预热下一场',
+      tools: ['紧迫通知', '加场投票'],
+      budgetRate: 0,
+      roi: '∞',
+      conversionRate: 0.80
+    }
+  }
+};
+
+// ==================== AI Generate Plan ====================
+function generateAIPlan() {
+  var btn = event.target;
+  var originalText = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 生成中...';
+  btn.disabled = true;
+  
+  setTimeout(function() {
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+    alert('AI活动方案生成成功！');
+  }, 2000);
+}
+
+// ==================== Auto Marketing - Switch Scene ====================
+function switchAutoSceneInList(scene) {
+  document.querySelectorAll('.left-scene-tabs .auto-scene-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.scene === scene);
+  });
+  document.getElementById('list-new').style.display = scene === 'new' ? 'flex' : 'none';
+  document.getElementById('list-ongoing').style.display = scene === 'ongoing' ? 'flex' : 'none';
+  document.getElementById('auto-empty-state').style.display = 'flex';
+  document.getElementById('auto-detail-content').style.display = 'none';
+}
+
+// ==================== Auto Marketing - Select Show Item ====================
+var currentShowId = null;
+
+function selectShowItem(item, showId) {
+  var listNew = document.getElementById('list-new');
+  var listOngoing = document.getElementById('list-ongoing');
+  var currentList = listNew.style.display !== 'none' ? listNew : listOngoing;
+  
+  currentList.querySelectorAll('.auto-show-item.selected').forEach(function(i) {
+    i.classList.remove('selected');
+  });
+  item.classList.add('selected');
+  
+  document.getElementById('auto-empty-state').style.display = 'none';
+  document.getElementById('auto-detail-content').style.display = 'block';
+  
+  currentShowId = showId;
+  updateShowDetail(showId);
+}
+
+// ==================== Update Show Detail ====================
+function updateShowDetail(showId) {
+  var show = showData[showId];
+  if (!show) return;
+  
+  var progress = Math.round((show.sold / show.totalSeats) * 100);
+  
+  // 更新基本信息
+  document.getElementById('detail-cover').src = 'https://picsum.photos/seed/' + show.imageSeed + '/64/64';
+  document.getElementById('detail-name').textContent = show.name;
+  document.getElementById('detail-meta').innerHTML = 
+    '<span><i class="fas fa-calendar-alt"></i> ' + show.date + ' 开演</span>' +
+    '<span><i class="fas fa-map-marker-alt"></i> ' + show.venue + '</span>' +
+    '<span><i class="fas fa-chair"></i> ' + show.totalSeats + '座 · 已售' + show.sold + '张</span>';
+  
+  // 根据演出类型更新分析面板
+  if (show.category === 'new') {
+    updateNewShowAnalysis(show, progress);
+  } else {
+    updateOngoingShowAnalysis(show, progress);
+  }
+  
+  // 更新AI诊断
+  updateAIDiagnosis(show, progress);
+  
+  // 生成营销方案（1~3个）
+  generateDynamicPlans(show, progress);
+}
+
+// ==================== 新演出销售分析 ====================
+function updateNewShowAnalysis(show, progress) {
+  var daysToShow = calculateDaysToShow(show.date);
+  var projectedOccupancy = calculateProjectedOccupancy(progress, daysToShow);
+  
+  var statusEl = document.getElementById('analysis-status');
+  var progressBar = document.getElementById('sales-progress-bar');
+  
+  var status, statusClass, progressClass;
+  if (progress < 10) {
+    status = daysToShow < 14 ? '需紧急启动' : '待启动营销';
+    statusClass = 'urgent';
+    progressClass = 'low';
+  } else if (progress < 30) {
+    status = '初步推广中';
+    statusClass = 'warning';
+    progressClass = 'low';
+  } else {
+    status = '推广进行中';
+    statusClass = 'good';
+    progressClass = 'medium';
+  }
+  
+  statusEl.textContent = status;
+  statusEl.className = 'auto-analysis-status ' + statusClass;
+  document.getElementById('sales-progress').textContent = progress + '%';
+  progressBar.style.width = progress + '%';
+  progressBar.className = 'auto-analysis-progress ' + progressClass;
+  document.getElementById('days-to-show').textContent = daysToShow + '天';
+  document.getElementById('projected-occupancy').textContent = projectedOccupancy + '%';
+  
+  // 新演出标签
+  document.getElementById('label-metric2').textContent = '距离开演';
+  document.getElementById('label-metric3').textContent = '预计上座率';
+  
+  // 洞察
+  var insights = [];
+  if (progress < 10) {
+    insights.push('当前售出进度<strong>' + progress + '%</strong>，尚处于冷启动阶段，需尽快启动营销');
+  } else {
+    insights.push('当前售出进度<strong>' + progress + '%</strong>，推广已初步见效');
+  }
+  if (daysToShow > 21) {
+    insights.push('距开演<strong>' + daysToShow + '天</strong>，时间充裕，建议分阶段逐步推广');
+  } else if (daysToShow > 14) {
+    insights.push('距开演<strong>' + daysToShow + '天</strong>，即将进入黄金推广期');
+  } else {
+    insights.push('距开演仅<strong>' + daysToShow + '天</strong>，需加快推广节奏');
+  }
+  insights.push('按当前趋势预计最终上座率<strong>' + projectedOccupancy + '%</strong>');
+  document.getElementById('sales-insight').innerHTML = insights.join('；');
+}
+
+// ==================== 已开始演出销售分析 ====================
+function updateOngoingShowAnalysis(show, progress) {
+  var statusEl = document.getElementById('analysis-status');
+  var progressBar = document.getElementById('sales-progress-bar');
+  
+  // 计算距最后场次结束的时间
+  var hoursToEnd = calculateHoursToLastShow(show.lastShowEnd);
+  var daysToEnd = Math.ceil(hoursToEnd / 24);
+  
+  // 根据进度和趋势确定状态
+  var status, statusClass, progressClass;
+  if (progress < 30) {
+    status = hoursToEnd < 48 ? '需紧急加速' : '需加速';
+    statusClass = 'urgent';
+    progressClass = 'low';
+  } else if (progress < 60) {
+    status = show.trend === 'declining' ? '增速放缓' : '正常推进';
+    statusClass = show.trend === 'declining' ? 'warning' : 'normal';
+    progressClass = 'medium';
+  } else if (progress < 90) {
+    status = '进展良好';
+    statusClass = 'good';
+    progressClass = 'high';
+  } else {
+    status = '即将售罄';
+    statusClass = 'good';
+    progressClass = 'high';
+  }
+  
+  statusEl.textContent = status;
+  statusEl.className = 'auto-analysis-status ' + statusClass;
+  document.getElementById('sales-progress').textContent = progress + '%';
+  progressBar.style.width = progress + '%';
+  progressBar.className = 'auto-analysis-progress ' + progressClass;
+  
+  // 已开始演出标签
+  document.getElementById('label-metric2').textContent = '距最后场次';
+  document.getElementById('label-metric3').textContent = '日均售票';
+  
+  // 显示距最后场次结束时间
+  var timeText = hoursToEnd < 24 ? hoursToEnd + '小时' : daysToEnd + '天';
+  document.getElementById('days-to-show').textContent = timeText;
+  document.getElementById('projected-occupancy').textContent = show.dailyAvg + '张/天';
+  
+  // 趋势文字
+  var trendText = { rising: '上升', stable: '平稳', declining: '下降' };
+  var trendIcon = { rising: '↑', stable: '→', declining: '↓' };
+  
+  // 洞察
+  var insights = [];
+  
+  // 根据剩余时间调整紧迫感
+  if (hoursToEnd < 48 && progress < 50) {
+    insights.push('⚠️ <strong>紧急</strong>：距最后场次仅剩<strong>' + timeText + '</strong>，售出进度仅' + progress + '%，需立即采取强力营销措施');
+  } else if (hoursToEnd < 168 && progress < 40) {
+    insights.push('⏰ <strong>注意</strong>：距最后场次仅剩<strong>' + timeText + '</strong>，售出进度偏低，建议加速推广');
+  } else {
+    insights.push('距最后场次结束还有<strong>' + timeText + '</strong>，当前售出进度<strong>' + progress + '%</strong>');
+  }
+  
+  insights.push('累计售出<strong>' + show.sold + '张</strong>，日均<strong>' + show.dailyAvg + '张</strong>');
+  
+  if (show.trend === 'declining') {
+    insights.push('近7日销售趋势<strong>' + trendText[show.trend] + ' ' + trendIcon[show.trend] + '</strong>，需关注并调整策略');
+  } else if (show.trend === 'rising') {
+    insights.push('近7日销售趋势<strong>' + trendText[show.trend] + ' ' + trendIcon[show.trend] + '</strong>，势头良好可加大投入');
+  } else {
+    insights.push('近7日销售趋势<strong>' + trendText[show.trend] + ' ' + trendIcon[show.trend] + '</strong>，保持当前策略');
+  }
+  
+  var remaining = show.totalSeats - show.sold;
+  if (remaining > 0 && hoursToEnd > 0) {
+    var neededDaily = Math.ceil(remaining / daysToEnd);
+    insights.push('剩余<strong>' + remaining + '张</strong>未售，需日均售出<strong>' + neededDaily + '张</strong>方可售罄');
+  }
+  
+  document.getElementById('sales-insight').innerHTML = insights.join('；');
+}
+
+// 计算距最后场次结束的小时数
+function calculateHoursToLastShow(lastShowEnd) {
+  var now = new Date('2026-06-01T12:00:00'); // 模拟当前时间
+  var end = new Date(lastShowEnd);
+  return Math.ceil((end - now) / (1000 * 60 * 60));
+}
+
+// ==================== Helper Functions ====================
+function calculateDaysToShow(showDate) {
+  var today = new Date('2026-06-01');
+  var target = new Date(showDate);
+  return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+}
+
+function calculateProjectedOccupancy(currentProgress, daysToShow) {
+  var dailyGrowth = daysToShow > 14 ? 0.5 : (daysToShow > 7 ? 1 : 2);
+  return Math.min(Math.round(currentProgress + daysToShow * dailyGrowth), 100);
+}
+
+// ==================== AI诊断（区分新/已开始） ====================
+function updateAIDiagnosis(show, progress) {
+  var diagnoses = [];
+  
+  if (show.category === 'new') {
+    var daysToShow = calculateDaysToShow(show.date);
+    if (progress < 10 && daysToShow > 14) {
+      diagnoses.push('新演出上线初期，建议采用<strong>预热推广策略</strong>，逐步建立市场认知');
+    } else if (progress < 10 && daysToShow <= 14) {
+      diagnoses.push('新演出时间紧迫，建议采用<strong>紧急启动策略</strong>，全渠道快速覆盖');
+    } else {
+      diagnoses.push('新演出推广进行中，建议<strong>持续优化</strong>投放渠道和优惠策略');
+    }
+  } else {
+    // 已开始演出：基于距最后场次结束时间、趋势和进度诊断
+    var hoursToEnd = calculateHoursToLastShow(show.lastShowEnd);
+    var timeText = hoursToEnd < 24 ? hoursToEnd + '小时' : Math.ceil(hoursToEnd / 24) + '天';
+    
+    if (progress < 40 && hoursToEnd < 48) {
+      diagnoses.push('⚠️ <strong>紧急</strong>：距最后场次仅剩<strong>' + timeText + '</strong>，售票进度仅' + progress + '%，建议立即启动<strong>紧急加速策略</strong>，全力冲刺');
+    } else if (progress < 40 && show.trend === 'declining') {
+      diagnoses.push('售票进度仅<strong>' + progress + '%</strong>且销售趋势下降，建议立即启动<strong>加速营销</strong>，加大折扣和投放力度');
+    } else if (progress < 40) {
+      diagnoses.push('售票进度<strong>' + progress + '%</strong>偏低，距最后场次还有<strong>' + timeText + '</strong>，建议采用<strong>加速营销策略</strong>扩大曝光');
+    } else if (progress < 70 && show.trend === 'rising') {
+      diagnoses.push('售票进度<strong>' + progress + '%</strong>且趋势上升，距最后场次还有<strong>' + timeText + '</strong>，建议维持当前策略并<strong>适当加码</strong>');
+    } else if (progress < 70) {
+      diagnoses.push('售票进度<strong>' + progress + '%</strong>正常，距最后场次还有<strong>' + timeText + '</strong>，建议采用<strong>稳定增长策略</strong>');
+    } else if (progress < 90) {
+      diagnoses.push('售票进展良好(<strong>' + progress + '%</strong>)，距最后场次还有<strong>' + timeText + '</strong>，建议采用<strong>尾票冲刺策略</strong>，营造稀缺感');
+    } else {
+      diagnoses.push('即将售罄，距最后场次还有<strong>' + timeText + '</strong>，建议采用<strong>售罄营销策略</strong>，为下一场预热');
+    }
+  }
+  
+  diagnoses.push('基于同类' + show.type + '历史数据，平均上座率<strong>75%</strong>，平均ROI <strong>1:5.2</strong>');
+  document.getElementById('detail-insight-text').innerHTML = diagnoses.join('。');
+}
+
+// ==================== 动态生成1~3个营销方案 ====================
+function generateDynamicPlans(show, progress) {
+  var container = document.getElementById('dynamic-plans');
+  var plans = [];
+  
+  if (show.category === 'new') {
+    // ---- 新演出：根据进度+时间生成1~3个方案 ----
+    var daysToShow = calculateDaysToShow(show.date);
+    
+    if (progress < 10 && daysToShow <= 14) {
+      // 时间紧迫：1个紧急方案
+      plans.push(planTemplates.new.urgent);
+    } else if (progress < 10 && daysToShow > 14) {
+      // 时间充裕：3个方案
+      plans.push(planTemplates.new.early);
+      plans.push(planTemplates.new.member);
+      plans.push(planTemplates.new.viral);
+    } else {
+      // 已有初步销售：2个方案
+      plans.push(planTemplates.new.early);
+      plans.push(planTemplates.new.member);
+    }
+  } else {
+    // ---- 已开始演出：根据距最后场次结束时间、进度+趋势生成1~3个方案 ----
+    var hoursToEnd = calculateHoursToLastShow(show.lastShowEnd);
+    
+    if (progress < 40) {
+      if (hoursToEnd < 48) {
+        // 时间紧迫+进度低：3个紧急方案
+        plans.push(planTemplates.ongoing.accelerate);
+        plans.push(planTemplates.ongoing.crossSell);
+        plans.push(planTemplates.ongoing.final);
+      } else if (show.trend === 'declining') {
+        // 进度低+趋势下降：2个加速方案
+        plans.push(planTemplates.ongoing.accelerate);
+        plans.push(planTemplates.ongoing.crossSell);
+      } else {
+        // 进度低+趋势平稳：1个加速方案
+        plans.push(planTemplates.ongoing.accelerate);
+      }
+    } else if (progress < 70) {
+      // 中等进度：2个方案
+      plans.push(planTemplates.ongoing.stable);
+      plans.push(planTemplates.ongoing.upgrade);
+    } else if (progress < 90) {
+      // 尾票阶段：2个方案
+      plans.push(planTemplates.ongoing.final);
+      plans.push(planTemplates.ongoing.scarcity);
+    } else {
+      // 即将售罄：1个方案
+      plans.push(planTemplates.ongoing.soldout);
+    }
+  }
+  
+  // 生成HTML
+  var html = '';
+  plans.forEach(function(plan, index) {
+    var isRecommended = index === 0;
+    var remainingSeats = show.totalSeats - show.sold;
+    var targetSales = Math.floor(remainingSeats * plan.conversionRate);
+    var avgTicketPrice = 280;
+    var projectedRevenue = targetSales * avgTicketPrice;
+    var budget = Math.floor(projectedRevenue * plan.budgetRate);
+    var finalOccupancy = Math.round(((show.sold + targetSales) / show.totalSeats) * 100);
+    
+    html += '<div class="auto-plan-card ' + (isRecommended ? 'recommended' : '') + '">';
+    html += '<div class="auto-plan-card-top">';
+    html += '<div class="auto-plan-card-badge ' + (isRecommended ? 'recommended' : '') + '">';
+    if (isRecommended) html += '<i class="fas fa-star"></i> ';
+    html += plan.badge + '</div>';
+    html += '<div class="auto-plan-card-check"><label class="auto-check-label">';
+    html += '<input type="checkbox" ' + (isRecommended ? 'checked' : '') + ' class="auto-check-input" onchange="updateSelectedPlans()">';
+    html += '<span class="auto-check-box"><i class="fas fa-check"></i></span>';
+    html += '<span>采用</span></label></div></div>';
+    html += '<div class="auto-plan-card-name">';
+    html += '<i class="fas ' + plan.icon + '" style="color:' + plan.color + '"></i> ' + plan.name + '</div>';
+    html += '<div class="auto-plan-card-desc">' + plan.desc + '</div>';
+    html += '<div class="auto-plan-card-metrics">';
+    html += '<div class="auto-metric"><div class="auto-metric-label">预计新增售票</div>';
+    html += '<div class="auto-metric-value">' + targetSales + '<span class="auto-metric-unit">张</span></div></div>';
+    html += '<div class="auto-metric"><div class="auto-metric-label">预计新增营收</div>';
+    html += '<div class="auto-metric-value" style="color:var(--green)">¥' + projectedRevenue.toLocaleString() + '</div></div>';
+    html += '<div class="auto-metric"><div class="auto-metric-label">营销预算</div>';
+    html += '<div class="auto-metric-value">' + (budget > 0 ? '¥' + budget.toLocaleString() : '¥0') + '</div></div>';
+    html += '<div class="auto-metric"><div class="auto-metric-label">预期ROI</div>';
+    html += '<div class="auto-metric-value" style="color:var(--accent)">' + plan.roi + '</div></div>';
+    html += '<div class="auto-metric"><div class="auto-metric-label">预计上座率</div>';
+    html += '<div class="auto-metric-value">' + finalOccupancy + '%</div></div>';
+    html += '<div class="auto-metric"><div class="auto-metric-label">覆盖人群</div>';
+    html += '<div class="auto-metric-value">' + Math.floor(targetSales * 8).toLocaleString() + '<span class="auto-metric-unit">人</span></div></div>';
+    html += '</div>';
+    html += '<div class="auto-plan-card-tools">';
+    plan.tools.forEach(function(tool) {
+      html += '<span class="auto-tool-tag"><i class="fas fa-check"></i> ' + tool + '</span>';
+    });
+    html += '</div></div>';
+  });
+  
+  container.innerHTML = html;
+}
+
+// ==================== Regenerate Plan ====================
+function regeneratePlan() {
+  if (currentShowId) {
+    var btn = event.target;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 分析中...';
+    setTimeout(function() {
+      btn.innerHTML = '<i class="fas fa-redo"></i> 重新分析';
+      updateShowDetail(currentShowId);
+    }, 1500);
+  }
+}
+
+// ==================== Update Selected Plans ====================
+function updateSelectedPlans() {
+  var checkboxes = document.querySelectorAll('#dynamic-plans .auto-check-input:checked');
+  var count = checkboxes.length;
+  
+  var footer = document.querySelector('.auto-detail-footer');
+  if (footer) {
+    var countEl = footer.querySelector('.auto-selected-count');
+    if (countEl) {
+      countEl.innerHTML = '已选 <strong>' + count + '</strong> 个方案';
+    }
+  }
+}
+</script>
+
+</body>
+</html>

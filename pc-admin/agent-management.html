@@ -1,0 +1,2371 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>代理管理 - 海南演艺票务系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+/* Force mobile viewport */
+@-ms-viewport { width: device-width; }
+@viewport { width: device-width; }
+@-webkit-viewport { width: device-width; }
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+/* ========== Sidebar ========== */
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: linear-gradient(180deg, #0A1628 0%, #0F2035 50%, #0A1628 100%);
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  overflow: hidden;
+}
+
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at 20% 0%, rgba(255,107,74,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.sidebar-logo {
+  padding: 24px 20px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #FF6B4A, #D4A853);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(255,107,74,0.3);
+  flex-shrink: 0;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.logo-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.logo-sub {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 0;
+  scrollbar-width: none;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-group {
+  margin-bottom: 8px;
+}
+
+.nav-group-label {
+  padding: 8px 24px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.25);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  margin: 2px 12px;
+  border-radius: 10px;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.nav-item i {
+  width: 20px;
+  text-align: center;
+  font-size: 15px;
+  transition: color 0.25s, transform 0.25s;
+}
+
+.nav-item:hover {
+  color: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.05);
+}
+
+.nav-item:hover i {
+  transform: scale(1.1);
+}
+
+.nav-item.active {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(255,107,74,0.2), rgba(255,107,74,0.08));
+  box-shadow: 0 2px 8px rgba(255,107,74,0.1);
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background: linear-gradient(180deg, #FF6B4A, #D4A853);
+  border-radius: 0 3px 3px 0;
+}
+
+.nav-item.active i {
+  color: #FF6B4A;
+}
+
+.nav-item .badge {
+  margin-left: auto;
+  background: rgba(255,107,74,0.2);
+  color: #FF6B4A;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #FF6B4A, #D4A853);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.admin-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.admin-role {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+}
+
+.logout-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: rgba(255,107,74,0.15);
+  color: #FF6B4A;
+}
+
+/* ========== CSS Variables ========== */
+        :root {
+            --primary: #0A1628;
+            --primary-light: #132240;
+            --primary-lighter: #1a2d4d;
+            --accent: #FF6B4A;
+            --accent-hover: #ff8266;
+            --gold: #D4A853;
+            --emerald: #00C9A7;
+            --bg-light: #F5F6FA;
+            --bg-white: #FFFFFF;
+            --text-primary: #1a1a2e;
+            --text-secondary: #6b7280;
+            --text-light: #9ca3af;
+            --border: #e5e7eb;
+            --border-light: #f0f0f5;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+            --shadow-xl: 0 16px 48px rgba(0,0,0,0.16);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 18px;
+            --sidebar-width: 240px;
+            --topbar-height: 64px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ========== Reset & Base ========== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100vw;
+        }
+
+        /* ========== Layout ========== */
+        .admin-layout {
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* ========== Main Content ========== */
+        .main-content {
+            margin-left: 240px;
+            width: calc(100% - 240px);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #F0F2F5;
+        }
+
+        /* ========== Top Bar ========== */
+        .topbar {
+            height: var(--topbar-height);
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .breadcrumb a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .breadcrumb a:hover {
+            color: var(--accent);
+        }
+
+        .breadcrumb .current {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .breadcrumb .sep {
+            color: var(--text-light);
+            font-size: 11px;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .topbar-search {
+            position: relative;
+        }
+
+        .topbar-search input {
+            width: 220px;
+            height: 36px;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 0 14px 0 36px;
+            font-size: 13px;
+            background: var(--bg-light);
+            color: var(--text-primary);
+            outline: none;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .topbar-search input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255,107,74,0.1);
+            width: 260px;
+        }
+
+        .topbar-search i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .topbar-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: transparent;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            position: relative;
+            font-size: 16px;
+        }
+
+        .topbar-btn:hover {
+            background: var(--bg-light);
+            color: var(--text-primary);
+        }
+
+        .topbar-btn .dot {
+            position: absolute;
+            top: 7px;
+            right: 7px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 2px solid var(--bg-white);
+        }
+
+        .topbar-admin {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 12px 4px 4px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-left: 4px;
+        }
+
+        .topbar-admin:hover {
+            background: var(--bg-light);
+        }
+
+        .topbar-admin img,
+        .topbar-admin .avatar-sm {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .topbar-admin .avatar-sm {
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .topbar-admin .name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* ========== Page Content ========== */
+        .page-content {
+            flex: 1;
+            padding: 24px 28px;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .page-title-sub {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* ========== Report Tabs (from statistics.html) ========== */
+        .report-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0;
+            border-bottom: 1px solid #E2E8F0;
+            margin-bottom: 0;
+            background: var(--bg-white);
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            padding: 0 8px;
+        }
+        .report-tab {
+            padding: 14px 20px;
+            font-size: 14px;
+            color: #94A3B8;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            transition: color 0.15s, border-color 0.15s;
+            font-weight: 400;
+            white-space: nowrap;
+            cursor: pointer;
+            margin-bottom: -1px;
+            font-family: inherit;
+        }
+        .report-tab:hover { color: #475569; }
+        .report-tab.active {
+            color: #FF6B4A;
+            border-bottom-color: #FF6B4A;
+            font-weight: 500;
+        }
+        .report-tab i {
+            margin-right: 6px;
+            font-size: 13px;
+        }
+
+        /* ========== Tab Panel ========== */
+        .tab-panel {
+            display: none;
+            background: var(--bg-white);
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid #E2E8F0;
+            border-top: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* ========== Stats Cards (KPI Style) ========== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow 0.3s, transform 0.3s;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0s; }
+        .stat-card:nth-child(2) { animation-delay: 0.05s; }
+        .stat-card:nth-child(3) { animation-delay: 0.1s; }
+        .stat-card:nth-child(4) { animation-delay: 0.15s; }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+        }
+
+        .stat-card:nth-child(1)::before { background: linear-gradient(90deg, var(--accent), #ff9a7a); }
+        .stat-card:nth-child(2)::before { background: linear-gradient(90deg, var(--emerald), #4dd9c0); }
+        .stat-card:nth-child(3)::before { background: linear-gradient(90deg, var(--gold), #e8c97a); }
+        .stat-card:nth-child(4)::before { background: linear-gradient(90deg, #6366f1, #818cf8); }
+
+        .stat-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .stat-card .stat-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .stat-card .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .stat-card .stat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .stat-card:nth-child(1) .stat-icon { background: rgba(255,107,74,0.1); color: var(--accent); }
+        .stat-card:nth-child(2) .stat-icon { background: rgba(0,201,167,0.1); color: var(--emerald); }
+        .stat-card:nth-child(3) .stat-icon { background: rgba(212,168,83,0.1); color: var(--gold); }
+        .stat-card:nth-child(4) .stat-icon { background: rgba(99,102,241,0.1); color: #6366f1; }
+
+        .stat-card .stat-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .stat-change {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-card .stat-change.up { color: var(--emerald); }
+        .stat-card .stat-change.down { color: var(--accent); }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ========== Filter Bar ========== */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select, .filter-input, .filter-date {
+            height: 38px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0 12px;
+            font-size: 13px;
+            color: var(--text-primary);
+            background: var(--bg-white);
+            outline: none;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .filter-select:focus, .filter-input:focus, .filter-date:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255,107,74,0.08);
+        }
+
+        .filter-select { min-width: 140px; padding-right: 30px; cursor: pointer; }
+        .filter-input { width: 200px; }
+        .filter-date { width: 150px; }
+
+        .filter-btn {
+            height: 38px;
+            padding: 0 18px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: inherit;
+        }
+
+        .filter-btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .filter-btn-primary:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 4px 12px rgba(255,107,74,0.3);
+        }
+
+        .filter-btn-outline {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .filter-btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .filter-btn-success {
+            background: var(--emerald);
+            color: #fff;
+        }
+
+        .filter-btn-success:hover {
+            background: #00b396;
+        }
+
+        .filter-sep {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        /* ========== Table ========== */
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .data-table thead {
+            background: var(--bg-light);
+        }
+
+        .data-table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-primary);
+            vertical-align: middle;
+        }
+
+        .data-table tbody tr {
+            transition: var(--transition);
+        }
+
+        .data-table tbody tr:hover {
+            background: rgba(255,107,74,0.02);
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-cell .avatar-placeholder {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .user-cell .user-id {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        /* Level Tags */
+        .level-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .level-tag.normal { background: #f0f0f5; color: #6b7280; }
+        .level-tag.silver { background: #e8ecef; color: #64748b; }
+        .level-tag.gold { background: rgba(212,168,83,0.12); color: #b8922e; }
+        .level-tag.diamond { background: rgba(99,102,241,0.1); color: #6366f1; }
+        .level-tag.vip { background: rgba(255,107,74,0.1); color: var(--accent); }
+
+        /* Agent Level Tags */
+        .agent-level-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .agent-level-tag.level-normal { background: #f0f0f5; color: #6b7280; }
+        .agent-level-tag.level-bronze { background: rgba(205,127,50,0.12); color: #cd7f32; }
+        .agent-level-tag.level-silver { background: rgba(100,116,139,0.12); color: #64748b; }
+        .agent-level-tag.level-gold { background: rgba(212,168,83,0.12); color: #b8922e; }
+        .agent-level-tag.level-diamond { background: rgba(99,102,241,0.1); color: #6366f1; }
+
+        /* Status Tags */
+        .status-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-tag.normal { background: rgba(0,201,167,0.1); color: var(--emerald); }
+        .status-tag.frozen { background: rgba(239,68,68,0.1); color: #ef4444; }
+        .status-tag.pending { background: rgba(212,168,83,0.12); color: #b8922e; }
+        .status-tag.shipped { background: rgba(0,201,167,0.1); color: var(--emerald); }
+        .status-tag.cancelled { background: rgba(107,114,128,0.1); color: #6b7280; }
+        .status-tag.approved { background: rgba(0,201,167,0.1); color: var(--emerald); }
+        .status-tag.rejected { background: rgba(239,68,68,0.1); color: #ef4444; }
+
+        .status-tag .dot-indicator {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .status-tag.normal .dot-indicator { background: var(--emerald); }
+        .status-tag.frozen .dot-indicator { background: #ef4444; }
+        .status-tag.pending .dot-indicator { background: var(--gold); }
+        .status-tag.shipped .dot-indicator { background: var(--emerald); }
+        .status-tag.cancelled .dot-indicator { background: #9ca3af; }
+        .status-tag.approved .dot-indicator { background: var(--emerald); }
+        .status-tag.rejected .dot-indicator { background: #ef4444; }
+
+        /* Action Buttons */
+        .action-btns {
+            display: flex;
+            gap: 6px;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--border);
+            background: var(--bg-white);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            font-size: 13px;
+        }
+
+        .action-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(255,107,74,0.04);
+        }
+
+        .action-btn.danger:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+            background: rgba(239,68,68,0.04);
+        }
+
+        /* ========== Table Action Buttons ========== */
+        .table-action-btn {
+            padding: 5px 12px;
+            border: 1px solid var(--border);
+            background: var(--bg-white);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .table-action-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .table-action-btn.primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .table-action-btn.primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .table-action-btn.success {
+            background: var(--emerald);
+            color: #fff;
+            border-color: var(--emerald);
+        }
+
+        .table-action-btn.success:hover {
+            background: #00b396;
+        }
+
+        .table-action-btn.danger-outline {
+            color: #ef4444;
+            border-color: #fca5a5;
+        }
+
+        .table-action-btn.danger-outline:hover {
+            background: #fef2f2;
+        }
+
+        /* ========== Pagination ========== */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 18px;
+            padding: 0 4px;
+        }
+
+        .pagination-info {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .pagination-btns {
+            display: flex;
+            gap: 4px;
+        }
+
+        .page-btn {
+            min-width: 34px;
+            height: 34px;
+            border: 1px solid var(--border);
+            background: var(--bg-white);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            font-family: inherit;
+            padding: 0 4px;
+        }
+
+        .page-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .page-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+
+        /* ========== Modal ========== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(10,22,40,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-white);
+            border-radius: var(--radius-xl);
+            width: 720px;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .modal-title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 34px;
+            height: 34px;
+            border: none;
+            background: var(--bg-light);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .modal-close:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            max-height: calc(85vh - 140px);
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* ========== Section Title ========== */
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: var(--accent);
+            font-size: 14px;
+        }
+
+        /* ========== Config Table (for commission settings) ========== */
+        .config-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .config-table thead {
+            background: var(--bg-light);
+        }
+
+        .config-table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .config-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-primary);
+        }
+
+        .config-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .config-table tbody tr:hover {
+            background: rgba(255,107,74,0.02);
+        }
+
+        /* ========== Settlement Form ========== */
+        .settlement-form {
+            background: var(--bg-light);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 24px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-label .required {
+            color: #ef4444;
+            margin-left: 2px;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            height: 38px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0 12px;
+            font-size: 13px;
+            color: var(--text-primary);
+            background: var(--bg-white);
+            outline: none;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255,107,74,0.08);
+        }
+
+        .form-textarea {
+            height: auto;
+            padding: 10px 12px;
+            resize: vertical;
+        }
+
+        /* ========== Save Bar ========== */
+        .save-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 4px 12px rgba(255,107,74,0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--text-secondary);
+        }
+
+        /* ========== Sub Tabs ========== */
+        .sub-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 18px;
+        }
+
+        .sub-tab {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            position: relative;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .sub-tab:hover {
+            color: var(--text-primary);
+        }
+
+        .sub-tab.active {
+            color: var(--accent);
+        }
+
+        .sub-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 12px;
+            right: 12px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .sub-tab-panel {
+            display: none;
+        }
+
+        .sub-tab-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* ========== Scrollbar ========== */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+        /* ========== Animations ========== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+/* ========== Responsive ========== */
+@media screen and (max-width: 1024px) {
+  .sidebar {
+    width: 64px;
+    overflow: hidden;
+  }
+  .sidebar .logo-text,
+  .sidebar .logo-title,
+  .sidebar .logo-sub,
+  .sidebar .nav-group-label,
+  .sidebar .nav-item span,
+  .sidebar .nav-item .badge,
+  .sidebar .admin-info,
+  .sidebar .logout-btn span {
+    display: none;
+  }
+  .sidebar .logo-icon {
+    margin: 0 auto;
+  }
+  .sidebar-logo {
+    justify-content: center;
+    padding: 20px 0;
+  }
+  .sidebar .nav-item {
+    justify-content: center;
+    padding: 12px;
+    margin: 2px 8px;
+  }
+  .sidebar .nav-item i {
+    margin: 0;
+    font-size: 18px;
+  }
+  .sidebar-footer {
+    justify-content: center;
+    padding: 12px 0;
+  }
+  .main-content {
+    margin-left: 64px;
+    width: calc(100% - 64px);
+  }
+  .page-content {
+    padding: 16px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 240px;
+    height: 100%;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 200;
+  }
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  .page-content,
+  .stats-grid,
+  .filter-bar,
+  .report-tabs,
+  .sub-tabs,
+  .pagination {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  img { max-width: 100%; height: auto; }
+  svg { max-width: 100%; height: auto; }
+  .sidebar.mobile-open .logo-text,
+  .sidebar.mobile-open .logo-title,
+  .sidebar.mobile-open .logo-sub,
+  .sidebar.mobile-open .nav-group-label,
+  .sidebar.mobile-open .nav-item span,
+  .sidebar.mobile-open .nav-item .badge,
+  .sidebar.mobile-open .admin-info {
+    display: flex;
+  }
+  .sidebar.mobile-open .logo-icon { margin: 0; }
+  .sidebar.mobile-open .sidebar-logo { justify-content: flex-start; padding: 24px 20px 20px; }
+  .sidebar.mobile-open .nav-item { justify-content: flex-start; padding: 10px 20px; margin: 2px 12px; }
+  .sidebar.mobile-open .sidebar-footer { justify-content: flex-start; padding: 16px 20px; }
+  .main-content { margin-left: 0; }
+  .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .mobile-menu-btn { display: flex !important; position: fixed; top: 12px; left: 12px; z-index: 150; width: 40px; height: 40px; border-radius: 10px; border: none; background: #0A1628; color: #fff; font-size: 18px; cursor: pointer; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+  .sidebar-overlay { display: block !important; }
+  .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+  .page-content { padding: 60px 12px 12px; }
+  .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -12px; padding: 0 12px; }
+  .data-table { min-width: 600px; }
+  .filter-bar { flex-direction: column; gap: 10px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .report-tabs { display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; gap: 0; padding: 0 12px; }
+  .report-tabs::-webkit-scrollbar { display: none; }
+  .report-tabs .report-tab { flex-shrink: 0; font-size: 13px !important; padding: 8px 14px !important; white-space: nowrap; }
+  .sub-tabs { display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .sub-tabs::-webkit-scrollbar { display: none; }
+  .sub-tabs .sub-tab { flex-shrink: 0; font-size: 12px !important; padding: 6px 12px !important; white-space: nowrap; }
+  .modal-overlay { padding: 0 8px; align-items: flex-end; }
+  .modal-overlay .modal { width: 100% !important; max-width: 100% !important; max-height: 85vh; border-radius: 16px 16px 0 0; margin: 0; animation: slideUp 0.3s ease; }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .form-row { flex-direction: column; gap: 12px; }
+  .form-row .form-group { width: 100%; min-width: 0; }
+  .form-input, .form-select, .form-textarea { width: 100%; font-size: 16px; }
+  .topbar { padding: 0 12px; }
+  .topbar .topbar-search { display: none; }
+  .page-title { font-size: 20px !important; }
+  .data-table th, .data-table td { font-size: 12px !important; padding: 8px 10px !important; white-space: nowrap; }
+  .data-table th { font-size: 11px !important; }
+  .pagination { flex-direction: column; gap: 10px; align-items: center; }
+  .pagination .page-btn { min-width: 32px !important; height: 32px !important; font-size: 12px !important; }
+}
+
+@media screen and (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .page-content { padding: 56px 10px 10px; }
+}
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- ==================== Sidebar ==================== -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <i class="fas fa-masks-theater"></i>
+    </div>
+    <div class="logo-text">
+      <span class="logo-title">海南演艺票务</span>
+      <span class="logo-sub">管理后台</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group">
+      <div class="nav-group-label">核心功能</div>
+      <a class="nav-item" href="dashboard.html">
+        <i class="fas fa-chart-pie"></i>
+        <span>数据看板</span>
+      </a>
+      <a class="nav-item" href="show-management.html">
+        <i class="fas fa-theater-masks"></i>
+        <span>演出管理</span>
+      </a>
+      <a class="nav-item" href="ticket-sales.html">
+        <i class="fas fa-ticket"></i>
+        <span>售票管理</span>
+      </a>
+      <a class="nav-item" href="order-management.html">
+        <i class="fas fa-receipt"></i>
+        <span>订单管理</span>
+      </a>
+      <a class="nav-item" href="member-management.html">
+        <i class="fas fa-crown"></i>
+        <span>会员管理</span>
+      </a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">运营管理</div>
+      <a class="nav-item" href="marketing-center.html">
+        <i class="fas fa-bullhorn"></i>
+        <span>营销中心</span>
+      </a>
+      <a class="nav-item" href="ai-marketing.html">
+        <i class="fas fa-robot"></i>
+        <span>AI智能营销</span>
+      </a>
+      <a class="nav-item" href="banner-management.html">
+        <i class="fas fa-images"></i>
+        <span>轮播图管理</span>
+      </a>
+      <a class="nav-item" href="product-service.html">
+        <i class="fas fa-store"></i>
+        <span>商品管理</span>
+      </a>
+      <a class="nav-item" href="activity-decoration.html">
+        <i class="fas fa-calendar-check"></i>
+        <span>运营活动</span>
+      </a>
+      <a class="nav-item active" href="agent-management.html">
+        <i class="fas fa-handshake"></i>
+        <span>代理管理</span>
+      </a>
+      <a class="nav-item" href="statistics.html">
+        <i class="fas fa-chart-bar"></i>
+        <span>报表中心</span>
+      </a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">系统设置</div>
+      <a class="nav-item" href="activity-decoration.html#decoration">
+        <i class="fas fa-palette"></i>
+        <span>首页装修</span>
+      </a>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="admin-avatar">陈</div>
+    <div class="admin-info">
+      <div class="admin-name">陈思远</div>
+      <div class="admin-role">超级管理员</div>
+    </div>
+    <button class="logout-btn" title="退出登录">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+  </div>
+</aside>
+
+        <!-- ========== Main Content ========== -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="topbar">
+                <div class="breadcrumb">
+                    <a href="#">首页</a>
+                    <span class="sep"><i class="fas fa-chevron-right"></i></span>
+                    <a href="#">运营管理</a>
+                    <span class="sep"><i class="fas fa-chevron-right"></i></span>
+                    <span class="current">代理管理</span>
+                </div>
+                <div class="topbar-actions">
+                    <div class="topbar-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="搜索代理、订单...">
+                    </div>
+                    <button class="topbar-btn" title="消息通知">
+                        <i class="fas fa-bell"></i>
+                        <span class="dot"></span>
+                    </button>
+                    <button class="topbar-btn" title="系统设置">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <div class="topbar-admin">
+                        <div class="avatar-sm">陈</div>
+                        <span class="name">陈思远</span>
+                        <i class="fas fa-chevron-down" style="font-size:10px;color:var(--text-light);"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+<!-- Mobile Menu Button -->
+<button class="mobile-menu-btn" id="mobileMenuBtn" style="display:none;position:fixed;top:16px;left:16px;z-index:150;width:40px;height:40px;border-radius:10px;border:none;background:#0A1628;color:#fff;font-size:18px;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);">
+  <i class="fas fa-bars"></i>
+</button>
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:190;opacity:0;pointer-events:none;transition:opacity 0.3s;"></div>
+            <div class="page-content">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">代理管理</h1>
+                        <p class="page-title-sub">管理平台代理信息、佣金设置与提现审核</p>
+                    </div>
+                </div>
+
+                <!-- Tab Navigation -->
+                <div class="report-tabs">
+                    <button class="report-tab active" onclick="switchTab(event, 'tab-agents')">
+                        <i class="fas fa-users"></i> 代理列表
+                    </button>
+                    <button class="report-tab" onclick="switchTab(event, 'tab-commission-settings')">
+                        <i class="fas fa-sliders-h"></i> 佣金设置
+                    </button>
+                    <button class="report-tab" onclick="switchTab(event, 'tab-commission-mgmt')">
+                        <i class="fas fa-coins"></i> 佣金管理
+                    </button>
+                </div>
+
+                <!-- ==================== Tab 1: 代理列表 ==================== -->
+                <div id="tab-agents" class="tab-panel active">
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">代理总数</span>
+                                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                            </div>
+                            <div class="stat-value">128<span style="font-size:14px;font-weight:400;color:var(--text-secondary);margin-left:4px;">人</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">本月活跃</span>
+                                <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+                            </div>
+                            <div class="stat-value">86<span style="font-size:14px;font-weight:400;color:var(--text-secondary);margin-left:4px;">人</span></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">本月佣金发放</span>
+                                <div class="stat-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                            </div>
+                            <div class="stat-value">&#165;45,680</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">待审核提现</span>
+                                <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                            </div>
+                            <div class="stat-value">12<span style="font-size:14px;font-weight:400;color:var(--text-secondary);margin-left:4px;">笔</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Filter Bar -->
+                    <div class="filter-bar">
+                        <select class="filter-select">
+                            <option value="">全部等级</option>
+                            <option value="normal">普通</option>
+                            <option value="bronze">铜牌</option>
+                            <option value="silver">银牌</option>
+                            <option value="gold">金牌</option>
+                            <option value="diamond">钻石</option>
+                        </select>
+                        <select class="filter-select">
+                            <option value="">全部状态</option>
+                            <option value="normal">正常</option>
+                            <option value="frozen">冻结</option>
+                        </select>
+                        <input type="text" class="filter-input" placeholder="搜索姓名/手机号...">
+                        <button class="filter-btn filter-btn-primary"><i class="fas fa-search"></i> 查询</button>
+                        <button class="filter-btn filter-btn-outline"><i class="fas fa-redo-alt"></i> 重置</button>
+                        <div style="flex:1;"></div>
+                        <button class="filter-btn filter-btn-primary" onclick="openAddAgentModal()" style="background:var(--accent);"><i class="fas fa-plus"></i> 新增代理</button>
+                    </div>
+
+                    <!-- Agent Table -->
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>代理信息</th>
+                                    <th>手机号</th>
+                                    <th>等级</th>
+                                    <th>类型</th>
+                                    <th>累计销售额</th>
+                                    <th>累计佣金</th>
+                                    <th>可提现余额</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-placeholder" style="background:linear-gradient(135deg,#D4A853,#e8c97a);">王</div>
+                                            <div>
+                                                <div style="font-weight:500;">王建华</div>
+                                                <div class="user-id">A20260001</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>138****2356</td>
+                                    <td><span class="agent-level-tag level-gold"><i class="fas fa-crown"></i> 金牌</span></td>
+                                    <td><span style="font-size:12px;color:var(--text-secondary);">员工</span></td>
+                                    <td>&#165;128,500</td>
+                                    <td>&#165;15,420</td>
+                                    <td>&#165;12,800</td>
+                                    <td><span class="status-tag normal"><span class="dot-indicator"></span> 正常</span></td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="action-btn" title="查看"><i class="fas fa-eye"></i></button>
+                                            <button class="action-btn" title="编辑"><i class="fas fa-pen"></i></button>
+                                            <button class="action-btn danger" title="冻结"><i class="fas fa-snowflake"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-placeholder" style="background:linear-gradient(135deg,#6366f1,#818cf8);">李</div>
+                                            <div>
+                                                <div style="font-weight:500;">李美玲</div>
+                                                <div class="user-id">A20260002</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>139****8821</td>
+                                    <td><span class="agent-level-tag level-diamond"><i class="fas fa-gem"></i> 钻石</span></td>
+                                    <td><span style="font-size:12px;color:var(--text-secondary);">代理</span></td>
+                                    <td>&#165;256,800</td>
+                                    <td>&#165;30,816</td>
+                                    <td>&#165;25,600</td>
+                                    <td><span class="status-tag normal"><span class="dot-indicator"></span> 正常</span></td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="action-btn" title="查看"><i class="fas fa-eye"></i></button>
+                                            <button class="action-btn" title="编辑"><i class="fas fa-pen"></i></button>
+                                            <button class="action-btn danger" title="冻结"><i class="fas fa-snowflake"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-placeholder" style="background:linear-gradient(135deg,#94a3b8,#cbd5e1);">张</div>
+                                            <div>
+                                                <div style="font-weight:500;">张志强</div>
+                                                <div class="user-id">A20260003</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>136****4512</td>
+                                    <td><span class="agent-level-tag level-silver"><i class="fas fa-medal"></i> 银牌</span></td>
+                                    <td><span style="font-size:12px;color:var(--text-secondary);">代理</span></td>
+                                    <td>&#165;86,200</td>
+                                    <td>&#165;9,482</td>
+                                    <td>&#165;7,800</td>
+                                    <td><span class="status-tag normal"><span class="dot-indicator"></span> 正常</span></td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="action-btn" title="查看"><i class="fas fa-eye"></i></button>
+                                            <button class="action-btn" title="编辑"><i class="fas fa-pen"></i></button>
+                                            <button class="action-btn danger" title="冻结"><i class="fas fa-snowflake"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-placeholder" style="background:linear-gradient(135deg,#cd7f32,#e0a96d);">陈</div>
+                                            <div>
+                                                <div style="font-weight:500;">陈晓燕</div>
+                                                <div class="user-id">A20260004</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>137****6634</td>
+                                    <td><span class="agent-level-tag level-bronze"><i class="fas fa-medal"></i> 铜牌</span></td>
+                                    <td><span style="font-size:12px;color:var(--text-secondary);">员工</span></td>
+                                    <td>&#165;52,300</td>
+                                    <td>&#165;5,753</td>
+                                    <td>&#165;4,200</td>
+                                    <td><span class="status-tag normal"><span class="dot-indicator"></span> 正常</span></td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="action-btn" title="查看"><i class="fas fa-eye"></i></button>
+                                            <button class="action-btn" title="编辑"><i class="fas fa-pen"></i></button>
+                                            <button class="action-btn danger" title="冻结"><i class="fas fa-snowflake"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-placeholder" style="background:linear-gradient(135deg,#6b7280,#9ca3af);">刘</div>
+                                            <div>
+                                                <div style="font-weight:500;">刘国栋</div>
+                                                <div class="user-id">A20260005</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>135****9901</td>
+                                    <td><span class="agent-level-tag level-normal">普通</span></td>
+                                    <td><span style="font-size:12px;color:var(--text-secondary);">代理</span></td>
+                                    <td>&#165;18,600</td>
+                                    <td>&#165;1,860</td>
+                                    <td>&#165;1,500</td>
+                                    <td><span class="status-tag normal"><span class="dot-indicator"></span> 正常</span></td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="action-btn" title="查看"><i class="fas fa-eye"></i></button>
+                                            <button class="action-btn" title="编辑"><i class="fas fa-pen"></i></button>
+                                            <button class="action-btn danger" title="冻结"><i class="fas fa-snowflake"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-placeholder" style="background:linear-gradient(135deg,#D4A853,#e8c97a);">赵</div>
+                                            <div>
+                                                <div style="font-weight:500;">赵丽萍</div>
+                                                <div class="user-id">A20260006</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>158****3347</td>
+                                    <td><span class="agent-level-tag level-gold"><i class="fas fa-crown"></i> 金牌</span></td>
+                                    <td><span style="font-size:12px;color:var(--text-secondary);">代理</span></td>
+                                    <td>&#165;145,600</td>
+                                    <td>&#165;17,472</td>
+                                    <td>&#165;14,200</td>
+                                    <td><span class="status-tag normal"><span class="dot-indicator"></span> 正常</span></td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="action-btn" title="查看"><i class="fas fa-eye"></i></button>
+                                            <button class="action-btn" title="编辑"><i class="fas fa-pen"></i></button>
+                                            <button class="action-btn danger" title="冻结"><i class="fas fa-snowflake"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-placeholder" style="background:linear-gradient(135deg,#94a3b8,#cbd5e1);">孙</div>
+                                            <div>
+                                                <div style="font-weight:500;">孙明辉</div>
+                                                <div class="user-id">A20260007</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>159****7782</td>
+                                    <td><span class="agent-level-tag level-silver"><i class="fas fa-medal"></i> 银牌</span></td>
+                                    <td><span style="font-size:12px;color:var(--text-secondary);">员工</span></td>
+                                    <td>&#165;72,400</td>
+                                    <td>&#165;8,034</td>
+                                    <td>&#165;6,500</td>
+                                    <td><span class="status-tag normal"><span class="dot-indicator"></span> 正常</span></td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="action-btn" title="查看"><i class="fas fa-eye"></i></button>
+                                            <button class="action-btn" title="编辑"><i class="fas fa-pen"></i></button>
+                                            <button class="action-btn danger" title="冻结"><i class="fas fa-snowflake"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="user-cell">
+                                            <div class="avatar-placeholder" style="background:linear-gradient(135deg,#6b7280,#9ca3af);">周</div>
+                                            <div>
+                                                <div style="font-weight:500;">周雅琴</div>
+                                                <div class="user-id">A20260008</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>186****1156</td>
+                                    <td><span class="agent-level-tag level-normal">普通</span></td>
+                                    <td><span style="font-size:12px;color:var(--text-secondary);">代理</span></td>
+                                    <td>&#165;8,200</td>
+                                    <td>&#165;820</td>
+                                    <td>&#165;650</td>
+                                    <td><span class="status-tag frozen"><span class="dot-indicator"></span> 冻结</span></td>
+                                    <td>
+                                        <div class="action-btns">
+                                            <button class="action-btn" title="查看"><i class="fas fa-eye"></i></button>
+                                            <button class="action-btn" title="编辑"><i class="fas fa-pen"></i></button>
+                                            <button class="action-btn" title="解冻" style="color:var(--emerald);border-color:var(--emerald);"><i class="fas fa-unlock"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination">
+                        <div class="pagination-info">共 <strong>128</strong> 条记录，当前第 <strong>1</strong> / <strong>13</strong> 页</div>
+                        <div class="pagination-btns">
+                            <button class="page-btn"><i class="fas fa-chevron-left"></i></button>
+                            <button class="page-btn active">1</button>
+                            <button class="page-btn">2</button>
+                            <button class="page-btn">3</button>
+                            <button class="page-btn">...</button>
+                            <button class="page-btn">13</button>
+                            <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== Tab 2: 佣金设置 ==================== -->
+                <div id="tab-commission-settings" class="tab-panel">
+                    <!-- Section 1: Global Default Commission Rates -->
+                    <div class="section-title"><i class="fas fa-percentage"></i> 全局默认佣金比例</div>
+                    <div class="table-wrapper" style="margin-bottom:28px;">
+                        <table class="config-table">
+                            <thead>
+                                <tr>
+                                    <th>品类</th>
+                                    <th>佣金比例</th>
+                                    <th style="width:100px;">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>演出门票</td>
+                                    <td><span style="font-weight:600;color:var(--accent);font-size:16px;">10%</span></td>
+                                    <td><button class="table-action-btn" onclick="editCommissionRate(this)"><i class="fas fa-pen"></i> 编辑</button></td>
+                                </tr>
+                                <tr>
+                                    <td>早鸟票</td>
+                                    <td><span style="font-weight:600;color:var(--accent);font-size:16px;">5%</span></td>
+                                    <td><button class="table-action-btn" onclick="editCommissionRate(this)"><i class="fas fa-pen"></i> 编辑</button></td>
+                                </tr>
+                                <tr>
+                                    <td>商城商品</td>
+                                    <td><span style="font-weight:600;color:var(--accent);font-size:16px;">5%</span></td>
+                                    <td><button class="table-action-btn" onclick="editCommissionRate(this)"><i class="fas fa-pen"></i> 编辑</button></td>
+                                </tr>
+                                <tr>
+                                    <td>充值卡</td>
+                                    <td><span style="font-weight:600;color:var(--accent);font-size:16px;">3%</span></td>
+                                    <td><button class="table-action-btn" onclick="editCommissionRate(this)"><i class="fas fa-pen"></i> 编辑</button></td>
+                                </tr>
+                                <tr>
+                                    <td>券包</td>
+                                    <td><span style="font-weight:600;color:var(--accent);font-size:16px;">5%</span></td>
+                                    <td><button class="table-action-btn" onclick="editCommissionRate(this)"><i class="fas fa-pen"></i> 编辑</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Section 2: Level Commission Bonus -->
+                    <div class="section-title"><i class="fas fa-layer-group"></i> 等级佣金加成</div>
+                    <div class="table-wrapper" style="margin-bottom:28px;">
+                        <table class="config-table">
+                            <thead>
+                                <tr>
+                                    <th>等级</th>
+                                    <th>佣金上浮</th>
+                                    <th>说明</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="agent-level-tag level-normal">普通代理</span></td>
+                                    <td><span style="font-weight:600;color:var(--text-primary);">0%</span></td>
+                                    <td style="color:var(--text-secondary);">默认等级</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="agent-level-tag level-bronze"><i class="fas fa-medal"></i> 铜牌代理</span></td>
+                                    <td><span style="font-weight:600;color:var(--emerald);">+2%</span></td>
+                                    <td style="color:var(--text-secondary);">平台手动升级</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="agent-level-tag level-silver"><i class="fas fa-medal"></i> 银牌代理</span></td>
+                                    <td><span style="font-weight:600;color:var(--emerald);">+5%</span></td>
+                                    <td style="color:var(--text-secondary);">平台手动升级</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="agent-level-tag level-gold"><i class="fas fa-crown"></i> 金牌代理</span></td>
+                                    <td><span style="font-weight:600;color:var(--emerald);">+8%</span></td>
+                                    <td style="color:var(--text-secondary);">平台手动升级</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="agent-level-tag level-diamond"><i class="fas fa-gem"></i> 钻石代理</span></td>
+                                    <td><span style="font-weight:600;color:var(--emerald);">+12%</span></td>
+                                    <td style="color:var(--text-secondary);">平台手动升级</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Section 3: Settlement Rules -->
+                    <div class="section-title"><i class="fas fa-cog"></i> 结算规则</div>
+                    <div class="settlement-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">结算周期</label>
+                                <input type="text" class="form-input" value="T+3（演出结束后3天）" style="background:var(--bg-white);">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">最低提现金额</label>
+                                <div style="display:flex;align-items:center;gap:6px;">
+                                    <span style="font-size:13px;color:var(--text-secondary);">&#165;</span>
+                                    <input type="number" class="form-input" value="50" style="max-width:160px;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">每日提现上限</label>
+                                <div style="display:flex;align-items:center;gap:6px;">
+                                    <span style="font-size:13px;color:var(--text-secondary);">&#165;</span>
+                                    <input type="number" class="form-input" value="50000" style="max-width:160px;">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">分销关系有效期</label>
+                                <div style="display:flex;align-items:center;gap:6px;">
+                                    <input type="number" class="form-input" value="30" style="max-width:160px;">
+                                    <span style="font-size:13px;color:var(--text-secondary);">天</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="save-bar">
+                            <button class="btn btn-outline"><i class="fas fa-redo-alt"></i> 重置</button>
+                            <button class="btn btn-primary"><i class="fas fa-save"></i> 保存设置</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== Tab 3: 佣金管理 ==================== -->
+                <div id="tab-commission-mgmt" class="tab-panel">
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">累计佣金发放</span>
+                                <div class="stat-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                            </div>
+                            <div class="stat-value">&#165;186,420</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">待结算佣金</span>
+                                <div class="stat-icon"><i class="fas fa-hourglass-half"></i></div>
+                            </div>
+                            <div class="stat-value">&#165;23,560</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">本月发放</span>
+                                <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                            </div>
+                            <div class="stat-value">&#165;45,680</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">待审核提现</span>
+                                <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                            </div>
+                            <div class="stat-value">&#165;8,650</div>
+                        </div>
+                    </div>
+
+                    <!-- Sub Tabs -->
+                    <div class="sub-tabs">
+                        <button class="sub-tab active" onclick="switchSubTab(event, 'sub-withdrawal')">
+                            <i class="fas fa-file-invoice-dollar" style="margin-right:4px;"></i> 提现审核
+                        </button>
+                        <button class="sub-tab" onclick="switchSubTab(event, 'sub-transfer')">
+                            <i class="fas fa-exchange-alt" style="margin-right:4px;"></i> 转账记录
+                        </button>
+                    </div>
+
+                    <!-- Sub Tab 1: 提现审核 -->
+                    <div id="sub-withdrawal" class="sub-tab-panel active">
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>申请编号</th>
+                                        <th>代理信息</th>
+                                        <th>提现金额</th>
+                                        <th>申请时间</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="font-size:12px;color:var(--text-secondary);">W20260424001</td>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="avatar-placeholder" style="background:linear-gradient(135deg,#D4A853,#e8c97a);width:30px;height:30px;font-size:12px;">王</div>
+                                                <span style="font-weight:500;">王建华</span>
+                                            </div>
+                                        </td>
+                                        <td><strong style="color:var(--accent);">&#165;5,000</strong></td>
+                                        <td>2026-04-24 10:30</td>
+                                        <td><span class="status-tag pending"><span class="dot-indicator"></span> 待审核</span></td>
+                                        <td>
+                                            <div class="action-btns">
+                                                <button class="table-action-btn success" onclick="approveWithdrawal(this)"><i class="fas fa-check"></i> 通过</button>
+                                                <button class="table-action-btn danger-outline" onclick="rejectWithdrawal(this)"><i class="fas fa-times"></i> 驳回</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:12px;color:var(--text-secondary);">W20260424002</td>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="avatar-placeholder" style="background:linear-gradient(135deg,#6366f1,#818cf8);width:30px;height:30px;font-size:12px;">李</div>
+                                                <span style="font-weight:500;">李美玲</span>
+                                            </div>
+                                        </td>
+                                        <td><strong style="color:var(--accent);">&#165;8,000</strong></td>
+                                        <td>2026-04-24 09:15</td>
+                                        <td><span class="status-tag pending"><span class="dot-indicator"></span> 待审核</span></td>
+                                        <td>
+                                            <div class="action-btns">
+                                                <button class="table-action-btn success" onclick="approveWithdrawal(this)"><i class="fas fa-check"></i> 通过</button>
+                                                <button class="table-action-btn danger-outline" onclick="rejectWithdrawal(this)"><i class="fas fa-times"></i> 驳回</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:12px;color:var(--text-secondary);">W20260423003</td>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="avatar-placeholder" style="background:linear-gradient(135deg,#94a3b8,#cbd5e1);width:30px;height:30px;font-size:12px;">张</div>
+                                                <span style="font-weight:500;">张志强</span>
+                                            </div>
+                                        </td>
+                                        <td><strong style="color:var(--accent);">&#165;3,200</strong></td>
+                                        <td>2026-04-23 16:42</td>
+                                        <td><span class="status-tag pending"><span class="dot-indicator"></span> 待审核</span></td>
+                                        <td>
+                                            <div class="action-btns">
+                                                <button class="table-action-btn success" onclick="approveWithdrawal(this)"><i class="fas fa-check"></i> 通过</button>
+                                                <button class="table-action-btn danger-outline" onclick="rejectWithdrawal(this)"><i class="fas fa-times"></i> 驳回</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:12px;color:var(--text-secondary);">W20260423004</td>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="avatar-placeholder" style="background:linear-gradient(135deg,#cd7f32,#e0a96d);width:30px;height:30px;font-size:12px;">陈</div>
+                                                <span style="font-weight:500;">陈晓燕</span>
+                                            </div>
+                                        </td>
+                                        <td><strong style="color:var(--accent);">&#165;2,500</strong></td>
+                                        <td>2026-04-23 14:20</td>
+                                        <td><span class="status-tag approved"><span class="dot-indicator"></span> 已通过</span></td>
+                                        <td>
+                                            <div class="action-btns">
+                                                <button class="table-action-btn" disabled style="opacity:0.6;cursor:not-allowed;"><i class="fas fa-check-circle"></i> 已转账</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:12px;color:var(--text-secondary);">W20260422005</td>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="avatar-placeholder" style="background:linear-gradient(135deg,#6b7280,#9ca3af);width:30px;height:30px;font-size:12px;">刘</div>
+                                                <span style="font-weight:500;">刘国栋</span>
+                                            </div>
+                                        </td>
+                                        <td><strong style="color:var(--accent);">&#165;1,000</strong></td>
+                                        <td>2026-04-22 11:05</td>
+                                        <td><span class="status-tag rejected"><span class="dot-indicator"></span> 已驳回</span></td>
+                                        <td>
+                                            <div class="action-btns">
+                                                <button class="table-action-btn" disabled style="opacity:0.6;cursor:not-allowed;">金额不足</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Sub Tab 2: 转账记录 -->
+                    <div id="sub-transfer" class="sub-tab-panel">
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>转账编号</th>
+                                        <th>代理信息</th>
+                                        <th>转账金额</th>
+                                        <th>提现申请时间</th>
+                                        <th>转账时间</th>
+                                        <th>状态</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="font-size:12px;color:var(--text-secondary);">T20260423001</td>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="avatar-placeholder" style="background:linear-gradient(135deg,#D4A853,#e8c97a);width:30px;height:30px;font-size:12px;">赵</div>
+                                                <span style="font-weight:500;">赵丽萍</span>
+                                            </div>
+                                        </td>
+                                        <td><strong>&#165;6,000</strong></td>
+                                        <td>2026-04-23 15:00</td>
+                                        <td>2026-04-24 10:00</td>
+                                        <td><span class="status-tag shipped"><span class="dot-indicator"></span> 已到账</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:12px;color:var(--text-secondary);">T20260423002</td>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="avatar-placeholder" style="background:linear-gradient(135deg,#94a3b8,#cbd5e1);width:30px;height:30px;font-size:12px;">孙</div>
+                                                <span style="font-weight:500;">孙明辉</span>
+                                            </div>
+                                        </td>
+                                        <td><strong>&#165;4,500</strong></td>
+                                        <td>2026-04-23 11:30</td>
+                                        <td>2026-04-24 09:30</td>
+                                        <td><span class="status-tag shipped"><span class="dot-indicator"></span> 已到账</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:12px;color:var(--text-secondary);">T20260422003</td>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="avatar-placeholder" style="background:linear-gradient(135deg,#D4A853,#e8c97a);width:30px;height:30px;font-size:12px;">王</div>
+                                                <span style="font-weight:500;">王建华</span>
+                                            </div>
+                                        </td>
+                                        <td><strong>&#165;3,800</strong></td>
+                                        <td>2026-04-22 16:20</td>
+                                        <td>2026-04-23 16:20</td>
+                                        <td><span class="status-tag shipped"><span class="dot-indicator"></span> 已到账</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:12px;color:var(--text-secondary);">T20260421004</td>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="avatar-placeholder" style="background:linear-gradient(135deg,#6366f1,#818cf8);width:30px;height:30px;font-size:12px;">李</div>
+                                                <span style="font-weight:500;">李美玲</span>
+                                            </div>
+                                        </td>
+                                        <td><strong>&#165;10,000</strong></td>
+                                        <td>2026-04-21 09:00</td>
+                                        <td>2026-04-22 09:00</td>
+                                        <td><span class="status-tag shipped"><span class="dot-indicator"></span> 已到账</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:12px;color:var(--text-secondary);">T20260420005</td>
+                                        <td>
+                                            <div class="user-cell">
+                                                <div class="avatar-placeholder" style="background:linear-gradient(135deg,#94a3b8,#cbd5e1);width:30px;height:30px;font-size:12px;">张</div>
+                                                <span style="font-weight:500;">张志强</span>
+                                            </div>
+                                        </td>
+                                        <td><strong>&#165;2,000</strong></td>
+                                        <td>2026-04-20 14:10</td>
+                                        <td>2026-04-21 14:10</td>
+                                        <td><span class="status-tag shipped"><span class="dot-indicator"></span> 已到账</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ========== Add Agent Modal ========== -->
+    <div class="modal-overlay" id="addAgentModal">
+        <div class="modal" style="max-width:520px;">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-user-plus" style="color:var(--accent);margin-right:8px;"></i>新增代理</h3>
+                <button class="modal-close" onclick="closeAddAgentModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label class="form-label">选择用户 <span class="required">*</span></label>
+                    <select class="form-select" style="width:100%;height:40px;">
+                        <option value="">请选择用户...</option>
+                        <option value="u1">张三 (138****1234)</option>
+                        <option value="u2">李四 (139****5678)</option>
+                        <option value="u3">王五 (136****9012)</option>
+                        <option value="u4">赵六 (158****3456)</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">设置等级 <span class="required">*</span></label>
+                        <select class="form-select" style="width:100%;height:40px;">
+                            <option value="normal">普通</option>
+                            <option value="bronze">铜牌</option>
+                            <option value="silver">银牌</option>
+                            <option value="gold">金牌</option>
+                            <option value="diamond">钻石</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">设置类型 <span class="required">*</span></label>
+                        <select class="form-select" style="width:100%;height:40px;">
+                            <option value="agent">代理</option>
+                            <option value="employee">员工</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeAddAgentModal()">取消</button>
+                <button class="btn btn-primary" onclick="confirmAddAgent()"><i class="fas fa-check"></i> 确认添加</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== JavaScript ========== -->
+<script>
+
+// Mobile menu toggle
+(function() {
+  var btn = document.getElementById('mobileMenuBtn');
+  var sidebar = document.querySelector('.sidebar');
+  var overlay = document.getElementById('sidebarOverlay');
+  if (btn && sidebar && overlay) {
+    btn.addEventListener('click', function() {
+      sidebar.classList.toggle('mobile-open');
+      overlay.classList.toggle('active');
+    });
+    overlay.addEventListener('click', function() {
+      sidebar.classList.remove('mobile-open');
+      overlay.classList.remove('active');
+    });
+  }
+})();
+
+// Tab Switching (main tabs)
+function switchTab(event, tabId) {
+    document.querySelectorAll('.report-tab').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+
+    event.currentTarget.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+}
+
+// Sub Tab Switching
+function switchSubTab(event, tabId) {
+    document.querySelectorAll('.sub-tab').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.sub-tab-panel').forEach(panel => panel.classList.remove('active'));
+
+    event.currentTarget.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+}
+
+// Add Agent Modal
+function openAddAgentModal() {
+    document.getElementById('addAgentModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeAddAgentModal() {
+    document.getElementById('addAgentModal').classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+function confirmAddAgent() {
+    var userSelect = document.querySelector('#addAgentModal select');
+    if (!userSelect.value) {
+        alert('请选择用户');
+        return;
+    }
+    closeAddAgentModal();
+    alert('代理添加成功！');
+}
+
+// Close modal on overlay click
+document.getElementById('addAgentModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeAddAgentModal();
+    }
+});
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeAddAgentModal();
+    }
+});
+
+// Edit Commission Rate
+function editCommissionRate(btn) {
+    var row = btn.closest('tr');
+    var td = row.querySelectorAll('td')[1];
+    var currentRate = td.querySelector('span').textContent;
+    var newRate = prompt('请输入新的佣金比例（如：10%）：', currentRate);
+    if (newRate !== null && newRate.trim() !== '') {
+        td.querySelector('span').textContent = newRate.trim();
+    }
+}
+
+// Approve Withdrawal
+function approveWithdrawal(btn) {
+    var row = btn.closest('tr');
+    var statusTd = row.querySelectorAll('td')[4];
+    var actionTd = row.querySelectorAll('td')[5];
+    statusTd.innerHTML = '<span class="status-tag approved"><span class="dot-indicator"></span> 已通过</span>';
+    actionTd.innerHTML = '<div class="action-btns"><button class="table-action-btn" disabled style="opacity:0.6;cursor:not-allowed;"><i class="fas fa-check-circle"></i> 已转账</button></div>';
+}
+
+// Reject Withdrawal
+function rejectWithdrawal(btn) {
+    var row = btn.closest('tr');
+    var statusTd = row.querySelectorAll('td')[4];
+    var actionTd = row.querySelectorAll('td')[5];
+    statusTd.innerHTML = '<span class="status-tag rejected"><span class="dot-indicator"></span> 已驳回</span>';
+    actionTd.innerHTML = '<div class="action-btns"><button class="table-action-btn" disabled style="opacity:0.6;cursor:not-allowed;">已驳回</button></div>';
+}
+
+// Stat Value Count-Up Animation
+function animateStatValues() {
+    document.querySelectorAll('.stat-value').forEach(function(el) {
+        var text = el.textContent.trim();
+        // Skip if contains HTML or special chars
+        if (el.querySelector('span')) return;
+        var hasYen = text.includes('\u00A5') || text.includes('\uFFE5');
+        var hasComma = text.includes(',');
+        var numStr = text.replace(/[\u00A5\uFFE5,\s\u4E00-\u9FFF]/g, '');
+        var target = parseFloat(numStr);
+        if (isNaN(target)) return;
+        var duration = 1200;
+        var startTime = null;
+        var start = 0;
+        function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            var progress = Math.min((timestamp - startTime) / duration, 1);
+            var eased = 1 - Math.pow(1 - progress, 3);
+            var current = start + (target - start) * eased;
+            if (hasYen) {
+                el.innerHTML = '&#165;' + Math.round(current).toLocaleString();
+            } else if (hasComma) {
+                el.textContent = Math.round(current).toLocaleString();
+            } else {
+                el.textContent = Math.round(current).toString();
+            }
+            if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    });
+}
+animateStatValues();
+
+</script>
+</body>
+</html>

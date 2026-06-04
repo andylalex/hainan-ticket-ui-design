@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>积分抽奖 - 海南演艺票务系统</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: #F5F6FA;
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    
+    .page {
+      width: 100%;
+      max-width: 375px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: linear-gradient(180deg, #0A1628 0%, #132240 40%, #F5F6FA 55%);
+      position: relative;
+      overflow-x: hidden;
+      padding-bottom: 24px;
+    }
+
+    /* ========== Top Nav ========== */
+    .top-nav {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 16px;
+    }
+
+    .top-nav .back-btn {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+
+    .top-nav .back-btn:hover { background: rgba(255,255,255,0.1); }
+    .top-nav .nav-title { color: #fff; font-size: 17px; font-weight: 500; }
+    .top-nav .nav-right {
+      position: absolute;
+      right: 16px;
+      color: rgba(255,255,255,0.8);
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+    }
+
+    /* ========== Points Header ========== */
+    .points-header {
+      text-align: center;
+      padding: 16px 20px 24px;
+      position: relative;
+    }
+
+    .points-header::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -40px;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(255,107,74,0.2) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .points-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: -30px;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, rgba(212,168,83,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .points-label {
+      color: rgba(255,255,255,0.6);
+      font-size: 13px;
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .points-value {
+      color: #D4A853;
+      font-size: 36px;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+
+    .points-value .unit {
+      font-size: 14px;
+      font-weight: 400;
+      margin-left: 4px;
+    }
+
+    /* ========== Lottery Grid ========== */
+    .lottery-section {
+      padding: 0 16px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .lottery-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 20px 16px;
+      box-shadow: 0 8px 32px rgba(10,22,40,0.12);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lottery-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #FF6B4A, #D4A853, #FF6B4A);
+    }
+
+    .lottery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      position: relative;
+    }
+
+    .lottery-item {
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #F8F9FC, #EEF1F8);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lottery-item:nth-child(1) { grid-column: 1; grid-row: 1; }
+    .lottery-item:nth-child(2) { grid-column: 2; grid-row: 1; }
+    .lottery-item:nth-child(3) { grid-column: 3; grid-row: 1; }
+    .lottery-item:nth-child(4) { grid-column: 3; grid-row: 2; }
+    .lottery-item:nth-child(5) { grid-column: 2; grid-row: 2; }
+    .lottery-item:nth-child(6) { grid-column: 1; grid-row: 2; }
+    .lottery-item:nth-child(7) { grid-column: 1; grid-row: 3; }
+    .lottery-item:nth-child(8) { grid-column: 3; grid-row: 3; }
+
+    .lottery-item.active {
+      border-color: #FF6B4A;
+      background: linear-gradient(135deg, #FFF5F2, #FFEBE6);
+      transform: scale(1.02);
+      box-shadow: 0 4px 16px rgba(255,107,74,0.25);
+    }
+
+    .lottery-item .prize-icon {
+      font-size: 32px;
+      margin-bottom: 6px;
+    }
+
+    .lottery-item .prize-name {
+      font-size: 12px;
+      color: #1A1A2E;
+      font-weight: 500;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .lottery-item .prize-tag {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: linear-gradient(135deg, #FF6B4A, #FF8A6A);
+      color: #fff;
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    /* Start Button */
+    .lottery-start-btn {
+      grid-column: 2;
+      grid-row: 2;
+      background: linear-gradient(135deg, #FF6B4A, #FF8A6A);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+      box-shadow: 0 4px 20px rgba(255,107,74,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lottery-start-btn::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+      transform: rotate(45deg);
+      animation: btnShine 2s ease-in-out infinite;
+    }
+
+    @keyframes btnShine {
+      0%, 100% { transform: translateX(-100%) rotate(45deg); }
+      50% { transform: translateX(100%) rotate(45deg); }
+    }
+
+    .lottery-start-btn:active {
+      transform: scale(0.96);
+    }
+
+    .lottery-start-btn .btn-icon {
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+
+    .lottery-start-btn .btn-text {
+      font-size: 15px;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .lottery-start-btn .btn-cost {
+      font-size: 11px;
+      color: rgba(255,255,255,0.8);
+      margin-top: 2px;
+    }
+
+    /* Spinning Animation */
+    .lottery-item.spinning {
+      animation: itemPulse 0.15s ease-in-out;
+    }
+
+    @keyframes itemPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); background: linear-gradient(135deg, #FFF5F2, #FFEBE6); }
+    }
+
+    /* ========== Cost Info ========== */
+    .cost-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 10px 16px;
+      background: rgba(255,107,74,0.08);
+      border-radius: 20px;
+    }
+
+    .cost-info i {
+      color: #FF6B4A;
+      font-size: 14px;
+    }
+
+    .cost-info span {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .cost-info strong {
+      color: #FF6B4A;
+      font-weight: 600;
+    }
+
+    /* ========== My Prizes Entry ========== */
+    .my-prizes-entry {
+      margin: 16px 16px 0;
+      background: linear-gradient(135deg, #FFF8E7, #FFEDC2);
+      border-radius: 14px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: transform 0.2s;
+      border: 1px solid rgba(212,168,83,0.2);
+    }
+
+    .my-prizes-entry:active { transform: scale(0.98); }
+
+    .prizes-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .prizes-left .icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(212,168,83,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .prizes-left .text {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0A1628;
+    }
+
+    .prizes-left .count {
+      font-size: 12px;
+      color: #D4A853;
+      margin-top: 2px;
+    }
+
+    .prizes-arrow {
+      color: #D4A853;
+      font-size: 14px;
+    }
+
+    /* ========== Rules Section ========== */
+    .rules-section {
+      margin: 20px 16px 0;
+    }
+
+    .rules-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 2px 12px rgba(10,22,40,0.06);
+    }
+
+    .rules-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .rules-header i {
+      color: #D4A853;
+      font-size: 16px;
+    }
+
+    .rules-header span {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0A1628;
+    }
+
+    .rules-list {
+      list-style: none;
+    }
+
+    .rules-list li {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.8;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .rules-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 9px;
+      width: 5px;
+      height: 5px;
+      background: #D4A853;
+      border-radius: 50%;
+    }
+
+    /* ========== Win Modal ========== */
+    .win-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .win-modal-overlay.show { display: flex; }
+
+    .win-modal {
+      width: 100%;
+      max-width: 300px;
+      background: #fff;
+      border-radius: 24px;
+      padding: 32px 24px;
+      text-align: center;
+      position: relative;
+      animation: modalIn 0.4s ease;
+    }
+
+    @keyframes modalIn {
+      from { transform: scale(0.8) translateY(20px); opacity: 0; }
+      to { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .win-modal::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(255,107,74,0.2) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .win-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .win-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0A1628;
+      margin-bottom: 8px;
+    }
+
+    .win-prize {
+      font-size: 16px;
+      color: #FF6B4A;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .win-desc {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 24px;
+    }
+
+    .win-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .win-btn {
+      flex: 1;
+      padding: 12px 0;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .win-btn.primary {
+      background: linear-gradient(135deg, #FF6B4A, #FF8A6A);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(255,107,74,0.3);
+    }
+
+    .win-btn.secondary {
+      background: #F5F6FA;
+      color: #666;
+    }
+
+    .win-btn:active { transform: scale(0.96); }
+
+    /* ========== Decorative Elements ========== */
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      animation: confettiFall 3s ease-out forwards;
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(400px) rotate(720deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <!-- Top Nav -->
+  <div class="top-nav">
+    <a class="back-btn" href="member-center.html"><i class="fas fa-chevron-left"></i></a>
+    <span class="nav-title">积分抽奖</span>
+    <a class="nav-right" href="#">
+      <i class="fas fa-gift"></i>
+      我的奖品
+    </a>
+  </div>
+
+  <!-- Points Header -->
+  <div class="points-header">
+    <div class="points-label">当前可用积分</div>
+    <div class="points-value">2,580<span class="unit">积分</span></div>
+  </div>
+
+  <!-- Lottery Section -->
+  <div class="lottery-section">
+    <div class="lottery-card">
+      <div class="lottery-grid" id="lotteryGrid">
+        <!-- 奖品1 -->
+        <div class="lottery-item" data-index="0">
+          <span class="prize-icon">🎫</span>
+          <span class="prize-name">演出门票<br>抵扣券</span>
+          <span class="prize-tag">大奖</span>
+        </div>
+        <!-- 奖品2 -->
+        <div class="lottery-item" data-index="1">
+          <span class="prize-icon">💰</span>
+          <span class="prize-name">50积分</span>
+        </div>
+        <!-- 奖品3 -->
+        <div class="lottery-item" data-index="2">
+          <span class="prize-icon">🎟️</span>
+          <span class="prize-name">满100减20<br>优惠券</span>
+        </div>
+        <!-- 奖品4 -->
+        <div class="lottery-item" data-index="3">
+          <span class="prize-icon">🎁</span>
+          <span class="prize-name">文创周边<br>盲盒</span>
+          <span class="prize-tag">限量</span>
+        </div>
+        <!-- 开始按钮 -->
+        <button class="lottery-start-btn" id="startBtn" onclick="startLottery()">
+          <span class="btn-icon">🎲</span>
+          <span class="btn-text">开始抽奖</span>
+          <span class="btn-cost">消耗100积分</span>
+        </button>
+        <!-- 奖品5 -->
+        <div class="lottery-item" data-index="4">
+          <span class="prize-icon">💎</span>
+          <span class="prize-name">100积分</span>
+        </div>
+        <!-- 奖品6 -->
+        <div class="lottery-item" data-index="5">
+          <span class="prize-icon">☕</span>
+          <span class="prize-name">咖啡券</span>
+        </div>
+        <!-- 奖品7 -->
+        <div class="lottery-item" data-index="6">
+          <span class="prize-icon">🧸</span>
+          <span class="prize-name">吉祥物<br>公仔</span>
+          <span class="prize-tag">稀有</span>
+        </div>
+        <!-- 奖品8 -->
+        <div class="lottery-item" data-index="7">
+          <span class="prize-icon">⭐</span>
+          <span class="prize-name">谢谢参与</span>
+        </div>
+      </div>
+
+      <div class="cost-info">
+        <i class="fas fa-info-circle"></i>
+        <span>每次抽奖消耗 <strong>100积分</strong>，中奖概率 <strong>100%</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- My Prizes Entry -->
+  <div class="my-prizes-entry">
+    <div class="prizes-left">
+      <div class="icon">🏆</div>
+      <div>
+        <div class="text">我的奖品</div>
+        <div class="count">已获得 3 件奖品</div>
+      </div>
+    </div>
+    <span class="prizes-arrow"><i class="fas fa-chevron-right"></i></span>
+  </div>
+
+  <!-- Rules Section -->
+  <div class="rules-section">
+    <div class="rules-card">
+      <div class="rules-header">
+        <i class="fas fa-book-open"></i>
+        <span>抽奖规则</span>
+      </div>
+      <ul class="rules-list">
+        <li>每次抽奖消耗100积分，积分不足无法参与</li>
+        <li>奖品包含优惠券、积分、实物周边等</li>
+        <li>实物奖品将在7个工作日内发放</li>
+        <li>优惠券奖品自动存入"我的优惠券"</li>
+        <li>中奖奖品不支持退换，请谨慎参与</li>
+        <li>活动最终解释权归海南演艺票务所有</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Win Modal -->
+  <div class="win-modal-overlay" id="winModal">
+    <div class="win-modal">
+      <div class="win-icon">🎉</div>
+      <div class="win-title">恭喜中奖！</div>
+      <div class="win-prize" id="winPrizeName">满100减20优惠券</div>
+      <div class="win-desc">奖品已存入您的账户，可在"我的奖品"中查看</div>
+      <div class="win-actions">
+        <button class="win-btn secondary" onclick="closeModal()">继续抽奖</button>
+        <button class="win-btn primary" onclick="closeModal()">查看奖品</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const items = document.querySelectorAll('.lottery-item');
+  const startBtn = document.getElementById('startBtn');
+  const winModal = document.getElementById('winModal');
+  const winPrizeName = document.getElementById('winPrizeName');
+  
+  // 抽奖顺序（顺时针）
+  const order = [0, 1, 2, 3, 4, 5, 6, 7];
+  let isRunning = false;
+  
+  // 奖品列表
+  const prizes = [
+    { name: '演出门票抵扣券', icon: '🎫' },
+    { name: '50积分', icon: '💰' },
+    { name: '满100减20优惠券', icon: '🎟️' },
+    { name: '文创周边盲盒', icon: '🎁' },
+    { name: '100积分', icon: '💎' },
+    { name: '咖啡券', icon: '☕' },
+    { name: '吉祥物公仔', icon: '🧸' },
+    { name: '谢谢参与', icon: '⭐' }
+  ];
+
+  function startLottery() {
+    if (isRunning) return;
+    isRunning = true;
+    
+    startBtn.style.pointerEvents = 'none';
+    startBtn.querySelector('.btn-text').textContent = '抽奖中...';
+    
+    // 随机结果（模拟，实际应由后端返回）
+    const resultIndex = Math.floor(Math.random() * 8);
+    
+    // 计算转动次数
+    let currentIndex = 0;
+    let round = 0;
+    const totalRounds = 3; // 转3圈
+    const totalSteps = totalRounds * 8 + resultIndex;
+    let step = 0;
+    
+    // 速度控制
+    let speed = 50;
+    
+    function animate() {
+      // 清除之前的高亮
+      items.forEach(item => item.classList.remove('active'));
+      
+      // 高亮当前项
+      const currentOrderIndex = order[currentIndex];
+      items[currentOrderIndex].classList.add('active');
+      
+      step++;
+      currentIndex = (currentIndex + 1) % 8;
+      
+      // 逐渐减速
+      if (step > totalRounds * 8 - 8) {
+        speed += 20;
+      }
+      
+      if (step < totalSteps) {
+        setTimeout(animate, speed);
+      } else {
+        // 抽奖结束
+        setTimeout(() => {
+          showResult(resultIndex);
+        }, 300);
+      }
+    }
+    
+    animate();
+  }
+
+  function showResult(index) {
+    isRunning = false;
+    startBtn.style.pointerEvents = 'auto';
+    startBtn.querySelector('.btn-text').textContent = '开始抽奖';
+    
+    winPrizeName.textContent = prizes[index].name;
+    winModal.classList.add('show');
+    
+    // 添加彩带效果
+    createConfetti();
+  }
+
+  function closeModal() {
+    winModal.classList.remove('show');
+    items.forEach(item => item.classList.remove('active'));
+  }
+
+  function createConfetti() {
+    const colors = ['#FF6B4A', '#D4A853', '#00C9A7', '#4A7AFF', '#FF8A6A'];
+    const modal = document.querySelector('.win-modal');
+    
+    for (let i = 0; i < 30; i++) {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = Math.random() * 100 + '%';
+      confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.animationDelay = Math.random() * 0.5 + 's';
+      confetti.style.animationDuration = (2 + Math.random()) + 's';
+      modal.appendChild(confetti);
+      
+      setTimeout(() => confetti.remove(), 3000);
+    }
+  }
+
+  // 点击遮罩关闭
+  winModal.addEventListener('click', function(e) {
+    if (e.target === winModal) {
+      closeModal();
+    }
+  });
+</script>
+
+</body>
+</html>

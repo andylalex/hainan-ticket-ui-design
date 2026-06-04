@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>隐私设置 - 海南演艺票务系统</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: #F5F6FA;
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    
+    .page {
+      width: 100%;
+      max-width: 375px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: #F5F6FA;
+      position: relative;
+      overflow-x: hidden;
+      padding-bottom: 24px;
+    }
+
+    /* ========== Top Nav ========== */
+    .top-nav {
+      height: 44px;
+      background: linear-gradient(135deg, #0A1628 0%, #132240 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 16px;
+    }
+
+    .top-nav .back-btn {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+
+    .top-nav .back-btn:hover { background: rgba(255,255,255,0.1); }
+    .top-nav .nav-title { color: #fff; font-size: 17px; font-weight: 500; }
+
+    /* ========== Section ========== */
+    .section {
+      padding: 16px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 10px;
+      padding-left: 4px;
+    }
+
+    /* ========== Settings Card ========== */
+    .settings-card {
+      background: #fff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(10,22,40,0.04);
+    }
+
+    .setting-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px solid #F5F6FA;
+      transition: background 0.15s;
+    }
+
+    .setting-item:last-child {
+      border-bottom: none;
+    }
+
+    .setting-item:active {
+      background: #FAFBFD;
+    }
+
+    .setting-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .setting-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .setting-icon.marketing { background: rgba(255,107,74,0.1); color: #FF6B4A; }
+    .setting-icon.show { background: rgba(212,168,83,0.1); color: #D4A853; }
+    .setting-icon.promo { background: rgba(0,201,167,0.1); color: #00C9A7; }
+    .setting-icon.privacy { background: rgba(74,122,255,0.1); color: #4A7AFF; }
+    .setting-icon.data { background: rgba(156,136,255,0.1); color: #9C88FF; }
+    .setting-icon.delete { background: rgba(231,76,60,0.1); color: #E74C3C; }
+
+    .setting-content {
+      flex: 1;
+    }
+
+    .setting-name {
+      font-size: 15px;
+      font-weight: 500;
+      color: #0A1628;
+    }
+
+    .setting-desc {
+      font-size: 12px;
+      color: #999;
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    /* ========== Toggle Switch ========== */
+    .toggle-switch {
+      position: relative;
+      width: 48px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #E0E0E0;
+      border-radius: 28px;
+      transition: all 0.3s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: all 0.3s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .toggle-switch input:checked + .toggle-slider {
+      background: linear-gradient(135deg, #00C9A7, #00E5BE);
+    }
+
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(20px);
+    }
+
+    /* ========== Arrow Right ========== */
+    .setting-arrow {
+      color: #CCC;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    /* ========== Info Card ========== */
+    .info-card {
+      background: linear-gradient(135deg, #F0F4FF, #E8F0FF);
+      border-radius: 14px;
+      padding: 16px;
+      margin: 16px;
+      border: 1px solid rgba(74,122,255,0.15);
+    }
+
+    .info-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .info-header i {
+      color: #4A7AFF;
+      font-size: 16px;
+    }
+
+    .info-header span {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0A1628;
+    }
+
+    .info-text {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.7;
+    }
+
+    .info-text a {
+      color: #4A7AFF;
+      text-decoration: none;
+    }
+
+    /* ========== Danger Zone ========== */
+    .danger-zone {
+      margin-top: 20px;
+    }
+
+    .danger-item {
+      background: #fff;
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 2px 12px rgba(10,22,40,0.04);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .danger-item:active {
+      transform: scale(0.98);
+    }
+
+    .danger-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      background: rgba(231,76,60,0.1);
+      color: #E74C3C;
+    }
+
+    .danger-content {
+      flex: 1;
+    }
+
+    .danger-name {
+      font-size: 15px;
+      font-weight: 500;
+      color: #E74C3C;
+    }
+
+    .danger-desc {
+      font-size: 12px;
+      color: #999;
+      margin-top: 3px;
+    }
+
+    /* ========== Confirm Modal ========== */
+    .confirm-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .confirm-modal-overlay.show { display: flex; }
+
+    .confirm-modal {
+      width: 100%;
+      max-width: 300px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      animation: modalIn 0.3s ease;
+    }
+
+    @keyframes modalIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .confirm-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(231,76,60,0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 24px;
+      color: #E74C3C;
+    }
+
+    .confirm-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #0A1628;
+      margin-bottom: 8px;
+    }
+
+    .confirm-desc {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .confirm-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .confirm-btn {
+      flex: 1;
+      padding: 12px 0;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .confirm-btn.cancel {
+      background: #F5F6FA;
+      color: #666;
+    }
+
+    .confirm-btn.danger {
+      background: linear-gradient(135deg, #E74C3C, #FF6B6B);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(231,76,60,0.3);
+    }
+
+    .confirm-btn:active { transform: scale(0.96); }
+
+    /* ========== Toast ========== */
+    .toast {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.75);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 24px;
+      font-size: 14px;
+      z-index: 300;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+
+    .toast.show {
+      opacity: 1;
+      visibility: visible;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+  <!-- Top Nav -->
+  <div class="top-nav">
+    <a class="back-btn" href="profile.html"><i class="fas fa-chevron-left"></i></a>
+    <span class="nav-title">隐私设置</span>
+  </div>
+
+  <!-- Notification Settings -->
+  <div class="section">
+    <div class="section-title">通知设置</div>
+    <div class="settings-card">
+      <div class="setting-item">
+        <div class="setting-left">
+          <div class="setting-icon marketing"><i class="fas fa-bullhorn"></i></div>
+          <div class="setting-content">
+            <div class="setting-name">营销通知</div>
+            <div class="setting-desc">接收平台营销活动推送</div>
+          </div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked onchange="toggleSetting('营销通知', this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="setting-item">
+        <div class="setting-left">
+          <div class="setting-icon show"><i class="fas fa-theater-masks"></i></div>
+          <div class="setting-content">
+            <div class="setting-name">演出推广</div>
+            <div class="setting-desc">接收新演出上线、开票提醒</div>
+          </div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked onchange="toggleSetting('演出推广', this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="setting-item">
+        <div class="setting-left">
+          <div class="setting-icon promo"><i class="fas fa-tags"></i></div>
+          <div class="setting-content">
+            <div class="setting-name">优惠活动</div>
+            <div class="setting-desc">接收优惠券、折扣活动通知</div>
+          </div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked onchange="toggleSetting('优惠活动', this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Privacy Settings -->
+  <div class="section">
+    <div class="section-title">隐私设置</div>
+    <div class="settings-card">
+      <div class="setting-item" onclick="openPrivacyPolicy()">
+        <div class="setting-left">
+          <div class="setting-icon privacy"><i class="fas fa-shield-alt"></i></div>
+          <div class="setting-content">
+            <div class="setting-name">隐私政策</div>
+            <div class="setting-desc">了解我们如何保护您的隐私</div>
+          </div>
+        </div>
+        <span class="setting-arrow"><i class="fas fa-chevron-right"></i></span>
+      </div>
+      <div class="setting-item" onclick="openDataPolicy()">
+        <div class="setting-left">
+          <div class="setting-icon data"><i class="fas fa-database"></i></div>
+          <div class="setting-content">
+            <div class="setting-name">数据使用说明</div>
+            <div class="setting-desc">查看数据收集和使用范围</div>
+          </div>
+        </div>
+        <span class="setting-arrow"><i class="fas fa-chevron-right"></i></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Card -->
+  <div class="info-card">
+    <div class="info-header">
+      <i class="fas fa-info-circle"></i>
+      <span>数据隐私说明</span>
+    </div>
+    <div class="info-text">
+      我们严格遵守《个人信息保护法》等相关法律法规，仅收集必要的用户信息用于提供票务服务。您的个人信息将被安全存储，未经您的同意不会向第三方披露。如需了解更多详情，请查阅<a href="#">隐私政策</a>。
+    </div>
+  </div>
+
+  <!-- Danger Zone -->
+  <div class="section danger-zone">
+    <div class="section-title">账号管理</div>
+    <div class="danger-item" onclick="showDeleteConfirm()">
+      <div class="danger-icon"><i class="fas fa-user-times"></i></div>
+      <div class="danger-content">
+        <div class="danger-name">注销账号</div>
+        <div class="danger-desc">注销后数据将无法恢复，请谨慎操作</div>
+      </div>
+      <span class="setting-arrow"><i class="fas fa-chevron-right"></i></span>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div class="confirm-modal-overlay" id="confirmModal">
+    <div class="confirm-modal">
+      <div class="confirm-icon"><i class="fas fa-exclamation-triangle"></i></div>
+      <div class="confirm-title">确认注销账号？</div>
+      <div class="confirm-desc">注销后您的所有数据将被永久删除且无法恢复，包括订单记录、积分、优惠券等。确定要继续吗？</div>
+      <div class="confirm-actions">
+        <button class="confirm-btn cancel" onclick="closeModal()">取消</button>
+        <button class="confirm-btn danger" onclick="confirmDelete()">确认注销</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+  function toggleSetting(name, checked) {
+    const status = checked ? '已开启' : '已关闭';
+    showToast(`${name}${status}`);
+  }
+
+  function openPrivacyPolicy() {
+    showToast('正在打开隐私政策...');
+  }
+
+  function openDataPolicy() {
+    showToast('正在打开数据使用说明...');
+  }
+
+  function showDeleteConfirm() {
+    document.getElementById('confirmModal').classList.add('show');
+  }
+
+  function closeModal() {
+    document.getElementById('confirmModal').classList.remove('show');
+  }
+
+  function confirmDelete() {
+    closeModal();
+    showToast('账号注销申请已提交');
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2000);
+  }
+
+  // 点击遮罩关闭
+  document.getElementById('confirmModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeModal();
+    }
+  });
+</script>
+
+</body>
+</html>

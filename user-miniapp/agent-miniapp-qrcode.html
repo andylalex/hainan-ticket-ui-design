@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的分销码 - 代理中心</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif;
+    background: #E8E8ED;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .phone-frame {
+    width: 375px;
+    min-height: 100vh;
+    background: #F5F6FA;
+    position: relative;
+    overflow-x: hidden;
+    padding-bottom: 24px;
+  }
+
+  /* ========== 状态栏 ========== */
+  .status-bar {
+    height: 44px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1A1A1A;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .status-bar .time { font-size: 15px; font-weight: 700; }
+
+  .status-bar .status-icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+  }
+
+  .status-bar .status-icons i { font-size: 14px; }
+
+  .status-bar .battery {
+    width: 24px;
+    height: 11px;
+    border: 1.5px solid #1A1A1A;
+    border-radius: 2px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 1.5px;
+  }
+
+  .status-bar .battery::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 5px;
+    background: #1A1A1A;
+    border-radius: 0 1px 1px 0;
+  }
+
+  .status-bar .battery-inner {
+    width: 75%;
+    height: 100%;
+    background: #1A1A1A;
+    border-radius: 1px;
+  }
+
+  /* ========== 导航栏 ========== */
+  .nav-bar {
+    height: 44px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    position: sticky;
+    top: 44px;
+    z-index: 100;
+    border-bottom: 0.5px solid #F0F0F0;
+  }
+
+  .nav-bar .nav-back {
+    position: absolute;
+    left: 16px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #1A1A1A;
+    font-size: 18px;
+    transition: opacity 0.2s;
+  }
+
+  .nav-bar .nav-back:active { opacity: 0.5; }
+
+  .nav-bar .nav-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1A1A1A;
+  }
+
+  /* ========== 提示文字 ========== */
+  .tip-text {
+    margin: 16px 16px 12px;
+    font-size: 13px;
+    color: #94A3B8;
+    line-height: 1.6;
+  }
+
+  /* ========== 分销码卡片 ========== */
+  .qrcode-card {
+    background: #fff;
+    border-radius: 12px;
+    margin: 0 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .qrcode-placeholder {
+    width: 200px;
+    height: 200px;
+    background: #F5F6FA;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* 模拟二维码图案 */
+  .qrcode-pattern {
+    width: 160px;
+    height: 160px;
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    grid-template-rows: repeat(11, 1fr);
+    gap: 2px;
+  }
+
+  .qrcode-cell {
+    background: #1A1A1A;
+    border-radius: 1px;
+  }
+
+  .qrcode-cell.empty {
+    background: transparent;
+  }
+
+  .qrcode-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #D4A853, #F0D78C);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .qrcode-agent-info {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .qrcode-agent-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1A1A1A;
+    margin-bottom: 4px;
+  }
+
+  .qrcode-agent-id {
+    font-size: 12px;
+    color: #94A3B8;
+    margin-bottom: 4px;
+  }
+
+  .qrcode-agent-level {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #D4A853;
+    background: #FEF3C7;
+    padding: 2px 10px;
+    border-radius: 10px;
+    margin-top: 4px;
+  }
+
+  /* ========== 操作按钮 ========== */
+  .action-buttons {
+    display: flex;
+    gap: 12px;
+    margin: 20px 16px;
+  }
+
+  .btn-action {
+    flex: 1;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.2s;
+  }
+
+  .btn-action:active { opacity: 0.8; }
+
+  .btn-save {
+    background: #FF6B4A;
+    color: #fff;
+  }
+
+  .btn-share {
+    background: #fff;
+    color: #FF6B4A;
+    border: 1px solid #FF6B4A;
+  }
+
+    
+    
+    
+    
+    
+  </style>
+</head>
+<body>
+
+<div class="phone-frame">
+
+  <!-- 状态栏 -->
+  <div class="status-bar">
+    
+    <span class="time">9:41</span>
+    <div class="status-icons">
+      <i class="fas fa-signal"></i>
+      <i class="fas fa-wifi"></i>
+      <div class="battery"><div class="battery-inner"></div></div>
+    </div>
+  </div>
+
+  <!-- 导航栏 -->
+  <div class="nav-bar">
+    <div class="nav-back" onclick="history.back()"><i class="fas fa-chevron-left"></i></div>
+    <span class="nav-title">我的分销码</span>
+  </div>
+
+  <!-- 提示文字 -->
+  <div class="tip-text">
+    分享以下分销码给好友，好友通过您的码购买演出门票即可获得佣金
+  </div>
+
+  <!-- 分销码卡片 -->
+  <div class="qrcode-card">
+    <div class="qrcode-placeholder">
+      <div class="qrcode-pattern">
+        <!-- 模拟二维码图案 -->
+        <div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div>
+        <div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div>
+        <div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div>
+        <div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div>
+        <div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div>
+        <div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div>
+        <div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div>
+        <div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div>
+        <div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div>
+        <div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell empty"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div><div class="qrcode-cell"></div>
+      </div>
+      <div class="qrcode-center">王</div>
+    </div>
+
+    <div class="qrcode-agent-info">
+      <div class="qrcode-agent-name">王建华</div>
+      <div class="qrcode-agent-id">代理编号：A20260001</div>
+      <span class="qrcode-agent-level">金牌代理</span>
+    </div>
+  </div>
+
+  <!-- 操作按钮 -->
+  <div class="action-buttons">
+    <button class="btn-action btn-save" onclick="showToast('图片已保存到相册')">
+      <i class="fas fa-download"></i> 保存图片
+    </button>
+    <button class="btn-action btn-share" onclick="showToast('分享功能开发中')">
+      <i class="fas fa-share-nodes"></i> 分享
+    </button>
+  </div>
+
+</div>
+
+<script>
+  function showToast(msg) {
+    var toast = document.createElement('div');
+    toast.textContent = msg;
+    toast.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.75);color:#fff;padding:10px 20px;border-radius:8px;font-size:14px;z-index:9999;pointer-events:none;';
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 2000);
+  }
+</script>
+
+</body>
+</html>

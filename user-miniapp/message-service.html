@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>海南演艺票务系统 - 消息中心</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ========== CSS Variables ========== */
+        :root {
+            --primary: #0A1628;
+            --primary-light: #132240;
+            --accent: #FF6B4A;
+            --accent-light: #FF8A70;
+            --gold: #D4A853;
+            --emerald: #00C9A7;
+            --bg-light: #F5F6FA;
+            --bg-white: #FFFFFF;
+            --text-primary: #1A1A2E;
+            --text-secondary: #6B7280;
+            --text-hint: #9CA3AF;
+            --border: #E5E7EB;
+            --shadow-sm: 0 1px 3px rgba(10, 22, 40, 0.06);
+            --shadow-md: 0 4px 12px rgba(10, 22, 40, 0.08);
+            --shadow-lg: 0 8px 24px rgba(10, 22, 40, 0.12);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-full: 999px;
+        }
+
+        /* ========== Reset & Base ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #E8EBF0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ========== Phone Frame ========== */
+        .phone-frame {
+            width: 100%;
+            max-width: 375px;
+            min-height: 100vh;
+            min-height: 100dvh;
+            background: var(--bg-light);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ========== Status Bar ========== */
+        .status-bar {
+            height: 44px;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-bar .time { font-size: 14px; font-weight: 700; }
+
+        .status-bar .icons {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-bar .icons svg { width: 16px; height: 16px; fill: #fff; }
+
+        /* ========== Navigation Bar ========== */
+        .nav-bar {
+            height: 48px;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            position: relative;
+        }
+
+        .nav-bar .back-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .nav-bar .back-btn:hover { background: rgba(255,255,255,0.1); }
+
+        .nav-bar .back-btn svg {
+            width: 22px;
+            height: 22px;
+            stroke: #fff;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .nav-bar .title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-bar .action-btn {
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s;
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+
+        .nav-bar .action-btn:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* ========== View Container ========== */
+        .view-container {
+            position: relative;
+            height: calc(100vh - 44px - 48px);
+            height: calc(100dvh - 44px - 48px);
+            overflow: hidden;
+        }
+
+        .view {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .view::-webkit-scrollbar { display: none; }
+
+        .view.hidden-right {
+            transform: translateX(100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .view.hidden-left {
+            transform: translateX(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .view.active {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ============================================ */
+        /* ========== MESSAGE LIST VIEW ======== */
+        /* ============================================ */
+
+        /* Tab Bar */
+        .msg-tab-bar {
+            background: var(--bg-white);
+            display: flex;
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .msg-tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 0 10px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+
+        .msg-tab-item .tab-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .msg-tab-item .tab-badge {
+            background: var(--accent);
+            color: #fff;
+            font-size: 10px;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            font-weight: 600;
+        }
+
+        .msg-tab-item .tab-indicator {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 2px;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .msg-tab-item.active .tab-label {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .msg-tab-item.active .tab-indicator {
+            width: 24px;
+        }
+
+        /* Message List */
+        .msg-list {
+            padding: 8px 16px 20px;
+        }
+
+        .msg-date-group {
+            font-size: 12px;
+            color: var(--text-hint);
+            padding: 12px 4px 8px;
+            font-weight: 500;
+        }
+
+        .msg-card {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: all 0.25s;
+            border: 1px solid transparent;
+        }
+
+        .msg-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: rgba(10, 22, 40, 0.04);
+        }
+
+        .msg-card:active {
+            transform: scale(0.985);
+        }
+
+        /* Unread left bar */
+        .msg-card.unread::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 12px;
+            bottom: 12px;
+            width: 3px;
+            border-radius: 0 2px 2px 0;
+        }
+
+        .msg-card.unread.system-msg::before { background: var(--gold); }
+        .msg-card.unread.order-msg::before { background: var(--emerald); }
+        .msg-card.unread.points-msg::before { background: var(--accent); }
+
+        .msg-card.unread { background: #FAFBFF; }
+
+        /* Message Icon */
+        .msg-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .msg-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: #fff;
+        }
+
+        .msg-icon.system-icon { background: linear-gradient(135deg, #D4A853, #E8C97A); }
+        .msg-icon.order-icon { background: linear-gradient(135deg, #00C9A7, #4ADBC5); }
+        .msg-icon.points-icon { background: linear-gradient(135deg, #FF6B4A, #FF8A70); }
+
+        /* Unread dot */
+        .msg-icon .unread-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 2px solid var(--bg-white);
+        }
+
+        .msg-card.unread .unread-dot {
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 74, 0.4); }
+            50% { box-shadow: 0 0 0 4px rgba(255, 107, 74, 0); }
+        }
+
+        /* Message Content */
+        .msg-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .msg-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+
+        .msg-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.3;
+            flex: 1;
+            margin-right: 8px;
+        }
+
+        .msg-card.unread .msg-title { font-weight: 700; }
+
+        .msg-time {
+            font-size: 11px;
+            color: var(--text-hint);
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .msg-summary {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Jump Link Hint */
+        .msg-jump-hint {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .msg-jump-hint svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--accent);
+        }
+
+        /* Message Tab Panels */
+        .msg-tab-panel {
+            display: none;
+        }
+
+        .msg-tab-panel.active {
+            display: block;
+        }
+
+        /* Empty State */
+        .msg-empty {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .msg-empty svg {
+            width: 80px;
+            height: 80px;
+            fill: var(--border);
+            margin-bottom: 16px;
+        }
+
+        .msg-empty p {
+            color: var(--text-hint);
+            font-size: 14px;
+        }
+
+        /* ============================================ */
+        /* ========== MESSAGE DETAIL VIEW =========== */
+        /* ============================================ */
+
+        .detail-content {
+            padding: 16px;
+        }
+
+        .detail-header {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .detail-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
+
+        .detail-icon svg {
+            width: 28px;
+            height: 28px;
+            fill: #fff;
+        }
+
+        .detail-icon.system-icon { background: linear-gradient(135deg, #D4A853, #E8C97A); }
+        .detail-icon.order-icon { background: linear-gradient(135deg, #00C9A7, #4ADBC5); }
+        .detail-icon.points-icon { background: linear-gradient(135deg, #FF6B4A, #FF8A70); }
+
+        .detail-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+
+        .detail-meta {
+            font-size: 12px;
+            color: var(--text-hint);
+        }
+
+        .detail-body {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .detail-text {
+            font-size: 15px;
+            color: var(--text-primary);
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .detail-highlight {
+            background: linear-gradient(135deg, rgba(212, 168, 83, 0.1), rgba(212, 168, 83, 0.05));
+            border-left: 3px solid var(--gold);
+            padding: 12px 14px;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin: 14px 0;
+        }
+
+        .detail-highlight-text {
+            font-size: 14px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Action Button */
+        .detail-action {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 4px 16px rgba(255, 107, 74, 0.3);
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .detail-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 74, 0.4);
+        }
+
+        .detail-action:active {
+            transform: translateY(0);
+        }
+
+        .detail-action.secondary {
+            background: var(--bg-white);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .detail-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .detail-actions .detail-action {
+            flex: 1;
+        }
+
+        /* ========== Toast ========== */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(10, 22, 40, 0.85);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* ========== Scrollbar hide ========== */
+        .msg-list::-webkit-scrollbar {
+            display: none;
+        }
+    
+    
+    
+    
+    
+    
+  </style>
+</head>
+<body>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Phone Frame -->
+<div class="phone-frame">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+    
+        <span class="time">9:41</span>
+        <div class="icons">
+            <svg viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+        </div>
+    </div>
+
+    <!-- View Container -->
+    <div class="view-container">
+
+        <!-- ==================== MESSAGE LIST VIEW ==================== -->
+        <div class="view active" id="messageListView">
+            <!-- Nav Bar -->
+            <div class="nav-bar">
+                <div class="back-btn" onclick="window.location.href='profile.html'">
+                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                </div>
+                <span class="title">消息中心</span>
+                <button class="action-btn" onclick="markAllRead()">全部已读</button>
+            </div>
+
+            <!-- Tab Bar -->
+            <div class="msg-tab-bar">
+                <button class="msg-tab-item active" data-tab="system" onclick="switchMsgTab('system', this)">
+                    <span class="tab-label">系统通知<span class="tab-badge" id="badge-system">2</span></span>
+                    <span class="tab-indicator"></span>
+                </button>
+                <button class="msg-tab-item" data-tab="order" onclick="switchMsgTab('order', this)">
+                    <span class="tab-label">订单状态<span class="tab-badge" id="badge-order">3</span></span>
+                    <span class="tab-indicator"></span>
+                </button>
+                <button class="msg-tab-item" data-tab="points" onclick="switchMsgTab('points', this)">
+                    <span class="tab-label">积分变动<span class="tab-badge" id="badge-points">2</span></span>
+                    <span class="tab-indicator"></span>
+                </button>
+            </div>
+
+            <!-- System Messages Panel -->
+            <div class="msg-tab-panel active" id="panel-system">
+                <div class="msg-list">
+                    <div class="msg-date-group">今天</div>
+
+                    <div class="msg-card unread system-msg" onclick="openMessageDetail('system', 0)">
+                        <div class="msg-icon system-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            <span class="unread-dot"></span>
+                        </div>
+                        <div class="msg-content">
+                            <div class="msg-header">
+                                <span class="msg-title">会员等级升级通知</span>
+                                <span class="msg-time">10:30</span>
+                            </div>
+                            <div class="msg-summary">恭喜您！您的会员等级已由"银卡会员"升级为"金卡会员"，尊享更多专属权益。</div>
+                            <div class="msg-jump-hint">
+                                <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                                查看会员权益
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="msg-card unread system-msg" onclick="openMessageDetail('system', 1)">
+                        <div class="msg-icon system-icon">
+                            <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM10 4h4v2h-4V4z"/></svg>
+                            <span class="unread-dot"></span>
+                        </div>
+                        <div class="msg-content">
+                            <div class="msg-header">
+                                <span class="msg-title">系统升级维护通知</span>
+                                <span class="msg-time">09:15</span>
+                            </div>
+                            <div class="msg-summary">为提升服务质量，系统将于4月15日凌晨2:00-5:00进行升级维护，届时部分功能可能暂时无法使用。</div>
+                        </div>
+                    </div>
+
+                    <div class="msg-date-group">昨天</div>
+
+                    <div class="msg-card system-msg" onclick="openMessageDetail('system', 2)">
+                        <div class="msg-icon system-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                        </div>
+                        <div class="msg-content">
+                            <div class="msg-header">
+                                <span class="msg-title">账户安全提醒</span>
+                                <span class="msg-time">昨天 16:42</span>
+                            </div>
+                            <div class="msg-summary">您的账户于4月9日16:40在新设备上登录，如非本人操作请及时修改密码。</div>
+                            <div class="msg-jump-hint">
+                                <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                                安全设置
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Messages Panel -->
+            <div class="msg-tab-panel" id="panel-order">
+                <div class="msg-list">
+                    <div class="msg-date-group">今天</div>
+
+                    <div class="msg-card unread order-msg" onclick="openMessageDetail('order', 0)">
+                        <div class="msg-icon order-icon">
+                            <svg viewBox="0 0 24 24"><path d="M18 17H6v-2h12v2zm0-4H6v-2h12v2zm0-4H6V7h12v2zM3 22l1.5-1.5L6 22l1.5-1.5L9 22l1.5-1.5L12 22l1.5-1.5L15 22l1.5-1.5L18 22l1.5-1.5L21 22V2l-1.5 1.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2 7.5 3.5L6 2 4.5 3.5L3 2v20z"/></svg>
+                            <span class="unread-dot"></span>
+                        </div>
+                        <div class="msg-content">
+                            <div class="msg-header">
+                                <span class="msg-title">购票成功通知</span>
+                                <span class="msg-time">11:20</span>
+                            </div>
+                            <div class="msg-summary">您已成功购买《南海丝路》大型歌舞秀门票2张，演出时间：4月20日 19:30。</div>
+                            <div class="msg-jump-hint">
+                                <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                                查看订单详情
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="msg-card unread order-msg" onclick="openMessageDetail('order', 1)">
+                        <div class="msg-icon order-icon">
+                            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                            <span class="unread-dot"></span>
+                        </div>
+                        <div class="msg-content">
+                            <div class="msg-header">
+                                <span class="msg-title">退款到账通知</span>
+                                <span class="msg-time">09:45</span>
+                            </div>
+                            <div class="msg-summary">您的订单HN20260410088退款已处理完成，退款金额￥380.00已原路返回。</div>
+                        </div>
+                    </div>
+
+                    <div class="msg-card unread order-msg" onclick="openMessageDetail('order', 2)">
+                        <div class="msg-icon order-icon">
+                            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                            <span class="unread-dot"></span>
+                        </div>
+                        <div class="msg-content">
+                            <div class="msg-header">
+                                <span class="msg-title">核销提醒</span>
+                                <span class="msg-time">08:30</span>
+                            </div>
+                            <div class="msg-summary">您购买的《天涯故事》话剧门票将于今日19:00开演，请提前30分钟到达剧院。</div>
+                            <div class="msg-jump-hint">
+                                <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                                查看电子票
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="msg-date-group">4月8日</div>
+
+                    <div class="msg-card order-msg" onclick="openMessageDetail('order', 3)">
+                        <div class="msg-icon order-icon">
+                            <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                        </div>
+                        <div class="msg-content">
+                            <div class="msg-header">
+                                <span class="msg-title">配送发货通知</span>
+                                <span class="msg-time">4月8日 14:20</span>
+                            </div>
+                            <div class="msg-summary">您购买的演出纪念品已发货，快递单号：SF1234567890，预计2-3天送达。</div>
+                            <div class="msg-jump-hint">
+                                <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                                查看物流
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Points Messages Panel -->
+            <div class="msg-tab-panel" id="panel-points">
+                <div class="msg-list">
+                    <div class="msg-date-group">今天</div>
+
+                    <div class="msg-card unread points-msg" onclick="openMessageDetail('points', 0)">
+                        <div class="msg-icon points-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            <span class="unread-dot"></span>
+                        </div>
+                        <div class="msg-content">
+                            <div class="msg-header">
+                                <span class="msg-title">积分到账通知</span>
+                                <span class="msg-time">11:20</span>
+                            </div>
+                            <div class="msg-summary">购票成功，获得积分 +380，当前积分余额 2,680。</div>
+                            <div class="msg-jump-hint">
+                                <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                                查看积分明细
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="msg-card unread points-msg" onclick="openMessageDetail('points', 1)">
+                        <div class="msg-icon points-icon">
+                            <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                            <span class="unread-dot"></span>
+                        </div>
+                        <div class="msg-content">
+                            <div class="msg-header">
+                                <span class="msg-title">积分即将到期提醒</span>
+                                <span class="msg-time">10:00</span>
+                            </div>
+                            <div class="msg-summary">您有500积分将于4月30日到期，请尽快使用。</div>
+                            <div class="msg-jump-hint">
+                                <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                                积分兑换
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="msg-date-group">昨天</div>
+
+                    <div class="msg-card points-msg" onclick="openMessageDetail('points', 2)">
+                        <div class="msg-icon points-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        </div>
+                        <div class="msg-content">
+                            <div class="msg-header">
+                                <span class="msg-title">积分消耗通知</span>
+                                <span class="msg-time">昨天 15:30</span>
+                            </div>
+                            <div class="msg-summary">积分兑换优惠券成功，消耗积分 -200，当前积分余额 2,300。</div>
+                        </div>
+                    </div>
+
+                    <div class="msg-card points-msg" onclick="openMessageDetail('points', 3)">
+                        <div class="msg-icon points-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        </div>
+                        <div class="msg-content">
+                            <div class="msg-header">
+                                <span class="msg-title">签到奖励</span>
+                                <span class="msg-time">昨天 09:00</span>
+                            </div>
+                            <div class="msg-summary">每日签到成功，获得积分 +10，已连续签到4天。</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== MESSAGE DETAIL VIEW ==================== -->
+        <div class="view hidden-right" id="messageDetailView">
+            <!-- Nav Bar -->
+            <div class="nav-bar">
+                <div class="back-btn" onclick="closeMessageDetail()">
+                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                </div>
+                <span class="title">消息详情</span>
+                <div style="width: 60px;"></div>
+            </div>
+
+            <div class="detail-content" id="detailContent">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+
+    </div><!-- /view-container -->
+</div><!-- /phone-frame -->
+
+<script>
+    // ========== Message Data ==========
+    const messageData = {
+        system: [
+            {
+                title: '会员等级升级通知',
+                time: '今天 10:30',
+                content: '恭喜您！您的会员等级已由"银卡会员"升级为"金卡会员"，尊享更多专属权益。\n\n金卡会员专属权益：\n- 全场演出9折优惠\n- 优先选座权（提前24小时）\n- 专属客服通道\n- 生日月专属礼包\n- 每月3张专属优惠券\n\n感谢您对海南演艺的支持与信任，我们将持续为您提供更优质的服务！',
+                highlight: '升级成长值：消费满3,000元',
+                actionText: '查看会员权益',
+                actionLink: 'member-center.html'
+            },
+            {
+                title: '系统升级维护通知',
+                time: '今天 09:15',
+                content: '尊敬的用户：\n\n为提升服务质量，系统将于4月15日凌晨2:00-5:00进行升级维护，届时部分功能可能暂时无法使用，敬请谅解。\n\n维护期间影响范围：\n- 在线购票功能\n- 订单查询功能\n- 积分兑换功能\n\n维护完成后，系统将自动恢复正常。如有疑问，请联系客服：400-888-6666。',
+                actionText: '我知道了',
+                actionLink: null
+            },
+            {
+                title: '账户安全提醒',
+                time: '昨天 16:42',
+                content: '您的账户于4月9日16:40在新设备上登录：\n\n设备信息：iPhone 15 Pro\n登录地点：海南省海口市\nIP地址：192.168.xxx.xxx\n\n如非本人操作，请立即修改密码以确保账户安全。建议您开启双重验证功能，为账户安全加一把锁。',
+                highlight: '如非本人操作，请及时修改密码',
+                actionText: '安全设置',
+                actionLink: 'profile.html'
+            }
+        ],
+        order: [
+            {
+                title: '购票成功通知',
+                time: '今天 11:20',
+                content: '您已成功购买演出门票！\n\n演出名称：《南海丝路》大型歌舞秀\n演出时间：2026年4月20日 19:30\n演出场馆：海口湾演艺中心\n票档座位：A区 8排 15-16座\n票数：2张\n订单金额：￥760.00\n订单编号：HN20260420001\n\n请提前30分钟到达场馆，凭电子票入场。祝您观演愉快！',
+                highlight: '订单编号：HN20260420001',
+                actionText: '查看订单详情',
+                actionLink: 'order-ticket.html'
+            },
+            {
+                title: '退款到账通知',
+                time: '今天 09:45',
+                content: '您的退款申请已处理完成。\n\n订单编号：HN20260410088\n演出名称：《椰风海韵》音乐会\n退款金额：￥380.00\n退款方式：原路返回\n预计到账：1-3个工作日\n\n退款将返回至您的支付账户，请注意查收。如有疑问，请联系客服。',
+                actionText: '查看退款详情',
+                actionLink: 'order-ticket.html'
+            },
+            {
+                title: '核销提醒',
+                time: '今天 08:30',
+                content: '观演提醒\n\n您购买的演出即将开始：\n\n演出名称：《天涯故事》话剧\n演出时间：今天 19:00\n演出场馆：三亚大剧院\n座位信息：B区 5排 8-9座\n\n温馨提示：\n1. 请提前30分钟到达场馆\n2. 凭电子票二维码入场\n3. 演出期间请保持手机静音\n4. 请勿携带食品饮料入场\n\n期待您的到来！',
+                highlight: '演出时间：今天 19:00',
+                actionText: '查看电子票',
+                actionLink: 'order-ticket.html'
+            },
+            {
+                title: '配送发货通知',
+                time: '4月8日 14:20',
+                content: '您购买的商品已发货！\n\n商品名称：演出纪念品套装\n快递公司：顺丰速运\n快递单号：SF1234567890\n预计送达：2-3天\n\n您可以在"我的订单"中查看物流详情。如有问题，请联系客服。',
+                actionText: '查看物流',
+                actionLink: 'order-ticket.html'
+            }
+        ],
+        points: [
+            {
+                title: '积分到账通知',
+                time: '今天 11:20',
+                content: '购票成功，积分已到账！\n\n交易类型：购票奖励\n获得积分：+380\n当前积分余额：2,680\n\n积分用途：\n- 购票抵扣：100积分=1元\n- 兑换周边：精美演出纪念品\n- 兑换优惠券：满减券、折扣券\n\n感谢您的支持！',
+                highlight: '获得积分：+380',
+                actionText: '查看积分明细',
+                actionLink: 'points.html'
+            },
+            {
+                title: '积分即将到期提醒',
+                time: '今天 10:00',
+                content: '尊敬的用户：\n\n您有500积分将于2026年4月30日到期，请尽快使用！\n\n积分使用方式：\n1. 购票抵扣：结算时可使用积分抵扣现金\n2. 兑换周边：精美演出纪念品等你来换\n3. 兑换优惠券：各类满减券、折扣券\n\n积分过期后将自动清零，无法恢复，请及时使用。',
+                highlight: '即将到期：500积分',
+                actionText: '立即使用积分',
+                actionLink: 'points.html'
+            },
+            {
+                title: '积分消耗通知',
+                time: '昨天 15:30',
+                content: '积分兑换成功！\n\n兑换内容：满100减20优惠券\n消耗积分：-200\n当前积分余额：2,300\n\n优惠券已发放至您的账户，可在"我的优惠券"中查看使用。有效期30天，请及时使用。',
+                actionText: '查看优惠券',
+                actionLink: 'coupons.html'
+            },
+            {
+                title: '签到奖励',
+                time: '昨天 09:00',
+                content: '每日签到成功！\n\n获得积分：+10\n连续签到：4天\n当前积分余额：2,300\n\n连续签到7天可获得额外50积分奖励，继续加油！',
+                actionText: '查看签到记录',
+                actionLink: 'member-center.html'
+            }
+        ]
+    };
+
+    // ========== Current State ==========
+    let currentTab = 'system';
+    let currentMessageIndex = 0;
+
+    // ========== Tab Switching ==========
+    function switchMsgTab(tab, el) {
+        currentTab = tab;
+        document.querySelectorAll('.msg-tab-item').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.msg-tab-panel').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('panel-' + tab).classList.add('active');
+    }
+
+    // ========== Mark All Read ==========
+    function markAllRead() {
+        document.querySelectorAll('.msg-card.unread').forEach(card => {
+            card.classList.remove('unread');
+            const dot = card.querySelector('.unread-dot');
+            if (dot) dot.remove();
+        });
+        document.querySelectorAll('.tab-badge').forEach(b => {
+            b.textContent = '0';
+            b.style.display = 'none';
+        });
+        showToast('已全部标记为已读');
+    }
+
+    // ========== Open Message Detail ==========
+    function openMessageDetail(type, index) {
+        // Mark as read
+        const panel = document.getElementById('panel-' + type);
+        const cards = panel.querySelectorAll('.msg-card');
+        if (cards[index] && cards[index].classList.contains('unread')) {
+            cards[index].classList.remove('unread');
+            const dot = cards[index].querySelector('.unread-dot');
+            if (dot) dot.remove();
+
+            // Update badge count
+            const badge = document.getElementById('badge-' + type);
+            const unreadCount = panel.querySelectorAll('.msg-card.unread').length;
+            if (unreadCount === 0) {
+                badge.style.display = 'none';
+            } else {
+                badge.textContent = unreadCount;
+            }
+        }
+
+        currentTab = type;
+        currentMessageIndex = index;
+
+        // Render detail content
+        const msg = messageData[type][index];
+        const detailContent = document.getElementById('detailContent');
+
+        let html = `
+            <div class="detail-header">
+                <div class="detail-icon ${type}-icon">
+                    ${getIconSvg(type)}
+                </div>
+                <div class="detail-title">${msg.title}</div>
+                <div class="detail-meta">${msg.time}</div>
+            </div>
+            <div class="detail-body">
+                <div class="detail-text">${msg.content}</div>
+                ${msg.highlight ? `
+                <div class="detail-highlight">
+                    <div class="detail-highlight-text">${msg.highlight}</div>
+                </div>
+                ` : ''}
+            </div>
+        `;
+
+        if (msg.actionLink) {
+            html += `
+                <a href="${msg.actionLink}" class="detail-action">${msg.actionText}</a>
+            `;
+        } else {
+            html += `
+                <button class="detail-action secondary" onclick="closeMessageDetail()">${msg.actionText || '返回'}</button>
+            `;
+        }
+
+        detailContent.innerHTML = html;
+
+        // Switch view
+        document.getElementById('messageListView').className = 'view hidden-left';
+        document.getElementById('messageDetailView').className = 'view active';
+    }
+
+    // ========== Close Message Detail ==========
+    function closeMessageDetail() {
+        document.getElementById('messageListView').className = 'view active';
+        document.getElementById('messageDetailView').className = 'view hidden-right';
+    }
+
+    // ========== Get Icon SVG ==========
+    function getIconSvg(type) {
+        const icons = {
+            system: '<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>',
+            order: '<svg viewBox="0 0 24 24"><path d="M18 17H6v-2h12v2zm0-4H6v-2h12v2zm0-4H6V7h12v2zM3 22l1.5-1.5L6 22l1.5-1.5L9 22l1.5-1.5L12 22l1.5-1.5L15 22l1.5-1.5L18 22l1.5-1.5L21 22V2l-1.5 1.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2 7.5 3.5L6 2 4.5 3.5L3 2v20z"/></svg>',
+            points: '<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'
+        };
+        return icons[type] || icons.system;
+    }
+
+    // ========== Toast ==========
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>搜索 - 海南演艺票务系统</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+/* ========== Reset & Base ========== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --deep-blue: #0A1628;
+  --coral-orange: #FF6B4A;
+  --coral-orange-light: #FF8A6E;
+  --gold: #D4A853;
+  --emerald: #00C9A7;
+  --light-gray: #F5F6FA;
+  --white: #FFFFFF;
+  --text-primary: #1a1a2e;
+  --text-secondary: #6B7280;
+  --text-light: #999;
+  --border-color: #E5E7EB;
+  --card-shadow: 0 2px 12px rgba(10, 22, 40, 0.08);
+  --card-shadow-hover: 0 6px 24px rgba(10, 22, 40, 0.15);
+}
+
+body {
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--light-gray);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+}
+
+/* ========== Page Wrapper ========== */
+.page-wrapper {
+  width: 100%;
+  max-width: 375px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--light-gray);
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.page-wrapper::-webkit-scrollbar { display: none; }
+
+/* ========== Top Navigation ========== */
+.search-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--white);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+.search-nav .back-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--text-primary);
+  font-size: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.search-nav .back-btn:hover {
+  background: var(--light-gray);
+}
+
+.search-nav .search-input-wrap {
+  flex: 1;
+  height: 36px;
+  background: var(--light-gray);
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  gap: 8px;
+  border: 1.5px solid transparent;
+  transition: all 0.3s;
+}
+
+.search-nav .search-input-wrap.focused {
+  border-color: var(--coral-orange);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(255, 107, 74, 0.1);
+}
+
+.search-nav .search-input-wrap i {
+  color: var(--text-light);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.search-nav .search-input-wrap.focused i {
+  color: var(--coral-orange);
+}
+
+.search-nav .search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  font-family: 'Noto Sans SC', sans-serif;
+  color: var(--text-primary);
+}
+
+.search-nav .search-input::placeholder {
+  color: #bbb;
+}
+
+.search-nav .clear-input-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ccc;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.search-nav .clear-input-btn.visible {
+  display: flex;
+}
+
+.search-nav .clear-input-btn i {
+  color: var(--white);
+  font-size: 10px;
+}
+
+.search-nav .cancel-btn {
+  color: var(--coral-orange);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 4px 2px;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+}
+
+.search-nav .cancel-btn:hover {
+  opacity: 0.7;
+}
+
+/* ========== Suggestion Dropdown ========== */
+.suggestion-panel {
+  position: absolute;
+  top: 56px;
+  left: 0;
+  right: 0;
+  background: var(--white);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 8px 24px rgba(10, 22, 40, 0.1);
+  z-index: 90;
+  display: none;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.suggestion-panel::-webkit-scrollbar { display: none; }
+
+.suggestion-panel.visible {
+  display: block;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid rgba(0,0,0,0.03);
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover,
+.suggestion-item:active {
+  background: var(--light-gray);
+}
+
+.suggestion-item i {
+  color: var(--text-light);
+  font-size: 14px;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.suggestion-item .suggestion-text {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.suggestion-item .suggestion-text em {
+  font-style: normal;
+  color: var(--coral-orange);
+  font-weight: 600;
+}
+
+.suggestion-item .suggestion-type {
+  font-size: 11px;
+  color: var(--text-light);
+  flex-shrink: 0;
+}
+
+/* ========== Content Area ========== */
+.content-area {
+  padding: 16px;
+}
+
+/* ========== Section ========== */
+.search-section {
+  margin-bottom: 24px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--deep-blue);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.section-title i {
+  font-size: 14px;
+  color: var(--coral-orange);
+}
+
+.section-action {
+  font-size: 12px;
+  color: var(--text-light);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s;
+}
+
+.section-action:hover {
+  color: var(--coral-orange);
+}
+
+/* ========== History Tags ========== */
+.history-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.history-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--white);
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid var(--border-color);
+  max-width: 200px;
+}
+
+.history-tag:hover {
+  border-color: var(--coral-orange);
+  color: var(--coral-orange);
+}
+
+.history-tag .tag-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-tag .tag-delete {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.history-tag .tag-delete i {
+  font-size: 9px;
+  color: #ccc;
+  transition: color 0.2s;
+}
+
+.history-tag:hover .tag-delete i {
+  color: var(--coral-orange);
+}
+
+/* ========== Hot Search Tags ========== */
+.hot-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hot-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--white);
+  border: 1px solid var(--border-color);
+}
+
+.hot-tag:hover {
+  border-color: var(--coral-orange);
+  color: var(--coral-orange);
+  background: rgba(255, 107, 74, 0.04);
+}
+
+.hot-tag .hot-rank {
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 16px;
+  text-align: center;
+}
+
+.hot-tag .hot-rank.top1 { color: #FF4757; }
+.hot-tag .hot-rank.top2 { color: #FF6B4A; }
+.hot-tag .hot-rank.top3 { color: var(--gold); }
+
+/* ========== Search Results ========== */
+.search-results {
+  padding: 0 16px 24px;
+  display: none;
+}
+
+.search-results.visible {
+  display: block;
+}
+
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+}
+
+.results-header .results-count {
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.results-header .results-count strong {
+  color: var(--coral-orange);
+  font-weight: 700;
+}
+
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ========== Show Card (matching show-detail.html) ========== */
+.show-card {
+  display: flex;
+  gap: 12px;
+  background: var(--white);
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: var(--card-shadow);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.show-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transition: left 0.6s;
+}
+
+.show-card:hover::after { left: 100%; }
+
+.show-card:hover {
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.show-card:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.show-card .cover {
+  width: 80px;
+  height: 100px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.show-card .cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s;
+}
+
+.show-card:hover .cover img { transform: scale(1.05); }
+
+.show-card .cover .tag-badge {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--white);
+  backdrop-filter: blur(4px);
+}
+
+.show-card .cover .tag-badge.hot {
+  background: linear-gradient(135deg, var(--coral-orange), #FF4757);
+}
+
+.show-card .cover .tag-badge.vip {
+  background: linear-gradient(135deg, var(--gold), #E8C547);
+}
+
+.show-card .cover .tag-badge.new {
+  background: linear-gradient(135deg, var(--emerald), #00E5BF);
+}
+
+.show-card .info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 2px 0;
+}
+
+.show-card .info .name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.2s;
+}
+
+.show-card:hover .info .name { color: var(--coral-orange); }
+
+.show-card .info .type-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  background: rgba(255, 107, 74, 0.1);
+  color: var(--coral-orange);
+  margin-top: 4px;
+  width: fit-content;
+}
+
+.show-card .info .venue {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.show-card .info .venue i {
+  color: var(--coral-orange);
+  font-size: 9px;
+}
+
+.show-card .info .datetime {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.show-card .info .datetime i {
+  font-size: 9px;
+  color: var(--emerald);
+}
+
+.show-card .info .bottom-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.show-card .info .price {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--coral-orange);
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+.show-card .info .price span {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.show-card .info .labels {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.show-card .info .label {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.show-card .info .label.soon {
+  background: rgba(255, 107, 74, 0.1);
+  color: var(--coral-orange);
+}
+
+.show-card .info .label.member {
+  background: rgba(212, 168, 83, 0.1);
+  color: var(--gold);
+}
+
+.show-card .info .label.discount {
+  background: rgba(0, 201, 167, 0.1);
+  color: var(--emerald);
+}
+
+/* ========== Empty State ========== */
+.empty-state {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.empty-state.visible {
+  display: flex;
+}
+
+.empty-state .empty-icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(10, 22, 40, 0.06);
+}
+
+.empty-state .empty-icon i {
+  font-size: 40px;
+  color: #ddd;
+}
+
+.empty-state .empty-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.empty-state .empty-desc {
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+/* ========== Toast ========== */
+.toast {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: rgba(10, 22, 40, 0.88);
+  color: var(--white);
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ========== Animations ========== */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.show-card {
+  animation: fadeInUp 0.35s ease forwards;
+}
+
+.show-card:nth-child(2) { animation-delay: 0.05s; }
+.show-card:nth-child(3) { animation-delay: 0.1s; }
+.show-card:nth-child(4) { animation-delay: 0.15s; }
+.show-card:nth-child(5) { animation-delay: 0.2s; }
+
+/* ========== Scrollbar ========== */
+::-webkit-scrollbar { width: 0; height: 0; }
+
+/* ========== Responsive ========== */
+@media (max-width: 400px) {
+  .show-card {
+    gap: 10px;
+    padding: 10px;
+    border-radius: 12px;
+  }
+  .show-card .cover {
+    width: 72px;
+    height: 90px;
+    border-radius: 8px;
+  }
+  .show-card .info .name {
+    font-size: 13px;
+  }
+  .show-card .info .price {
+    font-size: 16px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Page Wrapper -->
+<div class="page-wrapper" id="pageWrapper">
+
+  <!-- Top Navigation -->
+  <div class="search-nav">
+    <div class="back-btn" onclick="window.location.href='home.html'">
+      <i class="fas fa-chevron-left"></i>
+    </div>
+    <div class="search-input-wrap" id="searchWrap">
+      <i class="fas fa-search"></i>
+      <input type="text" class="search-input" id="searchInput" placeholder="搜索演出、场馆" autofocus>
+      <div class="clear-input-btn" id="clearBtn" onclick="clearInput()">
+        <i class="fas fa-times"></i>
+      </div>
+    </div>
+    <div class="cancel-btn" onclick="handleCancel()">取消</div>
+  </div>
+
+  <!-- Suggestion Dropdown -->
+  <div class="suggestion-panel" id="suggestionPanel"></div>
+
+  <!-- Default Content: History + Hot -->
+  <div class="content-area" id="defaultContent">
+
+    <!-- Search History -->
+    <div class="search-section" id="historySection">
+      <div class="section-header">
+        <div class="section-title">
+          <i class="fas fa-clock"></i>
+          搜索历史
+        </div>
+        <div class="section-action" onclick="clearAllHistory()">
+          <i class="fas fa-trash-alt"></i>
+          清空
+        </div>
+      </div>
+      <div class="history-tags" id="historyTags"></div>
+    </div>
+
+    <!-- Hot Search -->
+    <div class="search-section" id="hotSection">
+      <div class="section-header">
+        <div class="section-title">
+          <i class="fas fa-fire"></i>
+          热门搜索
+        </div>
+      </div>
+      <div class="hot-tags" id="hotTags"></div>
+    </div>
+
+  </div>
+
+  <!-- Search Results -->
+  <div class="search-results" id="searchResults">
+    <div class="results-header">
+      <span class="results-count" id="resultsCount"></span>
+    </div>
+    <div class="results-list" id="resultsList"></div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" id="emptyState">
+    <div class="empty-icon">
+      <i class="fas fa-search"></i>
+    </div>
+    <div class="empty-title">未找到相关演出</div>
+    <div class="empty-desc">换个关键词试试吧</div>
+  </div>
+
+</div>
+
+<script>
+// ========== Mock Data ==========
+const showData = [
+  {
+    id: 1,
+    name: '2026海南热带音乐节 - 三亚站',
+    type: '演唱会',
+    typeIcon: 'fa-music',
+    venue: '三亚海棠湾演艺中心',
+    date: '12月25日 周三 19:30',
+    price: 280,
+    badge: 'hot',
+    badgeText: '热卖',
+    labels: [{ text: '即将开演', cls: 'soon' }],
+    image: 'https://picsum.photos/seed/show-concert1/160/200'
+  },
+  {
+    id: 2,
+    name: '百老汇经典音乐剧《猫》中文版',
+    type: '音乐剧',
+    typeIcon: 'fa-masks-theater',
+    venue: '海口湾演艺中心大剧场',
+    date: '01月08日 周四 20:00',
+    price: 180,
+    badge: 'vip',
+    badgeText: '会员',
+    labels: [{ text: '会员专享', cls: 'member' }, { text: '9折', cls: 'discount' }],
+    image: 'https://picsum.photos/seed/show-theatre2/160/200'
+  },
+  {
+    id: 3,
+    name: '俄罗斯国家芭蕾舞团《天鹅湖》',
+    type: '舞蹈芭蕾',
+    typeIcon: 'fa-person-running',
+    venue: '海南省歌舞剧院',
+    date: '01月15日 周四 19:30',
+    price: 380,
+    badge: 'new',
+    badgeText: '新上',
+    labels: [{ text: '即将开演', cls: 'soon' }],
+    image: 'https://picsum.photos/seed/show-dance3/160/200'
+  },
+  {
+    id: 4,
+    name: '脱口秀大会 - 海口专场',
+    type: '脱口秀',
+    typeIcon: 'fa-microphone',
+    venue: '海口观澜湖新城剧场',
+    date: '01月20日 周二 20:00',
+    price: 99,
+    badge: '',
+    badgeText: '',
+    labels: [{ text: '限时特惠', cls: 'discount' }],
+    image: 'https://picsum.photos/seed/show-comedy4/160/200'
+  },
+  {
+    id: 5,
+    name: '大型亲子互动剧《冰雪奇缘》',
+    type: '儿童亲子',
+    typeIcon: 'fa-child-reaching',
+    venue: '三亚亚特兰蒂斯剧场',
+    date: '02月01日 周六 10:30',
+    price: 128,
+    badge: 'hot',
+    badgeText: '热卖',
+    labels: [{ text: '会员专享', cls: 'member' }],
+    image: 'https://picsum.photos/seed/show-kids5/160/200'
+  },
+  {
+    id: 6,
+    name: '2026海南国际沙滩排球邀请赛',
+    type: '体育赛事',
+    typeIcon: 'fa-volleyball',
+    venue: '三亚天涯海角沙滩赛场',
+    date: '02月14日 周五 09:00',
+    price: 60,
+    badge: 'new',
+    badgeText: '新上',
+    labels: [{ text: '早鸟价', cls: 'discount' }],
+    image: 'https://picsum.photos/seed/show-sport6/160/200'
+  },
+  {
+    id: 7,
+    name: '三亚爵士之夜 - 海边音乐会',
+    type: '音乐会',
+    typeIcon: 'fa-guitar',
+    venue: '三亚大东海沙滩舞台',
+    date: '02月22日 周六 18:30',
+    price: 168,
+    badge: '',
+    badgeText: '',
+    labels: [{ text: '即将开演', cls: 'soon' }, { text: '会员专享', cls: 'member' }],
+    image: 'https://picsum.photos/seed/show-jazz7/160/200'
+  },
+  {
+    id: 8,
+    name: '经典话剧《雷雨》',
+    type: '话剧',
+    typeIcon: 'fa-masks-theater',
+    venue: '海口湾演艺中心大剧场',
+    date: '02月14日 周五 19:30',
+    price: 220,
+    badge: '',
+    badgeText: '',
+    labels: [{ text: '经典重演', cls: 'soon' }],
+    image: 'https://picsum.photos/seed/show-drama/160/200'
+  },
+  {
+    id: 9,
+    name: '世界名曲钢琴独奏音乐会',
+    type: '音乐会',
+    typeIcon: 'fa-music',
+    venue: '海南省歌舞剧院',
+    date: '01月15日 周四 20:00',
+    price: 280,
+    badge: '',
+    badgeText: '',
+    labels: [{ text: '即将开演', cls: 'soon' }],
+    image: 'https://picsum.photos/seed/show-piano/160/200'
+  },
+  {
+    id: 10,
+    name: '年终音乐盛典',
+    type: '演唱会',
+    typeIcon: 'fa-music',
+    venue: '海南国际会展中心',
+    date: '12月31日 周二 21:00',
+    price: 380,
+    badge: 'hot',
+    badgeText: '热卖',
+    labels: [{ text: '跨年专场', cls: 'soon' }],
+    image: 'https://picsum.photos/seed/hainan-concert/160/200'
+  }
+];
+
+const hotSearchWords = [
+  '音乐节', '三亚', '演唱会', '芭蕾', '脱口秀',
+  '亲子', '冰雪奇缘', '爵士', '话剧', '钢琴'
+];
+
+// ========== DOM Elements ==========
+const searchInput = document.getElementById('searchInput');
+const searchWrap = document.getElementById('searchWrap');
+const clearBtn = document.getElementById('clearBtn');
+const suggestionPanel = document.getElementById('suggestionPanel');
+const defaultContent = document.getElementById('defaultContent');
+const historySection = document.getElementById('historySection');
+const historyTags = document.getElementById('historyTags');
+const hotTags = document.getElementById('hotTags');
+const searchResults = document.getElementById('searchResults');
+const resultsList = document.getElementById('resultsList');
+const resultsCount = document.getElementById('resultsCount');
+const emptyState = document.getElementById('emptyState');
+const pageWrapper = document.getElementById('pageWrapper');
+
+let currentKeyword = '';
+
+// ========== Search History (localStorage) ==========
+const HISTORY_KEY = 'search_history';
+const MAX_HISTORY = 10;
+
+function getHistory() {
+  try {
+    const data = localStorage.getItem(HISTORY_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveHistory(keyword) {
+  if (!keyword.trim()) return;
+  let history = getHistory();
+  // Remove duplicate
+  history = history.filter(item => item !== keyword);
+  // Add to front
+  history.unshift(keyword);
+  // Limit count
+  if (history.length > MAX_HISTORY) {
+    history = history.slice(0, MAX_HISTORY);
+  }
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+}
+
+function removeHistory(keyword) {
+  let history = getHistory();
+  history = history.filter(item => item !== keyword);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  renderHistory();
+}
+
+function clearAllHistory() {
+  localStorage.removeItem(HISTORY_KEY);
+  renderHistory();
+  showToast('搜索历史已清空');
+}
+
+function renderHistory() {
+  const history = getHistory();
+  if (history.length === 0) {
+    historySection.style.display = 'none';
+    return;
+  }
+  historySection.style.display = 'block';
+  historyTags.innerHTML = history.map(item => `
+    <div class="history-tag" onclick="searchByKeyword('${escapeHtml(item)}')">
+      <span class="tag-text">${escapeHtml(item)}</span>
+      <span class="tag-delete" onclick="event.stopPropagation(); removeHistory('${escapeHtml(item)}')">
+        <i class="fas fa-times"></i>
+      </span>
+    </div>
+  `).join('');
+}
+
+// ========== Hot Search ==========
+function renderHotSearch() {
+  hotTags.innerHTML = hotSearchWords.map((word, index) => {
+    let rankCls = '';
+    if (index === 0) rankCls = 'top1';
+    else if (index === 1) rankCls = 'top2';
+    else if (index === 2) rankCls = 'top3';
+    return `
+      <div class="hot-tag" onclick="searchByKeyword('${escapeHtml(word)}')">
+        <span class="hot-rank ${rankCls}">${index + 1}</span>
+        ${escapeHtml(word)}
+      </div>
+    `;
+  }).join('');
+}
+
+// ========== Search Logic ==========
+function searchByKeyword(keyword) {
+  keyword = keyword.trim();
+  if (!keyword) return;
+
+  searchInput.value = keyword;
+  currentKeyword = keyword;
+  clearBtn.classList.add('visible');
+  hideSuggestions();
+  saveHistory(keyword);
+  performSearch(keyword);
+}
+
+function performSearch(keyword) {
+  const kw = keyword.toLowerCase();
+  const results = showData.filter(show => {
+    return show.name.toLowerCase().includes(kw) ||
+           show.type.toLowerCase().includes(kw) ||
+           show.venue.toLowerCase().includes(kw);
+  });
+
+  // Hide default content
+  defaultContent.style.display = 'none';
+  emptyState.classList.remove('visible');
+  searchResults.classList.remove('visible');
+
+  if (results.length > 0) {
+    searchResults.classList.add('visible');
+    resultsCount.innerHTML = `找到 <strong>${results.length}</strong> 个相关演出`;
+    renderResults(results);
+  } else {
+    emptyState.classList.add('visible');
+  }
+}
+
+function renderResults(results) {
+  resultsList.innerHTML = results.map(show => {
+    let badgeHtml = '';
+    if (show.badge) {
+      badgeHtml = `<span class="tag-badge ${show.badge}">${show.badgeText}</span>`;
+    }
+    let labelsHtml = show.labels.map(l =>
+      `<span class="label ${l.cls}">${l.text}</span>`
+    ).join('');
+
+    return `
+      <div class="show-card" onclick="goToShowDetail('${escapeHtml(show.name)}')">
+        <div class="cover">
+          <img src="${show.image}" alt="${escapeHtml(show.name)}">
+          ${badgeHtml}
+        </div>
+        <div class="info">
+          <div>
+            <div class="name">${highlightKeyword(show.name, currentKeyword)}</div>
+            <div class="type-tag"><i class="fas ${show.typeIcon}"></i> ${show.type}</div>
+            <div class="venue"><i class="fas fa-map-marker-alt"></i> ${show.venue}</div>
+            <div class="datetime"><i class="far fa-calendar"></i> ${show.date}</div>
+          </div>
+          <div class="bottom-row">
+            <div class="price"><span>&yen;</span>${show.price}<span>起</span></div>
+            <div class="labels">${labelsHtml}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function highlightKeyword(text, keyword) {
+  if (!keyword) return escapeHtml(text);
+  const escaped = escapeHtml(text);
+  const kwEscaped = escapeHtml(keyword);
+  const regex = new RegExp(`(${kwEscaped.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+  return escaped.replace(regex, '<em>$1</em>');
+}
+
+// ========== Suggestions ==========
+function showSuggestions(keyword) {
+  if (!keyword.trim()) {
+    hideSuggestions();
+    return;
+  }
+
+  const kw = keyword.toLowerCase();
+  const matches = showData.filter(show =>
+    show.name.toLowerCase().includes(kw)
+  ).slice(0, 5);
+
+  if (matches.length === 0) {
+    hideSuggestions();
+    return;
+  }
+
+  suggestionPanel.innerHTML = matches.map(show => `
+    <div class="suggestion-item" onclick="searchByKeyword('${escapeHtml(show.name)}')">
+      <i class="fas fa-search"></i>
+      <span class="suggestion-text">${highlightKeyword(show.name, keyword)}</span>
+      <span class="suggestion-type">${show.type}</span>
+    </div>
+  `).join('');
+
+  suggestionPanel.classList.add('visible');
+}
+
+function hideSuggestions() {
+  suggestionPanel.classList.remove('visible');
+}
+
+// ========== Input Events ==========
+searchInput.addEventListener('input', function() {
+  const val = this.value;
+  clearBtn.classList.toggle('visible', val.length > 0);
+
+  if (val.trim()) {
+    showSuggestions(val);
+  } else {
+    hideSuggestions();
+    resetToDefault();
+  }
+});
+
+searchInput.addEventListener('focus', function() {
+  searchWrap.classList.add('focused');
+  if (this.value.trim()) {
+    showSuggestions(this.value);
+  }
+});
+
+searchInput.addEventListener('blur', function() {
+  searchWrap.classList.remove('focused');
+  // Delay hiding suggestions so click events can fire
+  setTimeout(hideSuggestions, 200);
+});
+
+searchInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const val = this.value.trim();
+    if (val) {
+      searchByKeyword(val);
+    }
+  }
+});
+
+// ========== Clear & Cancel ==========
+function clearInput() {
+  searchInput.value = '';
+  clearBtn.classList.remove('visible');
+  hideSuggestions();
+  resetToDefault();
+  searchInput.focus();
+}
+
+function handleCancel() {
+  if (searchInput.value.trim()) {
+    clearInput();
+  } else {
+    window.location.href = 'home.html';
+  }
+}
+
+function resetToDefault() {
+  currentKeyword = '';
+  defaultContent.style.display = 'block';
+  searchResults.classList.remove('visible');
+  emptyState.classList.remove('visible');
+  renderHistory();
+}
+
+// ========== Card Click ==========
+function goToShowDetail(name) {
+  showToast('跳转到演出详情: ' + name);
+  // In production: window.location.href = 'show-list-detail.html';
+}
+
+// ========== Utility ==========
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+let toastTimer;
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2000);
+}
+
+// ========== Click Outside to Close Suggestions ==========
+pageWrapper.addEventListener('click', function(e) {
+  if (!searchWrap.contains(e.target) && !suggestionPanel.contains(e.target)) {
+    hideSuggestions();
+  }
+});
+
+// ========== Init ==========
+renderHistory();
+renderHotSearch();
+
+// Auto-focus (with slight delay for mobile)
+setTimeout(() => {
+  searchInput.focus();
+}, 300);
+</script>
+
+</body>
+</html>

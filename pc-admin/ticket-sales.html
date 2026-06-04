@@ -1,0 +1,3423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+<title>海南演艺票务系统 - 售票管理</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+/* ========== Sidebar ========== */
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: linear-gradient(180deg, #0A1628 0%, #0F2035 50%, #0A1628 100%);
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  overflow: hidden;
+}
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 20% 0%, rgba(255,107,74,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+.sidebar-logo {
+  padding: 24px 20px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.logo-icon {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #FF6B4A, #D4A853);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 18px;
+  box-shadow: 0 4px 12px rgba(255,107,74,0.3);
+  flex-shrink: 0;
+}
+.logo-text { display: flex; flex-direction: column; gap: 2px; }
+.logo-title { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
+.logo-sub { font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: 1px; text-transform: uppercase; }
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 16px 0; scrollbar-width: none; }
+.sidebar-nav::-webkit-scrollbar { display: none; }
+.nav-group { margin-bottom: 8px; }
+.nav-group-label { padding: 8px 24px 6px; font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.25); text-transform: uppercase; letter-spacing: 2px; }
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px; margin: 2px 12px;
+  border-radius: 10px;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none; font-size: 13.5px; font-weight: 500;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+.nav-item i { width: 20px; text-align: center; font-size: 15px; transition: color 0.25s, transform 0.25s; }
+.nav-item:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.05); }
+.nav-item:hover i { transform: scale(1.1); }
+.nav-item.active {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(255,107,74,0.2), rgba(255,107,74,0.08));
+  box-shadow: 0 2px 8px rgba(255,107,74,0.1);
+}
+.nav-item.active::before {
+  content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 20px;
+  background: linear-gradient(180deg, #FF6B4A, #D4A853);
+  border-radius: 0 3px 3px 0;
+}
+.nav-item.active i { color: #FF6B4A; }
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex; align-items: center; gap: 10px;
+}
+.admin-avatar {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, #FF6B4A, #D4A853);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px; font-weight: 700; flex-shrink: 0;
+}
+.admin-info { flex: 1; min-width: 0; }
+.admin-name { font-size: 13px; font-weight: 600; color: #fff; }
+.admin-role { font-size: 10px; color: rgba(255,255,255,0.35); }
+.logout-btn {
+  width: 32px; height: 32px; border-radius: 8px; border: none;
+  background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.4);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.logout-btn:hover { background: rgba(255,107,74,0.15); color: #FF6B4A; }
+
+/* ========== Reset & Base ========== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 14px; }
+body {
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #F5F6FA; color: #2D3748;
+  display: flex; min-height: 100vh; overflow-x: hidden;
+  width: 100%; max-width: 100vw;
+}
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+
+/* ========== Main Content ========== */
+.main-content {
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: #F0F2F5;
+}
+
+/* ========== Top Bar ========== */
+.topbar {
+  height: 60px;
+  background: #fff;
+  border-bottom: 1px solid #E8ECF1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px; font-size: 13px;
+}
+.breadcrumb a { color: #94A3B8; transition: color 0.2s; }
+.breadcrumb a:hover { color: #FF6B4A; }
+.breadcrumb svg { width: 16px; height: 16px; color: #CBD5E1; }
+.breadcrumb .current { color: #2D3748; font-weight: 600; }
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+.topbar-admin { display: flex; align-items: center; gap: 8px; }
+.topbar-admin-avatar {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(135deg, #FF6B4A, #D4A853);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 12px; font-weight: 700;
+}
+.topbar-admin-name { font-size: 13px; font-weight: 500; color: #2D3748; }
+
+/* ========== Page Content ========== */
+.page-content {
+  flex: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ========== Page Title ========== */
+.page-title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1A202C;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.page-title i { color: #FF6B4A; font-size: 20px; }
+
+/* ========== Bottom Status Bar ========== */
+.status-bar {
+  height: 40px;
+  background: #fff;
+  border-top: 1px solid #E8ECF1;
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  gap: 24px;
+  font-size: 12px;
+  color: #94A3B8;
+  margin-top: auto;
+}
+.status-bar .status-item { display: flex; align-items: center; gap: 6px; }
+.status-bar .status-item i { font-size: 11px; }
+.status-bar .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #00C9A7; }
+
+/* ========== Toast ========== */
+.toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.toast {
+  padding: 12px 20px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #2D3748;
+  animation: slideInRight 0.3s ease;
+  min-width: 260px;
+}
+.toast.success { border-left: 4px solid #00C9A7; }
+.toast.success i { color: #00C9A7; }
+.toast.error { border-left: 4px solid #EF4444; }
+.toast.error i { color: #EF4444; }
+.toast.info { border-left: 4px solid #3B82F6; }
+.toast.info i { color: #3B82F6; }
+.toast.warning { border-left: 4px solid #F59E0B; }
+.toast.warning i { color: #F59E0B; }
+
+/* ========== Tab Bar ========== */
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
+}
+.tab-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748B;
+  cursor: pointer;
+  transition: all 0.25s;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.tab-item:hover { color: #2D3748; background: #F8FAFC; }
+.tab-item.active {
+  color: #fff;
+  background: linear-gradient(135deg, #FF6B4A, #FF8A65);
+  box-shadow: 0 2px 8px rgba(255,107,74,0.3);
+  font-weight: 600;
+}
+.tab-item i { font-size: 14px; }
+.tab-content { display: none; flex: 1; min-height: 0; overflow: hidden; }
+.tab-content.active { display: flex; flex-direction: column; }
+#tab-window-ticket.active, #tab-channel-ticket.active { height: calc(100vh - 180px); min-height: 500px; }
+
+/* ========== 窗口售票/渠道售票 三栏布局 ========== */
+.seat-ticket-layout {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+/* 左栏：演出场次列表 */
+.st-left-panel {
+  width: 20%;
+  min-width: 220px;
+  max-width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.st-left-panel::-webkit-scrollbar { width: 4px; }
+.st-left-panel::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 4px; }
+.st-show-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  overflow: hidden;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.st-show-card:hover { border-color: #E2E8F0; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+.st-show-card.active { border-color: #FF6B4A; }
+.st-show-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+}
+.st-show-cover-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 16px; flex-shrink: 0;
+}
+.st-show-card-info { flex: 1; min-width: 0; }
+.st-show-card-name { font-size: 13px; font-weight: 600; color: #1A202C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st-show-card-meta { font-size: 11px; color: #94A3B8; margin-top: 2px; }
+.st-show-card-progress {
+  padding: 0 12px 10px;
+}
+.st-progress-bar {
+  height: 4px;
+  background: #F0F2F5;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.st-progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #FF6B4A, #D4A853);
+  transition: width 0.4s;
+}
+.st-progress-text {
+  font-size: 10px;
+  color: #94A3B8;
+  margin-top: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+/* 场次展开列表 */
+.st-session-expand {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1);
+  border-top: 0 solid transparent;
+}
+.st-session-expand.open {
+  max-height: 400px;
+  border-top: 1px solid #F0F2F5;
+}
+.st-session-expand-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-bottom: 1px solid #F8FAFC;
+}
+.st-session-expand-item:last-child { border-bottom: none; }
+.st-session-expand-item:hover { background: #FFF5F2; }
+.st-session-expand-item.active { background: #FFF5F2; color: #FF6B4A; font-weight: 600; }
+.st-session-expand-time { flex: 1; color: #2D3748; }
+.st-session-expand-rate { color: #94A3B8; font-size: 11px; }
+.st-session-expand-occupancy { font-size: 10px; padding: 1px 6px; border-radius: 4px; background: #ECFDF5; color: #059669; }
+
+/* 中栏：选座区域 */
+.st-center-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+.st-top-bar {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.st-top-bar-left { display: flex; align-items: center; gap: 16px; font-size: 13px; color: #64748B; }
+.st-top-bar-left strong { color: #1A202C; }
+.st-top-bar-left .st-divider { width: 1px; height: 20px; background: #E2E8F0; }
+/* 图例 */
+.st-legend-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 10px 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
+.st-legend-item { display: flex; align-items: center; gap: 5px; font-size: 11.5px; color: #64748B; }
+.st-legend-icon {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: #fff;
+  flex-shrink: 0;
+}
+.st-legend-icon.sold { background: #4B5563; }
+.st-legend-icon.reserved { background: #94A3B8; }
+.st-legend-icon.pending { background: #F59E0B; }
+
+/* 座位图容器 */
+.st-seat-map-wrap {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+.st-seat-map-body {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: auto;
+  position: relative;
+}
+.st-stage {
+  width: 60%;
+  max-width: 400px;
+  height: 40px;
+  background: linear-gradient(180deg, #0A1628, #122240);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.7);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  margin-bottom: 20px;
+  position: relative;
+}
+.st-stage::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,107,74,0.3), transparent);
+}
+.st-seat-svg-area {
+  width: 100%;
+  max-width: 650px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.st-seat-svg-area svg { width: 100%; height: auto; max-height: 100%; }
+
+/* 座位状态颜色 - 窗口售票 */
+.st-seat-svg-area svg .st-seat {
+  cursor: pointer;
+  transition: all 0.15s;
+  rx: 50%; ry: 50%;
+}
+.st-seat-svg-area svg .st-seat.available {
+  fill: var(--zone-color, #10B981);
+  opacity: 0.85;
+  cursor: pointer;
+}
+.st-seat-svg-area svg .st-seat.available:hover {
+  opacity: 1;
+  filter: brightness(1.1);
+}
+.st-seat-svg-area svg .st-seat.sold {
+  fill: var(--zone-color, #10B981);
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.st-seat-svg-area svg .st-seat.reserved {
+  fill: var(--zone-color, #10B981);
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.st-seat-svg-area svg .st-seat.reserved-seat {
+  fill: var(--zone-color, #10B981);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.st-seat-svg-area svg .st-seat.selected {
+  fill: var(--zone-color, #10B981);
+  stroke: #FFFFFF;
+  stroke-width: 2;
+  opacity: 1;
+  filter: brightness(1.15);
+}
+.st-seat-svg-area svg .st-seat-num {
+  font-size: 8px;
+  fill: #fff;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  font-weight: 600;
+}
+.st-seat-svg-area svg .st-zone-label {
+  font-size: 11px;
+  font-weight: 600;
+  fill: #94A3B8;
+  text-anchor: middle;
+}
+.st-seat-svg-area svg .st-row-label {
+  font-size: 9px;
+  fill: #94A3B8;
+  text-anchor: end;
+  dominant-baseline: middle;
+}
+.st-selection-box {
+  position: absolute;
+  border: 2px dashed #3B82F6;
+  background: rgba(59,130,246,0.08);
+  pointer-events: none;
+  z-index: 10;
+  display: none;
+}
+
+/* 缩放控制 */
+.st-zoom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: #fff;
+  border-radius: 8px;
+  margin: 0 16px 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
+.st-zoom-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  transition: all 0.2s;
+}
+.st-zoom-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: rgba(59,130,246,0.05);
+}
+.st-zoom-value {
+  font-size: 12px;
+  color: var(--text-secondary);
+  min-width: 40px;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* 底部操作栏 */
+.st-bottom-bar {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 -1px 3px rgba(0,0,0,0.08);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+}
+.st-bottom-empty {
+  flex: 1;
+  text-align: center;
+  color: #CBD5E1;
+  font-size: 13px;
+}
+.st-bottom-seats {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.st-bottom-seat-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: #EFF6FF;
+  border-radius: 6px;
+  font-size: 11.5px;
+  color: #3B82F6;
+  font-weight: 500;
+}
+.st-bottom-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.st-bottom-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.st-bottom-btn.primary { background: linear-gradient(135deg, #FF6B4A, #FF8A65); color: #fff; box-shadow: 0 2px 8px rgba(255,107,74,0.3); }
+.st-bottom-btn.primary:hover { box-shadow: 0 4px 14px rgba(255,107,74,0.4); transform: translateY(-1px); }
+.st-bottom-btn.secondary { background: #F1F5F9; color: #475569; }
+.st-bottom-btn.secondary:hover { background: #E2E8F0; }
+.st-bottom-btn.danger { background: #FEF2F2; color: #EF4444; }
+.st-bottom-btn.danger:hover { background: #FEE2E2; }
+
+/* 右栏：操作面板 */
+.st-right-panel {
+  width: 30%;
+  min-width: 280px;
+  max-width: 380px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-left: 4px;
+  overflow-y: auto;
+  min-height: 0;
+}
+.st-right-panel::-webkit-scrollbar { width: 4px; }
+.st-right-panel::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 4px; }
+.st-panel-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+.st-panel-card-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid #F0F2F5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1A202C;
+}
+.st-panel-card-header i { color: #FF6B4A; font-size: 14px; }
+.st-panel-card-body { padding: 14px 16px; }
+/* 已选座位列表 */
+.st-selected-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.st-selected-list::-webkit-scrollbar { width: 3px; }
+.st-selected-list::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 3px; }
+.st-selected-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: #EFF6FF;
+  border-radius: 8px;
+  font-size: 12px;
+  animation: fadeInUp 0.2s ease both;
+}
+.st-selected-item-info { display: flex; align-items: center; gap: 6px; color: #2D3748; }
+.st-selected-item-zone {
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #fff;
+}
+.st-selected-item-price { font-weight: 600; color: #FF6B4A; }
+.st-selected-item-remove {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(59,130,246,0.12);
+  color: #3B82F6;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  transition: all 0.2s;
+}
+.st-selected-item-remove:hover { background: #3B82F6; color: #fff; }
+.st-empty-hint {
+  text-align: center;
+  padding: 16px;
+  color: #CBD5E1;
+  font-size: 12px;
+}
+.st-empty-hint i { font-size: 24px; display: block; margin-bottom: 6px; }
+
+/* 场馆选择栏 */
+.st-venue-select-bar {
+  padding: 12px 16px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.st-venue-select-bar label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.st-venue-select-bar select {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 13px;
+  background: #fff;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.st-venue-select-bar select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* 清除已选座位按钮 */
+.st-clear-seats-btn {
+  margin-left: 8px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  color: #94A3B8;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  transition: all 0.2s;
+}
+.st-clear-seats-btn:hover {
+  background: rgba(239,68,68,0.1);
+  color: #EF4444;
+}
+
+/* 表单 */
+.st-form-group { margin-bottom: 10px; }
+.st-form-label { display: block; font-size: 11.5px; font-weight: 600; color: #475569; margin-bottom: 4px; }
+.st-form-label .required { color: #EF4444; }
+.st-form-input, .st-form-select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-family: inherit;
+  color: #2D3748;
+  background: #F8FAFC;
+  transition: border-color 0.2s;
+}
+.st-form-input:focus, .st-form-select:focus { outline: none; border-color: #FF6B4A; background: #fff; }
+.st-btn-confirm {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #FF6B4A, #FF8A65);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 2px 8px rgba(255,107,74,0.3);
+}
+.st-btn-confirm:hover { box-shadow: 0 4px 14px rgba(255,107,74,0.4); transform: translateY(-1px); }
+.st-btn-confirm:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.st-mini-btn {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #E2E8F0;
+  background: #fff;
+  font-size: 11px;
+  color: #64748B;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+.st-mini-btn:hover { border-color: #FF6B4A; color: #FF6B4A; }
+
+/* 底部图例栏 */
+.st-bottom-legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 16px;
+  flex-wrap: wrap;
+}
+.st-bottom-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-secondary, #64748B);
+}
+.st-bottom-legend-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+.st-bottom-legend-price {
+  font-weight: 600;
+  color: var(--text-primary, #1A202C);
+}
+
+/* 读取证件按钮 */
+.st-btn-read-id {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #E2E8F0);
+  background: var(--light-gray, #F8FAFC);
+  color: var(--text-secondary, #64748B);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.st-btn-read-id:hover {
+  border-color: var(--primary, #FF6B4A);
+  color: var(--primary, #FF6B4A);
+  background: rgba(59,130,246,0.05);
+}
+
+/* 读取证件弹窗 */
+.st-id-reader-area {
+  text-align: center;
+  padding: 32px 16px;
+  border: 2px dashed var(--border-color);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+.st-id-reader-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 订单摘要 */
+.st-order-summary {
+  margin-bottom: 12px;
+}
+.st-order-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-color, #E2E8F0);
+  font-size: 13px;
+  color: var(--text-secondary, #64748B);
+}
+.st-order-row:last-child {
+  border-bottom: none;
+}
+
+/* ========== 弹窗通用 ========== */
+.st-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(10,22,40,0.7);
+  backdrop-filter: blur(6px);
+  z-index: 250;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.st-modal-overlay.show { display: flex; }
+.st-modal {
+  background: #fff;
+  border-radius: 16px;
+  width: 440px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: scaleIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.st-modal-header {
+  padding: 20px 24px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #F0F2F5;
+}
+.st-modal-header h3 { font-size: 16px; font-weight: 700; color: #1A202C; }
+.st-modal-close {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: #F1F5F9;
+  color: #94A3B8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+.st-modal-close:hover { background: #FEF2F2; color: #EF4444; }
+.st-modal-body { padding: 20px 24px; }
+.st-modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #F0F2F5;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.st-modal-btn {
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.st-modal-btn.cancel { background: #F1F5F9; color: #64748B; }
+.st-modal-btn.cancel:hover { background: #E2E8F0; }
+.st-modal-btn.confirm { background: linear-gradient(135deg, #FF6B4A, #FF8A65); color: #fff; box-shadow: 0 2px 8px rgba(255,107,74,0.3); }
+.st-modal-btn.confirm:hover { box-shadow: 0 4px 14px rgba(255,107,74,0.4); }
+
+/* 不相邻提示 */
+.st-adjacent-warning {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(26,32,44,0.92);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 13px;
+  z-index: 300;
+  display: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  animation: fadeInUp 0.3s ease;
+}
+.st-adjacent-warning.show { display: block; }
+
+/* Seat Tooltip */
+.seat-tooltip {
+  position: fixed;
+  background: #1A202C;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  pointer-events: none;
+  z-index: 100;
+  display: none;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.seat-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #1A202C;
+}
+
+/* ========== 售票流程弹窗 ========== */
+.st-flow-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 24px;
+  padding: 0 20px;
+}
+.st-flow-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.4;
+  transition: all 0.3s;
+}
+.st-flow-step.active {
+  opacity: 1;
+}
+.st-flow-step.done {
+  opacity: 0.7;
+}
+.st-flow-step.done .st-flow-num {
+  background: #10B981;
+  color: #fff;
+}
+.st-flow-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #F1F5F9;
+  color: #94A3B8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.3s;
+}
+.st-flow-step.active .st-flow-num {
+  background: #FF6B4A;
+  color: #fff;
+}
+.st-flow-text {
+  font-size: 12px;
+  color: #64748B;
+  font-weight: 500;
+}
+.st-flow-line {
+  width: 60px;
+  height: 2px;
+  background: #E2E8F0;
+  margin: 0 8px;
+  margin-bottom: 20px;
+}
+.st-flow-content {
+  min-height: 200px;
+}
+.st-flow-amount {
+  text-align: center;
+  padding: 16px;
+  margin-bottom: 16px;
+  background: #F8FAFC;
+  border-radius: 8px;
+}
+.st-flow-label {
+  font-size: 12px;
+  color: #94A3B8;
+  display: block;
+  margin-bottom: 4px;
+}
+.st-flow-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #FF6B4A;
+}
+/* 支付方式选择 */
+.st-single-pay {
+  margin-top: 16px;
+}
+.st-pay-methods {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+.st-pay-method {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.st-pay-method:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.st-pay-method.active {
+  border-color: var(--primary);
+  background: rgba(59,130,246,0.08);
+  color: var(--primary);
+}
+.st-pay-method i {
+  font-size: 20px;
+}
+.st-ticket-type {
+  display: flex;
+  gap: 8px;
+}
+.st-ticket-type-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border: 2px solid #E2E8F0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #64748B;
+  transition: all 0.2s;
+}
+.st-ticket-type-item.active {
+  border-color: #3B82F6;
+  background: rgba(59,130,246,0.08);
+  color: #3B82F6;
+}
+.st-ticket-pickup {
+  display: flex;
+  gap: 16px;
+}
+.st-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #64748B;
+  cursor: pointer;
+}
+.st-flow-success {
+  text-align: center;
+  padding: 32px 16px;
+}
+.st-flow-success-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1A202C;
+  margin: 12px 0 8px;
+}
+.st-flow-success-info {
+  font-size: 13px;
+  color: #94A3B8;
+}
+
+/* 渠道售票座位样式 */
+.ch-seat-svg-area {
+  width: 100%;
+  max-width: 650px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.ch-seat-svg-area svg { width: 100%; height: auto; max-height: 100%; }
+#chSeatSvg .st-seat { cursor: pointer; transition: all 0.15s; rx: 50%; ry: 50%; }
+#chSeatSvg .st-seat.available { cursor: pointer; }
+#chSeatSvg .st-seat.available:hover { filter: brightness(1.1); }
+#chSeatSvg .st-seat.sold { opacity: 0.35; cursor: not-allowed; }
+#chSeatSvg .st-seat.channel { cursor: pointer; }
+#chSeatSvg .st-seat.channel:hover { filter: brightness(1.1); }
+#chSeatSvg .st-seat.selected { filter: brightness(1.15); }
+/* 渠道售票座位编号、排号、分区标签样式 */
+.ch-seat-svg-area svg .st-seat-num {
+  font-size: 8px;
+  fill: #fff;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  font-weight: 600;
+}
+.ch-seat-svg-area svg .st-zone-label {
+  font-size: 11px;
+  font-weight: 600;
+  fill: #94A3B8;
+  text-anchor: middle;
+}
+.ch-seat-svg-area svg .st-row-label {
+  font-size: 9px;
+  fill: #94A3B8;
+  text-anchor: end;
+  dominant-baseline: middle;
+}
+
+.st-color-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.st-color-option {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+}
+.st-color-option:hover {
+  transform: scale(1.1);
+}
+.st-color-option.active {
+  border-color: #2D3748;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #2D3748;
+}
+
+/* ========== Animations ========== */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes seatPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+@keyframes successCheck {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* 开关组件 */
+.st-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.st-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.st-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .3s;
+  border-radius: 24px;
+}
+.st-switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+.st-switch input:checked + .st-switch-slider {
+  background-color: #3B82F6;
+}
+.st-switch input:checked + .st-switch-slider:before {
+  transform: translateX(20px);
+}
+</style>
+</head>
+<body>
+
+<!-- ==================== Sidebar ==================== -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <i class="fas fa-masks-theater"></i>
+    </div>
+    <div class="logo-text">
+      <span class="logo-title">海南演艺票务</span>
+      <span class="logo-sub">管理后台</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group">
+      <div class="nav-group-label">核心功能</div>
+      <a class="nav-item" href="dashboard.html">
+        <i class="fas fa-chart-pie"></i>
+        <span>数据看板</span>
+      </a>
+      <a class="nav-item" href="show-management.html">
+        <i class="fas fa-theater-masks"></i>
+        <span>演出管理</span>
+      </a>
+      <a class="nav-item active" href="ticket-sales.html">
+        <i class="fas fa-ticket"></i>
+        <span>售票管理</span>
+      </a>
+      <a class="nav-item" href="order-management.html">
+        <i class="fas fa-receipt"></i>
+        <span>订单管理</span>
+      </a>
+      <a class="nav-item" href="member-management.html">
+        <i class="fas fa-crown"></i>
+        <span>会员管理</span>
+      </a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">运营管理</div>
+      <a class="nav-item" href="marketing-center.html">
+        <i class="fas fa-bullhorn"></i>
+        <span>营销中心</span>
+      </a>
+      <a class="nav-item" href="ai-marketing.html">
+        <i class="fas fa-robot"></i>
+        <span>AI智能营销</span>
+      </a>
+      <a class="nav-item" href="banner-management.html">
+        <i class="fas fa-images"></i>
+        <span>轮播图管理</span>
+      </a>
+      <a class="nav-item" href="product-service.html">
+        <i class="fas fa-store"></i>
+        <span>商品管理</span>
+      </a>
+      <a class="nav-item" href="activity-decoration.html">
+        <i class="fas fa-calendar-check"></i>
+        <span>运营活动</span>
+      </a>
+      <a class="nav-item" href="agent-management.html">
+        <i class="fas fa-handshake"></i>
+        <span>代理管理</span>
+      </a>
+      <a class="nav-item" href="statistics.html">
+        <i class="fas fa-chart-bar"></i>
+        <span>报表中心</span>
+      </a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">系统设置</div>
+      <a class="nav-item" href="activity-decoration.html#decoration">
+        <i class="fas fa-palette"></i>
+        <span>首页装修</span>
+      </a>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="admin-avatar">陈</div>
+    <div class="admin-info">
+      <div class="admin-name">陈思远</div>
+      <div class="admin-role">超级管理员</div>
+    </div>
+    <button class="logout-btn" title="退出登录">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+  </div>
+</aside>
+
+<!-- ==================== Main Content ==================== -->
+<div class="main-content">
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="breadcrumb">
+      <a href="#">首页</a>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <span class="current">售票管理</span>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-admin">
+        <div class="topbar-admin-avatar">陈</div>
+        <span class="topbar-admin-name">陈思远</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <div class="page-content">
+
+    <!-- Page Title -->
+    <div class="page-title-bar">
+      <h1 class="page-title"><i class="fas fa-ticket"></i> 售票管理</h1>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="tab-bar">
+      <button class="tab-item active" onclick="switchMainTab('tab-window-ticket', this)">
+        <i class="fas fa-ticket"></i> 窗口售票
+      </button>
+      <button class="tab-item" onclick="switchMainTab('tab-channel-ticket', this)">
+        <i class="fas fa-share-alt"></i> 渠道售票
+      </button>
+    </div>
+
+    <!-- Tab1: 窗口售票 -->
+    <div class="tab-content active" id="tab-window-ticket">
+      <div class="seat-ticket-layout">
+
+        <!-- ===== 左栏：演出场次列表 ===== -->
+        <div class="st-left-panel" id="stLeftPanel">
+          <div class="st-venue-select-bar">
+            <label><i class="fas fa-building"></i> 场馆</label>
+            <select id="stVenueSelect" onchange="stChangeVenue(this.value)">
+              <option value="venue1">三亚千古情大剧院</option>
+              <option value="venue2">海口演艺中心</option>
+              <option value="venue3">琼海大剧院</option>
+            </select>
+          </div>
+          <!-- 由JS渲染 -->
+        </div>
+
+        <!-- ===== 中栏：选座区域 ===== -->
+        <div class="st-center-panel">
+          <!-- 图例 -->
+          <div class="st-legend-bar">
+            <div class="st-legend-item"><div class="st-legend-icon sold"><span>✕</span></div>已售</div>
+            <div class="st-legend-item"><div class="st-legend-icon reserved"><span>⊘</span></div>不可选</div>
+            <div class="st-legend-item"><div class="st-legend-icon pending"><span>预</span></div>预约</div>
+          </div>
+
+          <!-- 缩放控制 -->
+          <div class="st-zoom-bar">
+            <button class="st-zoom-btn" onclick="stZoomOut()" title="缩小"><i class="fas fa-minus"></i></button>
+            <span class="st-zoom-value" id="stZoomValue">100%</span>
+            <button class="st-zoom-btn" onclick="stZoomIn()" title="放大"><i class="fas fa-plus"></i></button>
+            <button class="st-zoom-btn" onclick="stZoomReset()" title="重置"><i class="fas fa-compress"></i></button>
+          </div>
+
+          <!-- 座位图 -->
+          <div class="st-seat-map-wrap">
+            <div class="st-seat-map-body" id="stSeatMapBody" style="position:relative;">
+              <div class="st-seat-svg-area" id="stSeatSvgArea">
+                <!-- SVG由JS渲染 -->
+              </div>
+              <div class="st-selection-box" id="stSelectionBox"></div>
+            </div>
+          </div>
+
+          <!-- 底部图例栏 -->
+          <div class="st-bottom-bar" id="stBottomBar">
+            <div class="st-bottom-legend" id="stBottomLegend">
+              <!-- 由JS动态渲染分区颜色+价格图例 -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== 右栏：操作面板 ===== -->
+        <div class="st-right-panel">
+          <!-- 已选座位列表 -->
+          <div class="st-panel-card">
+            <div class="st-panel-card-header">
+              <i class="fas fa-check-circle"></i> 已选座位
+              <span style="margin-left:auto;font-size:11px;color:#94A3B8;font-weight:400;" id="stSelectedCount">0 个</span>
+              <button class="st-clear-seats-btn" onclick="stClearAll()" title="清除全部已选座位" style="display:none;" id="stClearSeatsBtn">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+            <div class="st-panel-card-body">
+              <div class="st-selected-list" id="stSelectedList">
+                <div class="st-empty-hint"><i class="fas fa-couch"></i>请点击座位进行选择</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 购票人信息 -->
+          <div class="st-panel-card">
+            <div class="st-panel-card-header"><i class="fas fa-user"></i> 购票人信息</div>
+            <div class="st-panel-card-body">
+              <div class="st-form-group">
+                <label class="st-form-label">姓名</label>
+                <input type="text" class="st-form-input" id="stBuyerName" placeholder="请输入姓名">
+              </div>
+              <div class="st-form-group">
+                <label class="st-form-label">证件类型</label>
+                <select class="st-form-select" id="stIdType">
+                  <option value="id_card">身份证</option>
+                  <option value="passport">护照</option>
+                  <option value="other">其他</option>
+                </select>
+              </div>
+              <div class="st-form-group">
+                <label class="st-form-label">证件号码 <span style="color:var(--text-muted, #94A3B8);font-size:11px;">（非必填）</span></label>
+                <div style="display:flex;gap:8px;">
+                  <input type="text" class="st-form-input" id="stIdNumber" placeholder="请输入证件号码" style="flex:1;">
+                  <button class="st-btn-read-id" onclick="stReadIdCard()" title="读取证件"><i class="fas fa-id-card"></i> 读取证件</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 订单摘要 -->
+          <div class="st-panel-card">
+            <div class="st-panel-card-header"><i class="fas fa-receipt"></i> 订单摘要</div>
+            <div class="st-panel-card-body">
+              <div class="st-order-summary">
+                <div class="st-order-row"><span>座位数量</span><span id="stOrderCount">0</span></div>
+                <div class="st-order-row"><span>金额总计</span><span id="stOrderTotal" style="font-weight:700;color:#FF6B4A;">¥0</span></div>
+              </div>
+              <button class="st-btn-confirm" id="stConfirmBtn" onclick="stOpenSellFlow()" disabled>
+                <i class="fas fa-shopping-cart"></i> 确认售票
+              </button>
+              <button class="st-btn-confirm" id="stReserveBtn" onclick="stOpenReserveFlow()" disabled style="margin-top:8px;background:linear-gradient(135deg,#8B5CF6,#A78BFA);">
+                <i class="fas fa-calendar-check"></i> 预约售票
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- end tab-window-ticket -->
+
+    <!-- Tab2: 渠道售票 -->
+    <div class="tab-content" id="tab-channel-ticket">
+      <div class="seat-ticket-layout">
+        <div class="st-left-panel" id="chLeftPanel">
+          <div class="st-venue-select-bar">
+            <label><i class="fas fa-building"></i> 场馆</label>
+            <select id="chVenueSelect" onchange="chChangeVenue(this.value)">
+              <option value="venue1">三亚千古情大剧院</option>
+              <option value="venue2">海口演艺中心</option>
+              <option value="venue3">琼海大剧院</option>
+            </select>
+          </div>
+          <!-- 由JS渲染渠道演出列表 -->
+        </div>
+        <div class="st-center-panel">
+          <!-- 缩放控制 -->
+          <div class="st-zoom-bar">
+            <button class="st-zoom-btn" onclick="chZoomOut()" title="缩小"><i class="fas fa-minus"></i></button>
+            <span class="st-zoom-value" id="chZoomValue">100%</span>
+            <button class="st-zoom-btn" onclick="chZoomIn()" title="放大"><i class="fas fa-plus"></i></button>
+            <button class="st-zoom-btn" onclick="chZoomReset()" title="重置"><i class="fas fa-compress"></i></button>
+          </div>
+
+          <div class="st-seat-map-wrap">
+            <div class="st-seat-map-body" id="chSeatMapBody" style="position:relative;">
+              <div class="ch-seat-svg-area" id="chSeatSvgArea">
+                <svg id="chSeatSvg" viewBox="0 0 640 480" width="100%" height="100%"></svg>
+              </div>
+              <div class="st-selection-box" id="chSelectionBox" style="display:none;"></div>
+            </div>
+          </div>
+          <div class="st-bottom-bar" id="chBottomBar">
+            <div class="st-bottom-actions" id="chBottomActions" style="display:flex;">
+              <button class="st-bottom-btn primary" onclick="chAssignChannel()"><i class="fas fa-share-alt"></i> 分配到渠道</button>
+              <button class="st-bottom-btn secondary" onclick="chCancelAssign()"><i class="fas fa-times"></i> 取消分配</button>
+            </div>
+          </div>
+        </div>
+        <div class="st-right-panel">
+          <div class="st-panel-card">
+            <div class="st-panel-card-header">
+              <i class="fas fa-check-circle"></i> 已选座位
+              <span style="margin-left:auto;font-size:11px;color:#94A3B8;font-weight:400;" id="chSelectedCount">0 个</span>
+              <button class="st-clear-seats-btn" onclick="chClearAll()" title="清除全部" style="display:none;" id="chClearSeatsBtn">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+            <div class="st-panel-card-body">
+              <div class="st-selected-list" id="chSelectedList">
+                <div class="st-empty-hint">请在座位图上选择座位</div>
+              </div>
+            </div>
+          </div>
+          <div class="st-panel-card">
+            <div class="st-panel-card-header"><i class="fas fa-share-alt"></i> 渠道管理</div>
+            <div class="st-panel-card-body">
+              <div id="chChannelList">
+                <!-- 由JS渲染渠道列表 -->
+              </div>
+              <button class="st-mini-btn" onclick="chAddChannel()" style="width:100%;margin-top:8px;">
+                <i class="fas fa-plus"></i> 添加渠道
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- end tab-channel-ticket -->
+
+  </div><!-- end page-content -->
+
+  <!-- Bottom Status Bar -->
+  <div class="status-bar">
+    <div class="status-item">
+      <div class="status-dot"></div>
+      <span>在线</span>
+    </div>
+    <div class="status-item">
+      <i class="fas fa-id-badge"></i>
+      <span>工号 TS-001</span>
+    </div>
+    <div class="status-item">
+      <i class="fas fa-user"></i>
+      <span>张小花</span>
+    </div>
+    <div class="status-item">
+      <i class="fas fa-building"></i>
+      <span>海南大剧院窗口</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Seat Tooltip -->
+<div class="seat-tooltip" id="seatTooltip"></div>
+
+<!-- ===== 确认售票流程弹窗 ===== -->
+<div class="st-modal-overlay" id="stSellFlowModal" style="display:none;">
+  <div class="st-modal" style="width:520px;">
+    <div class="st-modal-header">
+      <span id="stSellFlowTitle">确认售票</span>
+      <button class="st-modal-close" onclick="stCloseSellFlow()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="st-modal-body">
+      <!-- 步骤指示器 -->
+      <div class="st-flow-steps">
+        <div class="st-flow-step active" id="stFlowStep1">
+          <div class="st-flow-num">1</div>
+          <div class="st-flow-text">收款</div>
+        </div>
+        <div class="st-flow-line"></div>
+        <div class="st-flow-step" id="stFlowStep2">
+          <div class="st-flow-num">2</div>
+          <div class="st-flow-text">出票</div>
+        </div>
+        <div class="st-flow-line"></div>
+        <div class="st-flow-step" id="stFlowStep3">
+          <div class="st-flow-num">3</div>
+          <div class="st-flow-text">完成</div>
+        </div>
+      </div>
+
+      <!-- Step 1: 收款 -->
+      <div class="st-flow-content" id="stFlowContent1">
+        <div class="st-flow-amount">
+          <span class="st-flow-label">应收金额</span>
+          <span class="st-flow-value" id="stFlowAmount">¥0</span>
+        </div>
+        <div class="st-single-pay">
+          <label class="st-form-label">选择支付方式</label>
+          <div class="st-pay-methods" id="stPayMethods">
+            <div class="st-pay-method" data-method="wechat" onclick="stSelectPayMethod('wechat', this)">
+              <i class="fab fa-weixin" style="color:#07C160;"></i>
+              <span>微信支付</span>
+            </div>
+            <div class="st-pay-method" data-method="alipay" onclick="stSelectPayMethod('alipay', this)">
+              <i class="fab fa-alipay" style="color:#1677FF;"></i>
+              <span>支付宝</span>
+            </div>
+            <div class="st-pay-method" data-method="cash" onclick="stSelectPayMethod('cash', this)">
+              <i class="fas fa-money-bill-wave" style="color:#F59E0B;"></i>
+              <span>现金</span>
+            </div>
+            <div class="st-pay-method" data-method="recharge" onclick="stSelectPayMethod('recharge', this)">
+              <i class="fas fa-credit-card" style="color:#8B5CF6;"></i>
+              <span>充值卡</span>
+            </div>
+            <div class="st-pay-method" data-method="member" onclick="stSelectPayMethod('member', this)">
+              <i class="fas fa-crown" style="color:#D4A853;"></i>
+              <span>会员卡</span>
+            </div>
+          </div>
+          <div id="stPayBalanceInfo" style="display:none;margin-top:12px;padding:10px 12px;background:var(--light-gray);border-radius:8px;font-size:12px;color:var(--text-secondary);"></div>
+        </div>
+      </div>
+
+      <!-- Step 2: 出票 -->
+      <div class="st-flow-content" id="stFlowContent2" style="display:none;">
+        <div class="st-form-group">
+          <label class="st-form-label">出票方式</label>
+          <div class="st-ticket-type">
+            <div class="st-ticket-type-item active" data-type="paper" onclick="stSelectTicketType('paper', this)">
+              <i class="fas fa-ticket"></i>
+              <span>纸质票</span>
+            </div>
+            <div class="st-ticket-type-item" data-type="digital" onclick="stSelectTicketType('digital', this)">
+              <i class="fas fa-mobile-alt"></i>
+              <span>电子票</span>
+            </div>
+            <div class="st-ticket-type-item" data-type="none" onclick="stSelectTicketType('none', this)">
+              <i class="fas fa-clock"></i>
+              <span>暂不出票</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 纸质票选项 -->
+        <div id="stPaperOptions">
+          <div class="st-form-group">
+            <label class="st-form-label">打印票面模版</label>
+            <select class="st-form-select" id="stTicketTemplate">
+              <option value="standard">标准票面</option>
+              <option value="simple">简约票面</option>
+              <option value="vip">VIP票面</option>
+            </select>
+          </div>
+          <div class="st-form-group">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <label class="st-form-label" style="margin-bottom:0;">票价展示</label>
+              <label class="st-switch">
+                <input type="checkbox" id="stShowPrice" checked onchange="stTogglePriceDisplay()">
+                <span class="st-switch-slider"></span>
+              </label>
+            </div>
+            <div id="stPriceAltWrap" style="display:none;margin-top:8px;">
+              <input type="text" class="st-form-input" id="stPriceAltText" placeholder="替代文案，如&quot;敬请期待&quot;">
+            </div>
+          </div>
+        </div>
+
+        <!-- 电子票选项 -->
+        <div id="stDigitalOptions" style="display:none;">
+          <div class="st-form-group">
+            <label class="st-form-label">接收手机号</label>
+            <input type="tel" class="st-form-input" id="stDigitalPhone" placeholder="请输入接收电子票的手机号">
+          </div>
+        </div>
+
+        <div class="st-form-group">
+          <label class="st-form-label">票面备注</label>
+          <input type="text" class="st-form-input" id="stTicketRemark" placeholder="可选，将打印在票面上">
+        </div>
+      </div>
+
+      <!-- Step 3: 完成 -->
+      <div class="st-flow-content" id="stFlowContent3" style="display:none;">
+        <div class="st-flow-success">
+          <i class="fas fa-check-circle" style="font-size:48px;color:#10B981;"></i>
+          <div class="st-flow-success-title">售票成功</div>
+          <div class="st-flow-success-info" id="stFlowSuccessInfo"></div>
+        </div>
+      </div>
+    </div>
+    <div class="st-modal-footer" id="stFlowFooter1">
+      <button class="st-modal-btn cancel" onclick="stCloseSellFlow()">取消</button>
+      <button class="st-modal-btn confirm" id="stFlowNextBtn" onclick="stFlowNext()">下一步</button>
+    </div>
+    <div class="st-modal-footer" id="stFlowFooter2" style="display:none;">
+      <button class="st-modal-btn cancel" onclick="stFlowPrev()">上一步</button>
+      <button class="st-modal-btn confirm" onclick="stFlowNext()">完成售票</button>
+    </div>
+    <div class="st-modal-footer" id="stFlowFooter3" style="display:none;">
+      <button class="st-modal-btn confirm" onclick="stCloseSellFlow()">完成</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 支付方式弹窗 ===== -->
+<div class="st-modal-overlay" id="stPayModal" style="display:none;">
+  <div class="st-modal" style="width:420px;">
+    <div class="st-modal-header">
+      <span id="stPayModalTitle">扫码支付</span>
+      <button class="st-modal-close" onclick="stClosePayModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="st-modal-body" id="stPayModalBody">
+      <!-- 由JS动态渲染 -->
+    </div>
+    <div class="st-modal-footer" id="stPayModalFooter">
+      <button class="st-modal-btn cancel" onclick="stClosePayModal()">取消支付</button>
+      <button class="st-modal-btn confirm" id="stPayConfirmBtn" onclick="stConfirmPayment()">确认已支付</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 预约售票弹窗 ===== -->
+<div class="st-modal-overlay" id="stReserveModal" style="display:none;">
+  <div class="st-modal" style="width:520px;">
+    <div class="st-modal-header">
+      <span>预约售票</span>
+      <button class="st-modal-close" onclick="stCloseReserveModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="st-modal-body">
+      <div class="st-flow-amount">
+        <span class="st-flow-label">预约金额</span>
+        <span class="st-flow-value" id="stReserveAmount">¥0</span>
+      </div>
+      
+      <!-- 手机号查找 -->
+      <div class="st-form-group">
+        <label class="st-form-label">用户手机号</label>
+        <div style="display:flex;gap:8px;">
+          <input type="tel" class="st-form-input" id="stReservePhone" placeholder="请输入手机号查找用户" style="flex:1;">
+          <button class="st-mini-btn" onclick="stSearchUserByPhone()" style="white-space:nowrap;"><i class="fas fa-search"></i> 查找</button>
+        </div>
+      </div>
+      
+      <!-- 用户信息展示 -->
+      <div id="stReserveUserInfo" style="display:none;margin-top:16px;padding:16px;background:var(--light-gray);border-radius:8px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px;">
+          <div><span style="color:var(--text-muted);">用户昵称：</span><span id="stReserveNickname" style="font-weight:600;">-</span></div>
+          <div><span style="color:var(--text-muted);">姓名：</span><span id="stReserveUserName" style="font-weight:600;">-</span></div>
+          <div><span style="color:var(--text-muted);">身份证：</span><span id="stReserveIdCard" style="font-weight:600;">-</span></div>
+          <div><span style="color:var(--text-muted);">会员等级：</span><span id="stReserveMemberLevel" style="font-weight:600;color:var(--gold);">-</span></div>
+        </div>
+      </div>
+      
+      <!-- 预约时间 -->
+      <div class="st-form-group" style="margin-top:16px;">
+        <label class="st-form-label">预约到期时间</label>
+        <input type="datetime-local" class="st-form-input" id="stReserveExpireTime">
+        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">到期后订单将自动取消</div>
+      </div>
+    </div>
+    <div class="st-modal-footer">
+      <button class="st-modal-btn cancel" onclick="stCloseReserveModal()">取消</button>
+      <button class="st-modal-btn confirm" onclick="stConfirmReserve()">确定预约</button>
+    </div>
+  </div>
+</div>
+
+<div class="st-modal-overlay" id="chAddChannelModal" style="display:none;">
+  <div class="st-modal" style="width:420px;">
+    <div class="st-modal-header">
+      <span>添加渠道</span>
+      <button class="st-modal-close" onclick="chCloseAddChannelModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="st-modal-body">
+      <div class="st-form-group">
+        <label class="st-form-label">渠道名称</label>
+        <input type="text" class="st-form-input" id="chNewChannelName" placeholder="请输入渠道名称">
+      </div>
+      <div class="st-form-group">
+        <label class="st-form-label">渠道颜色</label>
+        <div class="st-color-picker" id="chColorPicker">
+          <div class="st-color-option" style="background:#D4A853;" onclick="chSelectColor(this, '#D4A853')"></div>
+          <div class="st-color-option" style="background:#3B82F6;" onclick="chSelectColor(this, '#3B82F6')"></div>
+          <div class="st-color-option" style="background:#6B7280;" onclick="chSelectColor(this, '#6B7280')"></div>
+          <div class="st-color-option" style="background:#10B981;" onclick="chSelectColor(this, '#10B981')"></div>
+          <div class="st-color-option" style="background:#8B5CF6;" onclick="chSelectColor(this, '#8B5CF6')"></div>
+          <div class="st-color-option" style="background:#F97316;" onclick="chSelectColor(this, '#F97316')"></div>
+          <div class="st-color-option" style="background:#EF4444;" onclick="chSelectColor(this, '#EF4444')"></div>
+          <div class="st-color-option" style="background:#06B6D4;" onclick="chSelectColor(this, '#06B6D4')"></div>
+          <div class="st-color-option" style="background:#EC4899;" onclick="chSelectColor(this, '#EC4899')"></div>
+          <div class="st-color-option" style="background:#84CC16;" onclick="chSelectColor(this, '#84CC16')"></div>
+        </div>
+      </div>
+    </div>
+    <div class="st-modal-footer">
+      <button class="st-modal-btn cancel" onclick="chCloseAddChannelModal()">取消</button>
+      <button class="st-modal-btn confirm" onclick="chConfirmAddChannel()">确认添加</button>
+    </div>
+  </div>
+</div>
+
+<div class="st-modal-overlay" id="stReadIdModal" style="display:none;">
+  <div class="st-modal" style="width:480px;">
+    <div class="st-modal-header">
+      <span>读取证件信息</span>
+      <button class="st-modal-close" onclick="stCloseReadIdModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="st-modal-body">
+      <div class="st-id-reader-area">
+        <div class="st-id-reader-status" id="stIdReaderStatus">
+          <i class="fas fa-id-card" style="font-size:32px;color:var(--text-muted);"></i>
+          <div style="margin-top:12px;font-size:13px;color:var(--text-muted);">请将身份证放置在读卡器上</div>
+          <div style="margin-top:4px;font-size:11px;color:var(--text-muted);opacity:0.6;">等待读取中...</div>
+        </div>
+        <div class="st-id-reader-result" id="stIdReaderResult" style="display:none;">
+          <div style="text-align:center;margin-bottom:16px;">
+            <i class="fas fa-check-circle" style="font-size:32px;color:#10B981;"></i>
+            <div style="font-size:13px;color:#10B981;margin-top:4px;">读取成功</div>
+          </div>
+          <div class="st-form-group">
+            <label class="st-form-label">姓名</label>
+            <input type="text" class="st-form-input" id="stIdReaderName" readonly>
+          </div>
+          <div class="st-form-group">
+            <label class="st-form-label">证件号码</label>
+            <input type="text" class="st-form-input" id="stIdReaderNumber" readonly>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:16px;">
+        <button class="st-modal-btn cancel" onclick="stCloseReadIdModal()">取消</button>
+        <button class="st-modal-btn confirm" id="stIdReaderConfirmBtn" onclick="stConfirmReadId()" style="display:none;">确认填入</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== Toast ====================
+function showToast(type, message) {
+  var container = document.getElementById('toastContainer');
+  var icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle', warning: 'fa-exclamation-triangle' };
+  var toast = document.createElement('div');
+  toast.className = 'toast ' + type;
+  toast.innerHTML = '<i class="fas ' + (icons[type] || 'fa-info-circle') + '"></i><span>' + message + '</span>';
+  container.appendChild(toast);
+  setTimeout(function() {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(40px)';
+    toast.style.transition = 'all 0.3s';
+    setTimeout(function() { toast.remove(); }, 300);
+  }, 2500);
+}
+
+// ==================== Tab 切换 ====================
+function switchMainTab(tabId, el) {
+  document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+  document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById(tabId).classList.add('active');
+  if (tabId === 'tab-window-ticket') { stInit(); }
+  if (tabId === 'tab-channel-ticket') { chInit(); }
+}
+
+// ==================== 窗口售票 - 数据 ====================
+var stShows = [
+  {
+    id: 'st1', name: '《天涯故事》大型歌舞秀', type: '歌舞剧',
+    icon: 'fa-masks-theater', color: 'linear-gradient(135deg, #667eea, #764ba2)',
+    totalSeats: 1200, soldSeats: 856, sessions: [
+      { id: 'st1-1', datetime: '2026-04-20 19:30', sold: 856, total: 1200, rate: '71.3%' },
+      { id: 'st1-2', datetime: '2026-04-21 14:00', sold: 620, total: 1200, rate: '51.7%' },
+      { id: 'st1-3', datetime: '2026-04-21 19:30', sold: 1100, total: 1200, rate: '91.7%' }
+    ]
+  },
+  {
+    id: 'st2', name: '椰风海韵·交响音乐会', type: '音乐会',
+    icon: 'fa-music', color: 'linear-gradient(135deg, #43e97b, #38f9d7)',
+    totalSeats: 800, soldSeats: 500, sessions: [
+      { id: 'st2-1', datetime: '2026-04-20 15:00', sold: 180, total: 800, rate: '22.5%' },
+      { id: 'st2-2', datetime: '2026-04-21 19:30', sold: 320, total: 800, rate: '40.0%' }
+    ]
+  },
+  {
+    id: 'st3', name: '黎苗风情·民族舞蹈专场', type: '舞蹈',
+    icon: 'fa-person-running', color: 'linear-gradient(135deg, #fa709a, #fee140)',
+    totalSeats: 700, soldSeats: 685, sessions: [
+      { id: 'st3-1', datetime: '2026-04-21 14:30', sold: 285, total: 700, rate: '40.7%' },
+      { id: 'st3-2', datetime: '2026-04-22 19:30', sold: 400, total: 700, rate: '57.1%' }
+    ]
+  },
+  {
+    id: 'st4', name: '《南海奇缘》儿童剧', type: '儿童剧',
+    icon: 'fa-child-reaching', color: 'linear-gradient(135deg, #a18cd1, #fbc2eb)',
+    totalSeats: 500, soldSeats: 360, sessions: [
+      { id: 'st4-1', datetime: '2026-04-20 10:00', sold: 110, total: 500, rate: '22.0%' },
+      { id: 'st4-2', datetime: '2026-04-20 15:00', sold: 200, total: 500, rate: '40.0%' },
+      { id: 'st4-3', datetime: '2026-04-21 10:00', sold: 50, total: 500, rate: '10.0%' }
+    ]
+  }
+];
+
+// 窗口售票分区颜色配置
+var stZoneColors = {
+  vip: '#D4A853',
+  a: '#3B82F6',
+  b: '#6B7280'
+};
+
+// 窗口售票分区配置
+var stZoneConfig = [
+  { id: 'VIP', name: 'VIP区', color: '#D4A853', rows: 3, seatsPerRow: 10, price: 880, floor: '一楼' },
+  { id: 'A', name: '甲等区', color: '#3B82F6', rows: 4, seatsPerRow: 14, price: 580, floor: '一楼' },
+  { id: 'B', name: '乙等区', color: '#6B7280', rows: 5, seatsPerRow: 16, price: 280, floor: '一楼' },
+  { id: 'VIP2', name: 'VIP区', color: '#D4A853', rows: 2, seatsPerRow: 8, price: 680, floor: '二楼' },
+  { id: 'C', name: '丙等区', color: '#10B981', rows: 3, seatsPerRow: 12, price: 180, floor: '二楼' }
+];
+
+// 窗口售票状态
+var stState = {
+  initialized: false,
+  selectedShow: null,
+  selectedSession: null,
+  selectedSeats: [],
+  seatData: {},
+  adjacentWarningTimer: null
+};
+
+// ==================== 窗口售票 - 缩放功能 ====================
+var stZoomLevel = 1;
+
+function stZoomIn() {
+  stZoomLevel = Math.min(stZoomLevel + 0.2, 3);
+  stApplyZoom();
+}
+
+function stZoomOut() {
+  stZoomLevel = Math.max(stZoomLevel - 0.2, 0.5);
+  stApplyZoom();
+}
+
+function stZoomReset() {
+  stZoomLevel = 1;
+  stApplyZoom();
+}
+
+function stApplyZoom() {
+  var svgArea = document.getElementById('stSeatSvgArea');
+  if (svgArea) {
+    svgArea.style.transform = 'scale(' + stZoomLevel + ')';
+    svgArea.style.transformOrigin = 'top center';
+  }
+  var zoomValue = document.getElementById('stZoomValue');
+  if (zoomValue) zoomValue.textContent = Math.round(stZoomLevel * 100) + '%';
+}
+
+function stInitZoomWheel() {
+  var mapBody = document.getElementById('stSeatMapBody');
+  if (!mapBody) return;
+  mapBody.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    if (e.deltaY < 0) stZoomIn();
+    else stZoomOut();
+  }, { passive: false });
+}
+
+// ==================== 窗口售票 - 初始化 ====================
+function stInit() {
+  stState.initialized = true;
+  stRenderShowList();
+  stInitBoxSelect();
+  stInitZoomWheel();
+}
+
+// ==================== 窗口售票 - 框选功能 ====================
+function stInitBoxSelect() {
+  var svgArea = document.getElementById('stSeatSvgArea');
+  if (!svgArea) return;
+  var selecting = false;
+  var startX, startY;
+  var box = document.getElementById('stSelectionBox');
+  var mapBody = document.getElementById('stSeatMapBody');
+  if (!mapBody) return;
+
+  mapBody.addEventListener('mousedown', function(e) {
+    if (e.target.classList && e.target.classList.contains('st-seat')) return;
+    selecting = true;
+    var rect = mapBody.getBoundingClientRect();
+    startX = e.clientX - rect.left;
+    startY = e.clientY - rect.top;
+    box.style.display = 'block';
+    box.style.left = startX + 'px';
+    box.style.top = startY + 'px';
+    box.style.width = '0';
+    box.style.height = '0';
+    e.preventDefault();
+  });
+
+  mapBody.addEventListener('mousemove', function(e) {
+    if (!selecting) return;
+    var rect = mapBody.getBoundingClientRect();
+    var curX = e.clientX - rect.left;
+    var curY = e.clientY - rect.top;
+    box.style.left = Math.min(startX, curX) + 'px';
+    box.style.top = Math.min(startY, curY) + 'px';
+    box.style.width = Math.abs(curX - startX) + 'px';
+    box.style.height = Math.abs(curY - startY) + 'px';
+  });
+
+  mapBody.addEventListener('mouseup', function(e) {
+    if (!selecting) return;
+    selecting = false;
+    box.style.display = 'none';
+    var rect = mapBody.getBoundingClientRect();
+    var svg = svgArea.querySelector('svg');
+    if (!svg) return;
+    var vb = svg.viewBox.baseVal;
+    if (!vb) return;
+    var scaleX = vb.width / rect.width;
+    var scaleY = vb.height / rect.height;
+    var sx1 = (Math.min(startX, e.clientX - rect.left)) * scaleX;
+    var sy1 = (Math.min(startY, e.clientY - rect.top)) * scaleY;
+    var sx2 = (Math.max(startX, e.clientX - rect.left)) * scaleX;
+    var sy2 = (Math.max(startY, e.clientY - rect.top)) * scaleY;
+
+    svgArea.querySelectorAll('.st-seat.available').forEach(function(seat) {
+      var cx = parseFloat(seat.getAttribute('cx'));
+      var cy = parseFloat(seat.getAttribute('cy'));
+      if (cx >= sx1 && cx <= sx2 && cy >= sy1 && cy <= sy2) {
+        var sid = seat.getAttribute('data-id');
+        if (sid && stState.selectedSeats.indexOf(sid) === -1) {
+          stState.selectedSeats.push(sid);
+          stState.seatData[sid].status = 'selected';
+        }
+      }
+    });
+    stRenderSeatMap();
+    stUpdateUI();
+  });
+}
+
+// ==================== 窗口售票 - 左栏渲染 ====================
+function stRenderShowList() {
+  var panel = document.getElementById('stLeftPanel');
+  if (!panel) return;
+  var venueBar = '<div class="st-venue-select-bar"><label><i class="fas fa-building"></i> 场馆</label><select id="stVenueSelect" onchange="stChangeVenue(this.value)"><option value="venue1">三亚千古情大剧院</option><option value="venue2">海口演艺中心</option><option value="venue3">琼海大剧院</option></select></div>';
+  var html = venueBar;
+  stShows.forEach(function(show) {
+    var totalSold = 0, totalAll = 0;
+    show.sessions.forEach(function(s) { totalSold += s.sold; totalAll += s.total; });
+    var progress = totalAll > 0 ? Math.round(totalSold / totalAll * 100) : 0;
+    var isActive = stState.selectedShow && stState.selectedShow.id === show.id;
+
+    html += '<div class="st-show-card' + (isActive ? ' active' : '') + '" id="stCard-' + show.id + '">';
+    html += '  <div class="st-show-card-header" onclick="stToggleShow(\'' + show.id + '\')">';
+    html += '    <div class="st-show-cover-icon" style="background:' + show.color + '"><i class="fas ' + show.icon + '"></i></div>';
+    html += '    <div class="st-show-card-info">';
+    html += '      <div class="st-show-card-name">' + show.name + '</div>';
+    html += '      <div class="st-show-card-meta">' + show.sessions.length + '个场次 · 共' + show.totalSeats + '座</div>';
+    html += '    </div>';
+    html += '  </div>';
+    html += '  <div class="st-show-card-progress" onclick="stToggleShow(\'' + show.id + '\')">';
+    html += '    <div class="st-progress-bar"><div class="st-progress-fill" style="width:' + progress + '%;"></div></div>';
+    html += '    <div class="st-progress-text"><span>总销售进度</span><span>' + progress + '%</span></div>';
+    html += '  </div>';
+    // 场次展开列表
+    html += '  <div class="st-session-expand' + (isActive ? ' open' : '') + '" id="stExpand-' + show.id + '">';
+    show.sessions.forEach(function(sess) {
+      var sessActive = stState.selectedSession && stState.selectedSession.id === sess.id;
+      html += '<div class="st-session-expand-item' + (sessActive ? ' active' : '') + '" onclick="stSelectSession(\'' + show.id + '\',\'' + sess.id + '\')">';
+      html += '  <span class="st-session-expand-time">' + sess.datetime + '</span>';
+      html += '  <span class="st-session-expand-rate">' + sess.sold + '/' + sess.total + '</span>';
+      html += '  <span class="st-session-expand-occupancy">' + sess.rate + '</span>';
+      html += '</div>';
+    });
+    html += '  </div>';
+    html += '</div>';
+  });
+  panel.innerHTML = html;
+}
+
+// ==================== 窗口售票 - 演出/场次选择 ====================
+function stToggleShow(showId) {
+  var show = stShows.find(function(s) { return s.id === showId; });
+  if (!show) return;
+
+  if (stState.selectedShow && stState.selectedShow.id === showId) {
+    stState.selectedShow = null;
+    stState.selectedSession = null;
+    stState.selectedSeats = [];
+    stRenderShowList();
+    stClearSeatMap();
+    stUpdateUI();
+    return;
+  }
+
+  stState.selectedShow = show;
+  stState.selectedSession = null;
+  stState.selectedSeats = [];
+  stRenderShowList();
+  stClearSeatMap();
+  stUpdateUI();
+}
+
+function stSelectSession(showId, sessionId) {
+  var show = stShows.find(function(s) { return s.id === showId; });
+  var session = show.sessions.find(function(s) { return s.id === sessionId; });
+  if (!session) return;
+
+  stState.selectedShow = show;
+  stState.selectedSession = session;
+  stState.selectedSeats = [];
+  stRenderShowList();
+  stGenerateSeatMap();
+  stRenderSeatMap();
+  stUpdateUI();
+  showToast('success', '已切换到: ' + session.datetime);
+}
+
+// ==================== 窗口售票 - 座位图生成（5种状态） ====================
+function stGenerateSeatMap() {
+  stState.seatData = {};
+  if (!stState.selectedSession) return;
+  var soldRatio = stState.selectedSession.sold / stState.selectedSession.total;
+
+  stZoneConfig.forEach(function(zone) {
+    for (var r = 1; r <= zone.rows; r++) {
+      for (var s = 1; s <= zone.seatsPerRow; s++) {
+        var seatId = zone.id + '-' + r + '-' + s;
+        var rand = Math.random();
+        var status;
+        if (rand < soldRatio * 0.80) {
+          status = 'sold';
+        } else if (rand < soldRatio * 0.80 + 0.03) {
+          status = 'reserved';
+        } else if (rand < soldRatio * 0.80 + 0.06) {
+          status = 'reserved';
+        } else {
+          status = 'available';
+        }
+        stState.seatData[seatId] = {
+          zone: zone.id,
+          zoneName: zone.name,
+          row: r,
+          seat: s,
+          price: zone.price,
+          status: status,
+          color: zone.color
+        };
+      }
+    }
+  });
+}
+
+function stClearSeatMap() {
+  stState.seatData = {};
+  var svgArea = document.getElementById('stSeatSvgArea');
+  if (svgArea) svgArea.innerHTML = '';
+}
+
+// ==================== 窗口售票 - 座位图渲染（分区颜色） ====================
+function stRenderSeatMap() {
+  var svgArea = document.getElementById('stSeatSvgArea');
+  if (!svgArea) return;
+  var svgWidth = 640;
+  var seatR = 10;
+  var gapX = 6, gapY = 8;
+  var centerX = svgWidth / 2;
+  var currentY = 20;
+
+  var parts = [];
+  parts.push('<svg viewBox="0 0 ' + svgWidth + ' 600" xmlns="http://www.w3.org/2000/svg">');
+
+  // 舞台标签
+  parts.push('<text x="' + centerX + '" y="' + (currentY + 8) + '" text-anchor="middle" fill="#94A3B8" font-size="13" font-weight="600" letter-spacing="4">STAGE · 舞台</text>');
+  currentY += 30;
+
+  // 按楼层分组
+  var floors = {};
+  stZoneConfig.forEach(function(zone) {
+    if (!floors[zone.floor]) floors[zone.floor] = [];
+    floors[zone.floor].push(zone);
+  });
+
+  Object.keys(floors).forEach(function(floorName) {
+    // 楼层标签
+    parts.push('<text x="' + centerX + '" y="' + (currentY + 12) + '" text-anchor="middle" fill="#64748B" font-size="14" font-weight="700">── ' + floorName + ' ──</text>');
+    currentY += 28;
+
+    floors[floorName].forEach(function(zone) {
+      var totalW = zone.seatsPerRow * (seatR * 2 + gapX) - gapX;
+      var startX = centerX - totalW / 2;
+
+      // 分区标签
+      parts.push('<text class="st-zone-label" x="' + centerX + '" y="' + (currentY + 8) + '">' + zone.name + '</text>');
+      currentY += 24;
+
+      for (var r = 1; r <= zone.rows; r++) {
+        // 行号
+        var rowLabels = ['一排','二排','三排','四排','五排','六排','七排','八排','九排','十排','十一排','十二排','十三排','十四排','十五排','十六排','十七排','十八排','十九排','二十排'];
+        var rowLabel = rowLabels[r - 1] || (r + '排');
+        parts.push('<text class="st-row-label" x="' + (startX - 10) + '" y="' + (currentY + seatR) + '">' + rowLabel + '</text>');
+
+        for (var s = 1; s <= zone.seatsPerRow; s++) {
+          var seatId = zone.id + '-' + r + '-' + s;
+          var seatData = stState.seatData[seatId];
+          if (!seatData) continue;
+          var cx = startX + (s - 1) * (seatR * 2 + gapX) + seatR;
+          var cy = currentY + seatR;
+          var cls = seatData.status;
+          var clickable = cls === 'available' || cls === 'selected';
+
+          var styleAttr = ' style="--zone-color:' + zone.color + ';"';
+
+          parts.push('<circle class="st-seat ' + cls + '" data-id="' + seatId + '" cx="' + cx + '" cy="' + cy + '" r="' + seatR + '"' + styleAttr
+            + (clickable ? ' onclick="stToggleSeat(\'' + seatId + '\')"' : '')
+            + ' onmouseenter="stShowTip(event,\'' + seatId + '\')" onmousemove="stMoveTip(event)" onmouseleave="stHideTip()"/>');
+
+          if (cls === 'sold') {
+            parts.push('<text x="' + cx + '" y="' + (cy + 3) + '" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="8" font-family="Arial">✕</text>');
+          } else if (cls === 'reserved') {
+            parts.push('<text x="' + cx + '" y="' + (cy + 3) + '" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="8" font-family="Arial">⊘</text>');
+          } else if (cls === 'pending') {
+            parts.push('<text x="' + cx + '" y="' + (cy + 3) + '" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="7" font-family="Arial">$</text>');
+          }
+
+          if (cls === 'selected') {
+            parts.push('<text class="st-seat-num" x="' + cx + '" y="' + cy + '">✓</text>');
+          }
+        }
+        currentY += seatR * 2 + gapY;
+      }
+      currentY += 16;
+    });
+    currentY += 12;
+  });
+
+  parts.push('</svg>');
+  svgArea.innerHTML = parts.join('');
+  svgArea.style.animation = 'scaleIn 0.4s ease both';
+}
+
+// ==================== 窗口售票 - 座位交互 ====================
+function stToggleSeat(seatId) {
+  var seat = stState.seatData[seatId];
+  if (!seat || seat.status !== 'available' && seat.status !== 'selected') return;
+
+  var idx = stState.selectedSeats.indexOf(seatId);
+  if (idx > -1) {
+    stState.selectedSeats.splice(idx, 1);
+    seat.status = 'available';
+  } else {
+    stState.selectedSeats.push(seatId);
+    seat.status = 'selected';
+  }
+
+  stRenderSeatMap();
+  stUpdateUI();
+}
+
+function stRemoveSeat(seatId) {
+  var idx = stState.selectedSeats.indexOf(seatId);
+  if (idx > -1) {
+    stState.selectedSeats.splice(idx, 1);
+    stState.seatData[seatId].status = 'available';
+    stRenderSeatMap();
+    stUpdateUI();
+  }
+}
+
+function stClearAll() {
+  stState.selectedSeats.forEach(function(sid) {
+    if (stState.seatData[sid]) stState.seatData[sid].status = 'available';
+  });
+  stState.selectedSeats = [];
+  stRenderSeatMap();
+  stUpdateUI();
+}
+
+// ==================== 窗口售票 - Tooltip ====================
+function stShowTip(e, seatId) {
+  var seat = stState.seatData[seatId];
+  if (!seat) return;
+  var tooltip = document.getElementById('seatTooltip');
+  var statusMap = {
+    'available': '可售', 'sold': '已售', 'reserved': '不可选', 'selected': '已选中', 'pending': '待支付'
+  };
+  var statusText = statusMap[seat.status] || '';
+  tooltip.innerHTML = '<strong>' + seat.zoneName + '</strong> ' + seat.row + '排' + seat.seat + '号 [' + statusText + ']<br>¥' + seat.price;
+  tooltip.style.display = 'block';
+  stMoveTip(e);
+}
+
+function stMoveTip(e) {
+  var tooltip = document.getElementById('seatTooltip');
+  tooltip.style.left = (e.clientX - tooltip.offsetWidth / 2) + 'px';
+  tooltip.style.top = (e.clientY - tooltip.offsetHeight - 16) + 'px';
+}
+
+function stHideTip() {
+  document.getElementById('seatTooltip').style.display = 'none';
+}
+
+// ==================== 窗口售票 - 底部图例渲染 ====================
+function stRenderBottomLegend() {
+  var legend = document.getElementById('stBottomLegend');
+  if (!legend) return;
+  var html = '';
+  stZoneConfig.forEach(function(zone) {
+    html += '<div class="st-bottom-legend-item">';
+    html += '  <div class="st-bottom-legend-dot" style="background:' + zone.color + ';"></div>';
+    html += '  <span>' + zone.name + '</span>';
+    html += '  <span class="st-bottom-legend-price">¥' + zone.price + '</span>';
+    html += '</div>';
+  });
+  legend.innerHTML = html;
+}
+
+// ==================== 窗口售票 - UI更新 ====================
+function stUpdateUI() {
+  var count = stState.selectedSeats.length;
+  var total = 0;
+  stState.selectedSeats.forEach(function(sid) {
+    if (stState.seatData[sid]) total += stState.seatData[sid].price;
+  });
+
+  // 顶部信息已移除
+
+  // 订单摘要
+  document.getElementById('stOrderCount').textContent = count;
+  document.getElementById('stOrderTotal').textContent = '¥' + total;
+
+  // 确认按钮状态
+  document.getElementById('stConfirmBtn').disabled = count === 0;
+  document.getElementById('stReserveBtn').disabled = count === 0;
+
+  // 右栏已选列表
+  document.getElementById('stSelectedCount').textContent = count + ' 个';
+  document.getElementById('stClearSeatsBtn').style.display = count > 0 ? 'flex' : 'none';
+  var listEl = document.getElementById('stSelectedList');
+  if (count === 0) {
+    listEl.innerHTML = '<div class="st-empty-hint"><i class="fas fa-couch"></i>请点击座位进行选择</div>';
+  } else {
+    var lHtml = '';
+    stState.selectedSeats.forEach(function(sid) {
+      var s = stState.seatData[sid];
+      if (!s) return;
+      lHtml += '<div class="st-selected-item">';
+      lHtml += '  <div class="st-selected-item-info">';
+      lHtml += '    <span class="st-selected-item-zone" style="background:' + (s.color || '#9CA3AF') + '">' + s.zoneName + '</span>';
+      lHtml += '    <span>' + s.row + '排' + s.seat + '号</span>';
+      lHtml += '  </div>';
+      lHtml += '  <span class="st-selected-item-price">¥' + s.price + '</span>';
+      lHtml += '  <button class="st-selected-item-remove" onclick="stRemoveSeat(\'' + sid + '\')"><i class="fas fa-times"></i></button>';
+      lHtml += '</div>';
+    });
+    listEl.innerHTML = lHtml;
+  }
+
+  // 底部图例
+  stRenderBottomLegend();
+}
+
+// ==================== 窗口售票 - 读取证件 ====================
+function stReadIdCard() {
+  document.getElementById('stReadIdModal').style.display = 'flex';
+  document.getElementById('stIdReaderStatus').style.display = 'flex';
+  document.getElementById('stIdReaderResult').style.display = 'none';
+  document.getElementById('stIdReaderConfirmBtn').style.display = 'none';
+  // 模拟3秒后读取成功
+  setTimeout(function() {
+    document.getElementById('stIdReaderStatus').style.display = 'none';
+    document.getElementById('stIdReaderResult').style.display = 'block';
+    document.getElementById('stIdReaderConfirmBtn').style.display = 'inline-block';
+    // 模拟数据
+    document.getElementById('stIdReaderName').value = '张三';
+    document.getElementById('stIdReaderNumber').value = '460001199001011234';
+  }, 2000);
+}
+
+function stCloseReadIdModal() {
+  document.getElementById('stReadIdModal').style.display = 'none';
+}
+
+function stConfirmReadId() {
+  var name = document.getElementById('stIdReaderName').value;
+  var number = document.getElementById('stIdReaderNumber').value;
+  if (name) document.getElementById('stBuyerName').value = name;
+  if (number) document.getElementById('stIdNumber').value = number;
+  stCloseReadIdModal();
+  showToast('success', '证件信息已填入');
+}
+
+// ==================== 窗口售票 - 售票流程弹窗 ====================
+var stSellFlowState = { step: 1, payMethod: '', ticketType: 'paper' };
+
+function stOpenSellFlow() {
+  if (stState.selectedSeats.length === 0) { showToast('warning', '请先选择座位'); return; }
+  var total = stState.selectedSeats.reduce(function(sum, sid) {
+    return sum + (stState.seatData[sid] ? stState.seatData[sid].price : 0);
+  }, 0);
+  document.getElementById('stFlowAmount').textContent = '¥' + total;
+  // 重置支付方式
+  stSelectedPayMethod = '';
+  document.querySelectorAll('.st-pay-method').forEach(function(e) { e.classList.remove('active'); });
+  document.getElementById('stPayBalanceInfo').style.display = 'none';
+  // 重置流程
+  stSellFlowState = { step: 1, payMethod: '', ticketType: 'paper' };
+  stUpdateFlowSteps();
+  document.getElementById('stSellFlowModal').style.display = 'flex';
+}
+
+function stCloseSellFlow() {
+  document.getElementById('stSellFlowModal').style.display = 'none';
+}
+
+// ==================== 预约售票 ====================
+function stOpenReserveFlow() {
+  if (stState.selectedSeats.length === 0) { showToast('warning', '请先选择座位'); return; }
+  var total = stState.selectedSeats.reduce(function(sum, sid) {
+    return sum + (stState.seatData[sid] ? stState.seatData[sid].price : 0);
+  }, 0);
+  document.getElementById('stReserveAmount').textContent = '¥' + total;
+  
+  // 设置默认预约到期时间为24小时后
+  var tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  var timeStr = tomorrow.toISOString().slice(0, 16);
+  document.getElementById('stReserveExpireTime').value = timeStr;
+  
+  // 重置用户信息
+  document.getElementById('stReservePhone').value = '';
+  document.getElementById('stReserveUserInfo').style.display = 'none';
+  
+  document.getElementById('stReserveModal').style.display = 'flex';
+}
+
+function stCloseReserveModal() {
+  document.getElementById('stReserveModal').style.display = 'none';
+}
+
+function stSearchUserByPhone() {
+  var phone = document.getElementById('stReservePhone').value.trim();
+  if (!phone) { showToast('warning', '请输入手机号'); return; }
+  
+  // 模拟查找用户
+  showToast('info', '正在查找用户...');
+  setTimeout(function() {
+    // 模拟数据
+    document.getElementById('stReserveNickname').textContent = '用户' + phone.slice(-4);
+    document.getElementById('stReserveUserName').textContent = '张' + String.fromCharCode(65 + Math.floor(Math.random() * 26));
+    document.getElementById('stReserveIdCard').textContent = '4600011990****' + Math.floor(1000 + Math.random() * 9000);
+    document.getElementById('stReserveMemberLevel').textContent = ['普通会员', '银卡会员', '金卡会员', '钻石会员'][Math.floor(Math.random() * 4)];
+    document.getElementById('stReserveUserInfo').style.display = 'block';
+    showToast('success', '已找到用户信息');
+  }, 500);
+}
+
+function stConfirmReserve() {
+  var phone = document.getElementById('stReservePhone').value.trim();
+  if (!phone) { showToast('warning', '请输入用户手机号'); return; }
+  
+  var expireTime = document.getElementById('stReserveExpireTime').value;
+  if (!expireTime) { showToast('warning', '请选择预约到期时间'); return; }
+  
+  // 生成预约订单
+  stCloseReserveModal();
+  showToast('success', '预约成功！已生成待支付订单，到期时间：' + expireTime);
+  
+  // 清空已选座位
+  stState.selectedSeats = [];
+  stGenerateSeatMap();
+  stRenderSeatMap();
+  stUpdateUI();
+}
+
+// ==================== 支付方式选择 ====================
+var stSelectedPayMethod = '';
+var stPayBalanceInfo = { recharge: 50, member: 120 };
+
+function stSelectPayMethod(method, el) {
+  stSelectedPayMethod = method;
+  document.querySelectorAll('.st-pay-method').forEach(function(e) { e.classList.remove('active'); });
+  el.classList.add('active');
+  // 直接打开支付弹窗
+  stOpenPayModal();
+}
+
+function stSelectTicketType(type, el) {
+  stSellFlowState.ticketType = type;
+  document.querySelectorAll('.st-ticket-type-item').forEach(function(e) { e.classList.remove('active'); });
+  el.classList.add('active');
+  
+  // 显示/隐藏对应选项
+  document.getElementById('stPaperOptions').style.display = type === 'paper' ? 'block' : 'none';
+  document.getElementById('stDigitalOptions').style.display = type === 'digital' ? 'block' : 'none';
+}
+
+function stTogglePriceDisplay() {
+  var show = document.getElementById('stShowPrice').checked;
+  document.getElementById('stPriceAltWrap').style.display = show ? 'none' : 'block';
+}
+
+function stFlowNext() {
+  if (stSellFlowState.step === 1) {
+    if (!stSelectedPayMethod) { showToast('warning', '请选择支付方式'); return; }
+    stOpenPayModal();
+  } else if (stSellFlowState.step === 2) {
+    stSellFlowState.step = 3;
+    var count = stState.selectedSeats.length;
+    document.getElementById('stFlowSuccessInfo').textContent = '已成功售出 ' + count + ' 张门票';
+    stUpdateFlowSteps();
+  }
+}
+
+// ==================== 支付状态 ====================
+var stPayState = {
+  remainAmount: 0,
+  deductedFromCard: 0,
+  isSecondPay: false
+};
+
+// ==================== 支付方式弹窗 ====================
+function stOpenPayModal() {
+  var modal = document.getElementById('stPayModal');
+  var title = document.getElementById('stPayModalTitle');
+  var body = document.getElementById('stPayModalBody');
+  var footer = document.getElementById('stPayModalFooter');
+  var total = stPayState.remainAmount > 0 ? stPayState.remainAmount : stState.selectedSeats.reduce(function(sum, sid) {
+    return sum + (stState.seatData[sid] ? stState.seatData[sid].price : 0);
+  }, 0);
+
+  if (stSelectedPayMethod === 'wechat') {
+    title.textContent = '微信支付';
+    body.innerHTML = '<div style="text-align:center;padding:20px 0;" id="stPayScanArea">' +
+      '<div style="width:200px;height:120px;margin:0 auto;background:linear-gradient(135deg,#07C160,#10B981);border-radius:12px;display:flex;align-items:center;justify-content:center;">' +
+      '<i class="fas fa-barcode" style="font-size:48px;color:#fff;"></i>' +
+      '</div>' +
+      '<p style="margin-top:16px;color:var(--text-secondary);font-size:14px;">请将扫码摄像头对准用户微信付款码</p>' +
+      '<p style="margin-top:4px;color:var(--text-muted);font-size:12px;">应收金额：<strong style="color:#FF6B4A;font-size:18px;">¥' + total.toFixed(2) + '</strong></p>' +
+      '<div style="margin-top:16px;padding:12px;background:#F0FDF4;border-radius:8px;border:1px solid #BBF7D0;" id="stPayScanStatus">' +
+      '<i class="fas fa-spinner fa-spin" style="color:#07C160;"></i> <span style="font-size:12px;color:#166534;">等待扫描用户付款码...</span>' +
+      '</div>' +
+      '</div>';
+    footer.innerHTML = '<button class="st-modal-btn cancel" onclick="stClosePayModal()">取消支付</button>' +
+      '<button class="st-modal-btn confirm" onclick="stSimulateScan(\'wechat\')">模拟扫码</button>';
+  } else if (stSelectedPayMethod === 'alipay') {
+    title.textContent = '支付宝支付';
+    body.innerHTML = '<div style="text-align:center;padding:20px 0;" id="stPayScanArea">' +
+      '<div style="width:200px;height:120px;margin:0 auto;background:linear-gradient(135deg,#1677FF,#4096FF);border-radius:12px;display:flex;align-items:center;justify-content:center;">' +
+      '<i class="fas fa-barcode" style="font-size:48px;color:#fff;"></i>' +
+      '</div>' +
+      '<p style="margin-top:16px;color:var(--text-secondary);font-size:14px;">请将扫码摄像头对准用户支付宝付款码</p>' +
+      '<p style="margin-top:4px;color:var(--text-muted);font-size:12px;">应收金额：<strong style="color:#FF6B4A;font-size:18px;">¥' + total.toFixed(2) + '</strong></p>' +
+      '<div style="margin-top:16px;padding:12px;background:#EFF6FF;border-radius:8px;border:1px solid #BFDBFE;" id="stPayScanStatus">' +
+      '<i class="fas fa-spinner fa-spin" style="color:#1677FF;"></i> <span style="font-size:12px;color:#1E40AF;">等待扫描用户付款码...</span>' +
+      '</div>' +
+      '</div>';
+    footer.innerHTML = '<button class="st-modal-btn cancel" onclick="stClosePayModal()">取消支付</button>' +
+      '<button class="st-modal-btn confirm" onclick="stSimulateScan(\'alipay\')">模拟扫码</button>';
+  } else if (stSelectedPayMethod === 'cash') {
+    title.textContent = '现金支付';
+    body.innerHTML = '<div style="padding:20px 0;">' +
+      '<div class="st-form-group">' +
+      '<label class="st-form-label">应收金额</label>' +
+      '<div style="font-size:28px;font-weight:700;color:#FF6B4A;">¥' + total.toFixed(2) + '</div>' +
+      '</div>' +
+      '<div class="st-form-group">' +
+      '<label class="st-form-label">实收金额</label>' +
+      '<input type="number" class="st-form-input" id="stCashAmount" placeholder="请输入实收金额" style="font-size:18px;">' +
+      '</div>' +
+      '<div class="st-form-group">' +
+      '<label class="st-form-label">找零</label>' +
+      '<div id="stCashChange" style="font-size:20px;font-weight:600;color:#10B981;">¥0.00</div>' +
+      '</div>' +
+      '</div>';
+    setTimeout(function() {
+      var cashInput = document.getElementById('stCashAmount');
+      if (cashInput) {
+        cashInput.addEventListener('input', function() {
+          var cash = parseFloat(this.value) || 0;
+          var change = cash - total;
+          var changeEl = document.getElementById('stCashChange');
+          if (changeEl) changeEl.textContent = '¥' + (change >= 0 ? change.toFixed(2) : '0.00');
+        });
+      }
+    }, 0);
+    footer.innerHTML = '<button class="st-modal-btn cancel" onclick="stClosePayModal()">取消支付</button>' +
+      '<button class="st-modal-btn confirm" id="stPayConfirmBtn" onclick="stConfirmPayment()">确认收款</button>';
+  } else if (stSelectedPayMethod === 'recharge') {
+    title.textContent = '充值卡支付';
+    var bal = stPayBalanceInfo.recharge;
+    if (stPayState.isSecondPay) {
+      // 二次支付：已读过卡，显示扣除信息
+      var deduct = Math.min(bal, total);
+      var remain = total - deduct;
+      body.innerHTML = '<div style="text-align:center;padding:20px 0;">' +
+        '<div style="width:120px;height:120px;margin:0 auto;background:linear-gradient(135deg,#8B5CF6,#A78BFA);border-radius:50%;display:flex;align-items:center;justify-content:center;">' +
+        '<i class="fas fa-credit-card" style="font-size:48px;color:#fff;"></i>' +
+        '</div>' +
+        '<p style="margin-top:16px;color:var(--text-secondary);font-size:14px;font-weight:600;">充值卡二次支付</p>' +
+        '<div style="margin-top:12px;padding:12px;background:#F8FAFC;border-radius:8px;text-align:left;">' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="color:#94A3B8;font-size:12px;">卡内余额</span><span style="font-weight:600;font-size:13px;">¥' + bal.toFixed(2) + '</span></div>' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="color:#94A3B8;font-size:12px;">本次扣除</span><span style="font-weight:600;font-size:13px;color:#8B5CF6;">¥' + deduct.toFixed(2) + '</span></div>' +
+        '<div style="display:flex;justify-content:space-between;"><span style="color:#94A3B8;font-size:12px;">剩余应付</span><span style="font-weight:700;font-size:14px;color:#FF6B4A;">¥' + remain.toFixed(2) + '</span></div>' +
+        '</div>' +
+        '</div>';
+      if (remain > 0) {
+        footer.innerHTML = '<button class="st-modal-btn cancel" onclick="stClosePayModal()">取消</button>' +
+          '<button class="st-modal-btn confirm" onclick="stConfirmPayment()">扣除余额并返回</button>';
+      } else {
+        footer.innerHTML = '<button class="st-modal-btn cancel" onclick="stClosePayModal()">取消</button>' +
+          '<button class="st-modal-btn confirm" onclick="stConfirmPayment()">确认支付</button>';
+      }
+    } else {
+      // 首次支付：未读卡
+      body.innerHTML = '<div style="text-align:center;padding:20px 0;">' +
+        '<div style="width:120px;height:120px;margin:0 auto;background:linear-gradient(135deg,#8B5CF6,#A78BFA);border-radius:50%;display:flex;align-items:center;justify-content:center;">' +
+        '<i class="fas fa-credit-card" style="font-size:48px;color:#fff;"></i>' +
+        '</div>' +
+        '<p style="margin-top:16px;color:var(--text-secondary);font-size:14px;">请将充值卡放置在读卡器上</p>' +
+        '<p style="margin-top:8px;color:var(--text-muted);font-size:12px;">卡内余额：<span style="font-size:20px;font-weight:700;color:#8B5CF6;">¥' + bal.toFixed(2) + '</span></p>' +
+        '<p style="margin-top:4px;color:var(--text-muted);font-size:12px;">应收金额：¥' + total.toFixed(2) + '</p>' +
+        '</div>';
+      footer.innerHTML = '<button class="st-modal-btn cancel" onclick="stClosePayModal()">取消支付</button>' +
+        '<button class="st-modal-btn confirm" onclick="stConfirmPayment()">模拟读卡并支付</button>';
+    }
+  } else if (stSelectedPayMethod === 'member') {
+    title.textContent = '会员卡支付';
+    var bal = stPayBalanceInfo.member;
+    if (stPayState.isSecondPay) {
+      var deduct = Math.min(bal, total);
+      var remain = total - deduct;
+      body.innerHTML = '<div style="text-align:center;padding:20px 0;">' +
+        '<div style="width:120px;height:120px;margin:0 auto;background:linear-gradient(135deg,#D4A853,#E8C87A);border-radius:50%;display:flex;align-items:center;justify-content:center;">' +
+        '<i class="fas fa-crown" style="font-size:48px;color:#fff;"></i>' +
+        '</div>' +
+        '<p style="margin-top:16px;color:var(--text-secondary);font-size:14px;font-weight:600;">会员卡二次支付</p>' +
+        '<div style="margin-top:12px;padding:12px;background:#F8FAFC;border-radius:8px;text-align:left;">' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="color:#94A3B8;font-size:12px;">卡内余额</span><span style="font-weight:600;font-size:13px;">¥' + bal.toFixed(2) + '</span></div>' +
+        '<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="color:#94A3B8;font-size:12px;">本次扣除</span><span style="font-weight:600;font-size:13px;color:#D4A853;">¥' + deduct.toFixed(2) + '</span></div>' +
+        '<div style="display:flex;justify-content:space-between;"><span style="color:#94A3B8;font-size:12px;">剩余应付</span><span style="font-weight:700;font-size:14px;color:#FF6B4A;">¥' + remain.toFixed(2) + '</span></div>' +
+        '</div>' +
+        '</div>';
+      if (remain > 0) {
+        footer.innerHTML = '<button class="st-modal-btn cancel" onclick="stClosePayModal()">取消</button>' +
+          '<button class="st-modal-btn confirm" onclick="stConfirmPayment()">扣除余额并返回</button>';
+      } else {
+        footer.innerHTML = '<button class="st-modal-btn cancel" onclick="stClosePayModal()">取消</button>' +
+          '<button class="st-modal-btn confirm" onclick="stConfirmPayment()">确认支付</button>';
+      }
+    } else {
+      body.innerHTML = '<div style="text-align:center;padding:20px 0;">' +
+        '<div style="width:120px;height:120px;margin:0 auto;background:linear-gradient(135deg,#D4A853,#E8C87A);border-radius:50%;display:flex;align-items:center;justify-content:center;">' +
+        '<i class="fas fa-crown" style="font-size:48px;color:#fff;"></i>' +
+        '</div>' +
+        '<p style="margin-top:16px;color:var(--text-secondary);font-size:14px;">请将会员卡放置在读卡器上</p>' +
+        '<p style="margin-top:8px;color:var(--text-muted);font-size:12px;">卡内余额：<span style="font-size:20px;font-weight:700;color:#D4A853;">¥' + bal.toFixed(2) + '</span></p>' +
+        '<p style="margin-top:4px;color:var(--text-muted);font-size:12px;">应收金额：¥' + total.toFixed(2) + '</p>' +
+        '</div>';
+      footer.innerHTML = '<button class="st-modal-btn cancel" onclick="stClosePayModal()">取消支付</button>' +
+        '<button class="st-modal-btn confirm" onclick="stConfirmPayment()">模拟读卡并支付</button>';
+    }
+  }
+
+  modal.style.display = 'flex';
+}
+
+function stClosePayModal() {
+  document.getElementById('stPayModal').style.display = 'none';
+}
+
+function stSimulateScan(type) {
+  var statusEl = document.getElementById('stPayScanStatus');
+  var scanArea = document.getElementById('stPayScanArea');
+  if (!statusEl || !scanArea) return;
+  
+  // 显示扫码中
+  statusEl.innerHTML = '<i class="fas fa-spinner fa-spin" style="color:#F59E0B;"></i> <span style="font-size:12px;color:#92400E;">正在扫描...</span>';
+  
+  setTimeout(function() {
+    // 扫码成功效果
+    var bgColor = type === 'wechat' ? '#F0FDF4' : '#EFF6FF';
+    var borderColor = type === 'wechat' ? '#BBF7D0' : '#BFDBFE';
+    var iconColor = type === 'wechat' ? '#07C160' : '#1677FF';
+    var textColor = type === 'wechat' ? '#166534' : '#1E40AF';
+    
+    statusEl.style.background = bgColor;
+    statusEl.style.borderColor = borderColor;
+    statusEl.innerHTML = '<i class="fas fa-check-circle" style="color:' + iconColor + ';font-size:16px;"></i> <span style="font-size:13px;color:' + textColor + ';font-weight:600;">扫码成功！付款码已识别</span>';
+    
+    // 在扫码区域下方添加支付信息
+    var payInfo = document.createElement('div');
+    payInfo.id = 'stPayScanResult';
+    payInfo.style.cssText = 'margin-top:16px;padding:16px;background:#fff;border-radius:12px;border:1px solid #E5E7EB;text-align:left;';
+    payInfo.innerHTML = '<div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:#94A3B8;font-size:12px;">支付方式</span><span style="font-weight:600;font-size:13px;">' + (type === 'wechat' ? '微信支付' : '支付宝') + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:#94A3B8;font-size:12px;">支付金额</span><span style="font-weight:700;font-size:16px;color:#FF6B4A;">¥' + stPayState.remainAmount.toFixed(2) + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;"><span style="color:#94A3B8;font-size:12px;">交易单号</span><span style="font-size:12px;color:#64748B;">TXN' + Date.now() + '</span></div>';
+    scanArea.appendChild(payInfo);
+    
+    // 更新按钮
+    var footer = document.getElementById('stPayModalFooter');
+    footer.innerHTML = '<button class="st-modal-btn cancel" onclick="stClosePayModal()">取消支付</button>' +
+      '<button class="st-modal-btn confirm" onclick="stConfirmPayment()" style="background:#10B981;"><i class="fas fa-check"></i> 确认已收款</button>';
+  }, 800);
+}
+
+function stConfirmPayment() {
+  var total = stPayState.remainAmount > 0 ? stPayState.remainAmount : stState.selectedSeats.reduce(function(sum, sid) {
+    return sum + (stState.seatData[sid] ? stState.seatData[sid].price : 0);
+  }, 0);
+
+  if (stSelectedPayMethod === 'cash') {
+    var cash = parseFloat(document.getElementById('stCashAmount').value) || 0;
+    if (cash < total) { showToast('warning', '实收金额不足，还差 ¥' + (total - cash).toFixed(2)); return; }
+  }
+
+  if (stSelectedPayMethod === 'recharge') {
+    var bal = stPayBalanceInfo.recharge;
+    if (bal < total) {
+      // 余额不足：扣除全部余额，进入二次支付
+      stPayState.deductedFromCard += bal;
+      stPayState.remainAmount = total - bal;
+      stPayBalanceInfo.recharge = 0;
+      stPayState.isSecondPay = true;
+      showToast('info', '充值卡余额不足，已扣除 ¥' + bal.toFixed(2) + '，剩余 ¥' + stPayState.remainAmount.toFixed(2) + ' 请选择其他支付方式');
+      stClosePayModal();
+      // 回到主弹窗，清除当前支付方式选择，显示剩余金额提示
+      stSelectedPayMethod = '';
+      document.querySelectorAll('.st-pay-method').forEach(function(e) { e.classList.remove('active'); });
+      stRenderRemainPayInfo();
+      return;
+    }
+    // 余额充足
+    stPayBalanceInfo.recharge -= total;
+    stPayState.deductedFromCard += total;
+    stPayState.remainAmount = 0;
+    stPayState.isSecondPay = false;
+  }
+
+  if (stSelectedPayMethod === 'member') {
+    var bal = stPayBalanceInfo.member;
+    if (bal < total) {
+      stPayState.deductedFromCard += bal;
+      stPayState.remainAmount = total - bal;
+      stPayBalanceInfo.member = 0;
+      stPayState.isSecondPay = true;
+      showToast('info', '会员卡余额不足，已扣除 ¥' + bal.toFixed(2) + '，剩余 ¥' + stPayState.remainAmount.toFixed(2) + ' 请选择其他支付方式');
+      stClosePayModal();
+      stSelectedPayMethod = '';
+      document.querySelectorAll('.st-pay-method').forEach(function(e) { e.classList.remove('active'); });
+      stRenderRemainPayInfo();
+      return;
+    }
+    stPayBalanceInfo.member -= total;
+    stPayState.deductedFromCard += total;
+    stPayState.remainAmount = 0;
+    stPayState.isSecondPay = false;
+  }
+
+  // 支付完成，重置支付状态
+  stPayState.remainAmount = 0;
+  stPayState.deductedFromCard = 0;
+  stPayState.isSecondPay = false;
+
+  stClosePayModal();
+  stSellFlowState.step = 2;
+  stUpdateFlowSteps();
+  showToast('success', '支付成功，进入出票步骤');
+}
+
+function stRenderRemainPayInfo() {
+  var infoDiv = document.getElementById('stPayBalanceInfo');
+  if (!infoDiv) return;
+  if (stPayState.remainAmount > 0) {
+    infoDiv.innerHTML = '<div style="color:#F59E0B;font-weight:600;margin-bottom:4px;"><i class="fas fa-info-circle"></i> 已扣除充值卡/会员卡余额 ¥' + stPayState.deductedFromCard.toFixed(2) + '</div>' +
+      '<div style="color:#EF4444;font-weight:700;font-size:14px;">剩余应付：¥' + stPayState.remainAmount.toFixed(2) + '，请选择其他支付方式</div>';
+    infoDiv.style.display = 'block';
+  } else {
+    infoDiv.style.display = 'none';
+  }
+}
+
+function stFlowPrev() {
+  if (stSellFlowState.step === 2) stSellFlowState.step = 1;
+  stUpdateFlowSteps();
+}
+
+function stChangeVenue(venueId) {
+  showToast('info', '已切换到场馆: ' + document.getElementById('stVenueSelect').options[document.getElementById('stVenueSelect').selectedIndex].text);
+  // 这里可以添加切换场馆后的逻辑，如重新加载演出列表
+}
+
+function chChangeVenue(venueId) {
+  showToast('info', '已切换到场馆: ' + document.getElementById('chVenueSelect').options[document.getElementById('chVenueSelect').selectedIndex].text);
+  // 这里可以添加切换场馆后的逻辑
+}
+
+function stUpdateFlowSteps() {
+  var s = stSellFlowState.step;
+  for (var i = 1; i <= 3; i++) {
+    var step = document.getElementById('stFlowStep' + i);
+    var content = document.getElementById('stFlowContent' + i);
+    var footer = document.getElementById('stFlowFooter' + i);
+    step.className = 'st-flow-step' + (i === s ? ' active' : (i < s ? ' done' : ''));
+    content.style.display = i === s ? 'block' : 'none';
+    footer.style.display = i === s ? 'flex' : 'none';
+  }
+}
+
+// ==================== 渠道售票 - 数据 ====================
+var chChannelColors = {
+  '本系统': '#10B981',
+  '大麦': '#FF6B35',
+  '猫眼': '#E4393C',
+  '抖音': '#111',
+  '美团': '#FFD100',
+  '携程': '#003580'
+};
+
+var chState = {
+  selectedSeats: {},
+  seatData: {},
+  zones: [],
+  channels: [
+    { name: '大麦', color: '#FF6B35', count: 0 },
+    { name: '猫眼', color: '#E4393C', count: 0 },
+    { name: '抖音', color: '#111', count: 0 },
+    { name: '美团', color: '#FFD100', count: 0 }
+  ],
+  activeChannel: null,
+  selectedShow: null,
+  selectedSession: null
+};
+
+// ==================== 渠道售票 - 初始化 ====================
+function chInit() {
+  chRenderShowList();
+  chRenderChannelList();
+  chUpdateUI();
+  chInitBoxSelect();
+  chInitZoomWheel();
+}
+
+// ==================== 渠道售票 - 左栏渲染 ====================
+function chRenderShowList() {
+  var panel = document.getElementById('chLeftPanel');
+  if (!panel) return;
+  var venueBar = '<div class="st-venue-select-bar"><label><i class="fas fa-building"></i> 场馆</label><select id="chVenueSelect" onchange="chChangeVenue(this.value)"><option value="venue1">三亚千古情大剧院</option><option value="venue2">海口演艺中心</option><option value="venue3">琼海大剧院</option></select></div>';
+  var html = venueBar;
+  stShows.forEach(function(show) {
+    var totalSold = 0, totalAll = 0;
+    show.sessions.forEach(function(s) { totalSold += s.sold; totalAll += s.total; });
+    var progress = totalAll > 0 ? Math.round(totalSold / totalAll * 100) : 0;
+    var isActive = chState.selectedShow && chState.selectedShow.id === show.id;
+
+    html += '<div class="st-show-card' + (isActive ? ' active' : '') + '">';
+    html += '  <div class="st-show-card-header" onclick="chToggleShow(\'' + show.id + '\')">';
+    html += '    <div class="st-show-cover-icon" style="background:' + show.color + '"><i class="fas ' + show.icon + '"></i></div>';
+    html += '    <div class="st-show-card-info">';
+    html += '      <div class="st-show-card-name">' + show.name + '</div>';
+    html += '      <div class="st-show-card-meta">' + show.sessions.length + '个场次 · 共' + show.totalSeats + '座</div>';
+    html += '    </div>';
+    html += '  </div>';
+    html += '  <div class="st-show-card-progress" onclick="chToggleShow(\'' + show.id + '\')">';
+    html += '    <div class="st-progress-bar"><div class="st-progress-fill" style="width:' + progress + '%;"></div></div>';
+    html += '    <div class="st-progress-text"><span>总销售进度</span><span>' + progress + '%</span></div>';
+    html += '  </div>';
+    html += '  <div class="st-session-expand' + (isActive ? ' open' : '') + '">';
+    show.sessions.forEach(function(sess) {
+      var sessActive = chState.selectedSession && chState.selectedSession.id === sess.id;
+      html += '<div class="st-session-expand-item' + (sessActive ? ' active' : '') + '" onclick="chSelectSession(\'' + show.id + '\',\'' + sess.id + '\')">';
+      html += '  <span class="st-session-expand-time">' + sess.datetime + '</span>';
+      html += '  <span class="st-session-expand-rate">' + sess.sold + '/' + sess.total + '</span>';
+      html += '  <span class="st-session-expand-occupancy">' + sess.rate + '</span>';
+      html += '</div>';
+    });
+    html += '  </div>';
+    html += '</div>';
+  });
+  panel.innerHTML = html;
+}
+
+// ==================== 渠道售票 - 演出/场次选择 ====================
+function chToggleShow(showId) {
+  var show = stShows.find(function(s) { return s.id === showId; });
+  if (!show) return;
+
+  if (chState.selectedShow && chState.selectedShow.id === showId) {
+    chState.selectedShow = null;
+    chState.selectedSession = null;
+    chState.selectedSeats = {};
+    chRenderShowList();
+    chClearSeatMap();
+    chUpdateUI();
+    return;
+  }
+
+  chState.selectedShow = show;
+  chState.selectedSession = null;
+  chState.selectedSeats = {};
+  chRenderShowList();
+  chClearSeatMap();
+  chUpdateUI();
+}
+
+function chSelectSession(showId, sessionId) {
+  var show = stShows.find(function(s) { return s.id === showId; });
+  var session = show.sessions.find(function(s) { return s.id === sessionId; });
+  if (!session) return;
+
+  chState.selectedShow = show;
+  chState.selectedSession = session;
+  chState.selectedSeats = {};
+  chRenderShowList();
+  chGenerateSeatMap();
+  chRenderSeatMap();
+  chUpdateUI();
+  showToast('success', '已切换到: ' + session.datetime);
+}
+
+// ==================== 渠道售票 - 座位图生成 ====================
+function chGenerateSeatMap() {
+  chState.seatData = {};
+  if (!chState.selectedSession) return;
+  var soldRatio = chState.selectedSession.sold / chState.selectedSession.total;
+
+  stZoneConfig.forEach(function(zone) {
+    for (var r = 1; r <= zone.rows; r++) {
+      for (var s = 1; s <= zone.seatsPerRow; s++) {
+        var seatId = zone.id + '-' + r + '-' + s;
+        var rand = Math.random();
+        var status;
+        var channelName = null;
+        if (rand < soldRatio * 0.65) {
+          status = 'sold';
+        } else if (rand < soldRatio * 0.65 + 0.15) {
+          // 渠道分配
+          status = 'channel';
+          var chIdx = Math.floor(Math.random() * chState.channels.length);
+          channelName = chState.channels[chIdx].name;
+        } else {
+          status = 'available';
+        }
+        chState.seatData[seatId] = {
+          zone: zone.id,
+          zoneName: zone.name,
+          row: r,
+          seat: s,
+          price: zone.price,
+          status: status,
+          color: zone.color,
+          floor: zone.floor,
+          channel: channelName
+        };
+      }
+    }
+  });
+}
+
+function chClearSeatMap() {
+  chState.seatData = {};
+  var svg = document.getElementById('chSeatSvg');
+  if (svg) svg.innerHTML = '';
+}
+
+// ==================== 渠道售票 - 缩放功能 ====================
+var chZoomLevel = 1;
+
+function chZoomIn() {
+  chZoomLevel = Math.min(chZoomLevel + 0.2, 3);
+  chApplyZoom();
+}
+
+function chZoomOut() {
+  chZoomLevel = Math.max(chZoomLevel - 0.2, 0.5);
+  chApplyZoom();
+}
+
+function chZoomReset() {
+  chZoomLevel = 1;
+  chApplyZoom();
+}
+
+function chApplyZoom() {
+  var svgArea = document.getElementById('chSeatSvgArea');
+  if (svgArea) {
+    svgArea.style.transform = 'scale(' + chZoomLevel + ')';
+    svgArea.style.transformOrigin = 'top center';
+  }
+  var zoomValue = document.getElementById('chZoomValue');
+  if (zoomValue) zoomValue.textContent = Math.round(chZoomLevel * 100) + '%';
+}
+
+var chZoomWheelInit = false;
+
+function chInitZoomWheel() {
+  if (chZoomWheelInit) return;
+  chZoomWheelInit = true;
+  var mapBody = document.getElementById('chSeatMapBody');
+  if (!mapBody) { chZoomWheelInit = false; return; }
+  mapBody.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    if (e.deltaY < 0) chZoomIn();
+    else chZoomOut();
+  }, { passive: false });
+}
+
+// ==================== 渠道售票 - 框选功能 ====================
+function chInitBoxSelect() {
+  var svgEl = document.getElementById('chSeatSvg');
+  if (!svgEl) return;
+  var selecting = false;
+  var startX, startY;
+  var box = document.getElementById('chSelectionBox');
+  var mapBody = document.getElementById('chSeatMapBody');
+  if (!mapBody) return;
+
+  mapBody.addEventListener('mousedown', function(e) {
+    if (e.target.classList && e.target.classList.contains('st-seat')) return;
+    selecting = true;
+    var rect = mapBody.getBoundingClientRect();
+    startX = e.clientX - rect.left;
+    startY = e.clientY - rect.top;
+    box.style.display = 'block';
+    box.style.left = startX + 'px';
+    box.style.top = startY + 'px';
+    box.style.width = '0';
+    box.style.height = '0';
+    e.preventDefault();
+  });
+
+  mapBody.addEventListener('mousemove', function(e) {
+    if (!selecting) return;
+    var rect = mapBody.getBoundingClientRect();
+    var curX = e.clientX - rect.left;
+    var curY = e.clientY - rect.top;
+    box.style.left = Math.min(startX, curX) + 'px';
+    box.style.top = Math.min(startY, curY) + 'px';
+    box.style.width = Math.abs(curX - startX) + 'px';
+    box.style.height = Math.abs(curY - startY) + 'px';
+  });
+
+  mapBody.addEventListener('mouseup', function(e) {
+    if (!selecting) return;
+    selecting = false;
+    box.style.display = 'none';
+    var rect = mapBody.getBoundingClientRect();
+    var svg = svgEl;
+    var vb = svg.viewBox.baseVal;
+    if (!vb) return;
+    var scaleX = vb.width / rect.width;
+    var scaleY = vb.height / rect.height;
+    var sx1 = (Math.min(startX, e.clientX - rect.left)) * scaleX;
+    var sy1 = (Math.min(startY, e.clientY - rect.top)) * scaleY;
+    var sx2 = (Math.max(startX, e.clientX - rect.left)) * scaleX;
+    var sy2 = (Math.max(startY, e.clientY - rect.top)) * scaleY;
+
+    svg.querySelectorAll('.st-seat.available, .st-seat.channel').forEach(function(seat) {
+      var cx = parseFloat(seat.getAttribute('cx'));
+      var cy = parseFloat(seat.getAttribute('cy'));
+      if (cx >= sx1 && cx <= sx2 && cy >= sy1 && cy <= sy2) {
+        var sid = seat.getAttribute('data-id');
+        if (sid) {
+          chState.selectedSeats[sid] = true;
+        }
+      }
+    });
+    chRenderSeatMap();
+    chUpdateUI();
+  });
+}
+
+// ==================== 渠道售票 - 座位图渲染（渠道颜色） ====================
+function chRenderSeatMap() {
+  var svg = document.getElementById('chSeatSvg');
+  if (!svg) return;
+  var svgWidth = 640;
+  var seatR = 10;
+  var gapX = 6, gapY = 8;
+  var centerX = svgWidth / 2;
+  var currentY = 20;
+
+  var parts = [];
+  parts.push('<svg viewBox="0 0 ' + svgWidth + ' 600" xmlns="http://www.w3.org/2000/svg">');
+
+  // 舞台标签
+  parts.push('<text x="' + centerX + '" y="' + (currentY + 8) + '" text-anchor="middle" fill="#94A3B8" font-size="13" font-weight="600" letter-spacing="4">STAGE · 舞台</text>');
+  currentY += 30;
+
+  // 按楼层分组
+  var floors = {};
+  stZoneConfig.forEach(function(zone) {
+    if (!floors[zone.floor]) floors[zone.floor] = [];
+    floors[zone.floor].push(zone);
+  });
+
+  Object.keys(floors).forEach(function(floorName) {
+    // 楼层标签
+    parts.push('<text x="' + centerX + '" y="' + (currentY + 12) + '" text-anchor="middle" fill="#64748B" font-size="14" font-weight="700">── ' + floorName + ' ──</text>');
+    currentY += 28;
+
+    floors[floorName].forEach(function(zone) {
+      var totalW = zone.seatsPerRow * (seatR * 2 + gapX) - gapX;
+      var startX = centerX - totalW / 2;
+
+      // 分区标签（不显示票价）
+      parts.push('<text class="st-zone-label" x="' + centerX + '" y="' + (currentY + 8) + '">' + zone.name + '</text>');
+      currentY += 24;
+
+      for (var r = 1; r <= zone.rows; r++) {
+        var rowLabels = ['一排','二排','三排','四排','五排','六排','七排','八排','九排','十排','十一排','十二排','十三排','十四排','十五排','十六排','十七排','十八排','十九排','二十排'];
+        var rowLabel = rowLabels[r - 1] || (r + '排');
+        parts.push('<text class="st-row-label" x="' + (startX - 10) + '" y="' + (currentY + seatR) + '">' + rowLabel + '</text>');
+
+        for (var s = 1; s <= zone.seatsPerRow; s++) {
+          var seatId = zone.id + '-' + r + '-' + s;
+          var seatData = chState.seatData[seatId];
+          if (!seatData) continue;
+          var cx = startX + (s - 1) * (seatR * 2 + gapX) + seatR;
+          var cy = currentY + seatR;
+          var cls = seatData.status;
+          var clickable = cls === 'available' || cls === 'channel';
+          var isSelected = chState.selectedSeats[seatId];
+
+          var fillColor = zone.color;
+          var strokeColor = '';
+          var strokeWidth = '';
+
+          if (isSelected) {
+            strokeColor = '#3B82F6';  // 蓝色边框
+            strokeWidth = '2.5';
+          } else if (cls === 'channel' && seatData.channel) {
+            strokeColor = chChannelColors[seatData.channel] || '#3B82F6';
+            strokeWidth = '2';
+          }
+
+          var strokeAttr = strokeColor ? ' stroke="' + strokeColor + '" stroke-width="' + strokeWidth + '"' : '';
+
+          parts.push('<circle class="st-seat ' + cls + (isSelected ? ' selected' : '') + '" data-id="' + seatId + '" cx="' + cx + '" cy="' + cy + '" r="' + seatR + '" fill="' + fillColor + '"' + strokeAttr
+            + (clickable ? ' onclick="chToggleSeat(\'' + seatId + '\')"' : '')
+            + ' onmouseenter="chShowTip(event,\'' + seatId + '\')" onmousemove="chMoveTip(event)" onmouseleave="chHideTip()"/>');
+
+          if (isSelected) {
+            parts.push('<text class="st-seat-num" x="' + cx + '" y="' + cy + '">✓</text>');
+          } else if (cls === 'channel' && seatData.channel) {
+            parts.push('<text class="st-seat-num" x="' + cx + '" y="' + cy + '">' + seatData.channel.charAt(0) + '</text>');
+          } else if (cls === 'sold') {
+            parts.push('<text class="st-seat-num" x="' + cx + '" y="' + cy + '">✕</text>');
+          }
+        }
+        currentY += seatR * 2 + gapY;
+      }
+      currentY += 16;
+    });
+    currentY += 12;
+  });
+
+  parts.push('</svg>');
+  svg.innerHTML = parts.join('');
+}
+
+// ==================== 渠道售票 - 座位交互 ====================
+function chToggleSeat(seatId) {
+  var seat = chState.seatData[seatId];
+  if (!seat) return;
+
+  if (chState.selectedSeats[seatId]) {
+    delete chState.selectedSeats[seatId];
+  } else {
+    chState.selectedSeats[seatId] = true;
+  }
+
+  chRenderSeatMap();
+  chUpdateUI();
+}
+
+// ==================== 渠道售票 - Tooltip ====================
+function chShowTip(e, seatId) {
+  var seat = chState.seatData[seatId];
+  if (!seat) return;
+  var tooltip = document.getElementById('seatTooltip');
+  var statusText = seat.status === 'sold' ? '已售' : seat.status === 'channel' ? '渠道:' + (seat.channel || '') : seat.status === 'selected' ? '已选中' : '可售';
+  tooltip.innerHTML = '<strong>' + seat.zoneName + '</strong> ' + seat.row + '排' + seat.seat + '号 [' + statusText + ']<br>¥' + seat.price;
+  tooltip.style.display = 'block';
+  chMoveTip(e);
+}
+
+function chMoveTip(e) {
+  var tooltip = document.getElementById('seatTooltip');
+  tooltip.style.left = (e.clientX - tooltip.offsetWidth / 2) + 'px';
+  tooltip.style.top = (e.clientY - tooltip.offsetHeight - 16) + 'px';
+}
+
+function chHideTip() {
+  document.getElementById('seatTooltip').style.display = 'none';
+}
+
+// ==================== 渠道售票 - 渠道管理 ====================
+function chRenderChannelList() {
+  var container = document.getElementById('chChannelList');
+  if (!container) return;
+  var html = '';
+  chState.channels.forEach(function(ch) {
+    var isActive = chState.activeChannel === ch.name;
+    html += '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:all 0.2s;margin-bottom:4px;border:1.5px solid '
+      + (isActive ? ch.color : '#E2E8F0') + ';background:' + (isActive ? ch.color + '15' : '#fff') + ';" onclick="chSelectChannel(\'' + ch.name + '\')">';
+    html += '  <div style="width:12px;height:12px;border-radius:3px;background:' + ch.color + ';flex-shrink:0;"></div>';
+    html += '  <span style="flex:1;font-size:12.5px;font-weight:' + (isActive ? '600' : '400') + ';color:' + (isActive ? ch.color : '#2D3748') + ';">' + ch.name + '</span>';
+    html += '  <span style="font-size:11px;color:#94A3B8;">' + ch.count + '座</span>';
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function chSelectChannel(name) {
+  chState.activeChannel = name;
+  chRenderChannelList();
+  chUpdateUI();
+}
+
+var chSelectedColor = '#FF6B35';
+
+function chAddChannel() {
+  document.getElementById('chNewChannelName').value = '';
+  chSelectedColor = '#FF6B35';
+  // 重置颜色选择
+  document.querySelectorAll('#chColorPicker .st-color-option').forEach(function(el) {
+    el.classList.remove('active');
+  });
+  document.getElementById('chAddChannelModal').style.display = 'flex';
+}
+
+function chCloseAddChannelModal() {
+  document.getElementById('chAddChannelModal').style.display = 'none';
+}
+
+function chSelectColor(el, color) {
+  chSelectedColor = color;
+  document.querySelectorAll('#chColorPicker .st-color-option').forEach(function(e) {
+    e.classList.remove('active');
+  });
+  el.classList.add('active');
+}
+
+function chConfirmAddChannel() {
+  var name = document.getElementById('chNewChannelName').value.trim();
+  if (!name) { showToast('warning', '请输入渠道名称'); return; }
+  var exists = chState.channels.some(function(ch) { return ch.name === name; });
+  if (exists) { showToast('warning', '渠道"' + name + '"已存在'); return; }
+  chState.channels.push({ name: name, color: chSelectedColor, count: 0 });
+  chChannelColors[name] = chSelectedColor;
+  chRenderChannelList();
+  chCloseAddChannelModal();
+  showToast('success', '已添加渠道: ' + name);
+}
+
+// ==================== 渠道售票 - 分配/取消/清空 ====================
+function chAssignChannel() {
+  var selectedKeys = Object.keys(chState.selectedSeats);
+  if (selectedKeys.length === 0) { showToast('warning', '请先选择座位'); return; }
+  if (!chState.activeChannel) { showToast('warning', '请先选择目标渠道'); return; }
+
+  var channelName = chState.activeChannel;
+  selectedKeys.forEach(function(sid) {
+    if (chState.seatData[sid]) {
+      chState.seatData[sid].status = 'channel';
+      chState.seatData[sid].channel = channelName;
+    }
+  });
+
+  // 更新渠道计数
+  chState.channels.forEach(function(ch) {
+    if (ch.name === channelName) {
+      ch.count += selectedKeys.length;
+    }
+  });
+
+  chState.selectedSeats = {};
+  chRenderSeatMap();
+  chRenderChannelList();
+  chUpdateUI();
+  showToast('success', '已将 ' + selectedKeys.length + ' 个座位分配到 ' + channelName);
+}
+
+function chCancelAssign() {
+  var selectedKeys = Object.keys(chState.selectedSeats);
+  if (selectedKeys.length === 0) { showToast('warning', '请先选择座位'); return; }
+
+  selectedKeys.forEach(function(sid) {
+    if (chState.seatData[sid] && chState.seatData[sid].status === 'channel') {
+      var oldChannel = chState.seatData[sid].channel;
+      chState.channels.forEach(function(ch) {
+        if (ch.name === oldChannel && ch.count > 0) ch.count--;
+      });
+      chState.seatData[sid].status = 'available';
+      chState.seatData[sid].channel = null;
+    }
+  });
+
+  chState.selectedSeats = {};
+  chRenderSeatMap();
+  chRenderChannelList();
+  chUpdateUI();
+  showToast('success', '已取消 ' + selectedKeys.length + ' 个座位的渠道分配');
+}
+
+function chRemoveSeat(seatId) {
+  delete chState.selectedSeats[seatId];
+  chRenderSeatMap();
+  chUpdateUI();
+}
+
+function chClearAll() {
+  chState.selectedSeats = {};
+  chRenderSeatMap();
+  chUpdateUI();
+  showToast('info', '已清空所有选择');
+}
+
+// ==================== 渠道售票 - UI更新 ====================
+function chUpdateUI() {
+  var selectedKeys = Object.keys(chState.selectedSeats);
+  var count = selectedKeys.length;
+
+  // 顶部信息已移除
+
+  // 图例栏已移除
+
+  // 底部操作栏
+  var actions = document.getElementById('chBottomActions');
+  if (actions) actions.style.display = count > 0 ? 'flex' : 'none';
+
+  // 右侧已选座位计数
+  var countEl = document.getElementById('chSelectedCount');
+  if (countEl) countEl.textContent = count + ' 个';
+
+  // 已选座位列表
+  var selectedList = document.getElementById('chSelectedList');
+  if (selectedList) {
+    if (count === 0) {
+      selectedList.innerHTML = '<div class="st-empty-hint">请在座位图上选择座位</div>';
+    } else {
+      var listHtml = '';
+      selectedKeys.forEach(function(sid) {
+        var s = chState.seatData[sid];
+        if (!s) return;
+        listHtml += '<div class="st-selected-item">';
+        listHtml += '  <div class="st-selected-item-info">';
+        listHtml += '    <span class="st-selected-item-zone" style="background:' + s.color + '20;color:' + s.color + ';">' + s.zoneName + '</span>';
+        listHtml += '    <span>' + s.row + '排' + s.seat + '号</span>';
+        listHtml += '  </div>';
+        listHtml += '  <span class="st-selected-item-price">¥' + s.price + '</span>';
+        listHtml += '  <button class="st-selected-item-remove" onclick="chRemoveSeat(\'' + sid + '\')"><i class="fas fa-times"></i></button>';
+        listHtml += '</div>';
+      });
+      selectedList.innerHTML = listHtml;
+    }
+  }
+
+  // 清除按钮
+  var clearBtn = document.getElementById('chClearSeatsBtn');
+  if (clearBtn) clearBtn.style.display = count > 0 ? 'flex' : 'none';
+}
+
+// ==================== 页面初始化 ====================
+document.addEventListener('DOMContentLoaded', function() {
+  // 默认初始化窗口售票Tab
+  stInit();
+});
+</script>
+
+</body>
+</html>

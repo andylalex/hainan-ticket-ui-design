@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登录 - 海南演艺管理平台</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    /* ========== Reset & Base ========== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --deep-blue: #0A1628;
+      --deep-blue-light: #122240;
+      --deep-blue-lighter: #1A2E4A;
+      --coral: #FF6B4A;
+      --coral-hover: #E85A3A;
+      --gold: #D4A853;
+      --emerald: #00C9A7;
+      --light-gray: #F5F6FA;
+      --border-color: #E8EAF0;
+      --text-primary: #1A1A2E;
+      --text-secondary: #6B7280;
+      --text-muted: #9CA3AF;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--deep-blue);
+      overflow: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* ========== Page Layout ========== */
+    .login-page {
+      display: flex;
+      height: 100vh;
+      width: 100%;
+    }
+
+    /* ========== Left Brand Side ========== */
+    .brand-side {
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(135deg, #0A1628 0%, #0F1D32 40%, #122240 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative glows */
+    .glow {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(80px);
+    }
+
+    .glow-1 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(255,107,74,0.15) 0%, transparent 70%);
+      top: -100px;
+      left: -100px;
+    }
+
+    .glow-2 {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(212,168,83,0.12) 0%, transparent 70%);
+      bottom: -80px;
+      right: -80px;
+    }
+
+    .glow-3 {
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(0,201,167,0.08) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .brand-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .brand-logo {
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+      margin-bottom: 28px;
+    }
+
+    .brand-logo i {
+      font-size: 72px;
+      background: linear-gradient(135deg, var(--coral), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 4px 20px rgba(255,107,74,0.3));
+    }
+
+    .brand-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 42px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 4px;
+      margin-bottom: 12px;
+      animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
+
+    .brand-subtitle {
+      font-size: 16px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 6px;
+      margin-bottom: 48px;
+      animation: fadeInUp 0.8s ease-out 0.6s both;
+    }
+
+    .brand-divider {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--coral), transparent);
+      margin: 0 auto 48px;
+      animation: fadeInUp 0.8s ease-out 0.7s both;
+    }
+
+    .brand-features {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      animation: fadeInUp 0.8s ease-out 0.8s both;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      justify-content: center;
+      color: rgba(255,255,255,0.5);
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 1px;
+    }
+
+    .feature-item i {
+      font-size: 16px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: var(--coral);
+      transition: all 0.3s;
+    }
+
+    .feature-item:hover i {
+      background: rgba(255,107,74,0.1);
+      border-color: rgba(255,107,74,0.2);
+      transform: scale(1.05);
+    }
+
+    /* ========== Right Login Side ========== */
+    .login-side {
+      width: 40%;
+      height: 100%;
+      background: #0F1D32;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-side::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1px;
+      height: 100%;
+      background: linear-gradient(180deg, transparent, rgba(255,255,255,0.06), transparent);
+    }
+
+    .login-form {
+      width: 100%;
+      max-width: 360px;
+      padding: 40px;
+      animation: slideInRight 0.6s ease-out;
+    }
+
+    .login-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .login-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 36px;
+      font-weight: 300;
+    }
+
+    /* ========== Input Groups ========== */
+    .login-input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .login-input-group .input-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 14px;
+      transition: color 0.2s;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .login-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 16px 0 44px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      font-family: 'Noto Sans SC', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .login-input::placeholder {
+      color: rgba(255,255,255,0.3);
+    }
+
+    .login-input:focus {
+      outline: none;
+      border-color: var(--coral);
+      background: rgba(255,107,74,0.05);
+      box-shadow: 0 0 0 3px rgba(255,107,74,0.1);
+    }
+
+    .login-input:focus ~ .input-icon {
+      color: var(--coral);
+    }
+
+    /* ========== Toggle Password ========== */
+    .toggle-password {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px;
+      transition: color 0.2s;
+      z-index: 2;
+    }
+
+    .toggle-password:hover {
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ========== Login Options Row ========== */
+    .login-options {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    /* Custom Checkbox */
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      user-select: none;
+    }
+
+    .remember-me input[type="checkbox"] {
+      display: none;
+    }
+
+    .custom-checkbox {
+      width: 16px;
+      height: 16px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .custom-checkbox i {
+      font-size: 9px;
+      color: #fff;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.2s;
+    }
+
+    .remember-me input[type="checkbox"]:checked + .custom-checkbox {
+      background: var(--coral);
+      border-color: var(--coral);
+    }
+
+    .remember-me input[type="checkbox"]:checked + .custom-checkbox i {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .forgot-password {
+      font-size: 13px;
+      color: var(--coral);
+      transition: color 0.2s;
+    }
+
+    .forgot-password:hover {
+      color: var(--coral-hover);
+    }
+
+    /* ========== Login Button ========== */
+    .login-btn {
+      width: 100%;
+      height: 48px;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--coral), var(--gold));
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Noto Sans SC', sans-serif;
+      cursor: pointer;
+      transition: all 0.25s;
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255,107,74,0.35);
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+    }
+
+    .login-btn:disabled {
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* ========== Divider ========== */
+    .login-divider {
+      display: flex;
+      align-items: center;
+      margin: 28px 0;
+      gap: 16px;
+    }
+
+    .login-divider::before,
+    .login-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .login-divider span {
+      font-size: 12px;
+      color: rgba(255,255,255,0.3);
+      white-space: nowrap;
+    }
+
+    /* ========== Social Login ========== */
+    .social-login {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+
+    .social-btn {
+      flex: 1;
+      height: 44px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.03);
+      color: rgba(255,255,255,0.5);
+      font-size: 13px;
+      font-family: 'Noto Sans SC', sans-serif;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .social-btn:hover {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.8);
+    }
+
+    .social-btn i {
+      font-size: 16px;
+    }
+
+    .social-btn.wechat:hover i {
+      color: #07C160;
+    }
+
+    /* ========== Copyright ========== */
+    .copyright {
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.5px;
+    }
+
+    /* ========== Animations ========== */
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-6px); }
+      40% { transform: translateX(6px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    /* ========== Responsive ========== */
+    @media (max-width: 768px) {
+      .brand-side {
+        display: none;
+      }
+
+      .login-side {
+        width: 100%;
+      }
+
+      .login-side::before {
+        display: none;
+      }
+
+      .login-form {
+        padding: 32px 24px;
+      }
+
+      .login-title {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-page">
+    <!-- Left Brand Side -->
+    <div class="brand-side">
+      <div class="brand-content">
+        <div class="brand-logo">
+          <i class="fas fa-masks-theater"></i>
+        </div>
+        <h1 class="brand-title">海南演艺</h1>
+        <p class="brand-subtitle">智慧票务管理平台</p>
+        <div class="brand-divider"></div>
+        <div class="brand-features">
+          <div class="feature-item">
+            <i class="fas fa-chart-line"></i>
+            <span>实时数据看板</span>
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-ticket-alt"></i>
+            <span>智能座位管理</span>
+          </div>
+          <div class="feature-item">
+            <i class="fas fa-users"></i>
+            <span>会员精准营销</span>
+          </div>
+        </div>
+      </div>
+      <!-- Decorative Glows -->
+      <div class="glow glow-1"></div>
+      <div class="glow glow-2"></div>
+      <div class="glow glow-3"></div>
+    </div>
+
+    <!-- Right Login Side -->
+    <div class="login-side">
+      <div class="login-form">
+        <h2 class="login-title">欢迎回来</h2>
+        <p class="login-desc">登录您的管理账户</p>
+
+        <div class="login-input-group">
+          <input type="text" id="username" class="login-input" placeholder="请输入账号" autocomplete="username">
+          <i class="fas fa-user input-icon"></i>
+        </div>
+
+        <div class="login-input-group">
+          <input type="password" id="password" class="login-input" placeholder="请输入密码" style="padding-right: 44px;" autocomplete="current-password">
+          <i class="fas fa-lock input-icon"></i>
+          <button class="toggle-password" onclick="togglePassword()" type="button" aria-label="切换密码可见性">
+            <i class="fas fa-eye" id="togglePwdIcon"></i>
+          </button>
+        </div>
+
+        <div class="login-options">
+          <label class="remember-me">
+            <input type="checkbox" checked>
+            <span class="custom-checkbox"><i class="fas fa-check"></i></span>
+            <span>记住我</span>
+          </label>
+          <a href="#" class="forgot-password">忘记密码？</a>
+        </div>
+
+        <button class="login-btn" onclick="handleLogin()">登录</button>
+
+        <div class="login-divider">
+          <span>或</span>
+        </div>
+
+        <div class="social-login">
+          <button class="social-btn wechat" type="button">
+            <i class="fab fa-weixin"></i>
+            <span>微信登录</span>
+          </button>
+          <button class="social-btn" type="button">
+            <i class="fas fa-mobile-alt"></i>
+            <span>验证码登录</span>
+          </button>
+        </div>
+
+        <p class="copyright">&copy; 2026 海南演艺 &middot; 智慧票务管理平台</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* Toggle password visibility */
+    function togglePassword() {
+      var input = document.getElementById('password');
+      var icon = document.getElementById('togglePwdIcon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+      } else {
+        input.type = 'password';
+        icon.className = 'fas fa-eye';
+      }
+    }
+
+    /* Shake animation for empty input */
+    function shakeInput(id) {
+      var input = document.getElementById(id);
+      input.style.borderColor = '#EF4444';
+      input.style.animation = 'shake 0.4s ease';
+      setTimeout(function() {
+        input.style.borderColor = '';
+        input.style.animation = '';
+      }, 500);
+    }
+
+    /* Handle login */
+    function handleLogin() {
+      var btn = document.querySelector('.login-btn');
+      var username = document.getElementById('username').value.trim();
+      var password = document.getElementById('password').value.trim();
+
+      if (!username || !password) {
+        if (!username) shakeInput('username');
+        if (!password) shakeInput('password');
+        return;
+      }
+
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 登录中...';
+      btn.disabled = true;
+      btn.style.opacity = '0.7';
+
+      setTimeout(function() {
+        window.location.href = 'show-management.html';
+      }, 1500);
+    }
+
+    /* Enter key to submit */
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') handleLogin();
+    });
+  </script>
+</body>
+</html>

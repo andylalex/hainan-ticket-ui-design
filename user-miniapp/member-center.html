@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>会员中心 - 海南演艺票务系统</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #F5F6FA;
+    font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  .app-container {
+    width: 100%;
+    max-width: 375px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: #F5F6FA;
+    position: relative;
+    overflow-x: hidden;
+    padding-bottom: 80px;
+  }
+
+  /* ===== 顶部会员卡区域 ===== */
+  .member-card-section {
+    position: relative;
+    width: 100%;
+    padding: 48px 20px 28px;
+    background: linear-gradient(145deg, #0A1628 0%, #0D2137 30%, #1A3A5C 60%, #2A4A3A 80%, #3D5A2E 95%, #D4A853 100%);
+    overflow: hidden;
+  }
+  .member-card-section::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(212,168,83,0.25) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .member-card-section::after {
+    content: '';
+    position: absolute;
+    bottom: -40px;
+    left: -40px;
+    width: 160px;
+    height: 160px;
+    background: radial-gradient(circle, rgba(212,168,83,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .card-glow-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #D4A853, #FFD700, #D4A853, transparent);
+    animation: glowSlide 3s ease-in-out infinite;
+  }
+  @keyframes glowSlide {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+  .card-inner {
+    position: relative;
+    z-index: 1;
+  }
+  .user-info-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .user-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2.5px solid #D4A853;
+    object-fit: cover;
+    box-shadow: 0 0 16px rgba(212,168,83,0.4);
+  }
+  .user-name-wrap { flex: 1; }
+  .user-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #FFFFFF;
+    margin-bottom: 6px;
+  }
+  .member-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, #D4A853, #F0D48A, #D4A853);
+    color: #1A1A1A;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(212,168,83,0.4);
+  }
+  .member-badge svg { width: 12px; height: 12px; }
+
+  /* 成长值进度条 */
+  .growth-section { margin-bottom: 16px; }
+  .growth-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .growth-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+  }
+  .growth-value {
+    font-size: 12px;
+    color: #D4A853;
+    font-weight: 500;
+  }
+  .growth-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .growth-bar-fill {
+    height: 100%;
+    width: 64%;
+    background: linear-gradient(90deg, #D4A853, #F0D48A);
+    border-radius: 3px;
+    position: relative;
+    transition: width 1s ease;
+  }
+  .growth-bar-fill::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    background: #F0D48A;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(212,168,83,0.6);
+  }
+  .growth-next {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 6px;
+    text-align: right;
+  }
+
+  /* 会员卡号 */
+  .card-number-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(212,168,83,0.2);
+  }
+  .card-number {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 15px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 3px;
+  }
+  .apply-physical-btn {
+    background: transparent;
+    border: 1px solid #D4A853;
+    color: #D4A853;
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Noto Sans SC', sans-serif;
+    transition: all 0.3s;
+  }
+  .apply-physical-btn:active {
+    background: rgba(212,168,83,0.15);
+  }
+
+  /* ===== 通用Section标题 ===== */
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 20px 12px;
+  }
+  .section-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1A1A2E;
+    position: relative;
+    padding-left: 12px;
+  }
+  .section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 2px;
+    bottom: 2px;
+    width: 3px;
+    background: linear-gradient(180deg, #D4A853, #F0D48A);
+    border-radius: 2px;
+  }
+  .section-more {
+    font-size: 12px;
+    color: #999;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  /* ===== 会员权益展示区 ===== */
+  .benefits-scroll {
+    display: flex;
+    gap: 12px;
+    padding: 0 20px 8px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .benefits-scroll::-webkit-scrollbar { display: none; }
+  .benefit-card {
+    flex-shrink: 0;
+    width: 120px;
+    scroll-snap-align: start;
+    background: #FFFFFF;
+    border-radius: 14px;
+    padding: 16px 10px;
+    text-align: center;
+    border: 1.5px solid #E8E8E8;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .benefit-card.unlocked {
+    border-color: rgba(212,168,83,0.4);
+    background: linear-gradient(180deg, #FFFCF5, #FFFFFF);
+  }
+  .benefit-card.unlocked::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 20%;
+    right: 20%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212,168,83,0.6), transparent);
+  }
+  .benefit-card.locked {
+    opacity: 0.5;
+    filter: grayscale(0.5);
+  }
+  .benefit-icon {
+    width: 42px;
+    height: 42px;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+  .benefit-card.unlocked .benefit-icon {
+    background: linear-gradient(135deg, rgba(212,168,83,0.15), rgba(240,212,138,0.2));
+    box-shadow: 0 2px 10px rgba(212,168,83,0.15);
+  }
+  .benefit-card.locked .benefit-icon {
+    background: #F0F0F0;
+  }
+  .benefit-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1A1A2E;
+    margin-bottom: 4px;
+  }
+  .benefit-card.locked .benefit-name { color: #999; }
+  .benefit-desc {
+    font-size: 10px;
+    color: #999;
+    line-height: 1.4;
+  }
+  .benefit-lock-icon {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 10px;
+    color: #CCC;
+  }
+
+  /* ===== 优先购演出区 ===== */
+  .priority-section {
+    padding: 0 20px 8px;
+  }
+  .countdown-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, rgba(255,107,74,0.08), rgba(255,107,74,0.03));
+    border-radius: 10px;
+    border: 1px solid rgba(255,107,74,0.15);
+  }
+  .countdown-icon {
+    font-size: 16px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+  .countdown-text {
+    font-size: 12px;
+    color: #FF6B4A;
+    font-weight: 500;
+  }
+  .countdown-timer {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 14px;
+    color: #FF6B4A;
+    font-weight: 700;
+    margin-left: auto;
+    letter-spacing: 1px;
+  }
+  .show-card {
+    display: flex;
+    gap: 12px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .show-cover {
+    width: 90px;
+    height: 120px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .show-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2px 0;
+  }
+  .show-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1A1A2E;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .show-meta {
+    font-size: 11px;
+    color: #999;
+    line-height: 1.6;
+  }
+  .show-meta .priority-time {
+    color: #D4A853;
+    font-weight: 500;
+  }
+  .show-action-btn {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #D4A853, #E8C97A);
+    color: #1A1A2E;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Noto Sans SC', sans-serif;
+    box-shadow: 0 2px 8px rgba(212,168,83,0.3);
+  }
+
+  /* ===== 推荐有礼 ===== */
+  .refer-section { padding: 0 20px 20px; }
+  .refer-card {
+    background: linear-gradient(135deg, #FFF9F0, #FFFFFF);
+    border-radius: 14px;
+    padding: 20px;
+    border: 1.5px solid rgba(212,168,83,0.25);
+    position: relative;
+    overflow: hidden;
+  }
+  .refer-card::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, rgba(212,168,83,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .refer-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1A1A2E;
+    margin-bottom: 6px;
+  }
+  .refer-desc {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .refer-desc strong {
+    color: #D4A853;
+    font-weight: 600;
+  }
+  .refer-actions {
+    display: flex;
+    gap: 10px;
+  }
+  .refer-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 11px 0;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+  .refer-btn.poster {
+    background: linear-gradient(135deg, #D4A853, #E8C97A);
+    color: #1A1A2E;
+    box-shadow: 0 4px 12px rgba(212,168,83,0.3);
+  }
+  .refer-btn.link {
+    background: #FFFFFF;
+    color: #D4A853;
+    border: 1.5px solid #D4A853;
+  }
+
+  /* ===== 底部TabBar ===== */
+  .tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 375px;
+    height: 64px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    box-shadow: 0 -1px 20px rgba(10,22,40,0.06);
+    z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  .tab-bar .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    text-decoration: none;
+    color: #999;
+    font-size: 10px;
+    font-weight: 500;
+    position: relative;
+    padding: 6px 0;
+    transition: color 0.25s;
+    cursor: pointer;
+  }
+  .tab-bar .tab-item i {
+    font-size: 20px;
+    transition: transform 0.25s, color 0.25s;
+  }
+  .tab-bar .tab-item.active {
+    color: #FF6B4A;
+  }
+  .tab-bar .tab-item.active i {
+    transform: scale(1.1);
+  }
+  .tab-bar .tab-item.active::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 3px;
+    background: linear-gradient(90deg, #FF6B4A, #D4A853);
+    border-radius: 0 0 3px 3px;
+  }
+  .tab-bar .tab-item:hover {
+    color: #FF6B4A;
+  }
+
+  /* ===== 装饰粒子 ===== */
+  .particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: rgba(212,168,83,0.4);
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+  }
+  .particle:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; animation-duration: 5s; }
+  .particle:nth-child(2) { left: 30%; top: 60%; animation-delay: 1s; animation-duration: 7s; }
+  .particle:nth-child(3) { left: 60%; top: 30%; animation-delay: 2s; animation-duration: 6s; }
+  .particle:nth-child(4) { left: 80%; top: 70%; animation-delay: 0.5s; animation-duration: 8s; }
+  .particle:nth-child(5) { left: 50%; top: 10%; animation-delay: 3s; animation-duration: 5.5s; }
+  .particle:nth-child(6) { left: 20%; top: 80%; animation-delay: 1.5s; animation-duration: 6.5s; }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.4; }
+    50% { transform: translateY(-15px) scale(1.5); opacity: 0.8; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- ===== 1. 顶部会员卡区域 ===== -->
+  <div class="member-card-section">
+    <div class="card-glow-line"></div>
+    <div class="particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+    <div class="card-inner">
+      <div class="user-info-row">
+        <img class="user-avatar" src="https://picsum.photos/seed/avatar88/120/120.jpg" alt="用户头像">
+        <div class="user-name-wrap">
+          <div class="user-name">林小雅</div>
+          <span class="member-badge">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            金卡会员
+          </span>
+        </div>
+      </div>
+
+      <div class="growth-section">
+        <div class="growth-header">
+          <span class="growth-label">成长值</span>
+          <span class="growth-value">3,200 / 5,000</span>
+        </div>
+        <div class="growth-bar-bg">
+          <div class="growth-bar-fill" style="width: 64%"></div>
+        </div>
+        <div class="growth-next">距钻石会员还需 1,800 成长值</div>
+      </div>
+
+      <div class="card-number-row">
+        <span class="card-number">**** **** **** 8866</span>
+        <button class="apply-physical-btn" onclick="location.href='physical-card-apply.html'">申请实体卡</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 2. 会员权益展示区 ===== -->
+  <div class="section-header">
+    <span class="section-title">会员权益</span>
+    <span class="section-more">全部权益 ›</span>
+  </div>
+  <div class="benefits-scroll">
+    <!-- 权益1: 优先购票 - 已解锁 -->
+    <div class="benefit-card unlocked">
+      <div class="benefit-icon">🎫</div>
+      <div class="benefit-name">优先购票</div>
+      <div class="benefit-desc">热门演出提前24小时抢票</div>
+    </div>
+    <!-- 权益2: 等级折扣 - 已解锁 -->
+    <div class="benefit-card unlocked">
+      <div class="benefit-icon">💎</div>
+      <div class="benefit-name">等级折扣</div>
+      <div class="benefit-desc">金卡享全场9折优惠</div>
+    </div>
+    <!-- 权益3: 生日赠礼 - 已解锁 -->
+    <div class="benefit-card unlocked">
+      <div class="benefit-icon">🎁</div>
+      <div class="benefit-name">生日赠礼</div>
+      <div class="benefit-desc">生日月专属礼包</div>
+    </div>
+    <!-- 权益4: 定期发券 - 已解锁 -->
+    <div class="benefit-card unlocked">
+      <div class="benefit-icon">🎟️</div>
+      <div class="benefit-name">定期发券</div>
+      <div class="benefit-desc">每月3张专属优惠券</div>
+    </div>
+    <!-- 权益5: 专属客服 - 未解锁 -->
+    <div class="benefit-card locked">
+      <span class="benefit-lock-icon">🔒</span>
+      <div class="benefit-icon">🎧</div>
+      <div class="benefit-name">专属客服</div>
+      <div class="benefit-desc">钻石会员尊享1对1服务</div>
+    </div>
+  </div>
+
+  <!-- ===== 3. 优先购演出区 ===== -->
+  <div class="section-header">
+    <span class="section-title">优先购演出</span>
+    <span class="section-more">更多 ›</span>
+  </div>
+  <div class="priority-section">
+    <div class="countdown-bar">
+      <span class="countdown-icon">⏰</span>
+      <span class="countdown-text">下一场优先购即将开始</span>
+      <span class="countdown-timer" id="countdown">02:15:38</span>
+    </div>
+
+    <div class="show-card">
+      <img class="show-cover" src="https://picsum.photos/seed/show1/180/240.jpg" alt="演出封面">
+      <div class="show-info">
+        <div>
+          <div class="show-name">《南海之梦》大型沉浸式歌舞秀</div>
+          <div class="show-meta">
+            海口湾演艺中心<br>
+            <span class="priority-time">优先购：04-12 10:00</span>
+          </div>
+        </div>
+        <button class="show-action-btn">即将开放</button>
+      </div>
+    </div>
+
+    <div class="show-card">
+      <img class="show-cover" src="https://picsum.photos/seed/show2/180/240.jpg" alt="演出封面">
+      <div class="show-info">
+        <div>
+          <div class="show-name">经典音乐剧《猫》中文版</div>
+          <div class="show-meta">
+            三亚保利大剧院<br>
+            <span class="priority-time">优先购：04-15 12:00</span>
+          </div>
+        </div>
+        <button class="show-action-btn">即将开放</button>
+      </div>
+    </div>
+
+    <div class="show-card">
+      <img class="show-cover" src="https://picsum.photos/seed/show3/180/240.jpg" alt="演出封面">
+      <div class="show-info">
+        <div>
+          <div class="show-name">交响音乐会「椰风海韵」</div>
+          <div class="show-meta">
+            海南省歌舞剧院<br>
+            <span class="priority-time">优先购：04-18 14:00</span>
+          </div>
+        </div>
+        <button class="show-action-btn">即将开放</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 4. 推荐有礼 ===== -->
+  <div class="section-header">
+    <span class="section-title">推荐有礼</span>
+  </div>
+  <div class="refer-section">
+    <div class="refer-card">
+      <div class="refer-title">邀请好友 赢取成长值</div>
+      <div class="refer-desc">每成功推荐一位好友注册并完成首次购票，即可获得 <strong>200成长值</strong>，上不封顶！</div>
+      <div class="refer-actions">
+        <button class="refer-btn poster">
+          <span>🖼️</span>
+          生成海报
+        </button>
+        <button class="refer-btn link">
+          <span>🔗</span>
+          复制链接
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 5. 底部TabBar ===== -->
+  <div class="tab-bar">
+    <a class="tab-item" href="home.html">
+      <i class="fas fa-home"></i>
+      <span>首页</span>
+    </a>
+    <a class="tab-item" href="show-list-detail.html">
+      <i class="fas fa-theater-masks"></i>
+      <span>演出</span>
+    </a>
+    <a class="tab-item" href="shop.html">
+      <i class="fas fa-shopping-bag"></i>
+      <span>商城</span>
+    </a>
+    <a class="tab-item active" href="member-center.html">
+      <i class="fas fa-crown"></i>
+      <span>会员</span>
+    </a>
+    <a class="tab-item" href="profile.html">
+      <i class="fas fa-user"></i>
+      <span>我的</span>
+    </a>
+  </div>
+
+</div>
+
+<script>
+  // ===== 倒计时功能 =====
+  (function() {
+    let totalSeconds = 2 * 3600 + 15 * 60 + 38;
+    const timerEl = document.getElementById('countdown');
+
+    function updateTimer() {
+      if (totalSeconds <= 0) {
+        timerEl.textContent = '已开始';
+        return;
+      }
+      totalSeconds--;
+      const h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+      const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+      const s = String(totalSeconds % 60).padStart(2, '0');
+      timerEl.textContent = h + ':' + m + ':' + s;
+    }
+    setInterval(updateTimer, 1000);
+  })();
+
+  // ===== 权益卡片横向滚动提示 =====
+  document.querySelector('.benefits-scroll').addEventListener('scroll', function() {
+    // 可在此添加滚动相关逻辑
+  });
+</script>
+
+</body>
+</html>

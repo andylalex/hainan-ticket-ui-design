@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>海南演艺票务系统 - 优惠券</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #F5F6FA;
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 375px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: #F5F6FA;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ========== Top Nav ========== */
+    .top-nav {
+      height: 44px;
+      background: linear-gradient(135deg, #0A1628 0%, #132240 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 16px;
+    }
+
+    .top-nav .back-btn {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+
+    .top-nav .back-btn:hover { background: rgba(255,255,255,0.1); }
+    .top-nav .nav-title { color: #fff; font-size: 17px; font-weight: 500; }
+
+    /* ========== Filter Tabs ========== */
+    .filter-tabs {
+      display: flex;
+      background: #fff;
+      padding: 12px 16px;
+      gap: 8px;
+      box-shadow: 0 1px 4px rgba(10, 22, 40, 0.04);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .tab-item {
+      flex: 1;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 17px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #5A6178;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #F5F6FA;
+      border: none;
+      font-family: inherit;
+    }
+
+    .tab-item.active {
+      background: linear-gradient(135deg, #FF6B4A, #FF8A6A);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(255, 107, 74, 0.3);
+    }
+
+    .tab-item:active { transform: scale(0.96); }
+
+    /* ========== Coupon List ========== */
+    .coupon-list {
+      padding: 12px 16px 24px;
+    }
+
+    .coupon-card {
+      background: #fff;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(10, 22, 40, 0.05);
+      display: flex;
+      position: relative;
+      transition: transform 0.15s;
+    }
+
+    .coupon-card:active { transform: scale(0.99); }
+
+    .coupon-card.used,
+    .coupon-card.expired {
+      opacity: 0.55;
+    }
+
+    /* Left amount section */
+    .coupon-left {
+      width: 110px;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 8px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .coupon-card:not(.used):not(.expired) .coupon-left {
+      background: linear-gradient(135deg, #FF6B4A, #FF8A6A);
+    }
+
+    .coupon-card.used .coupon-left,
+    .coupon-card.expired .coupon-left {
+      background: #C8CCD8;
+    }
+
+    /* Semicircle cutouts */
+    .coupon-left::before,
+    .coupon-left::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      width: 12px;
+      height: 12px;
+      background: #F5F6FA;
+      border-radius: 50%;
+    }
+
+    .coupon-left::before { top: -6px; }
+    .coupon-left::after { bottom: -6px; }
+
+    .coupon-amount {
+      color: #fff;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .coupon-amount .unit {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .coupon-amount .desc {
+      font-size: 11px;
+      font-weight: 400;
+      opacity: 0.9;
+    }
+
+    .coupon-type {
+      color: rgba(255,255,255,0.85);
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    /* Right info section */
+    .coupon-right {
+      flex: 1;
+      padding: 14px 14px 14px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .coupon-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0A1628;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .coupon-condition {
+      font-size: 12px;
+      color: #8E95A9;
+      margin-top: 4px;
+    }
+
+    .coupon-date {
+      font-size: 11px;
+      color: #B0B5C3;
+      margin-top: 6px;
+    }
+
+    .coupon-action {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .coupon-scope {
+      font-size: 11px;
+      color: #8E95A9;
+      background: #F5F6FA;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .use-btn {
+      padding: 6px 18px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .use-btn.active {
+      background: linear-gradient(135deg, #FF6B4A, #FF8A6A);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(255, 107, 74, 0.3);
+    }
+
+    .use-btn:active { transform: scale(0.96); }
+
+    .use-btn.disabled {
+      background: #E8E9ED;
+      color: #8E95A9;
+      cursor: default;
+    }
+
+    /* Status badge for used/expired */
+    .status-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .status-badge.used { background: #E8E9ED; color: #8E95A9; }
+    .status-badge.expired { background: #FFF0EB; color: #FF6B4A; }
+
+    /* ========== Empty State ========== */
+    .empty-state {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+    }
+
+    .empty-state.show { display: flex; }
+
+    .empty-state i {
+      font-size: 48px;
+      color: #D6D9E2;
+      margin-bottom: 16px;
+    }
+
+    .empty-state .text {
+      font-size: 14px;
+      color: #8E95A9;
+    }
+
+    .empty-state .sub-text {
+      font-size: 12px;
+      color: #B0B5C3;
+      margin-top: 6px;
+    }
+
+    /* ========== Animations ========== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .coupon-list { animation: fadeInUp 0.4s ease 0.1s both; }
+
+    .page::-webkit-scrollbar { width: 0; }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Top Nav -->
+  <div class="top-nav">
+    <a class="back-btn" href="profile.html"><i class="fas fa-chevron-left"></i></a>
+    <span class="nav-title">我的优惠券</span>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="filter-tabs">
+    <button class="tab-item active" data-filter="all" onclick="filterCoupons(this)">全部</button>
+    <button class="tab-item" data-filter="unused" onclick="filterCoupons(this)">未使用</button>
+    <button class="tab-item" data-filter="used" onclick="filterCoupons(this)">已使用</button>
+    <button class="tab-item" data-filter="expired" onclick="filterCoupons(this)">已过期</button>
+  </div>
+
+  <!-- Coupon List -->
+  <div class="coupon-list" id="couponList">
+    <!-- Coupon 1: Unused -->
+    <div class="coupon-card" data-status="unused">
+      <div class="coupon-left">
+        <div class="coupon-amount"><span class="unit">&yen;</span>20</div>
+        <div class="coupon-type">满减券</div>
+      </div>
+      <div class="coupon-right">
+        <div class="coupon-name">满100减20优惠券</div>
+        <div class="coupon-condition">全场演出通用，满100元可用</div>
+        <div class="coupon-date">有效期至 2026-05-31</div>
+        <div class="coupon-action">
+          <span class="coupon-scope">全场通用</span>
+          <button class="use-btn active">去使用</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coupon 2: Unused -->
+    <div class="coupon-card" data-status="unused">
+      <div class="coupon-left">
+        <div class="coupon-amount">8<span class="desc">折</span></div>
+        <div class="coupon-type">折扣券</div>
+      </div>
+      <div class="coupon-right">
+        <div class="coupon-name">全场8折优惠券</div>
+        <div class="coupon-condition">适用于所有自营演出，最高优惠50元</div>
+        <div class="coupon-date">有效期至 2026-06-15</div>
+        <div class="coupon-action">
+          <span class="coupon-scope">自营演出</span>
+          <button class="use-btn active">去使用</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coupon 3: Used -->
+    <div class="coupon-card used" data-status="used">
+      <div class="coupon-left">
+        <div class="coupon-amount"><span class="unit">&yen;</span>10</div>
+        <div class="coupon-type">满减券</div>
+      </div>
+      <div class="coupon-right">
+        <div class="coupon-name">满50减10优惠券</div>
+        <div class="coupon-condition">全场演出通用，满50元可用</div>
+        <div class="coupon-date">有效期至 2026-04-10</div>
+        <div class="coupon-action">
+          <span class="coupon-scope">全场通用</span>
+          <button class="use-btn disabled">已使用</button>
+        </div>
+      </div>
+      <span class="status-badge used">已使用</span>
+    </div>
+
+    <!-- Coupon 4: Expired -->
+    <div class="coupon-card expired" data-status="expired">
+      <div class="coupon-left">
+        <div class="coupon-amount"><span class="unit">&yen;</span>30</div>
+        <div class="coupon-type">满减券</div>
+      </div>
+      <div class="coupon-right">
+        <div class="coupon-name">满200减30优惠券</div>
+        <div class="coupon-condition">全场演出通用，满200元可用</div>
+        <div class="coupon-date">有效期至 2026-03-31</div>
+        <div class="coupon-action">
+          <span class="coupon-scope">全场通用</span>
+          <button class="use-btn disabled">已过期</button>
+        </div>
+      </div>
+      <span class="status-badge expired">已过期</span>
+    </div>
+
+    <!-- Coupon 5: Unused -->
+    <div class="coupon-card" data-status="unused">
+      <div class="coupon-left">
+        <div class="coupon-amount"><span class="unit">&yen;</span>50</div>
+        <div class="coupon-type">新人券</div>
+      </div>
+      <div class="coupon-right">
+        <div class="coupon-name">新用户专享满300减50</div>
+        <div class="coupon-condition">仅限首次购票使用，满300元可用</div>
+        <div class="coupon-date">有效期至 2026-07-31</div>
+        <div class="coupon-action">
+          <span class="coupon-scope">新人专享</span>
+          <button class="use-btn active">去使用</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" id="emptyState">
+    <i class="fas fa-ticket-alt"></i>
+    <div class="text">暂无优惠券</div>
+    <div class="sub-text">快去参加活动获取优惠券吧</div>
+  </div>
+
+</div>
+
+<script>
+  function filterCoupons(btn) {
+    // Update active tab
+    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+
+    const filter = btn.dataset.filter;
+    const coupons = document.querySelectorAll('.coupon-card');
+    let visibleCount = 0;
+
+    coupons.forEach(coupon => {
+      const status = coupon.dataset.status;
+      if (filter === 'all' || status === filter) {
+        coupon.style.display = 'flex';
+        visibleCount++;
+      } else {
+        coupon.style.display = 'none';
+      }
+    });
+
+    // Toggle empty state
+    const emptyState = document.getElementById('emptyState');
+    const couponList = document.getElementById('couponList');
+    if (visibleCount === 0) {
+      emptyState.classList.add('show');
+      couponList.style.display = 'none';
+    } else {
+      emptyState.classList.remove('show');
+      couponList.style.display = 'block';
+    }
+  }
+</script>
+
+</body>
+</html>

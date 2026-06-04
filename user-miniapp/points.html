@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>海南演艺票务系统 - 积分</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #F5F6FA;
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 375px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: #F5F6FA;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ========== Top Nav ========== */
+    .top-nav {
+      height: 44px;
+      background: linear-gradient(135deg, #0A1628 0%, #132240 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 16px;
+    }
+
+    .top-nav .back-btn {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+
+    .top-nav .back-btn:hover { background: rgba(255,255,255,0.1); }
+    .top-nav .nav-title { color: #fff; font-size: 17px; font-weight: 500; }
+
+    /* ========== Points Card ========== */
+    .points-card {
+      background: linear-gradient(135deg, #0A1628 0%, #132240 50%, #1a2d50 100%);
+      padding: 24px 20px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .points-card::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -30px;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle, rgba(212, 168, 83, 0.2) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .points-card::after {
+      content: '';
+      position: absolute;
+      bottom: -30px;
+      left: -20px;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(255, 107, 74, 0.12) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .points-main {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .points-label {
+      color: rgba(255,255,255,0.6);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .points-value {
+      color: #D4A853;
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .points-level {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, rgba(212, 168, 83, 0.2), rgba(212, 168, 83, 0.1));
+      border: 1px solid rgba(212, 168, 83, 0.3);
+      border-radius: 20px;
+      padding: 6px 16px;
+      color: #D4A853;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .points-level i { font-size: 14px; }
+
+    .level-progress {
+      margin-top: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .level-progress .info {
+      display: flex;
+      justify-content: space-between;
+      color: rgba(255,255,255,0.5);
+      font-size: 11px;
+      margin-bottom: 8px;
+    }
+
+    .level-progress .info .current { color: #D4A853; font-weight: 600; }
+
+    .progress-bar {
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #D4A853, #F0C75E);
+      border-radius: 3px;
+      width: 64%;
+      transition: width 0.6s ease;
+    }
+
+    /* ========== Tasks Section ========== */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 16px 12px;
+    }
+
+    .section-header .title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0A1628;
+    }
+
+    .section-header .subtitle {
+      font-size: 12px;
+      color: #8E95A9;
+    }
+
+    .tasks-card {
+      margin: 0 16px;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(10, 22, 40, 0.06);
+      overflow: hidden;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid #F5F6FA;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .task-item:last-child { border-bottom: none; }
+    .task-item:active { background: #FAFBFD; }
+
+    .task-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    .task-icon.checkin { background: linear-gradient(135deg, #FFF0EB, #FFE0D6); color: #FF6B4A; }
+    .task-icon.comment { background: linear-gradient(135deg, #E8F9F5, #D0F5EC); color: #00C9A7; }
+    .task-icon.share { background: linear-gradient(135deg, #EBF0FF, #D6E0FF); color: #4A7AFF; }
+    .task-icon.purchase { background: linear-gradient(135deg, #FFF8E7, #FFEDC2); color: #D4A853; }
+
+    .task-info {
+      flex: 1;
+    }
+
+    .task-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #0A1628;
+    }
+
+    .task-desc {
+      font-size: 11px;
+      color: #8E95A9;
+      margin-top: 2px;
+    }
+
+    .task-reward {
+      font-size: 14px;
+      font-weight: 700;
+      color: #FF6B4A;
+      flex-shrink: 0;
+    }
+
+    .task-reward .plus { font-size: 11px; font-weight: 500; }
+
+    .task-btn {
+      padding: 6px 16px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      margin-left: 10px;
+      flex-shrink: 0;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .task-btn.go {
+      background: linear-gradient(135deg, #FF6B4A, #FF8A6A);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(255, 107, 74, 0.3);
+    }
+
+    .task-btn.done {
+      background: #F0F1F5;
+      color: #8E95A9;
+    }
+
+    .task-btn:active { transform: scale(0.96); }
+
+    /* ========== Exchange Entry ========== */
+    .exchange-entry {
+      margin: 16px 16px 0;
+      background: linear-gradient(135deg, #FFF8E7, #FFEDC2);
+      border-radius: 14px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: transform 0.15s;
+      border: 1px solid rgba(212, 168, 83, 0.2);
+    }
+
+    .exchange-entry:active { transform: scale(0.98); }
+
+    .exchange-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .exchange-left i {
+      font-size: 24px;
+      color: #D4A853;
+    }
+
+    .exchange-left .text {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0A1628;
+    }
+
+    .exchange-left .desc {
+      font-size: 12px;
+      color: #8E95A9;
+      margin-top: 2px;
+    }
+
+    .exchange-arrow {
+      color: #D4A853;
+      font-size: 16px;
+    }
+
+    /* ========== Points Flow ========== */
+    .flow-list {
+      padding: 0 16px 24px;
+    }
+
+    .flow-item {
+      display: flex;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid #F0F1F5;
+    }
+
+    .flow-item:last-child { border-bottom: none; }
+
+    .flow-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    .flow-icon.earn { background: #E8F9F5; color: #00C9A7; }
+    .flow-icon.spend { background: #FFF0EB; color: #FF6B4A; }
+
+    .flow-info { flex: 1; min-width: 0; }
+
+    .flow-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #0A1628;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .flow-time {
+      font-size: 12px;
+      color: #8E95A9;
+      margin-top: 3px;
+    }
+
+    .flow-amount {
+      font-size: 16px;
+      font-weight: 600;
+      flex-shrink: 0;
+      margin-left: 12px;
+    }
+
+    .flow-amount.positive { color: #00C9A7; }
+    .flow-amount.negative { color: #FF6B4A; }
+
+    /* ========== Animations ========== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tasks-card { animation: fadeInUp 0.4s ease 0.1s both; }
+    .exchange-entry { animation: fadeInUp 0.4s ease 0.2s both; }
+    .flow-list { animation: fadeInUp 0.4s ease 0.3s both; }
+
+    .page::-webkit-scrollbar { width: 0; }
+
+    .flow-entry {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: var(--white);
+      margin: 8px 16px;
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+    .flow-entry:hover { background: #f8f8fc; }
+    .flow-entry-left { display: flex; flex-direction: column; gap: 2px; }
+    .flow-entry-title { font-size: 14px; font-weight: 500; color: var(--text-primary, #1a1a2e); }
+    .flow-entry-desc { font-size: 12px; color: var(--text-secondary, #999); }
+    .flow-entry-arrow { font-size: 18px; color: #ccc; }
+
+    .lottery-entry {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      background: linear-gradient(135deg, #FFF5F5, #FFFFFF);
+      margin: 8px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,107,74,0.15);
+      transition: transform 0.2s;
+    }
+    .lottery-entry:active { transform: scale(0.98); }
+    .lottery-entry-icon { font-size: 28px; margin-right: 12px; }
+    .lottery-entry-content { flex: 1; }
+    .lottery-entry-title { font-size: 14px; font-weight: 600; color: #FF6B4A; }
+    .lottery-entry-desc { font-size: 12px; color: #999; margin-top: 2px; }
+    .lottery-entry-arrow { font-size: 18px; color: #ccc; }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- Top Nav -->
+  <div class="top-nav">
+    <a class="back-btn" href="profile.html"><i class="fas fa-chevron-left"></i></a>
+    <span class="nav-title">我的积分</span>
+  </div>
+
+  <!-- Points Card -->
+  <div class="points-card">
+    <div class="points-main">
+      <div class="points-label">当前积分</div>
+      <div class="points-value">2,580</div>
+      <div class="points-level">
+        <i class="fas fa-crown"></i>
+        金卡会员 Lv.3
+      </div>
+    </div>
+    <div class="level-progress">
+      <div class="info">
+        <span>距下一等级还需 <span class="current">420</span> 积分</span>
+        <span>3000</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tasks Section -->
+  <div class="section-header">
+    <span class="title">积分任务</span>
+    <span class="subtitle">完成任务获取积分</span>
+  </div>
+  <div class="tasks-card">
+    <div class="task-item">
+      <div class="task-icon checkin"><i class="fas fa-calendar-check"></i></div>
+      <div class="task-info">
+        <div class="task-name">每日签到</div>
+        <div class="task-desc">每天签到获取积分，连续7天额外奖励</div>
+      </div>
+      <span class="task-reward"><span class="plus">+</span>5</span>
+      <button class="task-btn go" onclick="doTask(this)">去签到</button>
+    </div>
+    <div class="task-item">
+      <div class="task-icon comment"><i class="fas fa-comment-dots"></i></div>
+      <div class="task-info">
+        <div class="task-name">发布评论</div>
+        <div class="task-desc">对已观看演出发表评论</div>
+      </div>
+      <span class="task-reward"><span class="plus">+</span>20</span>
+      <button class="task-btn go" onclick="doTask(this)">去评论</button>
+    </div>
+    <div class="task-item">
+      <div class="task-icon share"><i class="fas fa-share-alt"></i></div>
+      <div class="task-info">
+        <div class="task-name">分享演出</div>
+        <div class="task-desc">分享演出信息给好友</div>
+      </div>
+      <span class="task-reward"><span class="plus">+</span>10</span>
+      <button class="task-btn done">已完成</button>
+    </div>
+    <div class="task-item">
+      <div class="task-icon purchase"><i class="fas fa-ticket-alt"></i></div>
+      <div class="task-info">
+        <div class="task-name">购买演出</div>
+        <div class="task-desc">每笔订单可获得积分奖励</div>
+      </div>
+      <span class="task-reward"><span class="plus">+</span>50</span>
+      <button class="task-btn go" onclick="doTask(this)">去购买</button>
+    </div>
+  </div>
+
+  <!-- Exchange Entry -->
+  <div class="exchange-entry">
+    <div class="exchange-left">
+      <i class="fas fa-gift"></i>
+      <div>
+        <div class="text">积分兑换</div>
+        <div class="desc">用积分兑换优惠券、演出票等好礼</div>
+      </div>
+    </div>
+    <span class="exchange-arrow"><i class="fas fa-chevron-right"></i></span>
+  </div>
+
+  <!-- 积分抽奖入口 -->
+  <div class="lottery-entry" onclick="location.href='lottery.html'" style="cursor:pointer;">
+    <div class="lottery-entry-icon">🎰</div>
+    <div class="lottery-entry-content">
+      <div class="lottery-entry-title">积分抽奖</div>
+      <div class="lottery-entry-desc">消耗积分赢取演出门票、会员权益等好礼</div>
+    </div>
+    <span class="lottery-entry-arrow">&rsaquo;</span>
+  </div>
+
+  <!-- 查看积分流水入口 -->
+  <div class="flow-entry" onclick="location.href='points-flow.html'" style="cursor:pointer;">
+    <div class="flow-entry-left">
+      <span class="flow-entry-title">积分流水</span>
+      <span class="flow-entry-desc">查看积分变动明细</span>
+    </div>
+    <span class="flow-entry-arrow">&rsaquo;</span>
+  </div>
+
+</div>
+
+<script>
+  function doTask(btn) {
+    if (btn.classList.contains('done')) return;
+    btn.textContent = '已完成';
+    btn.classList.remove('go');
+    btn.classList.add('done');
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,4248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+<title>运营活动 - 海南演艺票务系统</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* Force mobile viewport */
+@-ms-viewport { width: device-width; }
+@viewport { width: device-width; }
+@-webkit-viewport { width: device-width; }
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+/* ========== Sidebar ========== */
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background: linear-gradient(180deg, #0A1628 0%, #0F2035 50%, #0A1628 100%);
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  overflow: hidden;
+}
+
+/* Subtle animated gradient overlay */
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(ellipse at 20% 0%, rgba(255,107,74,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.sidebar-logo {
+  padding: 24px 20px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #FF6B4A, #D4A853);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 18px;
+  box-shadow: 0 4px 12px rgba(255,107,74,0.3);
+  flex-shrink: 0;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.logo-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.logo-sub {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 0;
+  scrollbar-width: none;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-group {
+  margin-bottom: 8px;
+}
+
+.nav-group-label {
+  padding: 8px 24px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.25);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  margin: 2px 12px;
+  border-radius: 10px;
+  color: rgba(255,255,255,0.55);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.nav-item i {
+  width: 20px;
+  text-align: center;
+  font-size: 15px;
+  transition: color 0.25s, transform 0.25s;
+}
+
+.nav-item:hover {
+  color: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.05);
+}
+
+.nav-item:hover i {
+  transform: scale(1.1);
+}
+
+.nav-item.active {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(255,107,74,0.2), rgba(255,107,74,0.08));
+  box-shadow: 0 2px 8px rgba(255,107,74,0.1);
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background: linear-gradient(180deg, #FF6B4A, #D4A853);
+  border-radius: 0 3px 3px 0;
+}
+
+.nav-item.active i {
+  color: #FF6B4A;
+}
+
+.nav-item .badge {
+  margin-left: auto;
+  background: rgba(255,107,74,0.2);
+  color: #FF6B4A;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #FF6B4A, #D4A853);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.admin-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.admin-role {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+}
+
+.logout-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: rgba(255,107,74,0.15);
+  color: #FF6B4A;
+}
+
+/* ========== CSS Variables ========== */
+:root {
+  --primary: #0A1628;
+  --primary-light: #132240;
+  --primary-lighter: #1a2d50;
+  --accent: #FF6B4A;
+  --accent-hover: #ff8266;
+  --gold: #D4A853;
+  --green: #00C9A7;
+  --bg-light: #F5F6FA;
+  --bg-white: #FFFFFF;
+  --text-primary: #1a1a2e;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --border: #e5e7eb;
+  --border-light: #f0f0f5;
+  --shadow-sm: 0 1px 3px rgba(10,22,40,0.06);
+  --shadow-md: 0 4px 12px rgba(10,22,40,0.08);
+  --shadow-lg: 0 8px 30px rgba(10,22,40,0.12);
+  --shadow-xl: 0 20px 60px rgba(10,22,40,0.15);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --sidebar-width: 240px;
+  --header-height: 64px;
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========== Reset & Base ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body {
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-light);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+}
+
+/* ========== Scrollbar ========== */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #c1c5ce; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #a0a5b0; }
+
+/* ========== Layout ========== */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ========== Main Content ========== */
+.main-content {
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #F0F2F5;
+}
+
+/* ========== Top Header ========== */
+.top-header {
+  height: var(--header-height);
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.breadcrumb span { color: var(--text-primary); font-weight: 500; }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-actions .icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg-light);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  position: relative;
+}
+
+.header-actions .icon-btn:hover {
+  background: var(--border);
+  color: var(--text-primary);
+}
+
+.header-actions .icon-btn .dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 7px;
+  height: 7px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: 2px solid var(--bg-white);
+}
+
+/* ========== Page Content ========== */
+.page-content {
+  flex: 1;
+  padding: 28px 32px;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* ========== Page Title ========== */
+.page-title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.page-title-bar h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-title-bar h2 .title-accent {
+  width: 4px;
+  height: 24px;
+  background: linear-gradient(180deg, var(--accent), var(--gold));
+  border-radius: 2px;
+}
+
+.page-title-bar .subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  font-weight: 400;
+}
+
+/* ========== Buttons ========== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition);
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), #ff8a6a);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(255,107,74,0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(255,107,74,0.4);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--bg-white);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 8px 14px;
+}
+
+.btn-ghost:hover {
+  background: var(--bg-light);
+  color: var(--text-primary);
+}
+
+.btn-sm {
+  padding: 6px 14px;
+  font-size: 12.5px;
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  color: var(--accent);
+  padding: 4px 8px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: var(--transition);
+}
+
+.btn-text:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+.btn-text.danger { color: #ef4444; }
+.btn-text.danger:hover { color: #dc2626; }
+
+/* ========== Filter Bar ========== */
+.filter-bar {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-group label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.form-select, .form-input {
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--text-primary);
+  background: var(--bg-white);
+  transition: var(--transition);
+  outline: none;
+  min-width: 140px;
+}
+
+.form-select:focus, .form-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255,107,74,0.1);
+}
+
+.search-input-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+  max-width: 320px;
+}
+
+.search-input-wrap i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.search-input-wrap input {
+  width: 100%;
+  padding-left: 36px;
+}
+
+.filter-bar .spacer { flex: 1; }
+
+/* ========== Table ========== */
+.table-card {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.table-header h3 {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.table-header .table-info {
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead th {
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: var(--bg-light);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+tbody td {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 13.5px;
+  vertical-align: middle;
+}
+
+tbody tr {
+  transition: var(--transition);
+}
+
+tbody tr:hover {
+  background: rgba(255,107,74,0.02);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.activity-cell {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.activity-cover {
+  width: 64px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-lighter));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.5);
+  font-size: 18px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.activity-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.activity-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.activity-id {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* ========== Tags / Badges ========== */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.tag-topic { background: rgba(212,168,83,0.1); color: var(--gold); }
+.tag-promo { background: rgba(255,107,74,0.1); color: var(--accent); }
+.tag-festival { background: rgba(0,201,167,0.1); color: var(--green); }
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.status-active { background: rgba(0,201,167,0.1); color: var(--green); }
+.status-active .dot { background: var(--green); }
+
+.status-ended { background: rgba(107,114,128,0.1); color: var(--text-secondary); }
+.status-ended .dot { background: var(--text-secondary); }
+
+.status-draft { background: rgba(212,168,83,0.1); color: var(--gold); }
+.status-draft .dot { background: var(--gold); }
+
+.conversion-rate {
+  font-weight: 600;
+}
+
+.conversion-rate.high { color: var(--green); }
+.conversion-rate.medium { color: var(--gold); }
+.conversion-rate.low { color: var(--text-secondary); }
+
+.actions-cell {
+  display: flex;
+  gap: 4px;
+}
+
+/* ========== Pagination ========== */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-light);
+}
+
+.pagination .page-info {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.pagination .page-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.pagination .page-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-white);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.pagination .page-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.pagination .page-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* ========== Modal ========== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10,22,40,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-overlay.show {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal {
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  width: 90%;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: slideUp 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-sm { max-width: 560px; }
+.modal-md { max-width: 720px; }
+.modal-lg { max-width: 960px; }
+.modal-xl { max-width: 1100px; }
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.modal-header h3 {
+  font-size: 17px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-header h3 i {
+  color: var(--accent);
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg-light);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+  font-size: 14px;
+}
+
+.modal-close:hover {
+  background: var(--border);
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 24px 28px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 28px;
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-light);
+}
+
+/* ========== Form ========== */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.form-group label .required {
+  color: var(--accent);
+  margin-left: 2px;
+}
+
+.form-group .hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.form-control {
+  width: 100%;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-family: inherit;
+  color: var(--text-primary);
+  transition: var(--transition);
+  outline: none;
+  background: var(--bg-white);
+}
+
+.form-control:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255,107,74,0.1);
+}
+
+textarea.form-control {
+  height: auto;
+  padding: 10px 14px;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding-bottom: 10px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-section-title i {
+  color: var(--accent);
+  font-size: 14px;
+}
+
+/* ========== Upload Area ========== */
+.upload-area {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-md);
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  background: var(--bg-light);
+}
+
+.upload-area:hover {
+  border-color: var(--accent);
+  background: rgba(255,107,74,0.03);
+}
+
+.upload-area i {
+  font-size: 28px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.upload-area p {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.upload-area .upload-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ========== Checkbox / Switch ========== */
+.switch-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.switch {
+  width: 44px;
+  height: 24px;
+  background: var(--border);
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.switch.on {
+  background: var(--accent);
+}
+
+.switch::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: var(--transition);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+
+.switch.on::after {
+  left: 22px;
+}
+
+.switch-label {
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+/* ========== Multi-select chips ========== */
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg-white);
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+  user-select: none;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.chip.selected {
+  background: rgba(255,107,74,0.08);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.chip i {
+  font-size: 11px;
+}
+
+/* ========== Charts Area ========== */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.chart-card {
+  background: var(--bg-light);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+
+.chart-card h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chart-card h4 i {
+  color: var(--accent);
+  font-size: 13px;
+}
+
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: var(--bg-light);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  text-align: center;
+}
+
+.stat-card .stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: 'Playfair Display', serif;
+}
+
+.stat-card .stat-label {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.stat-card .stat-change {
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.stat-card .stat-change.up { color: var(--green); }
+.stat-card .stat-change.down { color: #ef4444; }
+
+/* ========== Funnel ========== */
+.funnel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 0;
+}
+
+.funnel-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.funnel-bar-wrap {
+  flex: 1;
+  text-align: center;
+}
+
+.funnel-bar {
+  height: 36px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0 auto;
+  transition: width 0.6s ease;
+}
+
+.funnel-label {
+  width: 70px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+.funnel-value {
+  width: 50px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.funnel-rate {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 2px;
+}
+
+/* ========================================================
+   首页装修管理 - Page Decoration
+   ======================================================== */
+
+.deco-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  padding: 14px 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.deco-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.deco-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+}
+
+.gray-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.deco-layout {
+  display: flex;
+  gap: 20px;
+  height: calc(100vh - 180px);
+  min-height: 600px;
+}
+
+/* --- Left Component Panel --- */
+.deco-panel-left {
+  width: 240px;
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.panel-title {
+  padding: 16px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-title i {
+  color: var(--accent);
+}
+
+.component-list {
+  padding: 12px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.component-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  margin-bottom: 8px;
+  cursor: grab;
+  transition: var(--transition);
+  user-select: none;
+  background: var(--bg-white);
+}
+
+.component-item:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(255,107,74,0.1);
+}
+
+.component-item:active {
+  cursor: grabbing;
+}
+
+.component-item.dragging {
+  opacity: 0.5;
+  border-style: dashed;
+}
+
+.component-item .comp-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.comp-icon.carousel { background: rgba(255,107,74,0.1); color: var(--accent); }
+.comp-icon.search { background: rgba(212,168,83,0.1); color: var(--gold); }
+.comp-icon.nav { background: rgba(0,201,167,0.1); color: var(--green); }
+.comp-icon.hot { background: rgba(239,68,68,0.1); color: #ef4444; }
+.comp-icon.theater { background: rgba(99,102,241,0.1); color: #6366f1; }
+.comp-icon.shop { background: rgba(236,72,153,0.1); color: #ec4899; }
+.comp-icon.activity { background: rgba(34,197,94,0.1); color: #22c55e; }
+
+.component-item .comp-info {
+  flex: 1;
+}
+
+.component-item .comp-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.component-item .comp-desc {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.component-item .grip {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* --- Center Preview --- */
+.deco-preview {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--bg-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  position: relative;
+}
+
+.preview-header {
+  width: 100%;
+  padding: 14px 20px;
+  background: var(--bg-white);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.preview-header i {
+  color: var(--accent);
+}
+
+.phone-frame {
+  width: 375px;
+  height: 680px;
+  background: #fff;
+  border-radius: 36px;
+  border: 8px solid #1a1a2e;
+  margin: 20px auto;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(10,22,40,0.2), inset 0 0 0 2px rgba(255,255,255,0.1);
+}
+
+.phone-notch {
+  width: 150px;
+  height: 28px;
+  background: #1a1a2e;
+  border-radius: 0 0 18px 18px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+.phone-content {
+  height: calc(100% - 28px);
+  overflow-y: auto;
+  padding: 0;
+  position: relative;
+}
+
+.phone-content.gray-mode > .preview-component {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.preview-component {
+  border: 2px solid transparent;
+  transition: var(--transition);
+  cursor: pointer;
+  position: relative;
+}
+
+.preview-component:hover {
+  border-color: rgba(255,107,74,0.3);
+}
+
+.preview-component.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(255,107,74,0.2);
+}
+
+.preview-component .comp-actions {
+  position: absolute;
+  top: -12px;
+  right: 8px;
+  display: none;
+  gap: 4px;
+  z-index: 20;
+}
+
+.preview-component.selected .comp-actions {
+  display: flex;
+}
+
+.comp-actions button {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.comp-actions .btn-up { background: var(--green); }
+.comp-actions .btn-down { background: var(--gold); }
+.comp-actions .btn-del { background: #ef4444; }
+
+/* Preview component styles */
+.prev-carousel {
+  height: 160px;
+  background: linear-gradient(135deg, #0A1628, #1a2d50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.7);
+  font-size: 13px;
+  position: relative;
+  overflow: hidden;
+}
+
+.prev-carousel .carousel-dots {
+  position: absolute;
+  bottom: 10px;
+  display: flex;
+  gap: 6px;
+}
+
+.prev-carousel .carousel-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+}
+
+.prev-carousel .carousel-dots span.active {
+  background: var(--accent);
+  width: 18px;
+  border-radius: 3px;
+}
+
+.prev-search {
+  padding: 12px 16px;
+  background: var(--bg-light);
+}
+
+.prev-search .search-bar {
+  height: 34px;
+  background: #fff;
+  border-radius: 17px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.prev-nav-icons {
+  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.prev-nav-icon {
+  text-align: center;
+}
+
+.prev-nav-icon .icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  margin: 0 auto 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.prev-nav-icon span {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.prev-hot {
+  padding: 16px;
+}
+
+.prev-hot .section-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.prev-hot .section-title .more {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.prev-hot .show-list {
+  display: flex;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.prev-hot .show-card {
+  width: 110px;
+  flex-shrink: 0;
+}
+
+.prev-hot .show-card .poster {
+  width: 110px;
+  height: 145px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-lighter));
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.3);
+  font-size: 24px;
+}
+
+.prev-hot .show-card .show-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.prev-hot .show-card .show-price {
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+.prev-theater {
+  padding: 16px;
+}
+
+.prev-theater .section-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.prev-theater .theater-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.prev-theater .theater-item {
+  text-align: center;
+  padding: 10px 4px;
+  background: var(--bg-light);
+  border-radius: 8px;
+}
+
+.prev-theater .theater-item .theater-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+  margin: 0 auto 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+}
+
+.prev-theater .theater-item span {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.prev-shop {
+  padding: 16px;
+}
+
+.prev-shop .section-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.prev-shop .section-title .more {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.prev-shop .product-scroll {
+  display: flex;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.prev-shop .product-card {
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.prev-shop .product-card .product-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ec4899;
+  font-size: 22px;
+}
+
+.prev-shop .product-card .product-name {
+  font-size: 11px;
+  color: var(--text-primary);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.prev-shop .product-card .product-price {
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+.prev-activity {
+  padding: 16px;
+}
+
+.prev-activity .section-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.prev-activity .section-title .more {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.prev-activity .activity-banner {
+  height: 80px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--gold));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.empty-preview {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  gap: 12px;
+}
+
+.empty-preview i {
+  font-size: 48px;
+  opacity: 0.3;
+}
+
+.empty-preview p {
+  font-size: 13px;
+}
+
+/* --- Right Property Panel --- */
+.deco-panel-right {
+  width: 320px;
+  background: var(--bg-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.prop-body {
+  padding: 16px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.prop-empty {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  gap: 10px;
+  text-align: center;
+  padding: 40px;
+}
+
+.prop-empty i {
+  font-size: 36px;
+  opacity: 0.3;
+}
+
+.prop-empty p {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.prop-section {
+  margin-bottom: 20px;
+}
+
+.prop-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.prop-section-title i {
+  color: var(--accent);
+  font-size: 12px;
+}
+
+.prop-field {
+  margin-bottom: 14px;
+}
+
+.prop-field label {
+  display: block;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.prop-field .form-control {
+  height: 36px;
+  font-size: 13px;
+}
+
+.prop-field .form-select {
+  height: 36px;
+  font-size: 13px;
+  width: 100%;
+  min-width: auto;
+}
+
+.prop-upload {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  background: var(--bg-light);
+}
+
+.prop-upload:hover {
+  border-color: var(--accent);
+}
+
+.prop-upload i {
+  font-size: 22px;
+  color: var(--text-muted);
+}
+
+.prop-upload p {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.prop-img-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prop-img-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background: var(--bg-light);
+  border-radius: var(--radius-sm);
+}
+
+.prop-img-item .img-thumb {
+  width: 48px;
+  height: 32px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-lighter));
+  flex-shrink: 0;
+}
+
+.prop-img-item .img-info {
+  flex: 1;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.prop-img-item .img-remove {
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 4px;
+}
+
+.prop-img-item .img-remove:hover {
+  color: #ef4444;
+}
+
+.prop-number-input {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.prop-number-input button {
+  width: 32px;
+  height: 36px;
+  border: none;
+  background: var(--bg-light);
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.prop-number-input button:hover {
+  background: var(--border);
+}
+
+.prop-number-input input {
+  width: 50px;
+  height: 36px;
+  border: none;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  text-align: center;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  color: var(--text-primary);
+}
+
+/* ========== Toast ========== */
+.toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  background: var(--bg-white);
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  animation: slideInRight 0.3s ease;
+  min-width: 280px;
+  border-left: 4px solid var(--green);
+}
+
+.toast.error { border-left-color: #ef4444; }
+.toast.warning { border-left-color: var(--gold); }
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.toast i {
+  font-size: 16px;
+}
+
+.toast.success i { color: var(--green); }
+.toast.error i { color: #ef4444; }
+.toast.warning i { color: var(--gold); }
+
+/* ========== Version History ========== */
+.version-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.version-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-light);
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+}
+
+.version-item .version-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  flex-shrink: 0;
+}
+
+.version-item .version-dot.pending {
+  background: var(--gold);
+}
+
+.version-item .version-info {
+  flex: 1;
+}
+
+.version-item .version-time {
+  color: var(--text-muted);
+  font-size: 11.5px;
+}
+
+/* ========== Responsive helpers for the decoration page ========== */
+@media (max-width: 1440px) {
+  .deco-panel-left { width: 220px; }
+  .deco-panel-right { width: 300px; }
+}
+
+/* ========== Responsive ========== */
+@media screen and (max-width: 1024px) {
+  .sidebar {
+    width: 64px;
+    overflow: hidden;
+  }
+  .sidebar .logo-text,
+  .sidebar .logo-title,
+  .sidebar .logo-sub,
+  .sidebar .nav-group-label,
+  .sidebar .nav-item span,
+  .sidebar .nav-item .badge,
+  .sidebar .admin-info,
+  .sidebar .logout-btn span {
+    display: none;
+  }
+  .sidebar .logo-icon {
+    margin: 0 auto;
+  }
+  .sidebar-logo {
+    justify-content: center;
+    padding: 20px 0;
+  }
+  .sidebar .nav-item {
+    justify-content: center;
+    padding: 12px;
+    margin: 2px 8px;
+  }
+  .sidebar .nav-item i {
+    margin: 0;
+    font-size: 18px;
+  }
+  .sidebar-footer {
+    justify-content: center;
+    padding: 12px 0;
+  }
+  .main-content {
+    margin-left: 64px;
+    width: calc(100% - 64px);
+  }
+  .page-content {
+    padding: 16px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 240px;
+    height: 100%;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 200;
+  }
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  /* 防止任何元素溢出导致水平滚动 */
+  .page-content,
+  .kpi-grid,
+  .charts-row,
+  .member-row,
+  .venue-grid,
+  .stats-grid,
+  .data-table-wrapper,
+  .filter-bar,
+  .time-filter,
+  .tab-nav,
+  .venue-selector-bar,
+  .pagination-bar,
+  .review-list,
+  .order-stats,
+  .member-stats,
+  .coupon-grid,
+  .product-grid,
+  .activity-list,
+  .campaign-list,
+  .stat-cards,
+  .chart-card,
+  .table-card {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  /* 确保图片不溢出 */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  /* SVG图表响应式 */
+  svg {
+    max-width: 100%;
+    height: auto;
+  }
+  .sidebar.mobile-open .logo-text,
+  .sidebar.mobile-open .logo-title,
+  .sidebar.mobile-open .logo-sub,
+  .sidebar.mobile-open .nav-group-label,
+  .sidebar.mobile-open .nav-item span,
+  .sidebar.mobile-open .nav-item .badge,
+  .sidebar.mobile-open .admin-info {
+    display: flex;
+  }
+  .sidebar.mobile-open .logo-icon {
+    margin: 0;
+  }
+  .sidebar.mobile-open .sidebar-logo {
+    justify-content: flex-start;
+    padding: 24px 20px 20px;
+  }
+  .sidebar.mobile-open .nav-item {
+    justify-content: flex-start;
+    padding: 10px 20px;
+    margin: 2px 12px;
+  }
+  .sidebar.mobile-open .sidebar-footer {
+    justify-content: flex-start;
+    padding: 16px 20px;
+  }
+  .main-content {
+    margin-left: 0;
+  }
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .page-header .header-actions {
+    width: 100%;
+  }
+  /* Mobile menu button */
+  .mobile-menu-btn {
+    display: flex !important;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 150;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    background: var(--deep-blue, #0A1628);
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  /* Mobile overlay */
+  .sidebar-overlay {
+    display: block !important;
+  }
+  .sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  /* Page content top padding */
+  .page-content {
+    padding: 60px 12px 12px;
+  }
+  /* Tables */
+  .data-table-wrapper,
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -12px;
+    padding: 0 12px;
+  }
+  .data-table {
+    min-width: 600px;
+  }
+  /* Filter bars */
+  .filter-bar {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .filter-bar .filter-search {
+    width: 100%;
+  }
+  /* Grid layouts */
+  .venue-grid {
+    grid-template-columns: 1fr;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  /* Seat editor */
+  .seat-editor-layout {
+    flex-direction: column;
+    height: auto;
+    min-height: auto;
+  }
+  .property-panel {
+    width: 100%;
+  }
+  /* Pagination */
+  .pagination-bar {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+  /* Modal - bottom sheet style */
+  .modal-overlay {
+    padding: 0 8px;
+    align-items: flex-end;
+  }
+  .modal-overlay .modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 85vh;
+    border-radius: 16px 16px 0 0;
+    margin: 0;
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .modal-header {
+    padding: 16px 20px 12px;
+  }
+  .modal-body {
+    padding: 12px 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  .modal-footer {
+    padding: 12px 20px;
+    border-top: 1px solid var(--border-color);
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    border-radius: 0 0 16px 16px;
+  }
+  .modal-lg, .modal-md, .modal-sm {
+    width: 100% !important;
+  }
+  /* Form elements */
+  .form-row, .form-group-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .form-row .form-group,
+  .form-group-row .form-group {
+    width: 100%;
+    min-width: 0;
+  }
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    font-size: 16px;
+  }
+  /* ===== Activity Decoration specific ===== */
+  .activity-list {
+    width: 100%;
+  }
+  .activity-item {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .decoration-preview {
+    transform: scale(0.8);
+    transform-origin: top center;
+    margin-bottom: -40px;
+  }
+  .tab-nav {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+  }
+  .tab-nav .tab-btn {
+    flex-shrink: 0;
+  }
+  .deco-layout {
+    flex-direction: column;
+    height: auto;
+    min-height: auto;
+  }
+  .deco-panel-left {
+    width: 100%;
+    margin-bottom: 16px;
+    max-height: 300px;
+  }
+  .deco-panel-right {
+    width: 100%;
+    min-height: 400px;
+  }
+  .deco-toolbar {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .deco-toolbar-left, .deco-toolbar-right {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .funnel-label {
+    width: 50px;
+    font-size: 11px;
+  }
+  .funnel-value {
+    width: 40px;
+    font-size: 12px;
+  }
+  .topbar {
+    padding: 0 12px;
+  }
+  .topbar .topbar-search {
+    display: none;
+  }
+
+  /* ===== 字体大小响应式 ===== */
+  .page-title {
+    font-size: 20px !important;
+  }
+  .section-title {
+    font-size: 15px !important;
+  }
+  .card-title {
+    font-size: 14px !important;
+  }
+  .text-lg, .text-xl, .text-2xl, .text-3xl {
+    font-size: 14px !important;
+  }
+  .kpi-value {
+    font-size: 22px !important;
+  }
+  .kpi-label {
+    font-size: 11px !important;
+  }
+  .data-table th,
+  .data-table td {
+    font-size: 12px !important;
+    padding: 8px 10px !important;
+    white-space: nowrap;
+  }
+  .data-table th {
+    font-size: 11px !important;
+  }
+  .stat-value {
+    font-size: 20px !important;
+  }
+  .stat-label {
+    font-size: 11px !important;
+  }
+  .topbar-title {
+    font-size: 14px !important;
+  }
+  .topbar-admin-name {
+    font-size: 12px !important;
+  }
+  .badge {
+    font-size: 9px !important;
+    padding: 1px 6px !important;
+  }
+  .nav-badge {
+    font-size: 9px !important;
+    padding: 1px 6px !important;
+  }
+  .empty-state-text {
+    font-size: 14px !important;
+  }
+  .empty-state-sub {
+    font-size: 12px !important;
+  }
+  .breadcrumb {
+    font-size: 12px !important;
+  }
+  .text-secondary, .text-muted, .text-hint {
+    font-size: 12px !important;
+  }
+  .description {
+    font-size: 12px !important;
+  }
+
+  /* ===== 标签页响应式 ===== */
+  .tab-nav {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0;
+    padding: 0 12px;
+  }
+  .tab-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .tab-nav .tab-item,
+  .tab-nav .tab-btn,
+  .tab-nav button,
+  .tab-nav .nav-tab {
+    flex-shrink: 0;
+    font-size: 13px !important;
+    padding: 8px 14px !important;
+    white-space: nowrap;
+  }
+  /* Sub tabs */
+  .sub-tabs,
+  .sub-tab-nav,
+  .filter-tabs {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 0;
+  }
+  .sub-tabs::-webkit-scrollbar,
+  .sub-tab-nav::-webkit-scrollbar,
+  .filter-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .sub-tabs .tab-item,
+  .sub-tabs button,
+  .sub-tab-nav .tab-item,
+  .filter-tabs button {
+    flex-shrink: 0;
+    font-size: 12px !important;
+    padding: 6px 12px !important;
+    white-space: nowrap;
+  }
+
+  /* ===== 弹窗响应式增强 ===== */
+  .modal-title {
+    font-size: 16px !important;
+  }
+  .modal-header .close-btn,
+  .modal-header .modal-close {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 16px !important;
+  }
+  .modal-body label,
+  .modal-body .form-label {
+    font-size: 13px !important;
+    margin-bottom: 4px;
+  }
+  .modal-body .form-input,
+  .modal-body .form-select,
+  .modal-body .form-textarea {
+    font-size: 16px !important; /* 防止iOS缩放 */
+    padding: 10px 12px !important;
+  }
+  .modal-body .form-hint,
+  .modal-body .form-tip {
+    font-size: 11px !important;
+  }
+  .modal-footer .btn {
+    font-size: 13px !important;
+    padding: 8px 16px !important;
+    min-width: 0;
+  }
+  .modal-footer .btn-primary,
+  .modal-footer .btn-outline {
+    flex: 1;
+  }
+  /* Step indicator in modal */
+  .step-indicator {
+    gap: 4px !important;
+    padding: 0 12px !important;
+  }
+  .step-indicator .step {
+    font-size: 11px !important;
+    padding: 4px 10px !important;
+  }
+  .step-indicator .step-line {
+    width: 16px !important;
+  }
+  /* Tier table in modal */
+  .tier-table {
+    font-size: 12px !important;
+  }
+  .tier-table th,
+  .tier-table td {
+    padding: 6px 8px !important;
+    font-size: 11px !important;
+  }
+  .tier-table input {
+    font-size: 14px !important;
+    padding: 6px 8px !important;
+  }
+  /* Session list in modal */
+  .session-item {
+    font-size: 12px !important;
+    padding: 8px !important;
+  }
+  /* Toggle switch */
+  .toggle-switch {
+    width: 44px !important;
+    height: 24px !important;
+  }
+  .toggle-switch::after {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  /* ===== 按钮响应式 ===== */
+  .btn {
+    font-size: 13px !important;
+    padding: 8px 14px !important;
+  }
+  .btn-primary, .btn-outline {
+    font-size: 13px !important;
+  }
+  .btn-sm {
+    font-size: 12px !important;
+    padding: 5px 10px !important;
+  }
+  .btn-lg {
+    font-size: 14px !important;
+    padding: 10px 20px !important;
+  }
+  .icon-btn {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 14px !important;
+  }
+
+  /* ===== 搜索框响应式 ===== */
+  .search-input,
+  .filter-search input,
+  .search-box input {
+    font-size: 14px !important;
+    padding: 8px 12px 8px 34px !important;
+  }
+
+  /* ===== 下拉选择框响应式 ===== */
+  select,
+  .form-select,
+  .custom-select {
+    font-size: 14px !important;
+    padding: 8px 28px 8px 10px !important;
+  }
+
+  /* ===== 分页响应式 ===== */
+  .pagination {
+    gap: 2px !important;
+  }
+  .pagination .page-btn,
+  .pagination button {
+    min-width: 32px !important;
+    height: 32px !important;
+    font-size: 12px !important;
+    padding: 0 6px !important;
+  }
+  .pagination .page-info {
+    font-size: 11px !important;
+  }
+
+  /* ===== 确认弹窗响应式 ===== */
+  .confirm-dialog {
+    width: 90% !important;
+    max-width: 320px !important;
+    padding: 20px !important;
+  }
+  .confirm-dialog .confirm-title {
+    font-size: 16px !important;
+  }
+  .confirm-dialog .confirm-message {
+    font-size: 13px !important;
+  }
+  .confirm-dialog .confirm-actions .btn {
+    flex: 1;
+    font-size: 13px !important;
+  }
+
+  /* ===== Toast响应式 ===== */
+  .toast-notification {
+    font-size: 13px !important;
+    padding: 10px 16px !important;
+    left: 12px !important;
+    right: 12px !important;
+    bottom: 12px !important;
+  }
+
+  /* ===== 所有表格通用响应式 ===== */
+  .table-wrapper,
+  .report-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -12px;
+    padding: 0 12px;
+    max-width: 100%;
+  }
+  .simple-table,
+  .report-table,
+  .ranking-table {
+    min-width: 500px;
+    font-size: 12px;
+    width: 100%;
+  }
+  .simple-table th,
+  .simple-table td,
+  .report-table th,
+  .report-table td,
+  .ranking-table th,
+  .ranking-table td {
+    padding: 8px 10px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .simple-table thead th,
+  .report-table thead th,
+  .ranking-table thead th {
+    font-size: 10px;
+    padding: 6px 8px;
+  }
+
+  /* ===== 列表项响应式 ===== */
+  .review-item,
+  .member-item,
+  .campaign-item,
+  .activity-item,
+  .coupon-item,
+  .product-item,
+  .service-item,
+  .order-item,
+  .list-item {
+    padding: 12px !important;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .review-item .review-header,
+  .member-item .item-header,
+  .campaign-item .item-header,
+  .activity-item .item-header {
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+  .review-item .review-body,
+  .member-item .item-body,
+  .campaign-item .item-body {
+    font-size: 12px;
+    width: 100%;
+  }
+  .review-item .review-meta,
+  .member-item .item-meta,
+  .campaign-item .item-meta {
+    flex-wrap: wrap;
+    gap: 4px;
+    font-size: 11px;
+  }
+  .review-item .review-actions,
+  .campaign-item .item-actions,
+  .activity-item .item-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  /* ===== 卡片响应式 ===== */
+  .kpi-card {
+    padding: 14px !important;
+  }
+  .stat-card {
+    padding: 14px !important;
+  }
+  .chart-card {
+    padding: 14px !important;
+  }
+  .venue-card {
+    padding: 14px !important;
+  }
+  .card {
+    padding: 14px !important;
+  }
+  .info-card {
+    padding: 12px !important;
+  }
+
+  /* ===== 详情面板响应式 ===== */
+  .detail-panel,
+  .detail-card,
+  .info-panel {
+    padding: 14px !important;
+  }
+  .detail-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .detail-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .detail-row .label {
+    min-width: 0;
+  }
+
+  /* ===== 头像+信息行响应式 ===== */
+  .avatar-row,
+  .user-row,
+  .info-row {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  .avatar-row .avatar,
+  .user-row .avatar {
+    margin: 0;
+  }
+
+  /* ===== 操作栏响应式 ===== */
+  .action-bar,
+  .toolbar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .action-bar .btn,
+  .toolbar .btn {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  /* ===== 空状态响应式 ===== */
+  .empty-state {
+    padding: 40px 20px;
+  }
+  .empty-state .empty-icon {
+    font-size: 40px;
+  }
+
+  /* ===== 描述列表/dl响应式 ===== */
+  .desc-list,
+  .info-list,
+  .detail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .desc-list .desc-item,
+  .info-list .info-item,
+  .detail-list .detail-item {
+    flex-direction: column;
+    gap: 2px;
+  }
+  .desc-list .desc-label,
+  .info-list .info-label {
+    min-width: 0;
+    font-size: 12px;
+  }
+  .desc-list .desc-value,
+  .info-list .info-value {
+    font-size: 13px;
+  }
+
+  /* ===== 标签/徽章组响应式 ===== */
+  .tag-group,
+  .badge-group {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .tag {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+
+  /* ===== 进度条响应式 ===== */
+  .progress-bar {
+    height: 6px;
+  }
+
+  /* ===== 图表容器响应式 ===== */
+  .chart-wrapper,
+  .chart-container,
+  .line-chart-container,
+  .bar-chart-container,
+  .donut-chart-container,
+  .pie-chart-container {
+    min-height: 200px;
+    max-height: 300px;
+    overflow: hidden;
+  }
+
+  /* ===== 文本截断 ===== */
+  .text-ellipsis,
+  .truncate {
+    max-width: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .page-content {
+    padding: 56px 10px 10px;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<div class="app-layout">
+  <!-- ==================== Sidebar ==================== -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <i class="fas fa-masks-theater"></i>
+    </div>
+    <div class="logo-text">
+      <span class="logo-title">海南演艺票务</span>
+      <span class="logo-sub">管理后台</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-group">
+      <div class="nav-group-label">核心功能</div>
+      <a class="nav-item" href="dashboard.html">
+        <i class="fas fa-chart-pie"></i>
+        <span>数据看板</span>
+      </a>
+      <a class="nav-item" href="show-management.html">
+        <i class="fas fa-theater-masks"></i>
+        <span>演出管理</span>
+      </a>
+      <a class="nav-item" href="ticket-sales.html">
+        <i class="fas fa-ticket"></i>
+        <span>售票管理</span>
+      </a>
+      <a class="nav-item" href="order-management.html">
+        <i class="fas fa-receipt"></i>
+        <span>订单管理</span>
+      </a>
+      <a class="nav-item" href="member-management.html">
+        <i class="fas fa-crown"></i>
+        <span>会员管理</span>
+      </a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">运营管理</div>
+      <a class="nav-item" href="marketing-center.html">
+        <i class="fas fa-bullhorn"></i>
+        <span>营销中心</span>
+      </a>
+      <a class="nav-item" href="ai-marketing.html">
+        <i class="fas fa-robot"></i>
+        <span>AI智能营销</span>
+      </a>
+      <a class="nav-item" href="banner-management.html">
+        <i class="fas fa-images"></i>
+        <span>轮播图管理</span>
+      </a>
+      <a class="nav-item" href="product-service.html">
+        <i class="fas fa-store"></i>
+        <span>商品管理</span>
+      </a>
+      <a class="nav-item active" href="activity-decoration.html">
+        <i class="fas fa-calendar-check"></i>
+        <span>运营活动</span>
+      </a>
+      <a class="nav-item" href="agent-management.html">
+        <i class="fas fa-handshake"></i>
+        <span>代理管理</span>
+      </a>
+      <a class="nav-item" href="statistics.html">
+        <i class="fas fa-chart-bar"></i>
+        <span>报表中心</span>
+      </a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">系统设置</div>
+      <a class="nav-item" href="activity-decoration.html#decoration">
+        <i class="fas fa-palette"></i>
+        <span>首页装修</span>
+      </a>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="admin-avatar">陈</div>
+    <div class="admin-info">
+      <div class="admin-name">陈思远</div>
+      <div class="admin-role">超级管理员</div>
+    </div>
+    <button class="logout-btn" title="退出登录">
+      <i class="fas fa-sign-out-alt"></i>
+    </button>
+  </div>
+</aside>
+
+  <!-- ==================== Main Content ==================== -->
+  <div class="main-content">
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="breadcrumb">
+        <i class="fas fa-home" style="font-size:13px;"></i>
+        /
+        <span id="breadcrumb-text">运营中心</span>
+        /
+        <span id="breadcrumb-page">运营活动管理</span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" title="全局搜索"><i class="fas fa-search"></i></button>
+        <button class="icon-btn" title="消息通知">
+          <i class="fas fa-bell"></i>
+          <span class="dot"></span>
+        </button>
+        <button class="icon-btn" title="帮助文档"><i class="fas fa-question-circle"></i></button>
+      </div>
+    </header>
+
+<!-- Mobile Menu Button -->
+<button class="mobile-menu-btn" id="mobileMenuBtn" style="display:none;position:fixed;top:16px;left:16px;z-index:150;width:40px;height:40px;border-radius:10px;border:none;background:var(--deep-blue);color:#fff;font-size:18px;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);">
+  <i class="fas fa-bars"></i>
+</button>
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:190;opacity:0;pointer-events:none;transition:opacity 0.3s;"></div>
+    <div class="page-content">
+
+      <!-- ============================================================
+           PAGE 1: 运营活动管理
+           ============================================================ -->
+      <div id="page-activity" class="page active">
+        <div class="page-title-bar">
+          <div>
+            <h2>
+              <span class="title-accent"></span>
+              运营活动管理
+            </h2>
+            <p class="subtitle">管理所有营销活动、专题页面和促销方案</p>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label>活动类型</label>
+            <select class="form-select" id="filter-type">
+              <option value="">全部类型</option>
+              <option value="topic">专题活动</option>
+              <option value="promo">促销活动</option>
+              <option value="festival">节日活动</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>状态</label>
+            <select class="form-select" id="filter-status">
+              <option value="">全部状态</option>
+              <option value="active">进行中</option>
+              <option value="ended">已结束</option>
+              <option value="draft">草稿</option>
+            </select>
+          </div>
+          <div class="search-input-wrap">
+            <i class="fas fa-search"></i>
+            <input type="text" class="form-input" placeholder="搜索活动名称..." id="filter-search">
+          </div>
+          <div class="spacer"></div>
+          <button class="btn btn-primary" onclick="openModal('modal-new-activity')">
+            <i class="fas fa-plus"></i> 新建活动
+          </button>
+        </div>
+
+        <!-- Activity Table -->
+        <div class="table-card">
+          <div class="table-header">
+            <h3>活动列表</h3>
+            <span class="table-info">共 8 个活动</span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th style="width:40px;"><input type="checkbox"></th>
+                <th>活动信息</th>
+                <th>类型</th>
+                <th>时间范围</th>
+                <th>参与人数</th>
+                <th>转化率</th>
+                <th>状态</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="activity-table-body">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+          <div class="pagination">
+            <div class="page-info">显示 1-8 条，共 8 条记录</div>
+            <div class="page-btns">
+              <button class="page-btn"><i class="fas fa-chevron-left"></i></button>
+              <button class="page-btn active">1</button>
+              <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           PAGE 2: 首页装修管理
+           ============================================================ -->
+      <div id="page-decoration" class="page">
+        <div class="page-title-bar">
+          <div>
+            <h2>
+              <span class="title-accent"></span>
+              首页装修管理
+            </h2>
+            <p class="subtitle">可视化拖拽配置移动端首页布局与组件</p>
+          </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="deco-toolbar">
+          <div class="deco-toolbar-left">
+            <button class="btn btn-ghost" onclick="undoAction()" title="撤销">
+              <i class="fas fa-undo"></i> 撤销
+            </button>
+            <button class="btn btn-ghost" onclick="redoAction()" title="重做">
+              <i class="fas fa-redo"></i> 重做
+            </button>
+            <div class="toolbar-divider"></div>
+            <div class="gray-toggle">
+              <span>一键置灰</span>
+              <div class="switch" id="gray-switch" onclick="toggleGrayMode()"></div>
+            </div>
+          </div>
+          <div class="deco-toolbar-right">
+            <button class="btn btn-secondary" onclick="previewPage()">
+              <i class="fas fa-eye"></i> 预览
+            </button>
+            <button class="btn btn-secondary" onclick="saveDesign()">
+              <i class="fas fa-save"></i> 保存
+            </button>
+            <button class="btn btn-primary" onclick="publishDesign()">
+              <i class="fas fa-rocket"></i> 发布
+            </button>
+          </div>
+        </div>
+
+        <!-- Decoration Layout -->
+        <div class="deco-layout">
+          <!-- Left: Component Panel -->
+          <div class="deco-panel-left">
+            <div class="panel-title">
+              <i class="fas fa-puzzle-piece"></i> 组件面板
+            </div>
+            <div class="component-list" id="component-list">
+              <div class="component-item" draggable="true" data-type="carousel">
+                <div class="comp-icon carousel"><i class="fas fa-images"></i></div>
+                <div class="comp-info">
+                  <div class="comp-name">轮播图</div>
+                  <div class="comp-desc">首页顶部广告轮播</div>
+                </div>
+                <i class="fas fa-grip-vertical grip"></i>
+              </div>
+              <div class="component-item" draggable="true" data-type="search">
+                <div class="comp-icon search"><i class="fas fa-search"></i></div>
+                <div class="comp-info">
+                  <div class="comp-name">搜索栏</div>
+                  <div class="comp-desc">演出搜索入口</div>
+                </div>
+                <i class="fas fa-grip-vertical grip"></i>
+              </div>
+              <div class="component-item" draggable="true" data-type="nav">
+                <div class="comp-icon nav"><i class="fas fa-th-large"></i></div>
+                <div class="comp-info">
+                  <div class="comp-name">功能入口</div>
+                  <div class="comp-desc">快捷功能导航图标</div>
+                </div>
+                <i class="fas fa-grip-vertical grip"></i>
+              </div>
+              <div class="component-item" draggable="true" data-type="hot">
+                <div class="comp-icon hot"><i class="fas fa-fire"></i></div>
+                <div class="comp-info">
+                  <div class="comp-name">热门推荐</div>
+                  <div class="comp-desc">热门演出推荐列表</div>
+                </div>
+                <i class="fas fa-grip-vertical grip"></i>
+              </div>
+              <div class="component-item" draggable="true" data-type="theater">
+                <div class="comp-icon theater"><i class="fas fa-building"></i></div>
+                <div class="comp-info">
+                  <div class="comp-name">剧院导航</div>
+                  <div class="comp-desc">海南剧院场馆导航</div>
+                </div>
+                <i class="fas fa-grip-vertical grip"></i>
+              </div>
+              <div class="component-item" draggable="true" data-type="shop">
+                <div class="comp-icon shop"><i class="fas fa-shopping-bag"></i></div>
+                <div class="comp-info">
+                  <div class="comp-name">周边商品</div>
+                  <div class="comp-desc">文创周边商品推荐</div>
+                </div>
+                <i class="fas fa-grip-vertical grip"></i>
+              </div>
+              <div class="component-item" draggable="true" data-type="activity">
+                <div class="comp-icon activity"><i class="fas fa-star"></i></div>
+                <div class="comp-info">
+                  <div class="comp-name">活动专区</div>
+                  <div class="comp-desc">运营活动入口展示</div>
+                </div>
+                <i class="fas fa-grip-vertical grip"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Center: Preview -->
+          <div class="deco-preview">
+            <div class="preview-header">
+              <i class="fas fa-mobile-alt"></i>
+              手机端预览 - 375 x 812
+            </div>
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-content" id="phone-content">
+                <!-- Preview components rendered by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Property Panel -->
+          <div class="deco-panel-right">
+            <div class="panel-title">
+              <i class="fas fa-sliders-h"></i> 属性配置
+            </div>
+            <div class="prop-body" id="prop-body">
+              <div class="prop-empty" id="prop-empty">
+                <i class="fas fa-hand-pointer"></i>
+                <p>请在左侧拖拽组件到预览区域，<br>或点击预览区中的组件进行编辑</p>
+              </div>
+              <div id="prop-content" style="display:none;">
+                <!-- Dynamic property content -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page-content -->
+  </div><!-- /main-content -->
+</div><!-- /app-layout -->
+
+<!-- ==================== Modal: New Activity ==================== -->
+<div class="modal-overlay" id="modal-new-activity">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3><i class="fas fa-plus-circle"></i> 新建运营活动</h3>
+      <button class="modal-close" onclick="closeModal('modal-new-activity')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-section-title"><i class="fas fa-info-circle"></i> 基本信息</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>活动名称 <span class="required">*</span></label>
+          <input type="text" class="form-control" placeholder="请输入活动名称">
+        </div>
+        <div class="form-group">
+          <label>活动类型 <span class="required">*</span></label>
+          <select class="form-control">
+            <option value="">请选择类型</option>
+            <option value="topic">专题活动</option>
+            <option value="promo">促销活动</option>
+            <option value="festival">节日活动</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>开始时间 <span class="required">*</span></label>
+          <input type="datetime-local" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>结束时间 <span class="required">*</span></label>
+          <input type="datetime-local" class="form-control">
+        </div>
+      </div>
+
+      <div class="form-section-title"><i class="fas fa-link"></i> 关联演出</div>
+      <div class="form-group">
+        <label>选择关联演出</label>
+        <div class="chip-group">
+          <span class="chip selected"><i class="fas fa-check"></i> 《天涯故事》</span>
+          <span class="chip selected"><i class="fas fa-check"></i> 《海南印象》</span>
+          <span class="chip"><i class="fas fa-plus"></i> 《椰风海韵》</span>
+          <span class="chip"><i class="fas fa-plus"></i> 《黎族风情》</span>
+          <span class="chip"><i class="fas fa-plus"></i> 《南海丝路》</span>
+          <span class="chip"><i class="fas fa-plus"></i> 《琼剧经典》</span>
+        </div>
+        <div class="hint">点击选择或取消关联演出</div>
+      </div>
+
+      <div class="form-section-title"><i class="fas fa-paint-brush"></i> 活动页面配置</div>
+      <div class="form-group">
+        <label>活动封面</label>
+        <div class="upload-area">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p>点击或拖拽上传活动封面</p>
+          <p class="upload-hint">建议尺寸 750x420px，支持 JPG/PNG，不超过 2MB</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>活动描述</label>
+        <textarea class="form-control" rows="3" placeholder="请输入活动描述信息..."></textarea>
+      </div>
+
+      <div class="form-section-title"><i class="fas fa-cog"></i> 上架设置</div>
+      <div class="form-group">
+        <div class="switch-wrap">
+          <div class="switch on" onclick="this.classList.toggle('on')"></div>
+          <span class="switch-label">创建后立即上架</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="switch-wrap">
+          <div class="switch" onclick="this.classList.toggle('on')"></div>
+          <span class="switch-label">推送消息通知</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-new-activity')">取消</button>
+      <button class="btn btn-secondary" onclick="closeModal('modal-new-activity');showToast('success','活动已保存为草稿')">存为草稿</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-new-activity');showToast('success','活动创建成功并已上架')">创建并上架</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== Modal: Activity Data ==================== -->
+<div class="modal-overlay" id="modal-activity-data">
+  <div class="modal modal-xl">
+    <div class="modal-header">
+      <h3><i class="fas fa-chart-line"></i> 活动数据分析 - <span id="data-modal-title">海南热带雨林音乐节</span></h3>
+      <button class="modal-close" onclick="closeModal('modal-activity-data')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <!-- Stats Cards -->
+      <div class="stat-cards">
+        <div class="stat-card">
+          <div class="stat-value">12,847</div>
+          <div class="stat-label">总参与人数</div>
+          <div class="stat-change up"><i class="fas fa-arrow-up"></i> 23.5% 较上周</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">3,421</div>
+          <div class="stat-label">页面浏览量</div>
+          <div class="stat-change up"><i class="fas fa-arrow-up"></i> 15.2% 较上周</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">8.7%</div>
+          <div class="stat-label">整体转化率</div>
+          <div class="stat-change down"><i class="fas fa-arrow-down"></i> 1.2% 较上周</div>
+        </div>
+      </div>
+
+      <!-- Charts -->
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h4><i class="fas fa-chart-area"></i> 参与人数趋势（近7天）</h4>
+          <canvas id="trendChart" height="200"></canvas>
+        </div>
+        <div class="chart-card">
+          <h4><i class="fas fa-filter"></i> 转化漏斗</h4>
+          <div class="funnel">
+            <div class="funnel-item">
+              <div class="funnel-label">浏览</div>
+              <div class="funnel-bar-wrap">
+                <div class="funnel-bar" style="width:100%;background:linear-gradient(90deg,#6366f1,#818cf8);">3,421</div>
+              </div>
+              <div class="funnel-value">3,421</div>
+            </div>
+            <div class="funnel-rate">转化率 68.2%</div>
+            <div class="funnel-item">
+              <div class="funnel-label">点击</div>
+              <div class="funnel-bar-wrap">
+                <div class="funnel-bar" style="width:68%;background:linear-gradient(90deg,var(--accent),#ff8a6a);">2,333</div>
+              </div>
+              <div class="funnel-value">2,333</div>
+            </div>
+            <div class="funnel-rate">转化率 55.1%</div>
+            <div class="funnel-item">
+              <div class="funnel-label">加购</div>
+              <div class="funnel-bar-wrap">
+                <div class="funnel-bar" style="width:38%;background:linear-gradient(90deg,var(--gold),#e8c468);">1,285</div>
+              </div>
+              <div class="funnel-value">1,285</div>
+            </div>
+            <div class="funnel-rate">转化率 26.6%</div>
+            <div class="funnel-item">
+              <div class="funnel-label">下单</div>
+              <div class="funnel-bar-wrap">
+                <div class="funnel-bar" style="width:18%;background:linear-gradient(90deg,var(--green),#33d4b5);">342</div>
+              </div>
+              <div class="funnel-value">342</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page Views Chart -->
+      <div class="chart-card">
+        <h4><i class="fas fa-eye"></i> 页面浏览量趋势（近7天）</h4>
+        <canvas id="pvChart" height="140"></canvas>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-activity-data')">关闭</button>
+      <button class="btn btn-primary"><i class="fas fa-download"></i> 导出报告</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== Toast Container ==================== -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+
+// Mobile menu toggle
+(function() {
+  var btn = document.getElementById('mobileMenuBtn');
+  var sidebar = document.querySelector('.sidebar');
+  var overlay = document.getElementById('sidebarOverlay');
+  if (btn && sidebar && overlay) {
+    btn.addEventListener('click', function() {
+      sidebar.classList.toggle('mobile-open');
+      overlay.classList.toggle('active');
+    });
+    overlay.addEventListener('click', function() {
+      sidebar.classList.remove('mobile-open');
+      overlay.classList.remove('active');
+    });
+  }
+})();
+// ==================== Data ====================
+const activities = [
+  {
+    id: 'ACT-20260401',
+    name: '海南热带雨林音乐节',
+    type: 'festival',
+    typeLabel: '节日活动',
+    start: '2026-04-01',
+    end: '2026-04-15',
+    participants: 12847,
+    conversion: 8.7,
+    status: 'active',
+    statusLabel: '进行中',
+    cover: 'linear-gradient(135deg, #00C9A7, #00a88a)'
+  },
+  {
+    id: 'ACT-20260325',
+    name: '三亚湾话剧季·惠民专场',
+    type: 'topic',
+    typeLabel: '专题活动',
+    start: '2026-03-25',
+    end: '2026-05-30',
+    participants: 8432,
+    conversion: 12.3,
+    status: 'active',
+    statusLabel: '进行中',
+    cover: 'linear-gradient(135deg, #6366f1, #818cf8)'
+  },
+  {
+    id: 'ACT-20260315',
+    name: '春季演出季·早鸟5折',
+    type: 'promo',
+    typeLabel: '促销活动',
+    start: '2026-03-15',
+    end: '2026-04-30',
+    participants: 23156,
+    conversion: 15.6,
+    status: 'active',
+    statusLabel: '进行中',
+    cover: 'linear-gradient(135deg, #FF6B4A, #ff8a6a)'
+  },
+  {
+    id: 'ACT-20260301',
+    name: '琼剧传承月',
+    type: 'topic',
+    typeLabel: '专题活动',
+    start: '2026-03-01',
+    end: '2026-03-31',
+    participants: 5621,
+    conversion: 6.2,
+    status: 'ended',
+    statusLabel: '已结束',
+    cover: 'linear-gradient(135deg, #D4A853, #e8c468)'
+  },
+  {
+    id: 'ACT-20260214',
+    name: '情人节特惠双人票',
+    type: 'promo',
+    typeLabel: '促销活动',
+    start: '2026-02-10',
+    end: '2026-02-14',
+    participants: 9874,
+    conversion: 18.9,
+    status: 'ended',
+    statusLabel: '已结束',
+    cover: 'linear-gradient(135deg, #ec4899, #f472b6)'
+  },
+  {
+    id: 'ACT-20260201',
+    name: '元宵节民俗展演',
+    type: 'festival',
+    typeLabel: '节日活动',
+    start: '2026-02-01',
+    end: '2026-02-15',
+    participants: 15230,
+    conversion: 10.1,
+    status: 'ended',
+    statusLabel: '已结束',
+    cover: 'linear-gradient(135deg, #f59e0b, #fbbf24)'
+  },
+  {
+    id: 'ACT-20260420',
+    name: '海南国际艺术节',
+    type: 'topic',
+    typeLabel: '专题活动',
+    start: '2026-04-20',
+    end: '2026-05-20',
+    participants: 0,
+    conversion: 0,
+    status: 'draft',
+    statusLabel: '草稿',
+    cover: 'linear-gradient(135deg, #0A1628, #1a2d50)'
+  },
+  {
+    id: 'ACT-20260501',
+    name: '五一黄金周演出嘉年华',
+    type: 'festival',
+    typeLabel: '节日活动',
+    start: '2026-05-01',
+    end: '2026-05-07',
+    participants: 0,
+    conversion: 0,
+    status: 'draft',
+    statusLabel: '草稿',
+    cover: 'linear-gradient(135deg, #22c55e, #4ade80)'
+  }
+];
+
+// ==================== Page Switching ====================
+function switchPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelector(`.nav-item[data-page="${page}"]`).classList.add('active');
+
+  const titles = {
+    activity: '运营活动管理',
+    decoration: '首页装修管理'
+  };
+
+  document.getElementById('breadcrumb-page').textContent = titles[page] || '';
+}
+
+// ==================== Render Activity Table ====================
+function renderActivityTable(data) {
+  const tbody = document.getElementById('activity-table-body');
+  if (!data) data = activities;
+
+  tbody.innerHTML = data.map(a => {
+    const typeClass = a.type === 'topic' ? 'tag-topic' : a.type === 'promo' ? 'tag-promo' : 'tag-festival';
+    const statusClass = a.status === 'active' ? 'status-active' : a.status === 'ended' ? 'status-ended' : 'status-draft';
+    const convClass = a.conversion >= 12 ? 'high' : a.conversion >= 6 ? 'medium' : 'low';
+    const convDisplay = a.conversion > 0 ? a.conversion + '%' : '-';
+
+    return `
+      <tr>
+        <td><input type="checkbox"></td>
+        <td>
+          <div class="activity-cell">
+            <div class="activity-cover" style="background:${a.cover}">
+              <i class="fas fa-image"></i>
+            </div>
+            <div>
+              <div class="activity-name">${a.name}</div>
+              <div class="activity-id">${a.id}</div>
+            </div>
+          </div>
+        </td>
+        <td><span class="tag ${typeClass}">${a.typeLabel}</span></td>
+        <td style="font-size:13px;color:var(--text-secondary);white-space:nowrap;">
+          ${a.start}<br><span style="color:var(--text-muted);">至 ${a.end}</span>
+        </td>
+        <td style="font-weight:600;">${a.participants > 0 ? a.participants.toLocaleString() : '-'}</td>
+        <td><span class="conversion-rate ${convClass}">${convDisplay}</span></td>
+        <td><span class="status-badge ${statusClass}"><span class="dot"></span>${a.statusLabel}</span></td>
+        <td>
+          <div class="actions-cell">
+            <button class="btn-text" onclick="showToast('success','进入编辑模式')"><i class="fas fa-edit"></i> 编辑</button>
+            ${a.status === 'active'
+              ? '<button class="btn-text danger" onclick="showToast(\'warning\',\'活动已下架\')"><i class="fas fa-arrow-down"></i> 下架</button>'
+              : a.status === 'ended'
+              ? '<button class="btn-text" onclick="showToast(\'success\',\'活动已重新上架\')"><i class="fas fa-arrow-up"></i> 上架</button>'
+              : '<button class="btn-text" onclick="showToast(\'success\',\'活动已上架\')"><i class="fas fa-arrow-up"></i> 上架</button>'
+            }
+            <button class="btn-text" onclick="openDataModal('${a.name}')"><i class="fas fa-chart-bar"></i> 数据</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// ==================== Filter ====================
+function filterActivities() {
+  const type = document.getElementById('filter-type').value;
+  const status = document.getElementById('filter-status').value;
+  const search = document.getElementById('filter-search').value.toLowerCase();
+
+  let filtered = activities.filter(a => {
+    if (type && a.type !== type) return false;
+    if (status && a.status !== status) return false;
+    if (search && !a.name.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  renderActivityTable(filtered);
+  document.querySelector('.table-info').textContent = `共 ${filtered.length} 个活动`;
+}
+
+document.getElementById('filter-type').addEventListener('change', filterActivities);
+document.getElementById('filter-status').addEventListener('change', filterActivities);
+document.getElementById('filter-search').addEventListener('input', filterActivities);
+
+// ==================== Modals ====================
+function openModal(id) {
+  document.getElementById(id).classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+  });
+});
+
+// ==================== Data Modal & Charts ====================
+let trendChartInstance = null;
+let pvChartInstance = null;
+
+function openDataModal(name) {
+  document.getElementById('data-modal-title').textContent = name;
+  openModal('modal-activity-data');
+
+  setTimeout(() => {
+    renderTrendChart();
+    renderPVChart();
+  }, 100);
+}
+
+function renderTrendChart() {
+  const ctx = document.getElementById('trendChart').getContext('2d');
+  if (trendChartInstance) trendChartInstance.destroy();
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+  gradient.addColorStop(0, 'rgba(255,107,74,0.15)');
+  gradient.addColorStop(1, 'rgba(255,107,74,0.01)');
+
+  trendChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['4/4', '4/5', '4/6', '4/7', '4/8', '4/9', '4/10'],
+      datasets: [{
+        label: '参与人数',
+        data: [1520, 1890, 2340, 1780, 2100, 1650, 1567],
+        borderColor: '#FF6B4A',
+        backgroundColor: gradient,
+        borderWidth: 2.5,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#FF6B4A',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0A1628',
+          titleFont: { family: 'Noto Sans SC' },
+          bodyFont: { family: 'Noto Sans SC' },
+          cornerRadius: 8,
+          padding: 12
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { family: 'Noto Sans SC', size: 12 }, color: '#9ca3af' }
+        },
+        y: {
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          ticks: { font: { family: 'Noto Sans SC', size: 12 }, color: '#9ca3af' }
+        }
+      }
+    }
+  });
+}
+
+function renderPVChart() {
+  const ctx = document.getElementById('pvChart').getContext('2d');
+  if (pvChartInstance) pvChartInstance.destroy();
+
+  pvChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['4/4', '4/5', '4/6', '4/7', '4/8', '4/9', '4/10'],
+      datasets: [{
+        label: '浏览量',
+        data: [420, 510, 680, 490, 560, 430, 331],
+        backgroundColor: 'rgba(0,201,167,0.7)',
+        borderRadius: 6,
+        borderSkipped: false,
+        barThickness: 32
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0A1628',
+          titleFont: { family: 'Noto Sans SC' },
+          bodyFont: { family: 'Noto Sans SC' },
+          cornerRadius: 8,
+          padding: 12
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { family: 'Noto Sans SC', size: 12 }, color: '#9ca3af' }
+        },
+        y: {
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          ticks: { font: { family: 'Noto Sans SC', size: 12 }, color: '#9ca3af' }
+        }
+      }
+    }
+  });
+}
+
+// ==================== Toast ====================
+function showToast(type, message) {
+  const container = document.getElementById('toast-container');
+  const icons = {
+    success: 'fas fa-check-circle',
+    error: 'fas fa-times-circle',
+    warning: 'fas fa-exclamation-triangle'
+  };
+
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<i class="${icons[type]}"></i><span>${message}</span>`;
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(40px)';
+    toast.style.transition = 'all 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
+
+// ==================== Decoration Page Logic ====================
+let previewComponents = [];
+let selectedComponentIndex = -1;
+let dragSourceIndex = -1;
+
+// Component templates for preview
+const componentTemplates = {
+  carousel: () => `
+    <div class="prev-carousel">
+      <div style="text-align:center;">
+        <i class="fas fa-images" style="font-size:28px;margin-bottom:6px;display:block;"></i>
+        轮播图区域
+      </div>
+      <div class="carousel-dots">
+        <span class="active"></span><span></span><span></span><span></span>
+      </div>
+    </div>`,
+  search: () => `
+    <div class="prev-search">
+      <div class="search-bar">
+        <i class="fas fa-search"></i>
+        搜索演出、场馆、演员...
+      </div>
+    </div>`,
+  nav: () => `
+    <div class="prev-nav-icons">
+      <div class="prev-nav-icon">
+        <div class="icon-circle" style="background:rgba(255,107,74,0.1);color:var(--accent);"><i class="fas fa-ticket"></i></div>
+        <span>演出购票</span>
+      </div>
+      <div class="prev-nav-icon">
+        <div class="icon-circle" style="background:rgba(0,201,167,0.1);color:var(--green);"><i class="fas fa-building"></i></div>
+        <span>剧院导航</span>
+      </div>
+      <div class="prev-nav-icon">
+        <div class="icon-circle" style="background:rgba(212,168,83,0.1);color:var(--gold);"><i class="fas fa-shopping-bag"></i></div>
+        <span>周边商城</span>
+      </div>
+      <div class="prev-nav-icon">
+        <div class="icon-circle" style="background:rgba(99,102,241,0.1);color:#6366f1;"><i class="fas fa-star"></i></div>
+        <span>会员中心</span>
+      </div>
+    </div>`,
+  hot: () => `
+    <div class="prev-hot">
+      <div class="section-title">
+        热门推荐
+        <span class="more">查看更多 <i class="fas fa-chevron-right"></i></span>
+      </div>
+      <div class="show-list">
+        <div class="show-card">
+          <div class="poster"><i class="fas fa-masks-theater"></i></div>
+          <div class="show-name">天涯故事</div>
+          <div class="show-price">&yen;180起</div>
+        </div>
+        <div class="show-card">
+          <div class="poster" style="background:linear-gradient(135deg,#00C9A7,#00a88a);"><i class="fas fa-music"></i></div>
+          <div class="show-name">海南印象</div>
+          <div class="show-price">&yen;280起</div>
+        </div>
+        <div class="show-card">
+          <div class="poster" style="background:linear-gradient(135deg,#D4A853,#e8c468);"><i class="fas fa-theater-masks"></i></div>
+          <div class="show-name">椰风海韵</div>
+          <div class="show-price">&yen;150起</div>
+        </div>
+      </div>
+    </div>`,
+  theater: () => `
+    <div class="prev-theater">
+      <div class="section-title">剧院导航</div>
+      <div class="theater-grid">
+        <div class="theater-item">
+          <div class="theater-icon"><i class="fas fa-landmark"></i></div>
+          <span>海南省歌舞剧院</span>
+        </div>
+        <div class="theater-item">
+          <div class="theater-icon" style="background:linear-gradient(135deg,var(--accent),#ff8a6a);"><i class="fas fa-music"></i></div>
+          <span>三亚保利剧院</span>
+        </div>
+        <div class="theater-item">
+          <div class="theater-icon" style="background:linear-gradient(135deg,var(--green),#33d4b5);"><i class="fas fa-masks-theater"></i></div>
+          <span>海口湾演艺中心</span>
+        </div>
+      </div>
+    </div>`,
+  shop: () => `
+    <div class="prev-shop">
+      <div class="section-title">
+        周边好物
+        <span class="more">更多 <i class="fas fa-chevron-right"></i></span>
+      </div>
+      <div class="product-scroll">
+        <div class="product-card">
+          <div class="product-img"><i class="fas fa-tshirt"></i></div>
+          <div class="product-name">海南印象纪念T恤</div>
+          <div class="product-price">&yen;89</div>
+        </div>
+        <div class="product-card">
+          <div class="product-img" style="background:linear-gradient(135deg,#e0e7ff,#c7d2fe);color:#6366f1;"><i class="fas fa-mug-hot"></i></div>
+          <div class="product-name">椰风海韵马克杯</div>
+          <div class="product-price">&yen;49</div>
+        </div>
+        <div class="product-card">
+          <div class="product-img" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#22c55e;"><i class="fas fa-shopping-bag"></i></div>
+          <div class="product-name">黎锦手工帆布包</div>
+          <div class="product-price">&yen;69</div>
+        </div>
+      </div>
+    </div>`,
+  activity: () => `
+    <div class="prev-activity">
+      <div class="section-title">
+        活动专区
+        <span class="more">全部活动 <i class="fas fa-chevron-right"></i></span>
+      </div>
+      <div class="activity-banner">
+        <i class="fas fa-fire" style="margin-right:8px;"></i> 春季演出季·早鸟5折
+      </div>
+    </div>`
+};
+
+const componentNames = {
+  carousel: '轮播图',
+  search: '搜索栏',
+  nav: '功能入口',
+  hot: '热门推荐',
+  theater: '剧院导航',
+  shop: '周边商品',
+  activity: '活动专区'
+};
+
+// Render preview
+function renderPreview() {
+  const container = document.getElementById('phone-content');
+
+  if (previewComponents.length === 0) {
+    container.innerHTML = `
+      <div class="empty-preview">
+        <i class="fas fa-hand-pointer"></i>
+        <p>从左侧拖拽组件到这里<br>开始搭建首页</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = previewComponents.map((comp, i) => `
+    <div class="preview-component ${i === selectedComponentIndex ? 'selected' : ''}"
+         data-index="${i}"
+         draggable="true"
+         onclick="selectComponent(${i})"
+         ondragstart="onPreviewDragStart(event, ${i})"
+         ondragover="onPreviewDragOver(event)"
+         ondrop="onPreviewDrop(event, ${i})">
+      <div class="comp-actions">
+        <button class="btn-up" onclick="event.stopPropagation();moveComponent(${i},-1)" title="上移"><i class="fas fa-chevron-up"></i></button>
+        <button class="btn-down" onclick="event.stopPropagation();moveComponent(${i},1)" title="下移"><i class="fas fa-chevron-down"></i></button>
+        <button class="btn-del" onclick="event.stopPropagation();removeComponent(${i})" title="删除"><i class="fas fa-trash"></i></button>
+      </div>
+      ${componentTemplates[comp.type]()}
+    </div>
+  `).join('');
+}
+
+// Select component
+function selectComponent(index) {
+  selectedComponentIndex = index;
+  renderPreview();
+  renderPropertyPanel();
+}
+
+// Move component
+function moveComponent(index, direction) {
+  const newIndex = index + direction;
+  if (newIndex < 0 || newIndex >= previewComponents.length) return;
+  const temp = previewComponents[index];
+  previewComponents[index] = previewComponents[newIndex];
+  previewComponents[newIndex] = temp;
+  selectedComponentIndex = newIndex;
+  renderPreview();
+  renderPropertyPanel();
+}
+
+// Remove component
+function removeComponent(index) {
+  previewComponents.splice(index, 1);
+  selectedComponentIndex = -1;
+  renderPreview();
+  renderPropertyPanel();
+  showToast('success', '组件已删除');
+}
+
+// Drag from component panel
+document.querySelectorAll('.component-item').forEach(item => {
+  item.addEventListener('dragstart', (e) => {
+    e.dataTransfer.setData('component-type', item.dataset.type);
+    item.classList.add('dragging');
+  });
+
+  item.addEventListener('dragend', () => {
+    item.classList.remove('dragging');
+  });
+});
+
+// Phone content drop zone
+const phoneContent = document.getElementById('phone-content');
+
+phoneContent.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+});
+
+phoneContent.addEventListener('drop', (e) => {
+  e.preventDefault();
+  const type = e.dataTransfer.getData('component-type');
+  if (type && componentTemplates[type]) {
+    previewComponents.push({ type });
+    selectedComponentIndex = previewComponents.length - 1;
+    renderPreview();
+    renderPropertyPanel();
+    showToast('success', `已添加「${componentNames[type]}」组件`);
+  }
+});
+
+// Preview drag reorder
+function onPreviewDragStart(e, index) {
+  dragSourceIndex = index;
+  e.dataTransfer.setData('preview-index', index.toString());
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function onPreviewDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+
+function onPreviewDrop(e, targetIndex) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  const sourceIndex = parseInt(e.dataTransfer.getData('preview-index'));
+  if (isNaN(sourceIndex) || sourceIndex === targetIndex) return;
+
+  const [moved] = previewComponents.splice(sourceIndex, 1);
+  previewComponents.splice(targetIndex, 0, moved);
+  selectedComponentIndex = targetIndex;
+  renderPreview();
+  renderPropertyPanel();
+}
+
+// ==================== Property Panel ====================
+function renderPropertyPanel() {
+  const propEmpty = document.getElementById('prop-empty');
+  const propContent = document.getElementById('prop-content');
+
+  if (selectedComponentIndex < 0 || selectedComponentIndex >= previewComponents.length) {
+    propEmpty.style.display = 'flex';
+    propContent.style.display = 'none';
+    return;
+  }
+
+  propEmpty.style.display = 'none';
+  propContent.style.display = 'block';
+
+  const comp = previewComponents[selectedComponentIndex];
+  let html = '';
+
+  // Common header
+  html += `
+    <div class="prop-section">
+      <div class="prop-section-title">
+        <i class="fas fa-cube"></i> ${componentNames[comp.type]}
+      </div>
+    </div>`;
+
+  switch (comp.type) {
+    case 'carousel':
+      html += `
+        <div class="prop-section">
+          <div class="prop-section-title"><i class="fas fa-image"></i> 轮播图片</div>
+          <div class="prop-field">
+            <label>图片列表</label>
+            <div class="prop-img-list">
+              <div class="prop-img-item">
+                <div class="img-thumb"></div>
+                <div class="img-info">banner-1.jpg<br><span style="color:var(--text-muted);">750x420</span></div>
+                <span class="img-remove" onclick="showToast('warning','图片已移除')"><i class="fas fa-times"></i></span>
+              </div>
+              <div class="prop-img-item">
+                <div class="img-thumb" style="background:linear-gradient(135deg,var(--accent),var(--gold));"></div>
+                <div class="img-info">banner-2.jpg<br><span style="color:var(--text-muted);">750x420</span></div>
+                <span class="img-remove" onclick="showToast('warning','图片已移除')"><i class="fas fa-times"></i></span>
+              </div>
+              <div class="prop-img-item">
+                <div class="img-thumb" style="background:linear-gradient(135deg,var(--green),#33d4b5);"></div>
+                <div class="img-info">banner-3.jpg<br><span style="color:var(--text-muted);">750x420</span></div>
+                <span class="img-remove" onclick="showToast('warning','图片已移除')"><i class="fas fa-times"></i></span>
+              </div>
+            </div>
+            <div class="prop-upload" style="margin-top:10px;" onclick="showToast('success','图片上传成功')">
+              <i class="fas fa-plus"></i>
+              <p>添加图片</p>
+            </div>
+          </div>
+          <div class="prop-field">
+            <label>自动播放间隔（秒）</label>
+            <select class="form-select">
+              <option>3</option>
+              <option selected>5</option>
+              <option>8</option>
+              <option>10</option>
+            </select>
+          </div>
+          <div class="prop-field">
+            <div class="switch-wrap">
+              <div class="switch on" onclick="this.classList.toggle('on')"></div>
+              <span class="switch-label">显示指示器</span>
+            </div>
+          </div>
+        </div>`;
+      break;
+
+    case 'search':
+      html += `
+        <div class="prop-section">
+          <div class="prop-section-title"><i class="fas fa-search"></i> 搜索配置</div>
+          <div class="prop-field">
+            <label>占位文字</label>
+            <input type="text" class="form-control" value="搜索演出、场馆、演员...">
+          </div>
+          <div class="prop-field">
+            <label>热门搜索词</label>
+            <div class="chip-group">
+              <span class="chip selected"><i class="fas fa-check"></i> 天涯故事</span>
+              <span class="chip selected"><i class="fas fa-check"></i> 海南印象</span>
+              <span class="chip"><i class="fas fa-plus"></i> 椰风海韵</span>
+            </div>
+          </div>
+          <div class="prop-field">
+            <label>搜索框样式</label>
+            <select class="form-select">
+              <option selected>圆角矩形</option>
+              <option>直角矩形</option>
+              <option>胶囊形</option>
+            </select>
+          </div>
+        </div>`;
+      break;
+
+    case 'nav':
+      html += `
+        <div class="prop-section">
+          <div class="prop-section-title"><i class="fas fa-th-large"></i> 功能入口配置</div>
+          <div class="prop-field">
+            <label>显示功能</label>
+            <div class="chip-group">
+              <span class="chip selected"><i class="fas fa-check"></i> 演出购票</span>
+              <span class="chip selected"><i class="fas fa-check"></i> 剧院导航</span>
+              <span class="chip selected"><i class="fas fa-check"></i> 周边商城</span>
+              <span class="chip selected"><i class="fas fa-check"></i> 会员中心</span>
+              <span class="chip"><i class="fas fa-plus"></i> 优惠券</span>
+              <span class="chip"><i class="fas fa-plus"></i> 订单查询</span>
+              <span class="chip"><i class="fas fa-plus"></i> 在线客服</span>
+              <span class="chip"><i class="fas fa-plus"></i> 关于我们</span>
+            </div>
+          </div>
+          <div class="prop-field">
+            <label>每行显示数量</label>
+            <select class="form-select">
+              <option>3个</option>
+              <option selected>4个</option>
+              <option>5个</option>
+            </select>
+          </div>
+          <div class="prop-field">
+            <label>图标样式</label>
+            <select class="form-select">
+              <option selected>圆角方形</option>
+              <option>圆形</option>
+              <option>无背景</option>
+            </select>
+          </div>
+        </div>`;
+      break;
+
+    case 'hot':
+      html += `
+        <div class="prop-section">
+          <div class="prop-section-title"><i class="fas fa-fire"></i> 热门推荐配置</div>
+          <div class="prop-field">
+            <label>推荐演出</label>
+            <div class="chip-group">
+              <span class="chip selected"><i class="fas fa-check"></i> 天涯故事</span>
+              <span class="chip selected"><i class="fas fa-check"></i> 海南印象</span>
+              <span class="chip selected"><i class="fas fa-check"></i> 椰风海韵</span>
+              <span class="chip"><i class="fas fa-plus"></i> 黎族风情</span>
+              <span class="chip"><i class="fas fa-plus"></i> 南海丝路</span>
+              <span class="chip"><i class="fas fa-plus"></i> 琼剧经典</span>
+            </div>
+            <div class="hint">点击选择要推荐的演出</div>
+          </div>
+          <div class="prop-field">
+            <label>展示数量</label>
+            <div class="prop-number-input">
+              <button onclick="this.nextElementSibling.value=Math.max(1,+this.nextElementSibling.value-1)">-</button>
+              <input type="number" value="3" min="1" max="10">
+              <button onclick="this.previousElementSibling.value=Math.min(10,+this.previousElementSibling.value+1)">+</button>
+            </div>
+          </div>
+          <div class="prop-field">
+            <label>排序方式</label>
+            <select class="form-select">
+              <option selected>综合热度</option>
+              <option>销量优先</option>
+              <option>最新上架</option>
+              <option>价格从低到高</option>
+            </select>
+          </div>
+          <div class="prop-field">
+            <div class="switch-wrap">
+              <div class="switch on" onclick="this.classList.toggle('on')"></div>
+              <span class="switch-label">显示价格</span>
+            </div>
+          </div>
+        </div>`;
+      break;
+
+    case 'theater':
+      html += `
+        <div class="prop-section">
+          <div class="prop-section-title"><i class="fas fa-building"></i> 剧院导航配置</div>
+          <div class="prop-field">
+            <label>展示剧院</label>
+            <div class="chip-group">
+              <span class="chip selected"><i class="fas fa-check"></i> 海南省歌舞剧院</span>
+              <span class="chip selected"><i class="fas fa-check"></i> 三亚保利剧院</span>
+              <span class="chip selected"><i class="fas fa-check"></i> 海口湾演艺中心</span>
+              <span class="chip"><i class="fas fa-plus"></i> 儋州市文化馆</span>
+              <span class="chip"><i class="fas fa-plus"></i> 琼海市大剧院</span>
+            </div>
+          </div>
+          <div class="prop-field">
+            <label>每行显示数量</label>
+            <select class="form-select">
+              <option selected>3个</option>
+              <option>4个</option>
+            </select>
+          </div>
+          <div class="prop-field">
+            <label>布局样式</label>
+            <select class="form-select">
+              <option selected>网格布局</option>
+              <option>横向滚动</option>
+            </select>
+          </div>
+        </div>`;
+      break;
+
+    case 'shop':
+      html += `
+        <div class="prop-section">
+          <div class="prop-section-title"><i class="fas fa-shopping-bag"></i> 周边商品配置</div>
+          <div class="prop-field">
+            <label>推荐商品</label>
+            <div class="chip-group">
+              <span class="chip selected"><i class="fas fa-check"></i> 海南印象T恤</span>
+              <span class="chip selected"><i class="fas fa-check"></i> 椰风海韵马克杯</span>
+              <span class="chip selected"><i class="fas fa-check"></i> 黎锦帆布包</span>
+              <span class="chip"><i class="fas fa-plus"></i> 椰雕摆件</span>
+              <span class="chip"><i class="fas fa-plus"></i> 明信片套装</span>
+            </div>
+          </div>
+          <div class="prop-field">
+            <label>展示数量</label>
+            <div class="prop-number-input">
+              <button onclick="this.nextElementSibling.value=Math.max(1,+this.nextElementSibling.value-1)">-</button>
+              <input type="number" value="3" min="1" max="10">
+              <button onclick="this.previousElementSibling.value=Math.min(10,+this.previousElementSibling.value+1)">+</button>
+            </div>
+          </div>
+          <div class="prop-field">
+            <div class="switch-wrap">
+              <div class="switch on" onclick="this.classList.toggle('on')"></div>
+              <span class="switch-label">显示价格</span>
+            </div>
+          </div>
+        </div>`;
+      break;
+
+    case 'activity':
+      html += `
+        <div class="prop-section">
+          <div class="prop-section-title"><i class="fas fa-star"></i> 活动专区配置</div>
+          <div class="prop-field">
+            <label>关联活动</label>
+            <select class="form-select">
+              <option selected>春季演出季·早鸟5折</option>
+              <option>海南热带雨林音乐节</option>
+              <option>三亚湾话剧季</option>
+            </select>
+          </div>
+          <div class="prop-field">
+            <label>Banner样式</label>
+            <select class="form-select">
+              <option selected>渐变背景</option>
+              <option>自定义图片</option>
+              <option>纯色背景</option>
+            </select>
+          </div>
+          <div class="prop-field">
+            <label>展示数量</label>
+            <div class="prop-number-input">
+              <button onclick="this.nextElementSibling.value=Math.max(1,+this.nextElementSibling.value-1)">-</button>
+              <input type="number" value="1" min="1" max="5">
+              <button onclick="this.previousElementSibling.value=Math.min(5,+this.previousElementSibling.value+1)">+</button>
+            </div>
+          </div>
+        </div>`;
+      break;
+  }
+
+  // Common: spacing & visibility
+  html += `
+    <div class="prop-section">
+      <div class="prop-section-title"><i class="fas fa-ruler-combined"></i> 间距与显示</div>
+      <div class="prop-field">
+        <label>上边距 (px)</label>
+        <input type="number" class="form-control" value="0" min="0" max="40">
+      </div>
+      <div class="prop-field">
+        <label>下边距 (px)</label>
+        <input type="number" class="form-control" value="0" min="0" max="40">
+      </div>
+      <div class="prop-field">
+        <div class="switch-wrap">
+          <div class="switch on" onclick="this.classList.toggle('on')"></div>
+          <span class="switch-label">显示组件</span>
+        </div>
+      </div>
+    </div>`;
+
+  propContent.innerHTML = html;
+
+  // Bind chip toggles in property panel
+  propContent.querySelectorAll('.chip-group .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      chip.classList.toggle('selected');
+      const icon = chip.querySelector('i');
+      if (chip.classList.contains('selected')) {
+        icon.className = 'fas fa-check';
+      } else {
+        icon.className = 'fas fa-plus';
+      }
+    });
+  });
+}
+
+// ==================== Gray Mode ====================
+function toggleGrayMode() {
+  const sw = document.getElementById('gray-switch');
+  sw.classList.toggle('on');
+  document.getElementById('phone-content').classList.toggle('gray-mode');
+}
+
+// ==================== Toolbar Actions ====================
+function undoAction() {
+  showToast('warning', '暂无可撤销操作');
+}
+
+function redoAction() {
+  showToast('warning', '暂无可重做操作');
+}
+
+function previewPage() {
+  if (previewComponents.length === 0) {
+    showToast('warning', '请先添加组件再预览');
+    return;
+  }
+  showToast('success', '预览已生成，可在手机端扫码查看');
+}
+
+function saveDesign() {
+  if (previewComponents.length === 0) {
+    showToast('warning', '请先添加组件再保存');
+    return;
+  }
+  showToast('success', '装修方案已保存');
+}
+
+function publishDesign() {
+  if (previewComponents.length === 0) {
+    showToast('warning', '请先添加组件再发布');
+    return;
+  }
+  showToast('success', '首页装修已发布上线');
+}
+
+// ==================== Init ====================
+renderActivityTable();
+
+// Pre-populate decoration with some components for demo
+previewComponents = [
+  { type: 'carousel' },
+  { type: 'search' },
+  { type: 'nav' },
+  { type: 'hot' },
+  { type: 'theater' },
+  { type: 'shop' },
+  { type: 'activity' }
+];
+renderPreview();
+// 根据 URL hash 自动切换页面
+if (location.hash === '#decoration') switchPage('decoration');
+</script>
+</body>
+</html>
