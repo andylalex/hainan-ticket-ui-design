@@ -1,0 +1,429 @@
+/* ========== PC Admin Unified Components ========== */
+/* 统一组件样式 - 所有 PC 管理后台页面共享 */
+
+/* ========== 1. 统一按钮样式 ========== */
+
+/* 基础按钮 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-md, 10px);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition, all 0.25s cubic-bezier(0.4, 0, 0.2, 1));
+  border: 1.5px solid transparent;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+/* 主按钮 - 新建/确认 */
+.btn-primary {
+  background: var(--accent, #FF6B4A);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(255, 107, 74, 0.3);
+}
+.btn-primary:hover {
+  background: #E85A3A;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(255, 107, 74, 0.4);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* 次要按钮 - 导出/批量操作 */
+.btn-secondary {
+  background: var(--bg-white, #FFFFFF);
+  color: var(--text-secondary, #6b7280);
+  border-color: var(--border, #e5e7eb);
+}
+.btn-secondary:hover {
+  border-color: var(--accent, #FF6B4A);
+  color: var(--accent, #FF6B4A);
+  background: rgba(255, 107, 74, 0.04);
+}
+
+/* 描边按钮 - 编辑/取消 */
+.btn-outline {
+  background: transparent;
+  color: var(--text-secondary, #6b7280);
+  border-color: var(--border, #e5e7eb);
+}
+.btn-outline:hover {
+  border-color: var(--accent, #FF6B4A);
+  color: var(--accent, #FF6B4A);
+  background: rgba(255, 107, 74, 0.04);
+}
+
+/* 文字按钮 - 轻量级操作 */
+.btn-text {
+  background: transparent;
+  color: var(--text-secondary, #6b7280);
+  border-color: transparent;
+  padding: 6px 12px;
+}
+.btn-text:hover {
+  color: var(--accent, #FF6B4A);
+  background: rgba(255, 107, 74, 0.04);
+}
+
+/* 危险按钮 */
+.btn-danger {
+  background: var(--danger, #EF4444);
+  color: #fff;
+  border-color: transparent;
+}
+.btn-danger:hover {
+  background: #DC2626;
+  transform: translateY(-1px);
+}
+
+/* 成功按钮 */
+.btn-success {
+  background: var(--success, #00C9A7);
+  color: #fff;
+  border-color: transparent;
+}
+.btn-success:hover {
+  background: #00b894;
+  transform: translateY(-1px);
+}
+
+/* 按钮尺寸 */
+.btn-lg {
+  padding: 10px 24px;
+  font-size: 14px;
+}
+
+/* 按钮禁用状态 */
+.btn:disabled,
+.btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* ========== 2. 统一下拉菜单样式 ========== */
+
+/* 下拉触发按钮 */
+.dropdown-trigger,
+.filter-dropdown-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-md, 10px);
+  border: 1.5px solid var(--border, #e5e7eb);
+  background: var(--bg-white, #FFFFFF);
+  color: var(--text-secondary, #6b7280);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition, all 0.25s cubic-bezier(0.4, 0, 0.2, 1));
+}
+.dropdown-trigger:hover,
+.filter-dropdown-btn:hover {
+  border-color: var(--accent, #FF6B4A);
+  color: var(--accent, #FF6B4A);
+  transform: translateY(-1px);
+}
+.dropdown-trigger.active,
+.filter-dropdown-btn.active {
+  border-color: var(--accent, #FF6B4A);
+  color: var(--accent, #FF6B4A);
+  background: rgba(255, 107, 74, 0.04);
+}
+
+/* 下拉层容器 */
+.dropdown-layer,
+.filter-dropdown,
+.theater-select-dropdown,
+.session-select-dropdown,
+.banner-link-dropdown,
+.vsc-assign-dropdown,
+.ss-batch-menu,
+.date-picker-popup,
+.dropdown-menu,
+.dropdown-content {
+  background: #fff;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: var(--radius-lg, 14px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  overflow: hidden;
+}
+
+/* 下拉层显示动画 */
+.dropdown-layer.show,
+.filter-dropdown.show,
+.theater-select-dropdown.show,
+.session-select-dropdown.show,
+.banner-link-dropdown.show,
+.vsc-assign-dropdown.show,
+.ss-batch-menu.show {
+  display: block;
+  animation: dropdownSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dropdownSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 下拉菜单项 */
+.dropdown-item,
+.filter-dropdown-item,
+.vsc-assign-dropdown-item {
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--text-primary, #1a1a2e);
+  cursor: pointer;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dropdown-item:hover,
+.filter-dropdown-item:hover,
+.vsc-assign-dropdown-item:hover {
+  background: var(--bg-light, #F5F6FA);
+  color: var(--accent, #FF6B4A);
+}
+.dropdown-item.active,
+.vsc-assign-dropdown-item.active-zone {
+  background: rgba(255, 107, 74, 0.08);
+  color: var(--accent, #FF6B4A);
+  font-weight: 600;
+}
+
+/* 下拉菜单分隔线 */
+.dropdown-divider {
+  height: 1px;
+  background: var(--border, #e5e7eb);
+  margin: 6px 0;
+}
+
+/* 下拉菜单头部/底部 */
+.dropdown-header,
+.dropdown-footer {
+  padding: 10px 16px;
+  font-size: 12px;
+  color: var(--text-muted, #9ca3af);
+}
+.dropdown-footer {
+  border-top: 1px solid var(--border, #e5e7eb);
+}
+
+/* ========== 3. 统一列表操作按钮（图标+文字组合） ========== */
+
+/* 操作按钮组 */
+.action-btns {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 图标+文字组合按钮 */
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm, 8px);
+  font-size: 13px;
+  font-weight: 500;
+  transition: var(--transition, all 0.25s cubic-bezier(0.4, 0, 0.2, 1));
+  background: #fff;
+  color: var(--text-secondary, #6b7280);
+  border: 1.5px solid var(--border, #e5e7eb);
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1.4;
+  min-height: 34px;
+}
+.action-btn:hover {
+  background: var(--bg-light, #F5F6FA);
+  color: var(--text-primary, #1a1a2e);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* 操作按钮类型 */
+.action-btn.view:hover {
+  background: var(--info-light, rgba(59,130,246,0.1));
+  color: var(--info, #3B82F6);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+.action-btn.edit:hover {
+  background: rgba(255, 107, 74, 0.1);
+  color: var(--accent, #FF6B4A);
+  border-color: rgba(255, 107, 74, 0.2);
+}
+.action-btn.delete:hover,
+.action-btn.danger:hover {
+  background: var(--danger-light, rgba(239,68,68,0.1));
+  color: var(--danger, #EF4444);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+.action-btn.toggle:hover,
+.action-btn.verify:hover,
+.action-btn.approve:hover {
+  background: var(--success-light, rgba(0,201,167,0.1));
+  color: var(--success, #00C9A7);
+  border-color: rgba(0, 201, 167, 0.2);
+}
+.action-btn.offline:hover,
+.action-btn.set-default:hover {
+  background: rgba(107, 114, 128, 0.1);
+  color: #6B7280;
+  border-color: rgba(107, 114, 128, 0.2);
+}
+.action-btn.assign:hover {
+  background: rgba(212, 168, 83, 0.1);
+  color: var(--gold, #D4A853);
+  border-color: rgba(212, 168, 83, 0.2);
+}
+.action-btn.refund:hover {
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--warning, #F59E0B);
+  border-color: rgba(245, 158, 11, 0.2);
+}
+
+/* 纯图标按钮（小号） */
+.action-btn-icon {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm, 6px);
+  font-size: 13px;
+  transition: var(--transition, all 0.25s cubic-bezier(0.4, 0, 0.2, 1));
+  background: transparent;
+  color: var(--text-secondary, #6b7280);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+}
+.action-btn-icon:hover {
+  background: var(--bg-light, #F5F6FA);
+  color: var(--text-primary, #1a1a2e);
+}
+
+/* ========== 4. 统一表单选择器 ========== */
+
+/* 下拉选择框 */
+.form-select {
+  height: 36px;
+  padding: 0 32px 0 12px;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: var(--radius-md, 10px);
+  font-size: 13px;
+  color: var(--text-primary, #1a1a2e);
+  background: var(--bg-white, #FFFFFF);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  transition: var(--transition, all 0.25s cubic-bezier(0.4, 0, 0.2, 1));
+}
+.form-select:focus {
+  outline: none;
+  border-color: var(--accent, #FF6B4A);
+  box-shadow: 0 0 0 3px rgba(255, 107, 74, 0.1);
+}
+
+/* ========== 5. 统一状态标签 ========== */
+
+.status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.status-tag .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+/* ========== 6. 统一工具栏按钮 ========== */
+
+.toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-md, 10px);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition, all 0.25s cubic-bezier(0.4, 0, 0.2, 1));
+  background: var(--bg-white, #FFFFFF);
+  color: var(--text-secondary, #6b7280);
+  border: 1.5px solid var(--border, #e5e7eb);
+}
+.toolbar-btn:hover {
+  border-color: var(--accent, #FF6B4A);
+  color: var(--accent, #FF6B4A);
+  background: rgba(255, 107, 74, 0.04);
+}
+
+/* ========== 7. 统一表格横向滚动 ========== */
+
+.table-wrapper,
+.data-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-wrapper::-webkit-scrollbar,
+.data-table-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-wrapper::-webkit-scrollbar-track,
+.data-table-wrapper::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb,
+.data-table-wrapper::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover,
+.data-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ========== 8. 响应式适配 ========== */
+
+@media screen and (max-width: 768px) {
+  .action-btn {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+  .btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}

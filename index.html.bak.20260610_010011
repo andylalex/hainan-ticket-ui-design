@@ -1,0 +1,5028 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>海南演艺票务系统 - UI/UX 设计总览</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A1628;
+            --accent: #FF6B4A;
+            --gold: #D4A853;
+            --green: #00C9A7;
+            --purple: #6366F1;
+            --bg: #F0F2F5;
+            --card: #FFFFFF;
+            --text: #1A202C;
+            --text-secondary: #64748B;
+            --border: #E2E8F0;
+            --shadow: 0 4px 24px rgba(10, 22, 40, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ===== Top Navigation ===== */
+        .top-nav {
+            background: var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.15);
+        }
+
+        .top-nav-inner {
+            max-width: 100%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            height: 56px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            white-space: nowrap;
+            margin-right: 20px;
+        }
+
+        .nav-logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 2px;
+            flex: 1;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .nav-tabs::-webkit-scrollbar { display: none; }
+
+        .nav-tab {
+            padding: 8px 16px;
+            color: rgba(255,255,255,0.7);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 6px;
+            white-space: nowrap;
+            transition: all 0.2s;
+            border: none;
+            background: transparent;
+        }
+
+        .nav-tab:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-tab.active {
+            color: #fff;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .nav-tab.pc { border-left: 3px solid var(--green); }
+        .nav-tab.user { border-left: 3px solid var(--accent); }
+        .nav-tab.admin { border-left: 3px solid var(--gold); }
+
+        .nav-mode-toggle {
+            display: flex;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            padding: 3px;
+            margin-left: 16px;
+        }
+
+        .mode-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+        }
+
+        /* ===== Page Dropdown ===== */
+        .page-dropdown {
+            position: relative;
+            margin-left: 12px;
+        }
+
+        .dropdown-btn {
+            padding: 8px 14px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .dropdown-btn:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            min-width: 280px;
+            max-height: 70vh;
+            overflow-y: auto;
+            display: none;
+            z-index: 1001;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-section {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dropdown-section:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-section-title {
+            padding: 8px 16px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 13px;
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg);
+        }
+
+        .dropdown-item-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .dropdown-item-icon.pc { background: rgba(0, 201, 167, 0.15); }
+        .dropdown-item-icon.user { background: rgba(255, 107, 74, 0.15); }
+        .dropdown-item-icon.admin { background: rgba(212, 168, 83, 0.15); }
+
+        .dropdown-item-text {
+            flex: 1;
+        }
+
+        .dropdown-item-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* ===== Main Content ===== */
+        .main-content {
+            min-height: calc(100vh - 56px);
+        }
+
+        /* ===== Card View ===== */
+        .card-view {
+            padding: 40px;
+        }
+
+        /* Hero Header */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #162544 50%, #1E3A5F 100%);
+            padding: 50px 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 107, 74, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 107, 74, 0.15);
+            border: 1px solid rgba(255, 107, 74, 0.3);
+            color: var(--accent);
+            padding: 5px 14px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', 'Noto Sans SC', serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 32px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .hero-stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .section-icon.user { background: linear-gradient(135deg, var(--accent), #FF8A6A); }
+        .section-icon.admin { background: linear-gradient(135deg, var(--gold), #E8C06A); }
+        .section-icon.pc { background: linear-gradient(135deg, var(--green), #3DD9B6); }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .section-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .section-count {
+            margin-left: auto;
+            background: var(--card);
+            padding: 4px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        /* Card Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+            border-color: transparent;
+        }
+
+        .card-preview {
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary), #162544);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-preview.user-preview { background: linear-gradient(135deg, #0A1628 0%, #1A2D4A 50%, #0F2035 100%); }
+        .card-preview.admin-preview { background: linear-gradient(135deg, #1A1408 0%, #2A2010 50%, #1A1408 100%); }
+        .card-preview.pc-preview { background: linear-gradient(135deg, #081A16 0%, #0A2A22 50%, #081A16 100%); }
+
+        .card-preview-icon { font-size: 36px; opacity: 0.3; }
+
+        .card-preview-label {
+            position: absolute;
+            bottom: 8px;
+            left: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .card-body { padding: 14px 16px; }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .card-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 8px;
+        }
+
+        .card-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+
+        .card-tag {
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        .card-tag.orange { background: rgba(255, 107, 74, 0.1); color: var(--accent); }
+        .card-tag.blue { background: rgba(10, 22, 40, 0.08); color: var(--primary); }
+        .card-tag.green { background: rgba(0, 201, 167, 0.1); color: var(--green); }
+        .card-tag.gold { background: rgba(212, 168, 83, 0.1); color: var(--gold); }
+        .card-tag.purple { background: rgba(99, 102, 241, 0.1); color: var(--purple); }
+
+        /* ===== Frame View ===== */
+        .frame-view {
+            display: none;
+            height: calc(100vh - 56px);
+        }
+
+        .frame-view.active {
+            display: flex;
+        }
+
+        .frame-container {
+            flex: 1;
+            height: 100%;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            margin: 8px;
+            background: #fff;
+        }
+
+        /* ===== Right Sidebar ===== */
+        .right-sidebar {
+            width: 400px;
+            height: 100%;
+            background: #fff;
+            border-left: 1px solid var(--border);
+            overflow-y: auto;
+            display: none;
+        }
+
+        .right-sidebar.active {
+            display: block;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, var(--primary) 0%, #162544 100%);
+            color: #fff;
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-subtitle {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .sidebar-section {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sidebar-section-title::before {
+            content: '';
+            width: 3px;
+            height: 14px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .sidebar-content {
+            font-size: 12px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .sidebar-content p {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-content code {
+            background: rgba(10, 22, 40, 0.06);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SF Mono', 'Monaco', monospace;
+            font-size: 11px;
+            color: var(--primary);
+        }
+
+        .sidebar-content ul {
+            margin: 0;
+            padding-left: 16px;
+        }
+
+        .sidebar-content li {
+            margin-bottom: 6px;
+        }
+
+        .sidebar-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+
+        .sidebar-tag.api { background: rgba(99, 102, 241, 0.1); color: var(--purple); }
+        .sidebar-tag.component { background: rgba(0, 201, 167, 0.1); color: var(--green); }
+        .sidebar-tag.event { background: rgba(255, 107, 74, 0.1); color: var(--accent); }
+        .sidebar-tag.data { background: rgba(212, 168, 83, 0.1); color: var(--gold); }
+
+        .frame-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+        }
+
+        .frame-placeholder-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .frame-placeholder-text {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .frame-placeholder-hint {
+            font-size: 13px;
+            opacity: 0.7;
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-secondary);
+            font-size: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 1200px) {
+            .right-sidebar {
+                width: 320px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .right-sidebar {
+                width: 280px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-nav-inner { padding: 0 12px; }
+            .nav-logo span { display: none; }
+            .nav-tab { padding: 8px 12px; font-size: 12px; }
+            .card-view { padding: 20px; }
+            .hero { padding: 30px 20px; border-radius: 12px; }
+            .hero h1 { font-size: 26px; }
+            .card-grid { grid-template-columns: 1fr; }
+            .section-header { flex-wrap: wrap; gap: 10px; }
+            .section-count { margin-left: 0; }
+            .right-sidebar {
+                display: none;
+            }
+        }
+
+        /* Sidebar Tabs */
+        .sidebar-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            background: #f8f9fa;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .sidebar-tabs::-webkit-scrollbar { display: none; }
+        .sidebar-tab {
+            padding: 10px 16px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .sidebar-tab:hover {
+            color: var(--text);
+            background: rgba(0,0,0,0.02);
+        }
+        .sidebar-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+            font-weight: 600;
+        }
+        .sidebar-tab-content {
+            display: none;
+        }
+        .sidebar-tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Top Navigation -->
+<nav class="top-nav">
+    <div class="top-nav-inner">
+        <div class="nav-logo">
+            <div class="nav-logo-icon">🎭</div>
+            <span>海南演艺票务系统</span>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab pc active" data-category="pc" onclick="filterCategory('pc')">🖥️ PC管理后台</button>
+            <button class="nav-tab user" data-category="user" onclick="filterCategory('user')">📱 用户小程序</button>
+            <button class="nav-tab admin" data-category="admin" onclick="filterCategory('admin')">🔧 管理员小程序</button>
+        </div>
+
+        <div class="page-dropdown">
+            <button class="dropdown-btn" onclick="toggleDropdown()">
+                <span>📄 页面导航</span>
+                <span>▼</span>
+            </button>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <!-- 动态填充 -->
+            </div>
+        </div>
+
+        <div class="nav-mode-toggle">
+            <button class="mode-btn active" onclick="switchMode('card')">卡片</button>
+            <button class="mode-btn" onclick="switchMode('frame')">预览</button>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Card View -->
+    <div class="card-view" id="cardView">
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-content">
+                <div class="hero-badge">UI/UX DESIGN v5.0</div>
+                <h1>海南演艺票务系统<br><span>全端界面设计总览</span></h1>
+                <p>涵盖用户端小程序、代理端小程序、管理员端小程序、PC端管理后台四大端的完整UI/UX设计方案</p>
+                <div class="hero-stats">
+                    <div class="hero-stat"><div class="hero-stat-num">56</div><div class="hero-stat-label">设计页面</div></div>
+                    <div class="hero-stat"><div class="hero-stat-num">4</div><div class="hero-stat-label">终端平台</div></div>
+                    <div class="hero-stat"><div class="hero-stat-num">5</div><div class="hero-stat-label">色彩规范</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PC Admin Section -->
+        <div class="section" data-section="pc">
+            <div class="section-header">
+                <div class="section-icon pc">🖥️</div>
+                <div><div class="section-title">PC端管理后台</div><div class="section-desc">面向平台运营团队</div></div>
+                <div class="section-count">21 个页面</div>
+            </div>
+            <div class="card-grid" id="pcGrid"></div>
+        </div>
+
+        <!-- User Mini App Section -->
+        <div class="section" data-section="user">
+            <div class="section-header">
+                <div class="section-icon user">📱</div>
+                <div><div class="section-title">用户端小程序</div><div class="section-desc">面向C端购票用户</div></div>
+                <div class="section-count">34 个页面</div>
+            </div>
+            <div class="card-grid" id="userGrid"></div>
+        </div>
+
+        <!-- Admin Mini App Section -->
+        <div class="section" data-section="admin">
+            <div class="section-header">
+                <div class="section-icon admin">🔧</div>
+                <div><div class="section-title">管理员端小程序</div><div class="section-desc">面向场馆管理人员</div></div>
+                <div class="section-count">1 个页面</div>
+            </div>
+            <div class="card-grid" id="adminGrid"></div>
+        </div>
+
+        <footer class="footer">
+            海南演艺票务系统 UI/UX 设计方案 v5.0 · 深海蓝 #0A1628 · 珊瑚橙 #FF6B4A · 金色 #D4A853 · 翡翠绿 #00C9A7
+        </footer>
+    </div>
+
+    <!-- Frame View -->
+    <div class="frame-view" id="frameView">
+        <iframe id="previewFrame" class="frame-container"></iframe>
+        <div class="frame-placeholder" id="framePlaceholder">
+            <div class="frame-placeholder-icon">🎭</div>
+            <div class="frame-placeholder-text">选择页面进行预览</div>
+            <div class="frame-placeholder-hint">点击顶部"页面导航"选择页面</div>
+        </div>
+        
+        <!-- Right Sidebar -->
+        <div class="right-sidebar" id="rightSidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title" id="sidebarTitle">页面开发说明</div>
+                <div class="sidebar-subtitle" id="sidebarSubtitle">选择页面查看详细文档</div>
+            </div>
+            <div class="sidebar-tabs" id="sidebarTabs">
+                <!-- 动态生成 Tab 按钮 -->
+            </div>
+            <div id="sidebarContent">
+                <!-- 动态填充 Tab 内容 -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 页面开发说明数据
+
+// ===== 完整开发文档 =====
+// ===== 完整开发文档 =====
+const devDocs = {
+    // ========== 用户端小程序 ==========
+    // ========== 用户端小程序 ==========
+
+    'user-miniapp/home.html': {
+        title: '首页',
+        subtitle: '轮播推荐 + 热门演出 + 券包 + 剧院导航',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>聚合展示运营配置内容与个性化推荐，是用户进入小程序后的主入口页面。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>状态栏</strong>：模拟手机状态栏，显示时间 9:41、WiFi 图标、电池图标</li>
+                    <li><strong>搜索栏</strong>：搜索框（点击跳转 search.html）+ 扫码按钮（弹出扫码覆盖层）+ 微信胶囊按钮</li>
+                    <li><strong>Banner 轮播</strong>：4 张运营轮播图（早鸟票/会员日/新演出上线/积分活动），自动播放 4 秒，支持手动滑动 + 底部指示点</li>
+                    <li><strong>热门推荐</strong>：水平滚动演出卡片列表，每张卡片含封面图 + 演出名称 + 标签 + 价格 + 评分，右侧有"查看全部"链接</li>
+                    <li><strong>券包推荐</strong>：深色主题券包卡片，含封面 + 名称 + 折扣 + 价格 + 购买按钮，水平滚动</li>
+                    <li><strong>剧院导航</strong>：剧院入口卡片，含图片 + 名称 + 地址 + 演出场次，水平滚动</li>
+                    <li><strong>扫码覆盖层</strong>：全屏扫码界面，含扫描框 + 动画扫描线 + 模拟结果弹窗</li>
+                    <li><strong>底部 Tab 栏</strong>：5 个 Tab（首页/演出/商城/会员/我的），当前激活"首页"</li>
+                </ul>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 状态栏 (.status-bar)</strong></p>
+                <ul>
+                    <li>展示内容：左侧时间"9:41"，右侧 WiFi 图标 + 电池图标</li>
+                    <li>交互行为：纯展示，无交互</li>
+                    <li>数据字段：无，静态渲染</li>
+                </ul>
+                <p><strong>2. 搜索栏 (.search-bar)</strong></p>
+                <ul>
+                    <li>展示内容：圆角搜索输入框（placeholder："搜索演出/场馆"）+ 右侧扫码图标按钮 + 微信胶囊按钮（两个圆形按钮组）</li>
+                    <li>交互行为：点击搜索框跳转 search.html；点击扫码按钮弹出全屏扫码覆盖层；微信胶囊按钮为装饰</li>
+                    <li>数据字段：无</li>
+                </ul>
+                <p><strong>3. Banner 轮播 (.banner-swiper)</strong></p>
+                <ul>
+                    <li>展示内容：4 张全宽轮播图，分别为早鸟票活动、会员日、新演出上线、积分活动，底部居中显示指示点</li>
+                    <li>交互行为：自动播放（4 秒间隔），支持手指左右滑动切换，点击跳转对应活动/演出页面</li>
+                    <li>数据字段：<code>banner_id</code>, <code>image_url</code>, <code>title</code>, <code>jump_type</code>(1-演出详情/2-演出列表/3-外部链接/4-无跳转), <code>jump_params</code>, <code>sort_order</code></li>
+                </ul>
+                <p><strong>4. 热门推荐 (.hot-recommend)</strong></p>
+                <ul>
+                    <li>展示内容：区块标题"热门推荐" + 右侧"查看全部"链接 + 水平滚动卡片列表。每张卡片：圆角封面图 + 演出名称（1行截断）+ 分类标签（如"演唱会"）+ 价格（红色"¥180起"）+ 评分（星星图标 + 分数）</li>
+                    <li>交互行为：水平滚动浏览；点击卡片跳转 show-detail.html；点击"查看全部"跳转 show-list-detail.html</li>
+                    <li>数据字段：<code>show_id</code>, <code>title</code>, <code>cover_image</code>, <code>category_name</code>, <code>min_price</code>, <code>rating</code></li>
+                </ul>
+                <p><strong>5. 券包推荐 (.coupon-package)</strong></p>
+                <ul>
+                    <li>展示内容：深色渐变背景区块，标题"精选券包" + 水平滚动券包卡片。每张卡片：封面缩略图 + 券包名称 + 折扣标签（如"8折"）+ 价格（原价删除线 + 折扣价）+ "购买"按钮</li>
+                    <li>交互行为：水平滚动；点击"购买"跳转 coupon-package.html 对应券包详情</li>
+                    <li>数据字段：<code>package_id</code>, <code>cover_image</code>, <code>name</code>, <code>discount</code>, <code>original_price</code>, <code>sale_price</code></li>
+                </ul>
+                <p><strong>6. 剧院导航 (.theater-nav)</strong></p>
+                <ul>
+                    <li>展示内容：区块标题"剧院导航" + 水平滚动剧院卡片。每张卡片：剧院封面图 + 名称 + 地址（灰色小字）+ 当前演出场次数（如"3场演出"）</li>
+                    <li>交互行为：水平滚动；点击卡片跳转 theater-list.html 或对应剧院详情</li>
+                    <li>数据字段：<code>theater_id</code>, <code>image</code>, <code>name</code>, <code>address</code>, <code>show_count</code></li>
+                </ul>
+                <p><strong>7. 扫码覆盖层 (.scan-overlay)</strong></p>
+                <ul>
+                    <li>展示内容：全屏半透明黑色遮罩 + 居中扫描框（四角有绿色边框）+ 扫描动画线（从上到下循环）+ 底部"手电筒"和"相册"按钮</li>
+                    <li>交互行为：点击扫码按钮弹出；模拟扫码成功后弹出结果弹窗（显示演出名称 + "立即查看"按钮）；点击遮罩或关闭按钮收起</li>
+                    <li>数据字段：模拟数据，实际接入 <code>navigator.camera.scan()</code></li>
+                </ul>
+                <p><strong>8. 底部 Tab 栏 (.tab-bar)</strong></p>
+                <ul>
+                    <li>展示内容：5 个等宽 Tab 项（首页/演出/商城/会员/我的），每项含图标 + 文字，激活态图标和文字高亮为主题色</li>
+                    <li>交互行为：点击切换 Tab，对应页面内容切换；当前激活"首页"Tab</li>
+                    <li>数据字段：<code>tab_key</code>, <code>label</code>, <code>icon</code>, <code>active_icon</code>, <code>url</code></li>
+                </ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/home/banners</code>
+                <p><strong>说明：</strong>获取首页轮播图列表</p>
+                <p><strong>响应字段：</strong></p>
+                <ul><li><code>banner_id</code>, <code>image_url</code>, <code>title</code>, <code>jump_type</code>, <code>jump_params</code>, <code>sort_order</code>, <code>start_time</code>, <code>end_time</code>, <code>status</code></li></ul>
+
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/home/hot-shows</code>
+                <p><strong>说明：</strong>获取热门推荐演出列表（近7天浏览量+销量综合排序 Top10）</p>
+                <p><strong>响应字段：</strong></p>
+                <ul><li><code>show_id</code>, <code>title</code>, <code>cover_image</code>, <code>category_name</code>, <code>min_price</code>, <code>rating</code>, <code>status</code></li></ul>
+
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/home/coupon-packages</code>
+                <p><strong>说明：</strong>获取首页推荐券包列表</p>
+                <p><strong>响应字段：</strong></p>
+                <ul><li><code>package_id</code>, <code>cover_image</code>, <code>name</code>, <code>discount</code>, <code>original_price</code>, <code>sale_price</code></li></ul>
+
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/home/theaters</code>
+                <p><strong>说明：</strong>获取剧院导航列表</p>
+                <p><strong>响应字段：</strong></p>
+                <ul><li><code>theater_id</code>, <code>image</code>, <code>name</code>, <code>address</code>, <code>show_count</code></li></ul>`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>点击行为：</strong></p>
+                <ul>
+                    <li>轮播图：根据 <code>jump_type</code> 跳转对应页面</li>
+                    <li>演出卡片：跳转 show-detail.html?show_id=xxx</li>
+                    <li>券包卡片：跳转 coupon-package.html?package_id=xxx</li>
+                    <li>剧院卡片：跳转 theater-list.html 或剧院详情</li>
+                    <li>"查看全部"：跳转 show-list-detail.html</li>
+                </ul>
+                <p><strong>加载策略：</strong></p>
+                <ul>
+                    <li>各模块独立请求，支持并行加载</li>
+                    <li>轮播图缓存 5 分钟（Cache-Control）</li>
+                    <li>下拉刷新重置所有模块数据</li>
+                </ul>
+                <p><strong>状态显示：</strong></p>
+                <ul>
+                    <li>即将开票：橙色 #FF8C00</li>
+                    <li>售票中：绿色 #07C160</li>
+                    <li>已售罄：灰色 #999999</li>
+                    <li>即将开演：红色 #FA5151</li>
+                </ul>`
+            },
+            {
+                title: 'PRD 需求文档 (US-01 演出发现与浏览)',
+                content: `<p><strong>US-01 演出发现与浏览</strong></p>
+<p>作为普通观众，希望快速发现感兴趣的演出并获取足够信息做出购票决策。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-01-1 首页推荐展示</strong>：Banner轮播图、热门推荐演出列表、券包推荐、剧院导航</li>
+<li><strong>F-01-2 演出分类筛选</strong>：支持按演出类型（演唱会/话剧/音乐会/舞蹈/其他）筛选</li>
+<li><strong>F-01-3 搜索功能</strong>：支持关键词搜索、搜索历史、热门搜索</li>
+<li><strong>F-01-4 演出列表展示</strong>：卡片式列表，含封面、名称、标签、价格、评分</li>
+<li><strong>F-01-5 轮播图展示</strong>：运营轮播图，支持自动播放和手动切换</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/show-list-detail.html': {
+        title: '演出列表页',
+        subtitle: '分类筛选 + 多维筛选 + 演出列表',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>按分类、区域、时间、价格等多维度筛选并展示演出列表。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>导航栏</strong>：返回按钮 + 标题"演出" + 搜索按钮</li>
+                    <li><strong>分类筛选</strong>：水平滚动分类标签（全部/演唱会/话剧/舞蹈/音乐会/儿童剧/魔术/脱口秀）</li>
+                    <li><strong>筛选栏</strong>：筛选条件（区域/时间/价格），点击展开下拉筛选面板</li>
+                    <li><strong>演出列表</strong>：垂直列表，每项为演出卡片（封面图 + 名称 + 标签 + 评分 + 时间 + 场馆 + 价格）</li>
+                    <li><strong>底部 Tab 栏</strong>：5 个 Tab，当前激活"演出"</li>
+                </ul>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 导航栏 (.nav-bar)</strong></p>
+                <ul>
+                    <li>展示内容：左侧返回箭头按钮 + 居中标题"演出" + 右侧搜索图标按钮</li>
+                    <li>交互行为：返回按钮返回上一页；搜索按钮跳转 search.html</li>
+                    <li>数据字段：无</li>
+                </ul>
+                <p><strong>2. 分类筛选 (.category-tabs)</strong></p>
+                <ul>
+                    <li>展示内容：水平滚动标签栏，标签包括：全部/演唱会/话剧/舞蹈/音乐会/儿童剧/魔术/脱口秀。选中标签底部有主题色指示条，文字加粗变色</li>
+                    <li>交互行为：水平滚动切换标签；点击标签筛选对应分类，列表重置为第一页并刷新数据；保留当前筛选条件（区域/时间/价格）</li>
+                    <li>数据字段：<code>category_id</code>, <code>category_name</code></li>
+                </ul>
+                <p><strong>3. 筛选栏 (.filter-bar)</strong></p>
+                <ul>
+                    <li>展示内容：三个筛选按钮并排（区域/时间/价格），默认显示"区域"、"时间"、"价格"文字，选中后显示已选值。点击后弹出底部下拉筛选面板</li>
+                    <li>交互行为：点击筛选按钮弹出对应筛选面板（从底部滑出）；面板内多选/单选后点击"确定"应用筛选；支持"重置"清空筛选条件</li>
+                    <li>数据字段：区域 <code>region</code>（海口/三亚/琼海/万宁/儋州）；时间 <code>time_range</code>（全部/今天/明天/本周末/一周内/一个月内）；价格 <code>price_range</code>（全部/0-100/100-300/300-500/500-800/800+）</li>
+                </ul>
+                <p><strong>4. 演出列表 (.show-list)</strong></p>
+                <ul>
+                    <li>展示内容：垂直排列的演出卡片。每张卡片：左侧圆角封面图 + 右侧信息区（演出名称 + 分类标签 + 评分星星 + 演出时间 + 场馆名称 + 价格"¥180起"）</li>
+                    <li>交互行为：点击卡片跳转 show-detail.html；上拉触底加载更多（触底距离 100rpx）；下拉刷新</li>
+                    <li>数据字段：<code>show_id</code>, <code>title</code>, <code>cover_image</code>, <code>category_name</code>, <code>rating</code>, <code>show_time</code>, <code>venue_name</code>, <code>min_price</code>, <code>status</code></li>
+                </ul>
+                <p><strong>5. 底部 Tab 栏 (.tab-bar)</strong></p>
+                <ul>
+                    <li>展示内容：5 个 Tab（首页/演出/商城/会员/我的），当前激活"演出"Tab</li>
+                    <li>交互行为：点击切换 Tab</li>
+                    <li>数据字段：<code>tab_key</code>, <code>label</code>, <code>icon</code>, <code>active_icon</code>, <code>url</code></li>
+                </ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/shows/list</code>
+                <p><strong>说明：</strong>获取演出列表（分页+筛选）</p>
+                <p><strong>请求参数：</strong><code>category_id</code>, <code>region</code>, <code>time_range</code>, <code>price_min</code>, <code>price_max</code>, <code>keyword</code>, <code>sort</code>(comprehensive/newest/price_asc/price_desc), <code>page</code>, <code>page_size</code></p>
+                <p><strong>响应字段：</strong><code>show_id</code>, <code>title</code>, <code>cover_image</code>, <code>category_name</code>, <code>venue_name</code>, <code>nearest_show_time</code>, <code>min_price</code>, <code>rating</code>, <code>status</code>, <code>total</code></p>`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>排序规则：</strong>综合排序（运营权重60%+浏览量20%+销量20%）、最新上线、价格升序/降序</p>
+                <p><strong>筛选联动：</strong>切换分类标签重置分页保留筛选；切换筛选条件重置分页保留分类；多条件组合筛选</p>
+                <p><strong>加载状态：</strong>首次加载骨架屏、下拉刷新顶部loading、加载更多底部loading、无数据空状态插画</p>`
+            },
+            {
+                title: 'PRD 需求文档 (US-01 演出列表与分类)',
+                content: `<p><strong>US-01 演出发现与浏览 - F-01-2/F-01-4</strong></p>
+<p>用户可按分类浏览演出列表，通过筛选条件精确查找目标演出。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-01-2 演出分类筛选</strong>：支持按演出类型（演唱会/话剧/音乐会/舞蹈/其他）筛选，支持排序（热度/价格/时间）</li>
+<li><strong>F-01-4 演出列表展示</strong>：卡片式列表，含封面、名称、标签、价格、评分</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>category</code>：演出分类（枚举值）</li>
+<li><code>sort_by</code>：排序方式（hot/price_asc/price_desc/time）</li>
+<li><code>show_id</code>, <code>title</code>, <code>cover_image</code>, <code>category_name</code>, <code>min_price</code>, <code>rating</code></li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/show-detail.html': {
+        title: '演出详情页',
+        subtitle: '演出信息 + 场次选择 + 评论 + 购票入口',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>展示演出完整信息，支持场次选择、评论查看，提供购票入口。</p>
+                <p><strong>页面模块：</strong>演出大图+返回/分享按钮、演出信息（名称/标签/评分/时长/年龄限制）、早鸟/会员优先横幅、场次选择（水平滚动卡片）、详情Tab（详情/评论/须知）、场馆信息（名称/地址/距离）、底部操作栏（收藏+分享+立即购买）</p>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 演出大图 (.show-hero)</strong></p>
+                <ul><li>展示内容：顶部全宽大图，左上角半透明返回按钮，右上角半透明分享按钮</li><li>交互行为：返回上一页；调起微信分享面板</li><li>数据字段：<code>images[]</code>（最多9张）</li></ul>
+                <p><strong>2. 演出信息 (.show-info)</strong></p>
+                <ul><li>展示内容：演出名称+分类标签组（沉浸式/大型/原创）+评分（9.2分）+时长（120分钟）+年龄限制（6岁以上）</li><li>数据字段：<code>title</code>, <code>tags[]</code>, <code>rating</code>, <code>duration</code>, <code>age_limit</code></li></ul>
+                <p><strong>3. 早鸟/会员优先横幅 (.promo-banner)</strong></p>
+                <ul><li>展示内容：渐变色横幅，非会员显示早鸟折扣，会员显示优先购票提示</li><li>数据字段：<code>early_bird_discount</code>, <code>early_bird_end_time</code>, <code>priority_start_time</code>, <code>member_level</code></li></ul>
+                <p><strong>4. 场次选择 (.session-selector)</strong></p>
+                <ul><li>展示内容：水平滚动场次卡片（日期+星期+时间+价格+早鸟标签），选中高亮</li><li>交互行为：点击选中场次联动更新座位信息；已售罄灰色不可点击</li><li>数据字段：<code>session_id</code>, <code>show_date</code>, <code>show_time</code>, <code>weekday</code>, <code>min_price</code>, <code>remaining_seats</code>, <code>status</code>, <code>is_early_bird</code></li></ul>
+                <p><strong>5. 详情Tab (.detail-tabs)</strong></p>
+                <ul><li>展示内容：3个Tab（详情/评论/须知）。详情：图文富文本；评论：头像+昵称+评分+内容+图片+时间；须知：购票须知/退换规则/入场须知</li><li>交互行为：Tab切换；评论分页加载；图文展开/收起</li></ul>
+                <p><strong>6. 场馆信息 (.venue-info)</strong></p>
+                <ul><li>展示内容：场馆名称+地址+"距我x.xkm"</li><li>交互行为：点击调起微信内置地图导航</li><li>数据字段：<code>venue_name</code>, <code>venue_address</code>, <code>distance</code>, <code>latitude</code>, <code>longitude</code></li></ul>
+                <p><strong>7. 底部操作栏 (.bottom-bar)</strong></p>
+                <ul><li>展示内容：收藏图标（空心/实心）+分享图标+"立即购买"按钮（含价格）</li><li>交互行为：收藏切换；分享调起分享面板；立即购买跳转 seat-selection.html</li><li>数据字段：<code>is_favorited</code>, <code>min_price</code></li></ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/shows/{show_id}</code> - 获取演出详情
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/shows/{show_id}/sessions</code> - 获取场次列表
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/shows/{show_id}/reviews</code> - 获取评论列表
+                <span class="sidebar-tag api">POST</span> <code>/api/v1/shows/{show_id}/favorite</code> - 收藏/取消收藏`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>余票状态：</strong>&gt;50%余票充足(绿色)、20%-50%余票不多(橙色)、&lt;20%余票紧张(红色)、0已售罄(灰色)</p>
+                <p><strong>页面跳转：</strong>立即购买->seat-selection.html?session_id=xxx；场馆地址->微信地图导航</p>`
+            },
+            {
+                title: 'PRD 需求文档 (US-02 演出详情)',
+                content: `<p><strong>US-02 演出详情与场次选择</strong></p>
+<p>用户查看演出详细信息，选择合适场次进行购票。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-02-1 演出基本信息展示</strong>：封面大图、演出名称、标签、评分、简介、演出时长、场馆信息</li>
+<li><strong>F-02-2 场次列表展示</strong>：按日期分组展示可选场次，含时间、票价、余票状态</li>
+<li><strong>F-02-3 演出评价展示</strong>：用户评价列表，含评分、评论内容、评价时间</li>
+<li><strong>F-02-4 收藏/分享功能</strong>：支持收藏演出、分享给好友</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>show_id</code>：演出ID（主键）</li>
+<li><code>title</code>, <code>cover_image</code>, <code>description</code>, <code>duration</code>, <code>category_name</code></li>
+<li><code>session_id</code>, <code>show_time</code>, <code>min_price</code>, <code>available_seats</code></li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/seat-selection.html': {
+        title: '选座购票页',
+        subtitle: '座位矩阵 + 缩放 + 票档筛选 + 混合支付',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>可视化座位选择，支持多票档切换、缩放控制、混合支付（早鸟优惠/优惠券/积分抵扣/余额/充值卡）。</p>
+                <p><strong>页面模块：</strong>演出信息条、弧形舞台区域、可交互座位矩阵（4种状态：可选/已售/已选/VIP，最多4个）、缩放控制、座位图例、票档选择（水平滚动）、票务政策横幅、已选座位面板（毛玻璃+价格明细）、优惠券弹窗、底部栏（总价+确认下单）</p>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 座位图 (.seat-map)</strong></p>
+                <ul><li>展示内容：矩阵式座位图，4种状态颜色（可选白色/已售灰色/已选主题色/VIP金色），行号左侧标注</li><li>交互行为：点击选中/取消，最多4个；双指缩放50%-200%和拖拽平移</li><li>数据字段：<code>seat_id</code>, <code>row</code>, <code>col</code>, <code>status</code>(0-3), <code>zone_id</code>, <code>zone_name</code>, <code>price</code></li></ul>
+                <p><strong>2. 票档选择 (.ticket-tier)</strong></p>
+                <ul><li>展示内容：水平滚动（全部/VIP区¥880/A区¥580/B区¥380/C区¥180）</li><li>交互行为：点击切换票档，座位图自动定位到对应区域</li></ul>
+                <p><strong>3. 已选座位面板 (.selected-panel)</strong></p>
+                <ul><li>展示内容：毛玻璃面板，已选座位chips（可删除）+价格明细（原价/早鸟优惠/优惠券/积分抵扣/余额支付/充值卡抵扣）</li><li>交互行为：点击"x"取消选座；点击"使用优惠券"弹出选择弹窗；价格实时计算</li><li>数据字段：<code>selected_seats[]</code>, <code>original_amount</code>, <code>early_bird_discount</code>, <code>coupon_discount</code>, <code>points_deduction</code>, <code>balance_pay</code>, <code>card_deduction</code>, <code>final_amount</code></li></ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/shows/{show_id}/sessions/{session_id}/seats</code> - 获取座位矩阵
+                <span class="sidebar-tag api">POST</span> <code>/api/v1/seats/lock</code> - 锁定座位（15分钟）
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/orders/available-coupons</code> - 获取可用优惠券
+                <span class="sidebar-tag api">POST</span> <code>/api/v1/orders/create</code> - 创建订单`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>锁定机制：</strong>选座后自动锁定15分钟，超时释放并提示</p>
+                <p><strong>混合支付：</strong>最终金额=原价-早鸟优惠-优惠券-积分抵扣-充值卡抵扣-余额支付（100积分=1元）</p>`
+            },
+            {
+                title: 'PRD 需求文档 (US-03 选座购票)',
+                content: `<p><strong>US-03 选座与购票</strong></p>
+<p>用户选择心仪座位并完成购票流程。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-03-1 座位图展示</strong>：SVG/Canvas渲染座位图，区分可选/已售/锁定/不可售状态</li>
+<li><strong>F-03-2 座位选择交互</strong>：点击选座、支持多选、实时显示已选座位和总价</li>
+<li><strong>F-03-3 订单确认</strong>：确认选座信息、选择优惠券、填写观演人</li>
+<li><strong>F-03-4 支付功能</strong>：支持微信支付、余额支付、积分抵扣</li>
+<li><strong>F-03-5 购票限制</strong>：每场次限购数量、实名制购票校验</li>
+</ul>
+<p><strong>数据校验规则：</strong></p>
+<ul>
+<li>单次选座上限：根据演出配置（默认4个）</li>
+<li>已售/锁定座位不可选择</li>
+<li>选座超时自动释放（默认10分钟）</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/search.html': {
+        title: '搜索页',
+        subtitle: '关键词搜索 + 搜索建议 + 历史 + 热门',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>全局搜索演出，支持搜索建议（防抖300ms）、历史记录（localStorage最多10条）、热门搜索排行（Top3高亮）、搜索结果（关键词高亮）、空状态</p>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 搜索输入框 (.search-input)</strong></p>
+                <ul><li>自动聚焦；输入触发搜索建议；回车/点击搜索按钮执行搜索</li><li>数据字段：<code>keyword</code></li></ul>
+                <p><strong>2. 搜索建议 (.search-suggestions)</strong></p>
+                <ul><li>最多8条匹配建议，关键词橙色加粗高亮</li><li>数据字段：<code>suggestion_list[]</code></li></ul>
+                <p><strong>3. 搜索历史 (.search-history)</strong></p>
+                <ul><li>横向灰色标签，支持清空（二次确认）</li><li>数据字段：localStorage key: search_history</li></ul>
+                <p><strong>4. 热门搜索 (.hot-search)</strong></p>
+                <ul><li>排行榜，Top1/2/3红色/橙色/金色高亮</li><li>数据字段：<code>hot_keywords[]</code></li></ul>
+                <p><strong>5. 搜索结果 (.search-results)</strong></p>
+                <ul><li>演出卡片（封面+名称关键词高亮+标签+价格），上拉加载更多</li><li>数据字段：<code>show_id</code>, <code>title</code>, <code>cover_image</code>, <code>category_name</code>, <code>min_price</code></li></ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/search/suggest</code> - 搜索建议（keyword参数）
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/search</code> - 执行搜索（keyword/category_id/page/page_size）
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/search/hot</code> - 热门搜索关键词（最多10个）`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>搜索流程：</strong>初始->历史+热门；输入中->建议；搜索后->结果列表；无结果->空状态</p>
+                <p><strong>相关度：</strong>名称精确50分、模糊30分、场馆/演员20分</p>`
+            },
+            {
+                title: 'PRD 需求文档 (US-01 搜索功能)',
+                content: `<p><strong>US-01 演出发现与浏览 - F-01-3 搜索功能</strong></p>
+<p>用户可通过关键词快速搜索感兴趣的演出、场馆等内容。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-01-3 搜索功能</strong>：支持关键词搜索、搜索历史记录、热门搜索推荐</li>
+<li>搜索范围：演出名称、场馆名称、演出类型</li>
+<li>搜索建议：输入时实时显示搜索建议列表</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>keyword</code>：搜索关键词（必填，最大50字符）</li>
+<li><code>search_history</code>：用户搜索历史（最多保留20条）</li>
+<li><code>hot_searches</code>：热门搜索关键词列表（运营配置）</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/member-center.html': {
+        title: '会员中心',
+        subtitle: '会员卡片 + 等级权益 + 优先购票 + 推荐有奖',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>展示会员等级信息、权益列表、优先购票资格、推荐有奖功能。</p>
+                <p><strong>页面模块：</strong>会员卡片（深色渐变，头像+昵称+金卡徽章+成长值进度条3200/5000+卡号）、会员权益（水平滚动5项：优先购票/等级折扣/生日赠礼/定期发券/专属客服）、优先购票（倒计时+演出卡片列表）、推荐有奖（海报+分享链接）、底部Tab栏</p>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 会员卡片 (.member-card)</strong></p>
+                <ul><li>深蓝到深紫渐变，成长值进度条百分比"64%"</li><li>数据字段：<code>avatar</code>, <code>nickname</code>, <code>member_level</code>(0-3), <code>growth_value</code>, <code>growth_target</code>, <code>card_no</code></li></ul>
+                <p><strong>2. 优先购票 (.priority-purchase)</strong></p>
+                <ul><li>倒计时"距开票 02:15:30"实时更新；结束后按钮变"立即购买"</li><li>数据字段：<code>show_id</code>, <code>title</code>, <code>cover_image</code>, <code>sale_start_time</code>, <code>priority_start_time</code></li></ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/member/info</code> - 会员信息
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/member/benefits</code> - 权益列表
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/member/priority-shows</code> - 优先购票演出`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>等级体系：</strong>普通(注册)->银卡(1000元)->金卡(5000元)->黑卡(20000元)</p>
+                <p><strong>等级权益：</strong>折扣(银95/金9/黑85折)、优先购(金卡以上提前24h)、积分倍数(银1.2x/金1.5x/黑2x)</p>`
+            },
+            {
+                title: 'PRD 需求文档 (US-05 会员中心)',
+                content: `<p><strong>US-05 会员体系</strong></p>
+<p>用户管理会员信息、查看权益、使用优惠券和券包。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-05-1 会员信息展示</strong>：会员等级、积分余额、成长值、到期时间</li>
+<li><strong>F-05-2 会员等级权益</strong>：不同等级享有的折扣、优先购票、专属客服等权益</li>
+<li><strong>F-05-3 优惠券管理</strong>：可用/已用/已过期优惠券列表，券包购买和使用</li>
+<li><strong>F-05-4 实体卡绑定</strong>：绑定实体会员卡，线上线下权益互通</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>member_level</code>：会员等级（普通/银卡/金卡/钻石）</li>
+<li><code>points</code>：当前积分余额</li>
+<li><code>growth_value</code>：成长值</li>
+<li><code>expire_time</code>：会员到期时间</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/coupons.html': {
+        title: '我的优惠券',
+        subtitle: '优惠券列表 + 状态筛选 + 使用',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>管理用户优惠券，按状态筛选（全部/未使用/已使用/已过期），查看详情和使用。</p>
+                <p><strong>页面模块：</strong>导航栏（返回+"我的优惠券"+"去使用"）、筛选Tab（4项含角标）、优惠券列表（左侧金额区半圆缺口+右侧信息区）、空状态</p>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>优惠券卡片 (.coupon-list)</strong></p>
+                <ul><li>左侧：大字金额（¥50）+使用条件（满200可用），上下半圆缺口</li><li>右侧：名称+有效期+使用范围+操作按钮</li><li>数据字段：<code>coupon_id</code>, <code>amount</code>, <code>threshold</code>, <code>title</code>, <code>start_time</code>, <code>end_time</code>, <code>scope</code>, <code>status</code></li></ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/coupons/list</code> - 优惠券列表（status/page/page_size）
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/coupons/counts</code> - 各状态数量`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>券类型：</strong>满减券、折扣券、无门槛券</p>
+                <p><strong>有效期：</strong>固定日期或领取后+N天</p>`
+            },
+            {
+                title: 'PRD 需求文档 (US-05 优惠券管理)',
+                content: `<p><strong>US-05 会员体系 - F-05-3</strong></p>
+<p>用户管理个人优惠券。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-05-3 优惠券管理</strong>：可用/已用/已过期优惠券列表，展示优惠金额、使用条件、有效期</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>coupon_id</code>：优惠券ID</li>
+<li><code>type</code>：优惠券类型（满减/折扣/固定金额）</li>
+<li><code>amount</code>：优惠金额/折扣比例</li>
+<li><code>min_amount</code>：最低使用金额</li>
+<li><code>expire_time</code>：过期时间</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/coupon-package.html': {
+        title: '券包中心',
+        subtitle: '统计概览 + 券包列表 + 购买',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>展示券包列表，支持购买和查看详情。</p>
+                <p><strong>页面模块：</strong>统计头部（2x2网格：券包数/最低折扣/累计节省/可用券数）、筛选Tab（全部/可使用/已过期）、可展开券包卡片（封面+名称+演出chips+价格+购买按钮）、确认弹窗</p>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>券包卡片 (.package-card)</strong></p>
+                <ul><li>封面+名称+适用演出chips+原价删除线+折扣价红色+节省绿色+"购买"按钮</li><li>展开后显示包含券列表（名称+面额+有效期）</li><li>数据字段：<code>package_id</code>, <code>cover_image</code>, <code>name</code>, <code>show_tags[]</code>, <code>original_price</code>, <code>sale_price</code>, <code>saved_amount</code>, <code>coupons[]</code></li></ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/coupon-packages/list</code> - 券包列表
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/coupon-packages/stats</code> - 统计数据
+                <span class="sidebar-tag api">POST</span> <code>/api/v1/coupon-packages/{package_id}/purchase</code> - 购买券包`
+            },
+            {
+                title: 'PRD 需求文档 (US-05 券包详情)',
+                content: `<p><strong>US-05 会员体系 - F-05-3</strong></p>
+<p>用户查看券包详情并购买。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-05-3 优惠券管理</strong>：券包详情展示（包含的优惠券列表）、购买按钮、购买记录</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>package_id</code>：券包ID</li>
+<li><code>name</code>：券包名称</li>
+<li><code>price</code>：券包售价</li>
+<li><code>coupons</code>：包含的优惠券列表</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/points.html': {
+        title: '积分中心',
+        subtitle: '积分余额 + 任务列表 + 兑换入口',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>展示积分余额2,580、会员等级进度、每日任务（签到+10/评论+50/分享+20/购买1元=1积分）、功能入口（积分兑换/抽奖/积分明细）</p>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>积分卡片 (.points-card)</strong></p>
+                <ul><li>深蓝到紫色渐变，大字"2,580"+会员等级+升级进度条</li><li>数据字段：<code>available_points</code>, <code>member_level</code>, <code>current_level_points</code>, <code>next_level_points</code></li></ul>
+                <p><strong>任务列表 (.task-list)</strong></p>
+                <ul><li>图标+名称+奖励积分+状态按钮（"去完成"/"已完成"）</li><li>签到直接完成并显示"+10"飞入动画</li><li>数据字段：<code>task_id</code>, <code>name</code>, <code>reward_points</code>, <code>status</code>, <code>action_url</code></li></ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/points/info</code> - 积分信息
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/points/tasks</code> - 任务列表
+                <span class="sidebar-tag api">POST</span> <code>/api/v1/points/sign</code> - 每日签到`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>积分规则：</strong>1元=1积分，100积分=1元，生日双倍，次年12月31日过期</p>
+                <p><strong>签到：</strong>每日+10，连续第3天+5，第7天+20</p>`
+            },
+            {
+                title: 'PRD 需求文档 (US-06 积分体系)',
+                content: `<p><strong>US-06 支付与钱包 - 积分体系</strong></p>
+<p>用户管理积分，查看积分明细，进行积分兑换。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-06-1 积分查询</strong>：当前积分余额、累计获得、累计使用</li>
+<li><strong>F-06-2 积分获取</strong>：签到、消费、评价等行为获得积分</li>
+<li><strong>F-06-3 积分兑换</strong>：积分兑换优惠券、实物商品等</li>
+<li><strong>F-06-4 积分抽奖</strong>：消耗积分参与抽奖活动</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>points_balance</code>：当前积分余额</li>
+<li><code>total_earned</code>：累计获得积分</li>
+<li><code>total_used</code>：累计使用积分</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/points-flow.html': {
+        title: '积分明细',
+        subtitle: '积分流水 + 筛选 + 汇总',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>展示积分收支流水，按时间筛选（全部/本月/近三月/近半年），汇总栏（累计收入/支出/余额），按日期分组列表（图标+标题+时间+金额+余额）</p>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/points/history</code> - 积分流水（time_range/type/page/page_size）
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/points/summary</code> - 汇总统计`
+            },
+            {
+                title: '交互说明',
+                content: `<p>按日期降序分组，收入绿色"+"，支出红色"-"，每条显示操作后余额，首次20条，上拉加载更多</p>`
+            },
+            {
+                title: 'PRD 需求文档 (US-06 积分明细)',
+                content: `<p><strong>US-06 支付与钱包 - F-06-1</strong></p>
+<p>用户查看积分变动明细。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-06-1 积分查询</strong>：积分流水列表，按时间倒序展示，区分收入/支出类型</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>flow_id</code>：流水ID</li>
+<li><code>type</code>：变动类型（earn/use/expired）</li>
+<li><code>amount</code>：变动积分数量</li>
+<li><code>source</code>：变动来源描述</li>
+<li><code>created_at</code>：变动时间</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/wallet.html': {
+        title: '我的钱包',
+        subtitle: '余额管理 + 充值 + 提现 + 交易记录',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>展示钱包余额¥1,280.00、冻结金额、累计充值/消费，快捷操作（充值/提现/交易记录），促销横幅"充值满500送50"，工具卡片（充值卡绑定+支付安全），充值弹窗（金额网格50/100/200/500+自定义输入）</p>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>余额卡片 (.balance-card)</strong></p>
+                <ul><li>深蓝到深紫渐变，余额点击显示/隐藏（隐私保护）</li><li>数据字段：<code>balance</code>, <code>frozen_balance</code>, <code>total_recharge</code>, <code>total_consume</code></li></ul>
+                <p><strong>充值弹窗 (.recharge-popup)</strong></p>
+                <ul><li>4个预设金额按钮选中高亮+自定义输入+"立即充值"调起微信/支付宝</li><li>数据字段：<code>amount</code>, <code>pay_method</code></li></ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/wallet/info</code> - 钱包信息
+                <span class="sidebar-tag api">POST</span> <code>/api/v1/wallet/recharge</code> - 充值（amount/pay_method）
+                <span class="sidebar-tag api">POST</span> <code>/api/v1/wallet/withdraw</code> - 提现（amount/bank_card_id）`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>充值优惠：</strong>满100送5/满500送30/满1000送80</p>
+                <p><strong>提现：</strong>50元起提，手续费1%，T+1到账</p>`
+            },
+            {
+                title: 'PRD 需求文档 (US-06 钱包)',
+                content: `<p><strong>US-06 支付与钱包 - F-06-1</strong></p>
+<p>用户管理钱包余额、进行充值和消费。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-06-1 钱包管理</strong>：余额展示、充值入口、消费记录、提现功能</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>balance</code>：钱包余额（单位：分）</li>
+<li><code>total_recharge</code>：累计充值金额</li>
+<li><code>total_consume</code>：累计消费金额</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/lottery.html': {
+        title: '积分抽奖',
+        subtitle: '九宫格抽奖 + 奖品展示 + 中奖弹窗',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>九宫格抽奖（8奖品格+中心"开始"按钮），旋转动画3-4秒，消耗50积分/次，中奖弹窗（彩纸动画+奖品信息+领取/继续抽奖按钮），费用提示+我的奖品+抽奖规则</p>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>九宫格 (.lottery-grid)</strong></p>
+                <ul><li>3x3网格，高亮依次转动逐渐减速停在目标位置</li><li>数据字段：<code>activity_id</code>, <code>cost_points</code>(50), <code>prizes[]</code>(<code>prize_id</code>, <code>name</code>, <code>icon</code>, <code>probability</code>, <code>type</code>)</li></ul>
+                <p><strong>中奖弹窗 (.win-modal)</strong></p>
+                <ul><li>数据字段：<code>prize_type</code>(coupon/goods/points/thanks), <code>is_winning</code></li></ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/lottery/info</code> - 抽奖活动信息
+                <span class="sidebar-tag api">POST</span> <code>/api/v1/lottery/draw</code> - 执行抽奖（返回position索引）
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/lottery/record</code> - 中奖记录`
+            },
+            {
+                title: 'PRD 需求文档 (US-06 积分抽奖)',
+                content: `<p><strong>US-06 支付与钱包 - F-06-3</strong></p>
+<p>用户使用积分参与抽奖活动。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-06-3 积分兑换</strong>：积分抽奖，消耗积分获取随机奖品（优惠券、积分、实物等）</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>activity_id</code>：抽奖活动ID</li>
+<li><code>points_cost</code>：每次抽奖消耗积分</li>
+<li><code>prizes</code>：奖品列表及中奖概率</li>
+<li><code>remain_chances</code>：剩余抽奖次数</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/profile.html': {
+        title: '个人中心',
+        subtitle: '用户信息 + 资产概览 + 订单入口 + 工具栏',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>用户信息展示、资产概览、订单管理入口、工具服务入口。</p>
+                <p><strong>页面模块：</strong>消息入口栏（铃铛+红点）、用户卡片（头像VIP徽章+昵称+金卡+编辑资料+代理商入口）、实名认证提示（黄色横幅）、资产概览（钱包/积分/优惠券/演出票）、我的订单（5类型入口含角标）、工具栏（3x2网格：收货地址/偏好设置/隐私设置/实名认证/充值卡绑定/实体卡申请）、其他服务（客服/关于我们）、底部Tab栏</p>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/user/profile</code> - 用户信息（含balance/points/coupon_count/unread_count）
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/user/order-counts</code> - 各状态订单数量`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>实名认证：</strong>未认证黄色横幅/审核中灰色/已认证不显示</p>
+                <p><strong>消息红点：</strong>有未读显示红点，进入消息中心后清除</p>`
+            },
+            {
+                title: 'PRD 需求文档 (US-09 个人中心)',
+                content: `<p><strong>US-09 个人中心 - F-09-1</strong></p>
+<p>用户查看和编辑个人信息，管理账户设置。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-09-1 个人信息管理</strong>：头像、昵称、手机号、会员等级展示，快捷入口（我的订单/我的优惠券/我的券包/我的积分/钱包/设置）</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>avatar</code>：用户头像URL</li>
+<li><code>nickname</code>：昵称</li>
+<li><code>phone</code>：手机号（脱敏显示）</li>
+<li><code>member_level</code>：会员等级</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/profile-edit.html': {
+        title: '编辑资料',
+        subtitle: '头像上传 + 信息编辑 + 保存',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>编辑个人资料。头像上传（拍照/相册，裁剪正方形，5MB限制，jpg/png）、表单（昵称可编辑1-20字符/真实姓名readonly/手机号readonly脱敏/性别picker/生日年月日联动select 1940-当前年）、底部保存按钮（loading状态+校验+成功返回）</p>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/user/profile</code> - 获取资料
+                <span class="sidebar-tag api">PUT</span> <code>/api/v1/user/profile</code> - 更新（nickname/gender/birthday）
+                <span class="sidebar-tag api">POST</span> <code>/api/v1/user/avatar/upload</code> - 上传头像`
+            },
+            {
+                title: 'PRD 需求文档 (US-09 个人信息编辑)',
+                content: `<p><strong>US-09 个人中心 - F-09-1</strong></p>
+<p>用户编辑个人资料信息。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-09-1 个人信息管理</strong>：编辑头像、昵称、性别、生日等个人信息</li>
+</ul>
+<p><strong>数据校验规则：</strong></p>
+<ul>
+<li>昵称长度：2-20字符</li>
+<li>头像格式：JPG/PNG，最大5MB</li>
+<li>手机号格式：11位手机号</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/privacy-settings.html': {
+        title: '隐私设置',
+        subtitle: '通知开关 + 隐私政策 + 注销账号',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>管理通知偏好、查看隐私政策、注销账号。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>通知开关</strong>：营销通知/演出推广/优惠活动</li>
+                    <li><strong>隐私链接</strong>：隐私政策 + 数据使用说明</li>
+                    <li><strong>信息卡片</strong>：账户信息摘要</li>
+                    <li><strong>危险区域</strong>：注销账号(红色) + 确认弹窗</li>
+                </ul>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 通知开关 (.notification-switches)</strong></p>
+                <ul>
+                    <li>展示内容：列表形式，每项左侧图标+名称，右侧 toggle 开关。包括：营销通知（推送营销活动消息）、演出推广（推送新演出上线通知）、优惠活动（推送优惠券和折扣信息）</li>
+                    <li>交互行为：点击 toggle 开关切换通知状态；切换后立即调接口保存；开关有平滑过渡动画</li>
+                    <li>数据字段：<code>marketing_notification</code>, <code>show_promotion</code>, <code>discount_notification</code>（布尔值）</li>
+                </ul>
+                <p><strong>2. 隐私链接 (.privacy-links)</strong></p>
+                <ul>
+                    <li>展示内容：列表形式。隐私政策（图标+名称+">"）+ 数据使用说明（图标+名称+">"）</li>
+                    <li>交互行为：点击跳转对应 H5 页面（WebView 打开）</li>
+                    <li>数据字段：<code>privacy_policy_url</code>, <code>data_usage_url</code></li>
+                </ul>
+                <p><strong>3. 信息卡片 (.info-card)</strong></p>
+                <ul>
+                    <li>展示内容：卡片形式展示账户信息摘要。手机号（脱敏）、注册时间、最近登录时间、实名认证状态</li>
+                    <li>交互行为：纯展示</li>
+                    <li>数据字段：<code>phone</code>, <code>register_time</code>, <code>last_login_time</code>, <code>real_name_status</code></li>
+                </ul>
+                <p><strong>4. 危险区域 (.danger-zone)</strong></p>
+                <ul>
+                    <li>展示内容：红色文字"注销账号"按钮 + 说明文字"注销后数据不可恢复"</li>
+                    <li>交互行为：点击弹出二次确认弹窗（"确定要注销账号吗？注销后所有数据将被清除且不可恢复" + "确认注销"/"取消"按钮）；确认后需输入验证码验证身份；注销成功后清除本地数据并跳转登录页</li>
+                    <li>数据字段：无</li>
+                </ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">PUT</span> <code>/api/v1/user/notification-settings</code>
+                <p><strong>说明：</strong>更新通知设置</p>
+                <p><strong>请求参数：</strong><code>marketing_notification</code>, <code>show_promotion</code>, <code>discount_notification</code></p>
+
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/user/account-info</code>
+                <p><strong>说明：</strong>获取账户信息摘要</p>
+                <p><strong>响应字段：</strong><code>phone</code>, <code>register_time</code>, <code>last_login_time</code>, <code>real_name_status</code></p>
+
+                <span class="sidebar-tag api">POST</span> <code>/api/v1/user/account/cancel</code>
+                <p><strong>说明：</strong>注销账号</p>
+                <p><strong>请求参数：</strong><code>sms_code</code>（短信验证码）</p>`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>通知开关：</strong></p>
+                <ul>
+                    <li>切换后实时保存，无需手动保存</li>
+                    <li>保存失败时开关回滚并提示错误</li>
+                </ul>
+                <p><strong>注销流程：</strong></p>
+                <ul>
+                    <li>点击"注销账号" -> 确认弹窗 -> 确认 -> 发送验证码 -> 输入验证码 -> 验证通过 -> 注销成功</li>
+                    <li>有未完成订单时禁止注销，提示"请先完成或取消未完成的订单"</li>
+                    <li>有余额时提示"请先提现余额后再注销"</li>
+                </ul>`
+            },
+            {
+                title: 'PRD 需求文档 (US-08 隐私设置)',
+                content: `<p><strong>US-08 消息与通知 - F-08-3</strong></p>
+<p>用户管理隐私相关设置。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-08-3 消息设置</strong>：隐私权限管理（位置信息、通讯录、相册等权限开关）</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>location_permission</code>：位置信息权限</li>
+<li><code>contacts_permission</code>：通讯录权限</li>
+<li><code>album_permission</code>：相册权限</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/preference-settings.html': {
+        title: '偏好设置',
+        subtitle: '兴趣标签 + 会员权限开关',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>设置用户兴趣偏好标签和会员权限通知开关。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>兴趣标签</strong>：演出类型标签组（演唱会/话剧/舞蹈等），已选高亮</li>
+                    <li><strong>会员权限开关</strong>：优先购票提醒/生日专属优惠/积分变动通知/个性化推荐</li>
+                    <li><strong>底部保存按钮</strong></li>
+                </ul>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 兴趣标签 (.interest-tags)</strong></p>
+                <ul>
+                    <li>展示内容：标题"感兴趣的演出类型" + 标签组。标签包括：演唱会、话剧、舞蹈、音乐会、儿童剧、魔术、脱口秀、戏曲、音乐剧、歌剧。已选标签高亮（主题色背景+白色文字），未选标签灰色边框</li>
+                    <li>交互行为：点击标签切换选中/未选中状态；至少选择 1 个标签；最多选择 5 个标签；超出限制时提示"最多选择5个标签"</li>
+                    <li>数据字段：<code>interest_tags[]</code>（标签 ID 数组）</li>
+                </ul>
+                <p><strong>2. 会员权限开关 (.permission-switches)</strong></p>
+                <ul>
+                    <li>展示内容：标题"通知偏好" + 列表。每项左侧图标+名称+说明文字，右侧 toggle 开关。包括：优先购票提醒（新演出开票时提醒）、生日专属优惠（生日月推送专属优惠）、积分变动通知（积分到账/扣减时通知）、个性化推荐（根据偏好推荐演出）</li>
+                    <li>交互行为：点击 toggle 切换状态</li>
+                    <li>数据字段：<code>priority_remind</code>, <code>birthday_offer</code>, <code>points_notification</code>, <code>personalized_recommend</code></li>
+                </ul>
+                <p><strong>3. 底部保存按钮 (.save-btn)</strong></p>
+                <ul>
+                    <li>展示内容：固定底部全宽"保存"按钮</li>
+                    <li>交互行为：点击保存所有设置；校验至少选 1 个兴趣标签；保存成功提示并返回</li>
+                    <li>数据字段：提交全部标签和开关状态</li>
+                </ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/user/preferences</code>
+                <p><strong>说明：</strong>获取用户偏好设置</p>
+                <p><strong>响应字段：</strong></p>
+                <ul><li><code>interest_tags[]</code>, <code>priority_remind</code>, <code>birthday_offer</code>, <code>points_notification</code>, <code>personalized_recommend</code></li></ul>
+
+                <span class="sidebar-tag api">PUT</span> <code>/api/v1/user/preferences</code>
+                <p><strong>说明：</strong>更新用户偏好设置</p>
+                <p><strong>请求参数：</strong><code>interest_tags[]</code>, <code>priority_remind</code>, <code>birthday_offer</code>, <code>points_notification</code>, <code>personalized_recommend</code></p>`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>标签选择：</strong></p>
+                <ul>
+                    <li>点击切换选中/未选中，带缩放动画</li>
+                    <li>至少选 1 个，最多选 5 个</li>
+                    <li>超出限制时震动反馈 + toast 提示</li>
+                </ul>
+                <p><strong>数据用途：</strong></p>
+                <ul>
+                    <li>兴趣标签用于首页个性化推荐算法</li>
+                    <li>通知开关控制推送消息类型</li>
+                </ul>`
+            },
+            {
+                title: 'PRD 需求文档 (US-08 偏好设置)',
+                content: `<p><strong>US-08 消息与通知 - F-08-3</strong></p>
+<p>用户配置消息接收偏好和个性化设置。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-08-3 消息设置</strong>：推送通知开关、免打扰时段设置、消息类型偏好</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>push_enabled</code>：推送开关（boolean）</li>
+<li><code>quiet_hours_start</code>：免打扰开始时间</li>
+<li><code>quiet_hours_end</code>：免打扰结束时间</li>
+<li><code>msg_preferences</code>：消息类型偏好配置</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/real-name-auth.html': {
+        title: '实名认证',
+        subtitle: '认证状态 + 身份信息 + 证件上传',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>用户实名认证，提交身份信息和证件照片。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>认证状态卡片</strong>：未认证/审核中/已认证</li>
+                    <li><strong>表单</strong>：真实姓名/身份证号(仅数字)/身份证正反面(上传)</li>
+                    <li><strong>认证须知</strong></li>
+                    <li><strong>底部提交按钮</strong></li>
+                </ul>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 认证状态卡片 (.auth-status-card)</strong></p>
+                <ul>
+                    <li>展示内容：根据认证状态显示不同内容。未认证：灰色图标+"未认证"+说明文字；审核中：橙色图标+"审核中"+"预计1-3个工作日"；已认证：绿色图标+"已认证"+真实姓名（脱敏）</li>
+                    <li>交互行为：已认证状态表单不可编辑；审核中状态表单不可编辑；未认证状态可编辑提交</li>
+                    <li>数据字段：<code>auth_status</code>(0-未认证/1-审核中/2-已认证/3-认证失败), <code>real_name</code>, <code>id_card</code></li>
+                </ul>
+                <p><strong>2. 表单 (.auth-form)</strong></p>
+                <ul>
+                    <li>展示内容：真实姓名输入框（placeholder："请输入真实姓名"）+ 身份证号输入框（placeholder："请输入18位身份证号"，仅允许数字输入）+ 身份证正面上传区（虚线框+示例图+拍照/相册按钮）+ 身份证反面上传区（同上）</li>
+                    <li>交互行为：真实姓名 2-20 字符；身份证号 18 位纯数字（最后一位可为 X）；证件照片支持拍照/相册选择，上传后显示预览图+重新上传按钮；已认证/审核中时表单置灰</li>
+                    <li>数据字段：<code>real_name</code>, <code>id_card_number</code>, <code>id_card_front_url</code>, <code>id_card_back_url</code></li>
+                </ul>
+                <p><strong>3. 认证须知 (.auth-notice)</strong></p>
+                <ul>
+                    <li>展示内容：折叠区域，标题"认证须知"，展开后显示：认证目的说明、个人信息保护承诺、审核时效说明</li>
+                    <li>交互行为：点击标题展开/收起</li>
+                    <li>数据字段：静态内容</li>
+                </ul>
+                <p><strong>4. 底部提交按钮 (.submit-btn)</strong></p>
+                <ul>
+                    <li>展示内容：固定底部全宽"提交认证"按钮</li>
+                    <li>交互行为：表单校验通过后可点击；提交后状态变为"审核中"；校验失败显示错误提示</li>
+                    <li>数据字段：提交全部表单字段</li>
+                </ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/user/real-name/status</code>
+                <p><strong>说明：</strong>获取实名认证状态</p>
+                <p><strong>响应字段：</strong><code>auth_status</code>, <code>real_name</code>, <code>id_card_masked</code></p>
+
+                <span class="sidebar-tag api">POST</span> <code>/api/v1/user/real-name/submit</code>
+                <p><strong>说明：</strong>提交实名认证</p>
+                <p><strong>请求参数：</strong><code>real_name</code>, <code>id_card_number</code>, <code>id_card_front_url</code>, <code>id_card_back_url</code></p>
+
+                <span class="sidebar-tag api">POST</span> <code>/api/v1/user/id-card/upload</code>
+                <p><strong>说明：</strong>上传身份证照片</p>
+                <p><strong>请求参数：</strong><code>image</code>（文件）, <code>type</code>(front/back)</p>
+                <p><strong>响应字段：</strong><code>image_url</code></p>`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>表单校验：</strong></p>
+                <ul>
+                    <li>真实姓名：2-20 字符，仅中文</li>
+                    <li>身份证号：18 位，最后一位可为 X</li>
+                    <li>身份证正反面照片：必填</li>
+                </ul>
+                <p><strong>认证失败：</strong></p>
+                <ul>
+                    <li>认证失败时显示失败原因</li>
+                    <li>用户可修改后重新提交</li>
+                </ul>
+                <p><strong>状态流转：</strong></p>
+                <ul>
+                    <li>未认证 -> 提交 -> 审核中 -> 已认证/认证失败</li>
+                    <li>认证失败 -> 重新提交 -> 审核中</li>
+                </ul>`
+            },
+            {
+                title: 'PRD 需求文档 (US-09 实名认证)',
+                content: `<p><strong>US-09 个人中心 - F-09-2</strong></p>
+<p>用户完成实名认证，满足购票实名制要求。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-09-2 实名认证</strong>：身份证信息采集、OCR识别、人脸比对、认证状态管理</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>real_name</code>：真实姓名（必填）</li>
+<li><code>id_card_no</code>：身份证号（必填，18位）</li>
+<li><code>auth_status</code>：认证状态（未认证/认证中/已认证/认证失败）</li>
+</ul>
+<p><strong>数据校验规则：</strong></p>
+<ul>
+<li>身份证号：18位，符合国家标准校验算法</li>
+<li>姓名：与身份证姓名一致</li>
+<li>同一身份证仅可绑定一个账号</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/message-service.html': {
+        title: '消息中心',
+        subtitle: '系统通知 + 订单状态 + 积分变动 + 消息详情',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>分类展示系统通知、订单状态变更、积分变动等消息。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>导航栏</strong>：返回 + "消息中心" + "全部已读"</li>
+                    <li><strong>消息 Tab</strong>：系统通知(badge:2)/订单状态(badge:3)/积分变动(badge:2)</li>
+                    <li><strong>系统通知面板</strong>：按日期分组，金色渐变图标，未读有彩色条+脉冲红点</li>
+                    <li><strong>订单状态面板</strong>：购票成功/退款到账/核销提醒/配送发货</li>
+                    <li><strong>积分变动面板</strong>：积分到账/即将到期/消耗通知/签到奖励</li>
+                    <li><strong>消息详情视图</strong>：大图标+标题+时间+正文+高亮提示+操作按钮</li>
+                </ul>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 导航栏 (.nav-bar)</strong></p>
+                <ul>
+                    <li>展示内容：左侧返回箭头 + 居中标题"消息中心" + 右侧"全部已读"文字按钮</li>
+                    <li>交互行为：返回按钮返回上一页；"全部已读"将当前 Tab 下所有消息标记为已读</li>
+                    <li>数据字段：无</li>
+                </ul>
+                <p><strong>2. 消息 Tab (.message-tabs)</strong></p>
+                <ul>
+                    <li>展示内容：3 个 Tab 项。系统通知（badge 显示未读数"2"）、订单状态（badge 显示未读数"3"）、积分变动（badge 显示未读数"2"）。选中 Tab 底部有指示条</li>
+                    <li>交互行为：点击切换 Tab，对应面板显示；切换时清除当前 Tab 的 badge</li>
+                    <li>数据字段：<code>type</code>(system/order/points), <code>unread_count</code></li>
+                </ul>
+                <p><strong>3. 系统通知面板 (.system-panel)</strong></p>
+                <ul>
+                    <li>展示内容：按日期分组（如"今天"/"昨天"/"更早"）的消息列表。每条消息：左侧金色渐变圆形图标 + 标题 + 时间 + 摘要文字。未读消息左侧有彩色竖条 + 右上角脉冲红点动画</li>
+                    <li>交互行为：点击消息进入详情视图并标记已读；左滑可删除消息</li>
+                    <li>数据字段：<code>message_id</code>, <code>title</code>, <code>content</code>, <code>summary</code>, <code>create_time</code>, <code>is_read</code>, <code>icon_type</code></li>
+                </ul>
+                <p><strong>4. 订单状态面板 (.order-panel)</strong></p>
+                <ul>
+                    <li>展示内容：按日期分组的订单消息列表。消息类型包括：购票成功（绿色图标）、退款到账（蓝色图标）、核销提醒（橙色图标）、配送发货（紫色图标）。每条显示订单摘要信息</li>
+                    <li>交互行为：点击跳转对应订单详情</li>
+                    <li>数据字段：<code>message_id</code>, <code>type</code>(purchase_success/refund/verify/shipping), <code>order_id</code>, <code>title</code>, <code>create_time</code>, <code>is_read</code></li>
+                </ul>
+                <p><strong>5. 积分变动面板 (.points-panel)</strong></p>
+                <ul>
+                    <li>展示内容：按日期分组的积分消息列表。消息类型包括：积分到账（绿色"+"图标）、即将到期（橙色警告图标）、消耗通知（红色"-"图标）、签到奖励（金色星星图标）。每条显示积分变动金额</li>
+                    <li>交互行为：点击跳转积分明细或关联订单</li>
+                    <li>数据字段：<code>message_id</code>, <code>type</code>(earn/expiring/consume/sign), <code>points</code>, <code>title</code>, <code>create_time</code>, <code>is_read</code></li>
+                </ul>
+                <p><strong>6. 消息详情视图 (.message-detail)</strong></p>
+                <ul>
+                    <li>展示内容：大图标（对应消息类型）+ 标题（大字加粗）+ 时间 + 正文内容（支持富文本）+ 高亮提示区（如"您的订单已出票，请在演出前到场核销"）+ 底部操作按钮（如"查看订单"/"立即使用"）</li>
+                    <li>交互行为：点击操作按钮跳转对应页面；返回按钮回到消息列表</li>
+                    <li>数据字段：<code>message_id</code>, <code>title</code>, <code>content</code>, <code>highlight</code>, <code>action_text</code>, <code>action_url</code></li>
+                </ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/messages</code>
+                <p><strong>说明：</strong>获取消息列表</p>
+                <p><strong>请求参数：</strong><code>type</code>(system/order/points), <code>page</code>, <code>page_size</code></p>
+                <p><strong>响应字段：</strong></p>
+                <ul><li><code>message_id</code>, <code>type</code>, <code>title</code>, <code>content</code>, <code>summary</code>, <code>is_read</code>, <code>create_time</code>, <code>related_id</code></li></ul>
+
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/messages/{message_id}</code>
+                <p><strong>说明：</strong>获取消息详情</p>
+
+                <span class="sidebar-tag api">PUT</span> <code>/api/v1/messages/{message_id}/read</code>
+                <p><strong>说明：</strong>标记单条消息已读</p>
+
+                <span class="sidebar-tag api">PUT</span> <code>/api/v1/messages/read-all</code>
+                <p><strong>说明：</strong>标记全部消息已读</p>
+                <p><strong>请求参数：</strong><code>type</code>（可选，指定类型）</p>
+
+                <span class="sidebar-tag api">DELETE</span> <code>/api/v1/messages/{message_id}</code>
+                <p><strong>说明：</strong>删除消息</p>`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>消息状态：</strong></p>
+                <ul>
+                    <li>未读：左侧彩色竖条 + 脉冲红点 + 标题加粗</li>
+                    <li>已读：无竖条，标题正常字重</li>
+                </ul>
+                <p><strong>Tab 切换：</strong></p>
+                <ul>
+                    <li>切换 Tab 保留滚动位置</li>
+                    <li>切换时自动标记当前 Tab 消息为已读</li>
+                </ul>
+                <p><strong>下拉刷新：</strong></p>
+                <ul>
+                    <li>支持下拉刷新获取最新消息</li>
+                    <li>新消息到达时 badge 实时更新</li>
+                </ul>`
+            },
+            {
+                title: 'PRD 需求文档 (US-08 消息服务)',
+                content: `<p><strong>US-08 消息与通知</strong></p>
+<p>用户接收系统通知、订单消息、营销推送等。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-08-1 消息列表</strong>：按类型分类展示（系统通知/订单消息/营销推送），支持已读/未读状态</li>
+<li><strong>F-08-2 消息详情</strong>：查看消息详细内容，支持跳转至相关页面</li>
+<li><strong>F-08-3 消息设置</strong>：配置消息接收偏好（推送开关、免打扰时段）</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>message_id</code>：消息ID</li>
+<li><code>type</code>：消息类型（system/order/marketing）</li>
+<li><code>title</code>, <code>content</code>, <code>is_read</code>, <code>created_at</code></li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/order-ticket.html': {
+        title: '订单与电子票',
+        subtitle: '订单列表 + 电子票夹 + QR码',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>管理演出订单和电子票，支持订单筛选、电子票查看。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>视图切换器</strong>：我的订单/电子票夹</li>
+                    <li><strong>订单 Tab</strong>：全部/待付款/待核销/已完成/已退款(含badge)</li>
+                    <li><strong>订单列表</strong>：订单卡片(订单号+状态/封面+演出信息/操作按钮)</li>
+                    <li><strong>电子票夹</strong>：离线提示 + 电子票卡片(4种渐变主题，含QR码+撕裂线设计)</li>
+                    <li><strong>空状态</strong></li>
+                </ul>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 视图切换器 (.view-switcher)</strong></p>
+                <ul>
+                    <li>展示内容：顶部两个 Tab（"我的订单"/"电子票夹"），选中项高亮</li>
+                    <li>交互行为：点击切换"订单列表"和"电子票夹"两个视图</li>
+                    <li>数据字段：<code>view</code>(orders/tickets)</li>
+                </ul>
+                <p><strong>2. 订单 Tab (.order-tabs)</strong></p>
+                <ul>
+                    <li>展示内容：5 个 Tab（全部/待付款/待核销/已完成/已退款），部分 Tab 带数量角标（如待付款 badge:1）</li>
+                    <li>交互行为：点击切换筛选；角标实时更新</li>
+                    <li>数据字段：<code>status</code>(all/pending_pay/pending_verify/completed/refunded), <code>count</code></li>
+                </ul>
+                <p><strong>3. 订单列表 (.order-list)</strong></p>
+                <ul>
+                    <li>展示内容：垂直排列的订单卡片。每张卡片：顶部订单号+状态标签（如"待付款"红色/"已完成"绿色）+ 中间区域（左侧封面缩略图 + 右侧演出名称+场次时间+座位信息+数量）+ 底部金额（"合计: ¥360"）+ 操作按钮（"去支付"/"查看电子票"/"申请退款"/"去评价"）</li>
+                    <li>交互行为：点击卡片跳转订单详情；操作按钮根据订单状态显示不同功能</li>
+                    <li>数据字段：<code>order_id</code>, <code>order_no</code>, <code>status</code>, <code>show_title</code>, <code>cover_image</code>, <code>session_time</code>, <code>seats[]</code>, <code>total_amount</code>, <code>create_time</code></li>
+                </ul>
+                <p><strong>4. 电子票夹 (.ticket-holder)</strong></p>
+                <ul>
+                    <li>展示内容：顶部离线提示条（"电子票已保存，离线也可查看"）+ 电子票卡片列表。每张票：4 种渐变主题色随机分配（蓝紫/粉橙/绿青/金棕），上半部分 QR 码 + 演出名称 + 场次时间，中间撕裂线设计（锯齿状分割线），下半部分座位信息 + 观演人姓名</li>
+                    <li>交互行为：长按保存电子票到相册；点击 QR 码放大显示；离线状态下仍可查看已保存的电子票</li>
+                    <li>数据字段：<code>ticket_id</code>, <code>qr_code</code>, <code>show_title</code>, <code>session_time</code>, <code>seat_info</code>, <code>viewer_name</code>, <code>theme</code></li>
+                </ul>
+                <p><strong>5. 空状态 (.empty-state)</strong></p>
+                <ul>
+                    <li>展示内容：空状态插画 + "暂无订单"或"暂无电子票"提示</li>
+                    <li>交互行为：纯展示</li>
+                    <li>数据字段：无</li>
+                </ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/orders</code>
+                <p><strong>说明：</strong>获取演出订单列表</p>
+                <p><strong>请求参数：</strong><code>status</code>, <code>page</code>, <code>page_size</code></p>
+                <p><strong>响应字段：</strong></p>
+                <ul><li><code>order_id</code>, <code>order_no</code>, <code>status</code>, <code>show_title</code>, <code>cover_image</code>, <code>session_time</code>, <code>seats[]</code>, <code>total_amount</code>, <code>create_time</code></li></ul>
+
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/tickets</code>
+                <p><strong>说明：</strong>获取电子票列表</p>
+                <p><strong>响应字段：</strong></p>
+                <ul><li><code>ticket_id</code>, <code>qr_code</code>, <code>show_title</code>, <code>session_time</code>, <code>seat_info</code>, <code>viewer_name</code>, <code>status</code></li></ul>
+
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/orders/{order_id}</code>
+                <p><strong>说明：</strong>获取订单详情</p>
+
+                <span class="sidebar-tag api">POST</span> <code>/api/v1/orders/{order_id}/cancel</code>
+                <span class="sidebar-tag api">POST</span> <code>/api/v1/orders/{order_id}/refund</code>`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>订单状态操作：</strong></p>
+                <ul>
+                    <li>待付款：去支付 / 取消订单</li>
+                    <li>待核销：查看电子票 / 申请退款</li>
+                    <li>已完成：去评价</li>
+                    <li>已退款：查看详情</li>
+                </ul>
+                <p><strong>退款规则：</strong></p>
+                <ul>
+                    <li>演出前 7 天：全额退款</li>
+                    <li>演出前 3-7 天：扣 10%</li>
+                    <li>演出前 1-3 天：扣 20%</li>
+                    <li>演出当天：不支持退款</li>
+                </ul>
+                <p><strong>电子票离线：</strong></p>
+                <ul>
+                    <li>电子票数据本地缓存</li>
+                    <li>离线状态下可查看已缓存的票</li>
+                    <li>QR 码支持亮度调节</li>
+                </ul>`
+            },
+            {
+                title: 'PRD 需求文档 (US-03 订单确认与支付)',
+                content: `<p><strong>US-03 选座与购票 - F-03-3/F-03-4</strong></p>
+<p>用户确认订单信息并完成支付。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-03-3 订单确认</strong>：展示已选座位信息、演出信息、观演人信息、优惠券选择、价格明细</li>
+<li><strong>F-03-4 支付功能</strong>：支持微信支付、余额支付、积分抵扣组合支付</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>order_id</code>：订单ID</li>
+<li><code>seats</code>：已选座位列表</li>
+<li><code>coupon_id</code>：使用的优惠券ID</li>
+<li><code>payment_method</code>：支付方式（wechat/balance/points）</li>
+<li><code>total_amount</code>, <code>discount_amount</code>, <code>pay_amount</code></li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/product-order.html': {
+        title: '商品订单',
+        subtitle: '商城订单列表 + 物流信息 + 订单详情',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>管理商城商品订单，查看物流信息和订单详情。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>订单 Tab</strong>：全部/待付款/待发货/已完成</li>
+                    <li><strong>商品订单列表</strong>：店铺名+状态/商品图+名称+规格+价格+数量/合计+操作</li>
+                    <li><strong>物流信息</strong>(已完成)：快递公司+单号+时间线</li>
+                    <li><strong>订单详情弹窗</strong>：订单信息+收货信息+商品信息+费用明细</li>
+                    <li><strong>空状态</strong></li>
+                </ul>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 订单 Tab (.order-tabs)</strong></p>
+                <ul>
+                    <li>展示内容：4 个 Tab（全部/待付款/待发货/已完成），选中项高亮</li>
+                    <li>交互行为：点击切换筛选</li>
+                    <li>数据字段：<code>status</code>(all/pending_pay/pending_ship/completed)</li>
+                </ul>
+                <p><strong>2. 商品订单列表 (.order-list)</strong></p>
+                <ul>
+                    <li>展示内容：垂直排列的订单卡片。每张卡片：顶部店铺名+订单状态标签 + 商品信息区（商品图+名称+规格+单价+数量"x1"）+ 底部合计金额（"合计: ¥128"）+ 操作按钮（"去支付"/"确认收货"/"查看物流"/"再次购买"）</li>
+                    <li>交互行为：点击卡片弹出订单详情弹窗；操作按钮根据状态显示</li>
+                    <li>数据字段：<code>order_id</code>, <code>order_no</code>, <code>shop_name</code>, <code>status</code>, <code>items[]</code>(<code>product_image</code>, <code>product_name</code>, <code>spec</code>, <code>price</code>, <code>quantity</code>), <code>total_amount</code></li>
+                </ul>
+                <p><strong>3. 物流信息 (.logistics-info)</strong></p>
+                <ul>
+                    <li>展示内容：已发货/已完成的订单显示物流信息。快递公司名称 + 快递单号（可复制）+ 物流时间线（最近3条，最新一条高亮显示）</li>
+                    <li>交互行为：点击"查看物流"展开完整物流信息；长按快递单号复制</li>
+                    <li>数据字段：<code>express_company</code>, <code>express_no</code>, <code>logistics[]</code>(<code>time</code>, <code>description</code>, <code>is_current</code>)</li>
+                </ul>
+                <p><strong>4. 订单详情弹窗 (.order-detail-modal)</strong></p>
+                <ul>
+                    <li>展示内容：从底部滑出的弹窗。订单信息（订单号+下单时间+支付方式）+ 收货信息（收件人+电话+地址）+ 商品信息（商品列表+合计）+ 费用明细（商品金额+运费+优惠-xx=实付金额）</li>
+                    <li>交互行为：点击遮罩或下拉关闭弹窗</li>
+                    <li>数据字段：<code>order_no</code>, <code>create_time</code>, <code>pay_method</code>, <code>receiver_name</code>, <code>receiver_phone</code>, <code>receiver_address</code>, <code>items[]</code>, <code>freight</code>, <code>discount</code>, <code>pay_amount</code></li>
+                </ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/product-orders</code>
+                <p><strong>说明：</strong>获取商品订单列表</p>
+                <p><strong>请求参数：</strong><code>status</code>, <code>page</code>, <code>page_size</code></p>
+                <p><strong>响应字段：</strong></p>
+                <ul><li><code>order_id</code>, <code>order_no</code>, <code>shop_name</code>, <code>status</code>, <code>items[]</code>, <code>total_amount</code>, <code>create_time</code></li></ul>
+
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/product-orders/{order_id}</code>
+                <p><strong>说明：</strong>获取订单详情</p>
+
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/product-orders/{order_id}/logistics</code>
+                <p><strong>说明：</strong>获取物流信息</p>
+                <p><strong>响应字段：</strong><code>express_company</code>, <code>express_no</code>, <code>logistics[]</code></p>
+
+                <span class="sidebar-tag api">POST</span> <code>/api/v1/product-orders/{order_id}/confirm-receipt</code>
+                <p><strong>说明：</strong>确认收货</p>`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>订单状态流转：</strong></p>
+                <ul>
+                    <li>待付款 -> 已付款(待发货) -> 已发货(待收货) -> 已完成</li>
+                    <li>待付款 -> 已取消</li>
+                </ul>
+                <p><strong>操作按钮：</strong></p>
+                <ul>
+                    <li>待付款：去支付 / 取消订单</li>
+                    <li>待发货：查看详情</li>
+                    <li>待收货：查看物流 / 确认收货</li>
+                    <li>已完成：再次购买 / 去评价</li>
+                </ul>`
+            },
+            {
+                title: 'PRD 需求文档 (US-07 商品订单)',
+                content: `<p><strong>US-07 商城与周边 - F-07-4</strong></p>
+<p>用户查看商品订单详情。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-07-4 商品订单</strong>：订单确认、支付、物流跟踪、退款申请</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>order_id</code>：订单ID</li>
+<li><code>product_id</code>：商品ID</li>
+<li><code>quantity</code>：购买数量</li>
+<li><code>total_amount</code>：订单总额</li>
+<li><code>order_status</code>：订单状态（待支付/已支付/已发货/已完成/已退款）</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/shop.html': {
+        title: '商城首页',
+        subtitle: '分类导航 + 商品网格 + 购物车 + 商品详情',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>周边商品展示、分类筛选、商品详情、购物车管理。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>商城头部</strong>：标题"商城" + 搜索栏 + 购物车图标(角标)</li>
+                    <li><strong>Banner</strong>：背景图 + 标题 + "立即探索"</li>
+                    <li><strong>分类侧边栏 + 商品网格</strong>：左侧分类(全部/演出衍生品/文创周边等)，右侧双列商品</li>
+                    <li><strong>商品详情视图</strong>：图片轮播+价格+名称+规格选择+配送方式+详情图文+底部操作栏</li>
+                    <li><strong>购物车视图</strong>：购物车列表(勾选+数量控制+删除)+底部栏(全选+合计+结算)</li>
+                    <li><strong>底部 Tab 栏</strong>：5 个 Tab，当前激活"商城"</li>
+                </ul>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 商城头部 (.shop-header)</strong></p>
+                <ul>
+                    <li>展示内容：页面顶部，标题"商城" + 搜索输入框（placeholder："搜索商品"）+ 右侧购物车图标（红色角标显示商品数量）</li>
+                    <li>交互行为：点击搜索框跳转搜索页（携带 type=shop 参数）；点击购物车图标切换到购物车视图</li>
+                    <li>数据字段：<code>cart_count</code></li>
+                </ul>
+                <p><strong>2. Banner (.shop-banner)</strong></p>
+                <ul>
+                    <li>展示内容：全宽背景图 + 居中标题文字 + "立即探索"按钮</li>
+                    <li>交互行为：点击跳转推荐商品列表或活动页</li>
+                    <li>数据字段：<code>image_url</code>, <code>title</code>, <code>link_url</code></li>
+                </ul>
+                <p><strong>3. 分类侧边栏 + 商品网格 (.category-layout)</strong></p>
+                <ul>
+                    <li>展示内容：左侧固定宽度分类侧边栏（全部/演出衍生品/文创周边/纪念品/服装配饰），选中项高亮；右侧双列瀑布流商品网格。每个商品卡片：封面图 + 名称（2行截断）+ 价格（红色"¥68"）+ 销量（灰色"已售128"）</li>
+                    <li>交互行为：点击左侧分类筛选右侧商品列表；点击商品卡片进入商品详情视图；右侧商品列表上拉加载更多</li>
+                    <li>数据字段：<code>category_id</code>, <code>category_name</code>, <code>product_id</code>, <code>cover_image</code>, <code>title</code>, <code>price</code>, <code>sales_count</code></li>
+                </ul>
+                <p><strong>4. 商品详情视图 (.product-detail)</strong></p>
+                <ul>
+                    <li>展示内容：顶部图片轮播（多张商品图）+ 价格区（红色大字价格+原价删除线）+ 商品名称 + 规格选择器（如颜色/尺寸，点击展开选项）+ 配送方式（快递/自提）+ 商品详情图文（富文本）+ 底部操作栏（客服图标+"加入购物车"按钮+"立即购买"按钮）</li>
+                    <li>交互行为：图片左右滑动切换；规格选择后价格和库存联动；点击"加入购物车"成功后购物车角标+1；点击"立即购买"跳转结算页</li>
+                    <li>数据字段：<code>product_id</code>, <code>images[]</code>, <code>price</code>, <code>original_price</code>, <code>title</code>, <code>specs[]</code>(<code>name</code>, <code>options[]</code>), <code>stock</code>, <code>description</code></li>
+                </ul>
+                <p><strong>5. 购物车视图 (.cart-view)</strong></p>
+                <ul>
+                    <li>展示内容：标题"购物车" + 商品列表。每个商品：左侧勾选框 + 商品图 + 名称 + 规格 + 单价 + 数量控制（"-"按钮+数量+"+"按钮）+ 删除按钮。底部固定栏：全选勾选框 + "合计: ¥256" + "结算(2)"按钮</li>
+                    <li>交互行为：勾选/取消勾选商品；数量加减；左滑删除；全选/取消全选；合计金额实时计算；点击"结算"跳转确认订单页</li>
+                    <li>数据字段：<code>cart_id</code>, <code>product_id</code>, <code>sku_id</code>, <code>selected</code>, <code>quantity</code>, <code>product_name</code>, <code>spec</code>, <code>price</code></li>
+                </ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/shop/categories</code>
+                <p><strong>说明：</strong>获取商品分类</p>
+                <p><strong>响应字段：</strong><code>category_id</code>, <code>name</code>, <code>icon</code></p>
+
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/shop/products</code>
+                <p><strong>说明：</strong>获取商品列表</p>
+                <p><strong>请求参数：</strong><code>category_id</code>, <code>keyword</code>, <code>page</code>, <code>page_size</code></p>
+                <p><strong>响应字段：</strong></p>
+                <ul><li><code>product_id</code>, <code>cover_image</code>, <code>title</code>, <code>price</code>, <code>sales_count</code></li></ul>
+
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/shop/products/{product_id}</code>
+                <p><strong>说明：</strong>获取商品详情</p>
+
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/shop/cart</code>
+                <p><strong>说明：</strong>获取购物车列表</p>
+
+                <span class="sidebar-tag api">POST</span> <code>/api/v1/shop/cart/add</code>
+                <p><strong>说明：</strong>添加商品到购物车</p>
+                <p><strong>请求参数：</strong><code>product_id</code>, <code>sku_id</code>, <code>quantity</code></p>`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>分类联动：</strong></p>
+                <ul>
+                    <li>左侧分类切换，右侧商品列表刷新</li>
+                    <li>选中分类高亮，右侧列表平滑过渡</li>
+                </ul>
+                <p><strong>购物车操作：</strong></p>
+                <ul>
+                    <li>加购成功显示 toast 提示</li>
+                    <li>数量加减实时更新合计金额</li>
+                    <li>未选商品时结算按钮置灰</li>
+                </ul>`
+            },
+            {
+                title: 'PRD 需求文档 (US-07 商城)',
+                content: `<p><strong>US-07 商城与周边</strong></p>
+<p>用户浏览和购买演出周边商品。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-07-1 商品展示</strong>：商品分类、商品列表、商品详情（图片、价格、库存、描述）</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>product_id</code>：商品ID</li>
+<li><code>name</code>：商品名称</li>
+<li><code>price</code>：商品价格</li>
+<li><code>stock</code>：库存数量</li>
+<li><code>images</code>：商品图片列表</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/my-packages.html': {
+        title: '我的套票',
+        subtitle: '已购券包管理 + 展开查看演出券',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>管理已购买的券包，查看包含的演出券详情。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>券包列表</strong>（可展开）：图标+名称+券数量+有效期+状态+展开箭头</li>
+                    <li><strong>展开后</strong>：演出券列表（封面缩略图+演出名称+场次时间+座位信息+状态+选座按钮）</li>
+                </ul>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 券包列表 (.package-list)</strong></p>
+                <ul>
+                    <li>展示内容：垂直排列的券包卡片。每张卡片：左侧图标 + 券包名称 + 券数量（如"含5张券"）+ 有效期 + 状态标签（"可使用"绿色/"已过期"灰色）+ 右侧展开箭头</li>
+                    <li>交互行为：点击卡片展开/收起，展开后显示包含的演出券列表</li>
+                    <li>数据字段：<code>package_id</code>, <code>name</code>, <code>coupon_count</code>, <code>expire_date</code>, <code>status</code>(active/expired)</li>
+                </ul>
+                <p><strong>2. 展开后 - 演出券列表 (.coupon-list)</strong></p>
+                <ul>
+                    <li>展示内容：展开区域内显示的演出券列表。每张券：封面缩略图 + 演出名称 + 场次时间 + 座位信息（如"A区3排5座"或"未选座"）+ 状态标签（"未使用"/"已使用"/"已过期"）+ "选座"按钮（仅未使用且未选座时显示）</li>
+                    <li>交互行为：点击"选座"跳转 seat-selection.html；点击演出券卡片查看详情</li>
+                    <li>数据字段：<code>coupon_id</code>, <code>show_title</code>, <code>cover_image</code>, <code>session_time</code>, <code>seat_info</code>, <code>status</code>(unused/used/expired)</li>
+                </ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/my-packages</code>
+                <p><strong>说明：</strong>获取已购券包列表</p>
+                <p><strong>响应字段：</strong></p>
+                <ul><li><code>package_id</code>, <code>name</code>, <code>coupon_count</code>, <code>expire_date</code>, <code>status</code>, <code>coupons[]</code></li></ul>`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>展开/收起：</strong></p>
+                <ul>
+                    <li>点击券包卡片切换展开/收起</li>
+                    <li>展开动画：高度过渡 + 箭头旋转</li>
+                </ul>`
+            },
+            {
+                title: 'PRD 需求文档 (US-05 我的券包)',
+                content: `<p><strong>US-05 会员体系 - F-05-3</strong></p>
+<p>用户查看已购买的券包。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-05-3 优惠券管理</strong>：已购券包列表，展示券包名称、购买时间、包含优惠券及使用状态</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>package_id</code>：券包ID</li>
+<li><code>purchase_time</code>：购买时间</li>
+<li><code>status</code>：券包状态（使用中/已用完/已过期）</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/recharge-topup.html': {
+        title: '充值页',
+        subtitle: '余额显示 + 金额选择 + 支付方式',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>在线充值余额，支持预设金额和自定义金额。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>余额显示</strong>（深色渐变）：当前余额</li>
+                    <li><strong>充值金额选择</strong>：3x2网格(¥50/¥100赠¥5/¥200赠¥15/¥500赠¥50/自定义)</li>
+                    <li><strong>自定义金额输入</strong></li>
+                    <li><strong>支付方式</strong>：微信支付(推荐) + 支付宝</li>
+                    <li><strong>充值说明</strong></li>
+                    <li><strong>底部立即充值按钮</strong></li>
+                </ul>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 余额显示 (.balance-display)</strong></p>
+                <ul>
+                    <li>展示内容：深色渐变背景卡片，显示"当前余额"标签 + 大字余额金额</li>
+                    <li>交互行为：纯展示</li>
+                    <li>数据字段：<code>balance</code></li>
+                </ul>
+                <p><strong>2. 充值金额选择 (.amount-grid)</strong></p>
+                <ul>
+                    <li>展示内容：3x2 网格金额按钮。¥50、¥100（标签"赠¥5"）、¥200（标签"赠¥15"）、¥500（标签"赠¥50"）、¥1000（标签"赠¥120"）、自定义（图标+文字"自定义"）</li>
+                    <li>交互行为：点击预设金额选中高亮；点击"自定义"显示自定义输入框</li>
+                    <li>数据字段：<code>amount</code>, <code>bonus</code></li>
+                </ul>
+                <p><strong>3. 自定义金额输入 (.custom-input)</strong></p>
+                <ul>
+                    <li>展示内容：输入框（placeholder："请输入充值金额"），仅允许数字输入</li>
+                    <li>交互行为：输入金额范围 1-5000；超出范围提示</li>
+                    <li>数据字段：<code>custom_amount</code></li>
+                </ul>
+                <p><strong>4. 支付方式 (.pay-methods)</strong></p>
+                <ul>
+                    <li>展示内容：两个支付方式单选项。微信支付（图标+名称+"推荐"标签，默认选中）+ 支付宝（图标+名称）</li>
+                    <li>交互行为：点击切换支付方式</li>
+                    <li>数据字段：<code>pay_method</code>(wechat/alipay)</li>
+                </ul>
+                <p><strong>5. 底部立即充值按钮 (.recharge-btn)</strong></p>
+                <ul>
+                    <li>展示内容：固定底部全宽"立即充值"按钮（含金额文字如"充值 ¥100"）</li>
+                    <li>交互行为：未选金额时按钮置灰；选金额后可点击，调起对应支付方式</li>
+                    <li>数据字段：<code>amount</code>, <code>pay_method</code></li>
+                </ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/wallet/info</code>
+                <p><strong>说明：</strong>获取当前余额</p>
+
+                <span class="sidebar-tag api">POST</span> <code>/api/v1/wallet/recharge</code>
+                <p><strong>说明：</strong>发起充值</p>
+                <p><strong>请求参数：</strong><code>amount</code>, <code>pay_method</code>(wechat/alipay)</p>`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>充值优惠：</strong></p>
+                <ul>
+                    <li>¥100 赠 ¥5</li>
+                    <li>¥200 赠 ¥15</li>
+                    <li>¥500 赠 ¥50</li>
+                    <li>¥1000 赠 ¥120</li>
+                </ul>
+                <p><strong>支付流程：</strong></p>
+                <ul>
+                    <li>选择金额 -> 选择支付方式 -> 点击充值 -> 调起支付 -> 支付成功 -> 余额更新</li>
+                </ul>`
+            },
+            {
+                title: 'PRD 需求文档 (US-06 充值',
+                content: `<p><strong>US-06 支付与钱包 - F-06-1</strong></p>
+<p>用户进行钱包充值。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-06-1 钱包管理</strong>：选择充值金额或自定义金额，支持微信支付充值</li>
+</ul>
+<p><strong>数据校验规则：</strong></p>
+<ul>
+<li>最低充值金额：10元</li>
+<li>最高充值金额：5000元</li>
+<li>自定义金额必须为整数</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/recharge-card-bind.html': {
+        title: '充值卡绑定',
+        subtitle: '绑定新卡 + 已绑定卡片列表',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>绑定实体充值卡，管理已绑定的充值卡。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>绑定新卡</strong>：充值卡号输入框(16位) + "绑定充值卡"按钮</li>
+                    <li><strong>已绑定充值卡列表</strong>：卡号后4位+绑定时间+金额+状态(已激活/已使用/已过期)</li>
+                </ul>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 绑定新卡 (.bind-card)</strong></p>
+                <ul>
+                    <li>展示内容：输入框（placeholder："请输入16位充值卡号"，限制16位数字）+ "绑定充值卡"按钮</li>
+                    <li>交互行为：输入满16位后按钮可点击；绑定成功后提示并刷新列表；绑定失败显示错误原因</li>
+                    <li>数据字段：<code>card_number</code>（16位数字）</li>
+                </ul>
+                <p><strong>2. 已绑定充值卡列表 (.card-list)</strong></p>
+                <ul>
+                    <li>展示内容：垂直排列的卡片列表。每张卡片：充值卡图标 + 卡号后4位（如"**** **** **** 8888"）+ 绑定时间 + 面额金额 + 状态标签（"已激活"绿色/"已使用"灰色/"已过期"红色）</li>
+                    <li>交互行为：纯展示</li>
+                    <li>数据字段：<code>card_id</code>, <code>card_last_four</code>, <code>bind_time</code>, <code>amount</code>, <code>status</code>(activated/used/expired)</li>
+                </ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">POST</span> <code>/api/v1/recharge-cards/bind</code>
+                <p><strong>说明：</strong>绑定充值卡</p>
+                <p><strong>请求参数：</strong><code>card_number</code>（16位）</p>
+
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/recharge-cards/list</code>
+                <p><strong>说明：</strong>获取已绑定充值卡列表</p>
+                <p><strong>响应字段：</strong></p>
+                <ul><li><code>card_id</code>, <code>card_last_four</code>, <code>bind_time</code>, <code>amount</code>, <code>status</code></li></ul>`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>绑定校验：</strong></p>
+                <ul>
+                    <li>卡号必须为 16 位数字</li>
+                    <li>重复绑定提示"该卡已绑定"</li>
+                    <li>无效卡号提示"充值卡号无效"</li>
+                </ul>`
+            },
+            {
+                title: 'PRD 需求文档 (US-06 充值卡绑定)',
+                content: `<p><strong>US-06 支付与钱包 - F-06-1</strong></p>
+<p>用户绑定实体充值卡到钱包。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-06-1 钱包管理</strong>：输入充值卡卡号和密码，绑定后余额自动充入钱包</li>
+</ul>
+<p><strong>数据校验规则：</strong></p>
+<ul>
+<li>卡号格式：16位数字</li>
+<li>密码格式：6位数字</li>
+<li>每张充值卡仅可绑定一次</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/physical-card-apply.html': {
+        title: '实体卡申请',
+        subtitle: '等级展示 + 卡片选择 + 权益 + 申请表单',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>申请会员实体卡，查看权益和申请记录。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>当前等级横幅</strong>（深色渐变）：金卡会员 + VIP 3</li>
+                    <li><strong>卡片类型选择</strong>：金卡(可选)/钻石卡(锁定)</li>
+                    <li><strong>权益展示</strong>：2x2网格(折扣/优先购票/生日礼遇/专属客服)</li>
+                    <li><strong>申请表单</strong>：姓名/手机号/所在地区(省+市select)/详细地址</li>
+                    <li><strong>申请记录入口</strong></li>
+                    <li><strong>底部提交按钮</strong> + 成功弹窗</li>
+                </ul>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 当前等级横幅 (.level-banner)</strong></p>
+                <ul>
+                    <li>展示内容：深色渐变背景横幅，显示"金卡会员" + "VIP 3"等级标识</li>
+                    <li>交互行为：纯展示</li>
+                    <li>数据字段：<code>member_level</code>, <code>level_name</code>, <code>vip_level</code></li>
+                </ul>
+                <p><strong>2. 卡片类型选择 (.card-type)</strong></p>
+                <ul>
+                    <li>展示内容：两种卡片类型并排。金卡（可选，当前等级对应卡片，有选中边框）+ 钻石卡（锁定状态，灰色蒙层+锁图标，显示"累计消费满20000元可申请"）</li>
+                    <li>交互行为：金卡可点击选中；钻石卡不可点击</li>
+                    <li>数据字段：<code>card_type</code>(gold/diamond), <code>is_unlocked</code></li>
+                </ul>
+                <p><strong>3. 权益展示 (.benefits-grid)</strong></p>
+                <ul>
+                    <li>展示内容：2x2 网格权益卡片。购票折扣（9折）、优先购票（提前24小时）、生日礼遇（专属优惠券）、专属客服（1对1服务）。每项含图标+名称+说明</li>
+                    <li>交互行为：纯展示</li>
+                    <li>数据字段：<code>benefit_id</code>, <code>name</code>, <code>description</code></li>
+                </ul>
+                <p><strong>4. 申请表单 (.apply-form)</strong></p>
+                <ul>
+                    <li>展示内容：姓名输入框 + 手机号输入框 + 所在地区（省/市二级联动 select）+ 详细地址输入框</li>
+                    <li>交互行为：姓名和手机号自动填充用户信息；地区选择器点击弹出 picker；详细地址手动输入</li>
+                    <li>数据字段：<code>name</code>, <code>phone</code>, <code>province</code>, <code>city</code>, <code>address</code></li>
+                </ul>
+                <p><strong>5. 申请记录入口 (.apply-record)</strong></p>
+                <ul>
+                    <li>展示内容："查看申请记录 >"链接</li>
+                    <li>交互行为：点击跳转申请记录列表页</li>
+                    <li>数据字段：无</li>
+                </ul>
+                <p><strong>6. 底部提交按钮 + 成功弹窗</strong></p>
+                <ul>
+                    <li>展示内容：固定底部"提交申请"按钮；提交成功后弹出成功弹窗（图标+"申请成功"+预计发货时间+"确定"按钮）</li>
+                    <li>交互行为：表单校验通过后可点击；提交成功弹窗点击"确定"返回</li>
+                    <li>数据字段：提交全部表单字段</li>
+                </ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">POST</span> <code>/api/v1/physical-card/apply</code>
+                <p><strong>说明：</strong>提交实体卡申请</p>
+                <p><strong>请求参数：</strong><code>card_type</code>, <code>name</code>, <code>phone</code>, <code>province</code>, <code>city</code>, <code>address</code></p>
+
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/physical-card/status</code>
+                <p><strong>说明：</strong>获取实体卡申请状态</p>`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>表单校验：</strong></p>
+                <ul>
+                    <li>姓名：必填，2-20 字符</li>
+                    <li>手机号：必填，11 位手机号</li>
+                    <li>所在地区：必选</li>
+                    <li>详细地址：必填，5-100 字符</li>
+                </ul>
+                <p><strong>申请限制：</strong></p>
+                <ul>
+                    <li>每种卡片类型只能申请一次</li>
+                    <li>已有审核中的申请不可重复提交</li>
+                </ul>`
+            },
+            {
+                title: 'PRD 需求文档 (US-05 实体卡申请)',
+                content: `<p><strong>US-05 会员体系 - F-05-4</strong></p>
+<p>用户申请实体会员卡。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-05-4 实体卡绑定</strong>：申请实体会员卡、填写收货地址、查看申请进度</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>card_id</code>：实体卡ID</li>
+<li><code>card_no</code>：实体卡卡号</li>
+<li><code>apply_status</code>：申请状态（待审核/已审核/已寄出/已签收）</li>
+<li><code>shipping_address</code>：收货地址</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/transaction-record.html': {
+        title: '交易记录',
+        subtitle: '交易流水 + 筛选 + 汇总',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>展示钱包交易流水明细，支持按时间筛选和汇总统计。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>筛选标签</strong>：全部/本月/近三月/近半年</li>
+                    <li><strong>汇总栏</strong>：累计收入 + 累计支出 + 当前余额</li>
+                    <li><strong>交易列表</strong>：按月份分组，含图标+标题+时间+金额+余额</li>
+                </ul>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 筛选标签 (.filter-tabs)</strong></p>
+                <ul>
+                    <li>展示内容：4 个标签（全部/本月/近三月/近半年），选中项高亮</li>
+                    <li>交互行为：点击切换时间范围，列表和汇总数据刷新</li>
+                    <li>数据字段：<code>time_range</code>(all/month/quarter/half_year)</li>
+                </ul>
+                <p><strong>2. 汇总栏 (.summary-bar)</strong></p>
+                <ul>
+                    <li>展示内容：3 个数据项横排。累计收入（绿色"+3,000"）、累计支出（红色"-1,670"）、当前余额（黑色"¥1,280.00"）</li>
+                    <li>交互行为：纯展示，数据随筛选条件变化</li>
+                    <li>数据字段：<code>total_income</code>, <code>total_expend</code>, <code>current_balance</code></li>
+                </ul>
+                <p><strong>3. 交易列表 (.transaction-list)</strong></p>
+                <ul>
+                    <li>展示内容：按月份分组（如"2024年6月"）的交易列表。每条记录：左侧图标（收入绿色向上箭头/支出红色向下箭头）+ 标题（如"微信充值"/"购买演出-xxx"/"退款到账"）+ 时间（如"06-15 14:30"）+ 右侧金额（收入绿色"+500.00"/支出红色"-180.00"）+ 余额（灰色小字"余额: ¥1,280.00"）</li>
+                    <li>交互行为：上拉加载更多；点击记录可跳转关联订单</li>
+                    <li>数据字段：<code>record_id</code>, <code>type</code>(recharge/consume/refund/withdraw), <code>title</code>, <code>amount</code>, <code>balance</code>, <code>create_time</code>, <code>order_id</code></li>
+                </ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/wallet/transactions</code>
+                <p><strong>说明：</strong>获取交易流水明细</p>
+                <p><strong>请求参数：</strong></p>
+                <ul>
+                    <li><code>time_range</code> - all/month/quarter/half_year</li>
+                    <li><code>type</code> - all/income/expend（可选）</li>
+                    <li><code>page</code> / <code>page_size</code> - 分页</li>
+                </ul>
+                <p><strong>响应字段：</strong></p>
+                <ul><li><code>record_id</code>, <code>type</code>, <code>title</code>, <code>amount</code>, <code>balance</code>, <code>create_time</code>, <code>order_id</code></li></ul>
+
+                <span class="sidebar-tag api">GET</span> <code>/api/v1/wallet/transaction-summary</code>
+                <p><strong>说明：</strong>获取交易汇总统计</p>
+                <p><strong>请求参数：</strong><code>time_range</code></p>
+                <p><strong>响应字段：</strong><code>total_income</code>, <code>total_expend</code>, <code>current_balance</code></p>`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>列表展示：</strong></p>
+                <ul>
+                    <li>按月份降序分组，组内按时间降序</li>
+                    <li>收入记录金额绿色带"+"前缀</li>
+                    <li>支出记录金额红色带"-"前缀</li>
+                    <li>每条记录显示操作后余额</li>
+                </ul>
+                <p><strong>加载策略：</strong></p>
+                <ul>
+                    <li>首次加载显示最近 20 条</li>
+                    <li>上拉触底加载更多</li>
+                    <li>切换筛选条件重置分页</li>
+                </ul>`
+            },
+            {
+                title: 'PRD 需求文档 (US-06 交易记录)',
+                content: `<p><strong>US-06 支付与钱包 - F-06-1</strong></p>
+<p>用户查看钱包交易流水记录。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-06-1 钱包管理</strong>：交易记录列表，按时间倒序展示，支持按类型筛选（充值/消费/退款/提现）</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>transaction_id</code>：交易ID</li>
+<li><code>type</code>：交易类型（recharge/consume/refund/withdraw）</li>
+<li><code>amount</code>：交易金额</li>
+<li><code>balance_after</code>：交易后余额</li>
+<li><code>created_at</code>：交易时间</li>
+</ul>`
+            }]
+    },
+
+    'user-miniapp/theater-list.html': {
+        title: '剧院列表',
+        subtitle: '城市筛选 + 剧院搜索 + 剧院详情',
+        sections: [
+            {
+                title: '功能说明',
+                content: `<p><strong>核心功能：</strong>按城市筛选展示剧院列表，查看剧院详情和演出场次。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>城市筛选</strong>：水平滚动城市标签(全部/海口/三亚/琼海/万宁/儋州)</li>
+                    <li><strong>剧院列表</strong>：封面图+城市定位标签+名称/地址+演出场次+座位数</li>
+                    <li><strong>空状态</strong></li>
+                </ul>`
+            },
+            {
+                title: '页面模块详细说明',
+                content: `<p><strong>1. 城市筛选 (.city-tabs)</strong></p>
+                <ul>
+                    <li>展示内容：水平滚动城市标签栏。标签包括：全部、海口、三亚、琼海、万宁、儋州。选中标签底部有主题色指示条</li>
+                    <li>交互行为：水平滚动切换城市；点击标签筛选对应城市的剧院列表</li>
+                    <li>数据字段：<code>city</code>, <code>city_name</code></li>
+                </ul>
+                <p><strong>2. 剧院列表 (.theater-list)</strong></p>
+                <ul>
+                    <li>展示内容：垂直排列的剧院卡片。每张卡片：大图封面 + 左上角城市定位标签（蓝色"海口"）+ 剧院名称（白色大字覆盖在图片上）+ 底部信息区（地址图标+地址文字 + 演出场次"3场演出" + 座位数"800座"）</li>
+                    <li>交互行为：点击卡片跳转剧院详情页（显示演出列表和座位图）</li>
+                    <li>数据字段：<code>theater_id</code>, <code>image</code>, <code>city</code>, <code>name</code>, <code>address</code>, <code>show_count</code>, <code>seat_count</code></li>
+                </ul>
+                <p><strong>3. 空状态 (.empty-state)</strong></p>
+                <ul>
+                    <li>展示内容：空状态插画 + "该城市暂无剧院"提示</li>
+                    <li>交互行为：纯展示</li>
+                    <li>数据字段：无</li>
+                </ul>`
+            },
+            {
+                title: 'API 接口',
+                content: `<span class="sidebar-tag api">GET</span> <code>/api/v1/theaters/list</code>
+                <p><strong>说明：</strong>获取剧院列表</p>
+                <p><strong>请求参数：</strong><code>city</code>（可选，城市名称）, <code>page</code>, <code>page_size</code></p>
+                <p><strong>响应字段：</strong></p>
+                <ul><li><code>theater_id</code>, <code>image</code>, <code>city</code>, <code>name</code>, <code>address</code>, <code>show_count</code>, <code>seat_count</code></li></ul>`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>城市筛选：</strong></p>
+                <ul>
+                    <li>默认显示"全部"城市</li>
+                    <li>切换城市标签，列表刷新</li>
+                    <li>标签栏水平滚动</li>
+                </ul>
+                <p><strong>加载策略：</strong></p>
+                <ul>
+                    <li>首次加载显示骨架屏</li>
+                    <li>上拉加载更多</li>
+                    <li>无数据时显示空状态</li>
+                </ul>`
+            },
+            {
+                title: 'PRD 需求文档 (US-01 剧院列表)',
+                content: `<p><strong>US-01 演出发现与浏览 - F-01-4</strong></p>
+<p>用户浏览剧院列表，查看剧院信息和在售演出。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-01-4 演出列表展示</strong>：剧院列表展示，含剧院封面、名称、地址、在售演出数量，点击查看剧院详情及演出场次</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>theater_id</code>：剧院ID</li>
+<li><code>name</code>：剧院名称</li>
+<li><code>address</code>：剧院地址</li>
+<li><code>image</code>：剧院封面图</li>
+<li><code>show_count</code>：在售演出数量</li>
+</ul>`
+            }]
+    },
+
+    // ========== 代理端 + 管理端 + PC后台 ==========
+    // ============================================================
+  // 代理端小程序 (Agent Mini App)
+  // ============================================================
+
+  'user-miniapp/agent-miniapp.html': {
+    title: '代理中心',
+    subtitle: '代理端小程序',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>代理中心首页，采用浅色主题（背景色 #F5F6FA），展示代理角色信息、佣金统计、操作入口、热门推广及推广数据概览。</p>`
+        },
+        {
+            title: '代理角色信息卡片',
+            content: `展示代理基本信息，包含： - <b>头像</b>：金色渐变圆形头像，显示姓氏"王" - <b>名称</b>：王建华 - <b>等级</b>：金牌代理（gold 级别标识） - <b>编号</b>：A20260001 - <b>类型</b>：员工代理 - <b>加入时间</b>：代理注册/加入的日期时间`
+        },
+        {
+            title: '代理佣金统计',
+            content: `三项核心佣金数据展示： - <b>累计佣金</b>：¥15,420 - <b>待结算</b>：¥3,200 - <b>可提现</b>：¥12,200 - 右侧提供"提现"快捷按钮，点击跳转至提现申请页面`
+        },
+        {
+            title: '操作入口列表',
+            content: `7项功能入口，采用宫格/列表布局： 1. <b>我的分销码</b> - 查看个人专属分销二维码 2. <b>分享海报</b> - 生成推广海报图片 3. <b>推广链接</b> - 复制个人推广链接（点击即复制） 4. <b>佣金明细</b> - 查看佣金收入详细记录 5. <b>提现记录</b> - 查看历史提现申请及状态 6. <b>推广数据</b> - 查看推广效果统计数据 7. <b>分销规则</b> - 查看分销体系规则说明`
+        },
+        {
+            title: '热门推广',
+            content: `展示3个热门演出推广卡片，每个卡片包含： - <b>演出名称</b> - <b>演出时间</b> - <b>佣金比例</b> - <b>"推广"按钮</b> - 点击生成该演出的推广链接/海报`
+        },
+        {
+            title: '推广数据概览',
+            content: `展示推广漏斗数据，顶部为时间Tab切换（今日/本周/本月）： - <b>访客</b>：256 - <b>下单</b>：42 - <b>支付</b>：38 - <b>退款</b>：3 数据以漏斗形式呈现，直观展示各环节转化情况`
+        },
+    ,
+            {
+                title: 'PRD 需求文档',
+                content: `<p><strong>代理小程序管理</strong></p>
+<p>管理员配置代理分销小程序。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li>代理小程序配置</li>
+<li>小程序版本管理</li>
+<li>功能权限配置</li>
+</ul>`
+            }]
+  },
+
+  'user-miniapp/agent-miniapp-withdraw.html': {
+    title: '佣金管理',
+    subtitle: '代理端小程序',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>佣金提现管理页面，包含提现申请和提现记录两个子Tab，支持快捷金额选择和提现到微信零钱。</p>`
+        },
+        {
+            title: '子Tab切换',
+            content: `页面顶部提供两个子Tab： - <b>提现申请</b> - 发起佣金提现申请 - <b>提现记录</b> - 查看历史提现记录列表`
+        },
+        {
+            title: '提现申请',
+            content: `提现申请表单区域，包含： - <b>余额卡片</b>：显示当前可提现余额 ¥12,200 - <b>金额输入框</b>：手动输入提现金额 - <b>快捷金额按钮</b>：¥50 / ¥100 / ¥500 / ¥1000 / 全部（一键填入对应金额） - <b>提现方式</b>：提现到微信零钱 - <b>规则提示</b>：展示提现相关规则说明 - <b>确认按钮</b>：提交提现申请`
+        },
+        {
+            title: '提现记录',
+            content: `展示6条历史提现记录，每条记录包含： - <b>提现金额</b> - <b>状态</b>：已到账（绿色）/ 审核中（橙色）/ 已驳回（红色） - <b>申请时间</b> - <b>提现方式</b>：如微信零钱`
+        },
+    ,
+            {
+                title: 'PRD 需求文档',
+                content: `<p><strong>代理提现管理</strong></p>
+<p>管理员处理代理提现申请。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li>提现申请审核</li>
+<li>提现记录查询</li>
+<li>提现打款处理</li>
+</ul>`
+            }]
+  },
+
+  'user-miniapp/agent-miniapp-stats.html': {
+    title: '推广数据',
+    subtitle: '代理端小程序',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>代理推广数据统计页面，提供时间维度的数据概览、转化漏斗分析和热门推广排行。</p>`
+        },
+        {
+            title: '时间筛选',
+            content: `顶部时间Tab切换，支持三种时间维度： - <b>今日</b> - <b>本周</b> - <b>本月</b>`
+        },
+        {
+            title: '数据概览',
+            content: `2x2网格布局展示四项核心指标： - <b>访客</b>：256（橙色标识） - <b>下单</b>：42（蓝色标识） - <b>支付</b>：38（绿色标识） - <b>退款</b>：3（红色标识）`
+        },
+        {
+            title: '转化漏斗',
+            content: `四级转化漏斗图，展示各环节转化率： - <b>访客 → 下单</b>：显示转化率百分比 - <b>下单 → 支付</b>：显示转化率百分比 - <b>支付 → 退款</b>：显示转化率百分比 漏斗宽度随数据递减，直观展示转化流失情况`
+        },
+        {
+            title: '热门推广排行',
+            content: `展示Top5热门推广演出排行列表，每条记录包含： - <b>排名</b>：1-5名 - <b>演出名称</b> - <b>访客数</b> - <b>下单数</b> - <b>转化率</b>：百分比显示`
+        },
+    ,
+            {
+                title: 'PRD 需求文档',
+                content: `<p><strong>代理统计管理</strong></p>
+<p>管理员查看代理分销统计数据。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li>代理业绩统计</li>
+<li>推广数据排行</li>
+<li>佣金汇总报表</li>
+</ul>`
+            }]
+  },
+
+  'user-miniapp/agent-miniapp-rules.html': {
+    title: '分销规则',
+    subtitle: '代理端小程序',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>分销体系规则说明页面，详细展示分销说明、佣金比例、结算规则、提现规则和注意事项。</p>`
+        },
+        {
+            title: '一级分销说明',
+            content: `分销体系基本说明，介绍一级分销的概念和运作方式`
+        },
+        {
+            title: '佣金比例表格',
+            content: `展示5种演出类型对应的佣金比例，表格形式呈现： - 演出类型1 + 对应佣金比例 - 演出类型2 + 对应佣金比例 - 演出类型3 + 对应佣金比例 - 演出类型4 + 对应佣金比例 - 演出类型5 + 对应佣金比例`
+        },
+        {
+            title: '结算规则',
+            content: `4条佣金结算规则说明，涵盖结算周期、结算条件、结算方式等内容`
+        },
+        {
+            title: '提现规则',
+            content: `5条提现相关规则说明，涵盖提现门槛、提现额度、到账时间、手续费等内容`
+        },
+        {
+            title: '注意事项',
+            content: `5条分销注意事项，涵盖违规行为、账号冻结、佣金调整等提醒事项`
+        },
+    ,
+            {
+                title: 'PRD 需求文档',
+                content: `<p><strong>代理规则管理</strong></p>
+<p>管理员配置代理分销业务规则。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li>分销规则配置</li>
+<li>提现规则设置</li>
+<li>考核规则管理</li>
+</ul>`
+            }]
+  },
+
+  'user-miniapp/agent-miniapp-qrcode.html': {
+    title: '我的分销码',
+    subtitle: '代理端小程序',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>展示代理专属分销二维码页面，用户可保存图片或分享给他人进行推广。</p>`
+        },
+        {
+            title: '提示文字',
+            content: `页面顶部展示分销码使用说明提示文字，引导用户扫码或分享`
+        },
+        {
+            title: '分销码卡片',
+            content: `居中展示的分销码卡片，包含： - <b>二维码</b>：200x200像素的专属分销二维码 - <b>代理信息</b>：展示代理姓名、编号、等级等信息`
+        },
+        {
+            title: '操作按钮',
+            content: `底部两个操作按钮： - <b>保存图片</b> - 将分销码卡片保存为图片到手机相册 - <b>分享</b> - 调起微信分享功能，分享分销码给好友或群聊`
+        },
+    ,
+            {
+                title: 'PRD 需求文档',
+                content: `<p><strong>代理二维码管理</strong></p>
+<p>管理员管理代理分销二维码。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li>二维码生成</li>
+<li>二维码绑定关系管理</li>
+<li>扫码数据统计</li>
+</ul>`
+            }]
+  },
+
+  'user-miniapp/agent-miniapp-poster.html': {
+    title: '分享海报',
+    subtitle: '代理端小程序',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>代理推广海报生成页面，支持选择不同演出海报模板，预览并保存或分享。</p>`
+        },
+        {
+            title: '海报预览',
+            content: `大尺寸海报预览区域（高度560px），海报内容包含： - <b>封面图</b>：演出宣传封面 - <b>演出信息</b>：演出名称、时间、地点等 - <b>代理信息条</b>：代理名称、编号等推广者信息 - <b>迷你二维码</b>：代理专属分销二维码`
+        },
+        {
+            title: '海报选择',
+            content: `底部展示3个海报缩略图供选择，点击可切换预览： 1. 天涯海角 2. 椰风海韵 3. 南海奇缘 选中状态有高亮边框标识`
+        },
+        {
+            title: '操作按钮',
+            content: `底部两个操作按钮： - <b>保存海报</b> - 将当前预览海报保存为图片到手机相册 - <b>分享好友</b> - 调起微信分享功能，分享海报给好友或群聊`
+        },
+    ,
+            {
+                title: 'PRD 需求文档',
+                content: `<p><strong>代理海报管理</strong></p>
+<p>管理员管理代理分销海报素材。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li>海报模板管理</li>
+<li>海报生成与预览</li>
+<li>海报数据统计</li>
+</ul>`
+            }]
+  },
+
+  'user-miniapp/agent-miniapp-commission.html': {
+    title: '佣金明细',
+    subtitle: '代理端小程序',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>代理佣金收入明细页面，支持时间筛选，展示佣金汇总和详细的佣金记录列表。</p>`
+        },
+        {
+            title: '筛选栏',
+            content: `顶部时间筛选栏，支持四种时间维度： - <b>今日</b> - <b>本周</b> - <b>本月</b> - <b>自定义</b> - 选择自定义日期范围`
+        },
+        {
+            title: '佣金汇总',
+            content: `展示三项佣金汇总数据： - <b>本月佣金</b>：¥5,280 - <b>已结算</b>：¥3,680（绿色标识） - <b>待结算</b>：¥1,600（橙色标识）`
+        },
+        {
+            title: '明细列表',
+            content: `展示8条佣金明细记录，每条记录包含： - <b>演出名称</b> - <b>状态</b>：已结算/待结算 - <b>购买人</b> - <b>订单金额</b> - <b>佣金比例</b> - <b>佣金金额</b> - <b>时间</b>：交易发生时间`
+        },
+    ,
+            {
+                title: 'PRD 需求文档',
+                content: `<p><strong>代理佣金管理</strong></p>
+<p>管理员管理代理分销佣金规则和结算。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li>佣金规则配置</li>
+<li>佣金结算管理</li>
+<li>佣金明细查询</li>
+</ul>`
+            }]
+  },
+
+  // ============================================================
+  // 管理员小程序 (Admin Mini App)
+  // ============================================================
+
+  'admin-miniapp/admin-home-verify.html': {
+    title: '管理员首页 & 验票',
+    subtitle: '管理员小程序',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>管理员小程序主页面，采用混合主题设计（首页浅色+扫码深色），包含首页数据概览和扫码验票两大核心功能，通过底部Tab切换。</p>`
+        },
+        {
+            title: '首页 - 管理员信息头部',
+            content: `页面顶部深色渐变区域，展示当前登录管理员的基本信息`
+        },
+        {
+            title: '首页 - 数据卡片',
+            content: `三张核心数据统计卡片： - <b>门票销售</b>：1,286张 - <b>已核销</b>：892张 - <b>待核销</b>：394张`
+        },
+        {
+            title: '首页 - 今日场次',
+            content: `展示今日3个待开场/进行中的演出场次信息，包含场次名称、时间、场馆等`
+        },
+        {
+            title: '首页 - 快捷操作',
+            content: `三个快捷操作入口： - <b>扫码验票</b> - 跳转至扫码验票页面 - <b>销售数据</b> - 查看销售统计数据 - <b>场次管理</b> - 管理演出场次`
+        },
+        {
+            title: '底部Tab导航',
+            content: `底部固定Tab栏，两个Tab： - <b>首页</b> - 数据概览与快捷操作 - <b>验票</b> - 扫码验票功能`
+        },
+        {
+            title: '扫码验票页 - 扫描区域',
+            content: `深色主题扫码页面，包含： - <b>扫描框</b>：260x260像素的扫码取景框 - <b>扫描动画线</b>：上下往复移动的扫描线动画 - <b>闪光灯</b> - 开启/关闭手电筒辅助扫码 - <b>手动输入</b> - 手动输入票号进行核验 - <b>扫描统计</b> - 显示今日已扫码数量`
+        },
+        {
+            title: '验票结果弹窗',
+            content: `扫码完成后弹出结果弹窗： - <b>验票成功弹窗</b> - 绿色主题，显示票务信息和核销成功状态 - <b>验票失败弹窗</b> - 红色主题，显示失败原因（如票已核销/无效票等）`
+        },
+        {
+            title: '手动输入弹窗',
+            content: `点击"手动输入"按钮弹出输入弹窗： - <b>票号输入框</b> - 输入门票编号 - <b>确认查询</b> - 提交查询并显示核验结果`
+        },
+    ,
+            {
+                title: 'PRD 需求文档 (US-13 扫码验票)',
+                content: `<p><strong>US-13 现场管理 - F-13-1</strong></p>
+<p>工作人员使用管理端小程序进行扫码验票。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-13-1 扫码验票</strong>：扫描用户票券二维码、验证票券有效性、显示票券详情、标记已验票</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>ticket_code</code>：票券二维码内容</li>
+<li><code>ticket_status</code>：票券状态（有效/已使用/已过期/已退款）</li>
+<li><code>show_title</code>：演出名称</li>
+<li><code>seat_info</code>：座位信息</li>
+<li><code>verify_time</code>：验票时间</li>
+</ul>
+<p><strong>数据校验规则：</strong></p>
+<ul>
+<li>同一票券仅可验票一次</li>
+<li>已过期票券不可验票</li>
+<li>已退款票券不可验票</li>
+<li>验票失败需显示明确原因</li>
+</ul>`
+            }]
+  },
+
+  // ============================================================
+  // PC管理后台 (PC Admin)
+  // ============================================================
+
+  'pc-admin/login.html': {
+    title: '登录页 v1',
+    subtitle: 'PC管理后台',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>PC管理后台管理员登录入口，为运营管理人员提供安全的身份认证服务。支持账号密码登录方式，登录成功后进入数据看板首页。</p>`
+        },
+        {
+            title: '登录表单字段',
+            content: `<b>账号输入框</b><br>功能说明：管理员登录账号<br>校验规则：必填，长度4-20字符，支持字母/数字/下划线<br>数据来源：系统中已注册的管理员账号<br><br><b>密码输入框</b><br>功能说明：账号对应的登录密码<br>校验规则：必填，长度6-20字符<br>安全机制：前端加密后传输，后端二次加密存储<br><br><b>记住我</b><br>功能说明：保持登录状态选项<br>业务逻辑：勾选后登录凭证有效期延长至7天，未勾选为24小时<br>存储方式：本地存储记住登录偏好，Cookie存储登录凭证<br><br><b>忘记密码</b><br>功能说明：密码找回入口<br>业务流程：点击跳转密码找回页面，通过绑定的手机号验证身份后重置密码`
+        },
+        {
+            title: '登录流程',
+            content: `1. 前端校验：校验账号密码格式是否符合规则<br>2. 身份认证：提交账号密码至服务端进行身份验证<br>3. 凭证生成：验证通过后生成登录凭证<br>4. 登录成功：存储登录凭证，跳转至数据看板首页<br>5. 登录失败：显示具体错误提示（账号不存在/密码错误/账号被禁用）`
+        },
+        {
+            title: '状态定义',
+            content: `<b>账号状态</b><br>- 正常：账号可正常登录使用<br>- 禁用：账号已被禁用，禁止登录<br><br><b>登录失败原因</b><br>- 账号不存在：系统中未找到该账号<br>- 密码错误：输入密码与账号不匹配<br>- 账号被禁用：该账号已被管理员禁用<br>- 登录频繁：短时间内登录次数过多，触发安全限制`
+        },
+    ,
+            {
+                title: 'PRD 需求文档',
+                content: `<p><strong>管理员登录认证</strong></p>
+<p>管理员通过账号密码登录后台管理系统。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li>账号密码登录</li>
+<li>验证码校验</li>
+<li>登录日志记录</li>
+</ul>`
+            }]
+  },
+
+  'pc-admin/login-v2.html': {
+    title: '登录页 v2',
+    subtitle: 'PC管理后台',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>PC管理后台管理员登录入口（升级版），提供多种登录方式，提升登录体验和安全性。支持账号密码登录和手机验证码登录两种方式，满足不同场景需求。</p>`
+        },
+        {
+            title: 'Tab功能说明',
+            content: `<b>Tab 1：账号登录</b><br>功能说明：使用管理员账号和密码进行身份认证登录<br>适用场景：日常登录使用<br><br><b>Tab 2：手机登录</b><br>功能说明：使用绑定手机号和短信验证码登录<br>适用场景：忘记密码时的快捷登录方式<br><br>Tab切换交互：点击Tab切换登录方式，当前选中Tab高亮显示`
+        },
+        {
+            title: '账号登录表单字段',
+            content: `<b>账号输入框</b><br>功能说明：管理员登录账号<br>校验规则：必填，长度4-20字符<br><br><b>密码输入框</b><br>功能说明：账号对应的登录密码<br>校验规则：必填，长度6-20字符<br>安全机制：前端加密后传输，保障密码安全<br><br><b>图形验证码</b><br>功能说明：人机验证，防止暴力破解<br>校验规则：必填，不区分大小写<br>刷新机制：点击验证码图片可刷新获取新的验证码`
+        },
+        {
+            title: '手机登录表单字段',
+            content: `<b>手机号输入框</b><br>功能说明：管理员绑定的手机号<br>校验规则：必填，11位手机号格式<br>数据来源：系统中已绑定的管理员手机号<br><br><b>短信验证码输入框</b><br>功能说明：手机收到的短信验证码<br>校验规则：必填，6位数字<br>有效期：5分钟<br><br><b>获取验证码按钮</b><br>功能说明：发送短信验证码到绑定手机号<br>限制规则：同一手机号60秒内只能发送一次，防止短信轰炸`
+        },
+        {
+            title: '登录流程',
+            content: `1. 前端校验：校验表单字段格式是否符合规则<br>2. 身份认证：根据登录方式提交对应凭证至服务端验证<br>3. 凭证生成：验证通过后生成登录凭证<br>4. 登录成功：存储登录凭证，返回管理员信息，跳转至数据看板<br>5. 登录失败：返回具体错误信息提示用户<br><br>两种登录方式统一处理，系统自动识别登录类型进行相应验证`
+        },
+        {
+            title: '状态定义',
+            content: `<b>账号状态</b><br>- 正常：账号可正常登录使用<br>- 禁用：账号已被禁用，禁止登录<br><br><b>验证码状态</b><br>- 有效：验证码在有效期内，可正常使用<br>- 过期：验证码超过有效期，需重新获取<br><br><b>登录限制</b><br>- 同一手机号60秒内只能获取一次验证码<br>- 同一IP每小时获取验证码次数有限制，防止恶意刷取`
+        },
+    ,
+            {
+                title: 'PRD 需求文档',
+                content: `<p><strong>管理员登录认证</strong></p>
+<p>管理员通过账号密码登录后台管理系统（V2版本界面）。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li>账号密码登录</li>
+<li>验证码校验</li>
+<li>登录日志记录</li>
+</ul>`
+            }]
+  },
+
+  'pc-admin/dashboard.html': {
+    title: '数据看板',
+    subtitle: 'PC管理后台首页 - 核心经营数据可视化',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>PC管理后台数据看板首页，为运营管理人员提供一站式经营数据监控和决策支持。展示平台核心经营指标、营收趋势分析、热门演出排行和实时订单动态，帮助管理者快速掌握平台运营状况。</p>`
+        },
+        {
+            title: '数据指标说明',
+            content: `<b>核心经营指标（6项）</b>：
+
+- <b>总收入</b>：平台当日全部收入合计（含环比变化）<br>业务含义：反映平台整体营收规模<br>计算逻辑：票房收入 + 商城商品销售收入 + 会员充值金额<br>数据来源：当日已完成的订单实付金额汇总
+
+- <b>票房收入</b>：演出票务销售收入（含环比变化）<br>业务含义：反映演出票务业务表现<br>计算逻辑：当日已完成的演出订单实付金额合计<br>数据来源：票务订单数据
+
+- <b>商城收入</b>：周边商品销售收入（含环比变化）<br>业务含义：反映周边商品销售表现<br>计算逻辑：当日已完成的商品订单实付金额合计<br>数据来源：商品订单数据
+
+- <b>充值金额</b>：会员钱包充值金额（含环比变化）<br>业务含义：反映会员预付费意愿和资金沉淀规模<br>计算逻辑：当日充值成功的金额合计<br>数据来源：会员充值记录
+
+- <b>新增会员</b>：当日新注册会员数量（含环比变化）<br>业务含义：反映平台用户增长情况<br>计算逻辑：当日完成注册且状态正常的用户数量<br>数据来源：用户注册数据
+
+- <b>会员消费占比</b>：会员订单金额占总订单金额比例（含环比变化）<br>业务含义：反映会员体系的消费贡献度<br>计算逻辑：会员订单金额 ÷ 总订单金额 × 100%<br>数据来源：订单数据结合用户会员身份统计`
+        },
+        {
+            title: 'Tab功能说明',
+            content: `<b>营收分析图表 - 4个Tab页签</b>：
+
+- <b>趋势Tab</b>：展示整体营收趋势（票房+商城+充值）<br>业务价值：了解平台整体营收走势<br>数据来源：综合票务订单、商品订单、充值记录<br>时间维度：支持近7天/30天/本年切换
+
+- <b>票房Tab</b>：展示票房收入趋势<br>业务价值：分析演出票务业务趋势<br>数据来源：票务订单数据<br>筛选能力：支持按演出类型筛选查看
+
+- <b>充值Tab</b>：展示充值收入趋势<br>业务价值：分析会员充值行为趋势<br>数据来源：会员充值记录<br>筛选能力：支持按充值渠道筛选查看
+
+- <b>钱包Tab</b>：展示钱包余额变动趋势<br>业务价值：监控平台资金沉淀情况<br>数据来源：会员钱包交易流水<br>计算逻辑：按日统计余额变动净值
+
+Tab切换交互：
+- 点击Tab切换图表数据维度
+- 当前选中Tab高亮显示
+- 切换时图表平滑过渡动画`
+        },
+        {
+            title: '热门演出排行',
+            content: `<b>功能说明：</b>展示当前票房表现最佳的演出排行，帮助运营人员了解热门演出表现。
+
+数据指标说明：
+- <b>排名</b>：1-10名次，前3名特殊标识<br>排序逻辑：按票房金额降序排列
+
+- <b>演出名称</b>：演出项目名称<br>数据来源：演出项目基础信息
+
+- <b>演出类型</b>：音乐会/话剧/舞蹈/戏曲/儿童剧等<br>数据来源：演出项目分类信息
+
+- <b>票房金额</b>：该演出累计票房收入<br>业务含义：反映演出市场受欢迎程度<br>计算逻辑：该演出已完成订单的实付金额合计<br>数据来源：演出关联的订单数据
+
+- <b>出票数量</b>：已售出门票数量<br>业务含义：反映演出实际销售数量<br>数据来源：演出关联的订单明细
+
+- <b>上座率</b>：已售座位占总座位比例<br>业务含义：反映演出座位销售饱和度<br>计算逻辑：出票数量 ÷ (座位总数 × 场次数量) × 100%
+
+排序能力：
+- 默认按票房金额降序
+- 支持切换按出票数量/上座率排序`
+        },
+        {
+            title: '最近订单',
+            content: `<b>功能说明：</b>展示最近产生的订单列表，实时反映平台交易动态。
+
+数据字段说明：
+- <b>订单号</b>：订单唯一标识<br>格式规则：TK + 年月日 + 6位随机数
+
+- <b>订单类型</b>：票务/商城/充值<br>业务含义：标识订单业务类型
+
+- <b>演出/商品名称</b>：订单关联的演出或商品名称<br>数据来源：关联演出或商品基础信息
+
+- <b>金额</b>：订单实付金额（含优惠后）<br>业务含义：用户实际支付金额
+
+- <b>状态</b>：订单当前处理状态<br>状态定义见订单管理模块
+
+- <b>购买人</b>：下单用户信息<br>数据来源：用户基础信息
+
+- <b>下单时间</b>：订单创建时间<br>显示格式：MM-DD HH:mm
+
+数据刷新机制：
+- 页面加载时获取最近20条
+- 支持手动刷新按钮
+- 每30秒自动轮询更新
+
+交互功能：
+- 点击订单行可跳转订单详情
+- 鼠标悬停显示快捷操作按钮`
+        }
+    ,
+            {
+                title: 'PRD 需求文档 (US-12 数据统计看板)',
+                content: `<p><strong>US-12 数据统计 - F-12-3 数据统计看板</strong></p>
+<p>管理员查看核心业务数据统计和趋势分析。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-12-3 数据统计看板</strong>：核心指标卡片（今日票房/今日订单/会员总数/售票率）、销售趋势图表、演出排行、会员分析</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>today_revenue</code>：今日票房</li>
+<li><code>today_orders</code>：今日订单数</li>
+<li><code>total_members</code>：会员总数</li>
+<li><code>sell_rate</code>：售票率</li>
+<li><code>sales_trend</code>：销售趋势数据（近7天/30天）</li>
+</ul>`
+            }]
+  },
+
+  'pc-admin/order-management.html': {
+    title: '订单管理',
+    subtitle: '全渠道订单统一管理 - 票务/充值/券包/商城',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>订单管理中心，统一管理票务订单、充值订单、券包订单和商城订单四大业务类型的订单。支持订单查询、状态跟踪、退款审核、数据导出等功能，为运营人员提供全渠道订单管理能力。</p>`
+        },
+        {
+            title: 'Tab功能说明',
+            content: `<b>订单类型Tab切换 - 4个Tab页签</b>：
+
+- <b>票务订单Tab</b>：管理演出门票购买订单<br>业务场景：用户购买演出门票产生的订单<br>数据来源：票务订单数据
+
+- <b>充值订单Tab</b>：管理会员钱包充值订单<br>业务场景：用户为会员钱包充值产生的订单<br>数据来源：充值订单数据
+
+- <b>券包订单Tab</b>：管理优惠券包购买订单<br>业务场景：用户购买优惠券包产生的订单<br>数据来源：券包订单数据
+
+- <b>商城订单Tab</b>：管理周边商品购买订单<br>业务场景：用户购买周边商品产生的订单<br>特殊标识：含未处理订单数量提示
+
+Tab切换交互：
+- 点击Tab切换订单类型
+- 当前选中Tab高亮显示
+- 切换时保留当前筛选条件（如日期范围）
+- 各Tab独立维护分页状态`
+        },
+        {
+            title: '数据指标说明 - 票务订单',
+            content: `<b>统计卡片（4项指标）</b>：
+
+- <b>总订单数</b>：当日票务订单总数<br>业务含义：反映当日票务业务订单量<br>计算逻辑：当日创建的票务订单数量合计
+
+- <b>已完成</b>：当日已完成订单数<br>业务含义：反映当日成功完成的票务交易数量
+
+- <b>待支付</b>：待支付订单数<br>业务含义：反映待付款订单积压情况，需关注超时风险
+
+- <b>已退款</b>：已退款订单数<br>业务含义：反映当日退款处理量
+
+<b>筛选能力</b>：
+- 订单状态筛选：待支付/已支付/已出票/已完成/已取消/退款中/已退款
+- 演出名称搜索：支持按演出项目筛选
+- 日期范围筛选：支持自定义时间区间
+- 支付方式筛选：微信支付/支付宝/余额/混合支付
+- 订单来源筛选：小程序/PC/窗口售票/代理
+- 订单号搜索：支持模糊搜索`
+        },
+        {
+            title: '状态定义 - 票务订单',
+            content: `<b>订单状态及流转逻辑</b>：
+
+- <b>待支付</b>：订单已创建，等待用户支付<br>流转条件：支付成功→已支付；超时未支付→已取消
+
+- <b>已支付</b>：用户支付成功，等待出票<br>流转条件：出票完成→已出票；用户申请退款→退款中
+
+- <b>已出票</b>：电子票已生成，等待演出开始<br>流转条件：演出结束→已完成
+
+- <b>已完成</b>：订单流程完结<br>流转条件：终态，不可变更
+
+- <b>已取消</b>：订单已取消<br>流转条件：终态，不可变更（包括超时未支付或用户主动取消）
+
+- <b>退款中</b>：退款申请审核中<br>流转条件：审核通过→已退款；审核拒绝→返回原状态
+
+- <b>已退款</b>：退款已完成<br>流转条件：终态，不可变更`
+        },
+        {
+            title: '数据指标说明 - 充值订单',
+            content: `<b>统计卡片（4项指标）</b>：
+
+- <b>总充值笔数</b>：当日充值订单数量<br>业务含义：反映当日充值业务活跃度
+
+- <b>充值成功</b>：成功完成的充值订单数<br>业务含义：反映成功充值交易数量
+
+- <b>充值金额</b>：成功充值金额合计<br>业务含义：反映当日充值资金规模
+
+- <b>待处理</b>：处理中的充值订单数<br>业务含义：反映需要关注的异常订单
+
+<b>状态定义</b>：
+- <b>待支付</b>：订单已创建，等待支付
+- <b>处理中</b>：支付完成，系统处理中
+- <b>充值成功</b>：充值金额已到账
+- <b>充值失败</b>：充值处理失败，需人工介入`
+        },
+        {
+            title: '数据指标说明 - 商城订单',
+            content: `<b>统计卡片（4项指标）</b>：
+
+- <b>总订单数</b>：商城订单总数<br>业务含义：反映商城业务整体订单量
+
+- <b>待发货</b>：待发货订单数<br>业务含义：反映待处理发货任务量，需及时跟进
+
+- <b>已完成</b>：已完成订单数<br>业务含义：反映成功完成的商品交易数量
+
+- <b>销售额</b>：商品销售总额<br>业务含义：反映商城业务营收规模
+
+<b>状态定义及流转</b>：
+- <b>待支付</b>→支付成功→<b>待发货</b>
+- <b>待发货</b>→确认发货→<b>已发货</b>
+- <b>已发货</b>→用户签收→<b>已完成</b>
+- <b>待发货/已发货</b>→申请退款→<b>退款中</b>→审核通过→<b>已退款</b>`
+        },
+        {
+            title: '功能流程 - 订单详情',
+            content: `<b>订单详情查看</b>：
+点击订单行可查看订单完整详情和操作流程。
+
+<b>订单基本信息区域</b>：
+- 订单号：订单唯一标识
+- 订单类型：票务/充值/券包/商城
+- 订单状态：当前状态及状态流转时间线
+- 时间信息：下单时间/支付时间/完成时间
+- 金额信息：商品金额/优惠金额/实付金额
+- 支付方式：使用的支付方式
+
+<b>用户信息区域</b>：
+- 用户ID：下单用户唯一标识
+- 昵称/手机号：用户联系信息
+- 会员等级：用户会员身份
+
+<b>商品/票务详情区域</b>：
+- 票务订单：演出名称/场次/座位/票档/数量
+- 商品订单：商品名称/规格/数量/单价
+- 券包订单：券包名称/包含优惠券列表
+
+<b>操作时间线</b>：
+- 按时间倒序展示订单全流程操作记录
+- 包含：创建/支付/出票/退款等关键节点
+- 每个节点记录：操作时间/操作人/操作内容
+
+<b>可用操作</b>：
+- 退款审核：通过/拒绝退款申请
+- 订单取消：确认取消订单
+- 商城发货：填写物流信息并发货`
+        }
+    ,
+            {
+                title: 'PRD 需求文档 (US-12 订单管理)',
+                content: `<p><strong>US-12 订单与数据管理</strong></p>
+<p>管理员管理各类订单，处理退款审核。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-12-1 票务订单管理</strong>：订单列表、详情查看、状态管理</li>
+<li><strong>F-12-2 退款审核</strong>：退款申请审核、退款处理</li>
+<li><strong>F-12-3 数据统计看板</strong>：核心指标、销售趋势、订单分析</li>
+<li><strong>F-12-4 充值订单管理</strong>：充值记录、异常处理</li>
+<li><strong>F-12-5 券包订单管理</strong>：券包购买记录</li>
+<li><strong>F-12-6 商城订单管理</strong>：商品订单、发货管理</li>
+<li><strong>F-12-7 订单导出</strong>：支持Excel导出订单数据</li>
+<li><strong>F-12-8 订单搜索与筛选</strong>：按时间/状态/类型/关键词筛选</li>
+</ul>`
+            }]
+  },
+
+  'pc-admin/show-management.html': {
+    title: '演出管理',
+    subtitle: '演出项目全生命周期管理 - 演出/剧院/票档',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>演出项目全生命周期管理平台，为演出运营提供完整的管理能力。包含演出项目创建与维护、剧院场馆信息管理、票档价格策略配置等功能，并提供票房统计和数据分析支持运营决策。</p>`
+        },
+        {
+            title: 'Tab功能说明',
+            content: `<b>演出管理Tab切换 - 3个Tab页签</b>：
+
+- <b>演出列表Tab</b>：管理所有演出项目信息<br>业务场景：创建、编辑、上下架演出项目<br>数据来源：演出项目数据
+
+- <b>剧院管理Tab</b>：管理演出场馆/剧院信息<br>业务场景：配置演出场地、座位布局<br>数据来源：剧院场馆数据
+
+- <b>票档管理Tab</b>：管理票档/票价等级配置<br>业务场景：配置票价策略、票档模板<br>数据来源：票档配置数据
+
+Tab切换交互：
+- 点击Tab切换管理维度
+- 当前选中Tab高亮显示
+- 各Tab独立维护筛选和分页状态`
+        },
+        {
+            title: '状态定义 - 演出',
+            content: `<b>演出状态及流转逻辑</b>：
+
+- <b>草稿</b>：演出信息已创建但未发布<br>流转条件：点击发布→预售中
+
+- <b>预售中</b>：演出已发布，尚未正式开售<br>业务含义：可提前展示演出信息，积累用户关注<br>流转条件：到达开售时间→售票中；演出结束→已结束
+
+- <b>售票中</b>：演出正常售票中<br>流转条件：手动下架→已下架；门票售罄→售罄；演出结束→已结束
+
+- <b>已下架</b>：演出被手动下架<br>流转条件：重新上架→售票中（如有库存）
+
+- <b>已结束</b>：演出已结束<br>流转条件：终态，不可变更
+
+- <b>售罄</b>：门票已售罄<br>流转条件：有退票释放库存→售票中`
+        },
+        {
+            title: '数据指标说明 - 演出列表',
+            content: `<b>筛选能力</b>：
+- 演出类型筛选：音乐会/话剧/舞蹈/戏曲/儿童剧/音乐剧/歌剧
+- 演出状态筛选：草稿/预售中/售票中/已下架/已结束
+- 演出日期筛选：支持日期范围选择
+- 剧院筛选：按演出场馆筛选
+- 关键词搜索：支持演出名称/主演/简介搜索
+
+<b>数据指标</b>：
+- <b>封面图</b>：演出宣传海报缩略图
+- <b>演出名称</b>：演出项目标题
+- <b>演出类型</b>：演出分类
+- <b>票价范围</b>：最低票价~最高票价
+- <b>票房数据</b>：该演出累计票房收入<br>业务含义：反映演出市场表现<br>计算逻辑：该演出已完成订单的实付金额合计
+- <b>状态</b>：演出当前状态
+- <b>开演时间</b>：演出开始日期时间`
+        },
+        {
+            title: '功能流程 - 新建/编辑演出',
+            content: `<b>基本信息配置</b>：
+- 演出名称（必填）：演出项目标题
+- 演出类型（必填）：选择演出分类
+- 封面图（必填）：上传演出宣传海报
+- 演出简介：演出详细介绍
+- 主演人员：主要演员/演出团队信息
+- 演出时长：预计演出时长（分钟）
+- 适合年龄：建议观看年龄范围
+
+<b>场次管理</b>：
+- 剧院选择（必填）：选择演出场馆
+- 演出日期（必填）：演出举办日期
+- 开演时间（必填）：演出开始时间
+- 场次状态：场次销售状态
+
+<b>票档设置</b>：
+支持动态添加多个票档，每个票档包含：
+- 票档名称：如VIP区/A区/B区
+- 票面价格：原价/参考价
+- 销售价格：实际销售价
+- 库存数量：该票档可售座位数
+- 座位区域：关联场馆座位分区`
+        },
+        {
+            title: '状态定义 - 剧院',
+            content: `<b>剧院状态</b>：
+- <b>启用</b>：剧院正常可用，可创建演出
+- <b>停用</b>：剧院暂停使用，不可创建新演出
+
+<b>座位状态</b>：
+- <b>可售</b>：座位正常可购买
+- <b>预留</b>：内部预留座位，不对外销售
+- <b>维护中</b>：设备维护不可用
+- <b>已删除</b>：该位置无座位`
+        },
+        {
+            title: '数据指标说明 - 票房统计',
+            content: `<b>功能说明：</b>查看单个演出的详细票房分析数据。
+
+<b>核心指标</b>：
+- <b>总票房</b>：该演出累计票房收入<br>业务含义：反映演出整体市场表现<br>计算逻辑：该演出已完成订单的实付金额合计
+
+- <b>出票数量</b>：已售出门票数量<br>业务含义：反映演出实际销售数量
+
+- <b>上座率</b>：已售座位占总座位比例<br>业务含义：反映演出座位销售饱和度<br>计算逻辑：出票数量 ÷ (座位总数 × 场次数量) × 100%
+
+- <b>客单价</b>：平均订单金额<br>业务含义：反映用户消费力度<br>计算逻辑：总票房 ÷ 订单数
+
+<b>分析维度</b>：
+- 销售趋势：按日展示销售额/出票量走势
+- 票档分布：各票档销售数量和占比
+- 渠道分布：小程序/PC/窗口/代理各渠道销售占比
+- 用户分析：新老客占比、会员等级分布、地域分布`
+        }
+    ,
+            {
+                title: 'PRD 需求文档 (US-10/US-14~US-18)',
+                content: `<p><strong>演出管理与场馆管理</strong></p>
+<p>管理员管理演出项目、场次、场馆、座位、库存和评论。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-10-1 演出项目管理</strong>：演出CRUD、上下架、分类管理</li>
+<li><strong>F-10-2 演出信息编辑</strong>：基本信息、封面图、详情富文本编辑</li>
+<li><strong>F-10-3 演出审核</strong>：演出信息审核流程</li>
+<li><strong>F-10-4 演出标签管理</strong>：标签CRUD、标签关联</li>
+<li><strong>US-14 场次管理</strong>：场次CRUD、时间设置、票价配置</li>
+<li><strong>US-15 场馆管理</strong>：场馆信息维护、设施配置</li>
+<li><strong>US-16 座位配置</strong>：座位图编辑、分区管理、座位属性设置</li>
+<li><strong>US-17 库存管理</strong>：票务库存设置、库存预警、锁座管理</li>
+<li><strong>US-18 评论审核</strong>：用户评论审核、敏感词过滤</li>
+</ul>`
+            }]
+  },
+
+  'pc-admin/ticket-sales.html': {
+    title: '售票管理',
+    subtitle: '窗口售票/选座售票 - 实时座位图操作',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>售票管理页面，为窗口售票员提供可视化选座售票能力。采用左右分栏布局，左侧为场馆/演出/场次三级联动选择，右侧为交互式座位图和订单摘要。支持实时座位状态查询、选座、锁座、出票等完整售票流程。</p>`
+        },
+        {
+            title: '功能流程 - 左侧选择区',
+            content: `<b>三级联动选择流程</b>：
+
+<b>第一步：场馆选择</b>
+- 功能说明：选择演出场馆
+- 数据来源：系统中已启用的剧院场馆
+- 交互逻辑：下拉选择场馆后，自动加载该场馆下的演出列表
+
+<b>第二步：演出列表</b>
+- 展示内容：
+  - 演出封面缩略图
+  - 演出名称（单行截断显示）
+  - 开演日期（MM-DD格式）
+  - 演出状态标签（预售中/售票中）
+- 数据来源：该场馆下处于预售或售票状态的演出
+- 交互逻辑：点击选中演出，加载该演出的场次列表
+
+<b>第三步：场次列表</b>
+- 展示内容：
+  - 场次时间（HH:mm）
+  - 剩余可售座位数
+  - 场次状态（可售/即将售罄/售罄）
+- 数据来源：选中演出的场次安排
+- 交互逻辑：点击选中场次，右侧加载该场次的座位图
+
+<b>数据联动逻辑</b>：
+- 场馆切换：清空演出和场次选择，重新加载演出列表
+- 演出切换：清空场次选择，重新加载场次列表
+- 场次切换：加载对应座位图数据`
+        },
+        {
+            title: '状态定义 - 座位',
+            content: `<b>座位状态（6种）</b>：
+
+- <b>可选</b>（绿色）：座位正常可购买<br>交互：点击选中，变为已选状态
+
+- <b>已售</b>（灰色）：座位已售出<br>交互：不可点击
+
+- <b>锁定</b>（橙色）：座位被暂时锁定（其他用户正在选）<br>交互：不可点击，显示锁定倒计时<br>业务说明：锁定期间其他用户无法选择该座位
+
+- <b>已选</b>（紫色）：当前已选中的座位<br>交互：点击取消选择
+
+- <b>预留</b>（蓝色）：内部预留座位<br>交互：管理员可解除预留
+
+- <b>维护中</b>（红色）：设备维护不可用<br>交互：不可点击
+
+<b>实时同步机制</b>：
+- WebSocket连接实时接收座位状态变更
+- 定时轮询刷新座位状态
+- 选座时发送锁座请求（默认锁定5分钟）`
+        },
+        {
+            title: '功能流程 - 选座下单',
+            content: `<b>选座操作</b>：
+- 在座位图上点击可选座位进行选中
+- 已选座位显示为紫色，可点击取消
+- 座位图上显示分区名称标签
+- 支持缩放和拖拽查看座位图
+
+<b>订单摘要区域</b>：
+- 已选座位列表：显示分区、排号、座位号、价格
+- 票价合计：选中座位价格总和
+- 优惠金额：根据会员等级/优惠券计算
+- 应付金额：实际需支付金额
+
+<b>下单流程</b>：
+1. 确认选座：校验选座有效性（座位是否可售、是否超限购）
+2. 选择用户：搜索现有用户或快速注册新用户
+3. 选择支付方式：现金/刷卡/余额/混合支付
+4. 生成订单：创建订单、扣减库存、生成电子票
+5. 可选操作：打印纸质票
+
+<b>锁座机制</b>：
+- 选座时自动锁定选中座位
+- 锁定时长：5分钟
+- 锁定期间其他用户不可选
+- 超时未支付自动释放锁定
+- 主动取消或支付成功后释放锁定`
+        }
+    ,
+            {
+                title: 'PRD 需求文档 (US-19 售票管理)',
+                content: `<p><strong>US-19 线下售票</strong></p>
+<p>管理员通过线下渠道进行售票操作。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-19-1 窗口售票</strong>：线下窗口选座售票、打印票据</li>
+<li><strong>F-19-2 渠道售票</strong>：分销渠道管理、渠道库存分配</li>
+<li><strong>F-19-3 预约售票</strong>：预约登记、预约确认、到店核销</li>
+</ul>`
+            }]
+  },
+
+  'pc-admin/member-management.html': {
+    title: '会员管理',
+    subtitle: '会员全生命周期管理 - 列表/积分/政策/会员卡',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>会员全生命周期管理平台，为会员运营提供完整的管理工具。包含会员信息管理、积分体系运营、会员等级政策配置和实体会员卡管理四大模块，支持会员行为分析和精准运营。</p>`
+        },
+        {
+            title: 'Tab功能说明',
+            content: `<b>会员管理Tab切换 - 4个Tab页签</b>：
+
+- <b>会员列表Tab</b>：管理所有注册会员信息<br>业务场景：查询会员信息、调整会员等级、查看消费记录<br>数据来源：会员基础信息数据
+
+- <b>积分管理Tab</b>：管理积分规则、积分任务和积分流水<br>业务场景：配置积分获取规则、管理积分任务、查看积分变动<br>数据来源：积分体系数据
+
+- <b>会员政策Tab</b>：配置会员等级体系和权益政策<br>业务场景：设置会员等级、配置等级权益、定义升级规则<br>数据来源：会员等级政策数据
+
+- <b>会员卡管理Tab</b>：管理实体会员卡类型和发行记录<br>业务场景：制卡、发卡、管理会员卡库存<br>数据来源：实体会员卡数据
+
+Tab切换交互：
+- 点击Tab切换管理维度
+- 当前选中Tab高亮显示
+- 各Tab独立维护筛选和分页状态`
+        },
+        {
+            title: '数据指标说明 - 会员列表',
+            content: `<b>统计卡片（4项指标）</b>：
+
+- <b>总会员数</b>：平台注册会员总数<br>业务含义：反映平台用户规模<br>计算逻辑：状态正常的注册会员数量合计
+
+- <b>本月新增</b>：本月新注册会员数<br>业务含义：反映平台用户增长趋势
+
+- <b>活跃会员</b>：近30天有登录或消费的会员数<br>业务含义：反映会员活跃度<br>计算逻辑：近30天内有登录或下单行为的会员数量
+
+- <b>会员总消费</b>：会员累计消费金额<br>业务含义：反映会员消费贡献<br>计算逻辑：所有已完成订单的实付金额合计
+
+<b>筛选能力</b>：
+- 会员等级筛选：按会员等级筛选
+- 注册时间筛选：支持日期范围选择
+- 消费金额筛选：按累计消费金额范围筛选
+- 关键词搜索：支持昵称/手机号/会员ID搜索
+- 会员状态筛选：正常/冻结/注销`
+        },
+        {
+            title: '状态定义 - 会员',
+            content: `<b>会员状态</b>：
+- <b>正常</b>：会员账号正常使用
+- <b>冻结</b>：会员账号被冻结，禁止登录和消费<br>冻结原因：违规操作、异常行为等
+- <b>注销</b>：会员账号已注销<br>流转条件：终态，不可恢复
+
+<b>会员详情信息</b>：
+- 基础信息：头像/昵称/手机号/性别/生日/注册时间
+- 会员等级：当前等级/升级进度/等级到期时间
+- 资产信息：积分余额/钱包余额/优惠券数量
+- 消费统计：订单数/消费金额/客单价/最近消费时间
+- 偏好分析：常购演出类型/常去剧院/消费时段分布
+- 操作记录：等级变更/积分调整/余额变动日志
+
+<b>会员编辑功能</b>：
+- 等级调整：手动修改会员等级，需填写调整原因
+- 积分操作：增加/扣减积分，需填写变动原因
+- 余额调整：充值/扣减钱包余额，需填写调整原因
+- 状态变更：冻结/解冻/注销`
+        },
+        {
+            title: '功能流程 - 积分管理',
+            content: `<b>积分规则配置</b>：
+- 注册送积分：新用户注册奖励积分数量
+- 每日签到：连续签到奖励递增规则
+- 购票返积分：消费金额按比例返还积分（如1元=1积分）
+- 评价送积分：完成演出评价奖励积分
+- 分享奖励：分享演出/活动奖励积分
+
+<b>积分任务管理</b>：
+- 任务类型：一次性任务/每日任务/每周任务
+- 任务示例：
+  - 完善资料：填写生日/性别/地址
+  - 首次购票：完成第一笔订单
+  - 邀请好友：成功邀请好友注册
+  - 连续签到：累计签到达到一定天数
+
+<b>积分流水记录</b>：
+- 变动类型：获得/消费/过期/调整
+- 记录内容：变动积分数量/变动原因/变动前后余额/变动时间
+
+<b>积分过期规则</b>：
+- 获得积分有效期：1年
+- 过期前7天发送提醒通知
+- 过期后自动扣减，生成过期流水记录`
+        },
+        {
+            title: '功能流程 - 会员政策',
+            content: `<b>会员等级配置</b>：
+- 等级名称：如普通会员/银卡/金卡/钻石
+- 等级图标：各等级对应的图标
+- 等级颜色：视觉区分标识
+- 有效期：等级有效期（天数）
+
+<b>升级条件类型</b>：
+- 消费金额：累计消费满指定金额<br>示例：金卡需累计消费满5000元
+- 消费次数：累计消费满指定次数<br>示例：银卡需消费满3次
+- 积分累计：累计获得指定积分<br>示例：钻石卡需累计10000积分
+- 组合条件：多条件同时满足
+
+<b>等级权益配置</b>：
+- 购票折扣：会员购票享受折扣（如金卡95折）
+- 优先购票：提前开放购票时间（如提前24小时）
+- 生日礼遇：生日当月专属优惠或礼品
+- 专属客服：高等级会员专属客服通道
+- 积分加速：消费获得积分倍数（如1.5倍）
+- 免费退票：每年可享受免费退票次数
+
+<b>权益生效方式</b>：
+- 自动生效：满足等级自动享受
+- 手动领取：需用户主动领取
+- 限时权益：特定时段可用`
+        },
+        {
+            title: '状态定义 - 会员卡',
+            content: `<b>会员卡状态</b>：
+- <b>未使用</b>：已制卡但未发放给用户
+- <b>已绑定</b>：已绑定到用户账号<br>流转条件：用户解绑→未使用
+- <b>已过期</b>：超过卡片有效期<br>流转条件：终态，不可变更
+- <b>已注销</b>：卡片已作废<br>流转条件：终态，不可变更
+
+<b>会员卡操作</b>：
+- 制卡：生成新批次会员卡
+- 发放：将卡绑定到指定用户
+- 补卡：用户卡片丢失后补办
+- 注销：作废指定会员卡`
+        }
+    ,
+            {
+                title: 'PRD 需求文档 (US-05 管理端)',
+                content: `<p><strong>US-05 会员体系 - 管理端</strong></p>
+<p>管理员管理会员体系相关配置。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-05-5 积分管理</strong>：积分规则配置、积分调整、积分清零</li>
+<li><strong>F-05-6 会员政策</strong>：会员等级规则、升级/降级条件、权益配置</li>
+<li><strong>F-05-7 会员卡管理</strong>：实体卡发放、卡号管理、批量生成</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>level_name</code>：等级名称</li>
+<li><code>upgrade_condition</code>：升级条件（成长值阈值）</li>
+<li><code>discount_rate</code>：折扣比例</li>
+<li><code>points_rule</code>：积分获取规则</li>
+</ul>`
+            }]
+  },
+
+  'pc-admin/marketing-center.html': {
+    title: '营销中心',
+    subtitle: '营销活动统一管理 - 优惠券/活动/充值卡/抽奖',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>营销中心统一管理各类营销工具，为运营人员提供完整的营销能力支持。包含优惠券管理、营销活动、充值卡管理和抽奖活动四大模块，支持营销工具的创建、发放和效果追踪。</p>`
+        },
+        {
+            title: 'Tab功能说明',
+            content: `<b>营销中心Tab切换 - 4个Tab页签</b>：
+
+- <b>优惠券Tab</b>：管理各类优惠券（满减券/折扣券/兑换券/立减券）<br>业务场景：创建、发放、管理优惠券<br>数据来源：优惠券数据
+
+- <b>营销活动Tab</b>：管理限时活动、满减活动等<br>业务场景：创建促销活动、配置活动规则<br>数据来源：营销活动数据
+
+- <b>充值卡Tab</b>：管理实体/电子充值卡<br>业务场景：制卡、发卡、管理卡密<br>数据来源：充值卡数据
+
+- <b>抽奖活动Tab</b>：管理抽奖活动和奖品配置<br>业务场景：创建抽奖活动、配置奖品概率<br>数据来源：抽奖活动数据
+
+Tab切换交互：
+- 点击Tab切换营销工具类型
+- 当前选中Tab高亮显示
+- 各Tab独立维护筛选和分页状态`
+        },
+        {
+            title: '数据指标说明 - 优惠券',
+            content: `<b>统计卡片（4项指标）</b>：
+
+- <b>优惠券总数</b>：创建的优惠券总数量<br>业务含义：反映优惠券规模
+
+- <b>进行中</b>：有效期内且状态启用的数量<br>业务含义：反映当前可用优惠券数量
+
+- <b>已发放</b>：累计发放给用户数量<br>业务含义：反映优惠券发放规模
+
+- <b>已使用</b>：累计核销使用数量<br>业务含义：反映优惠券使用效果
+
+<b>优惠券类型</b>：
+- 满减券：满指定金额减指定金额（如满100减20）
+- 折扣券：按比例折扣（如8折，可设最高抵扣金额）
+- 兑换券：兑换指定商品或演出
+- 立减券：无门槛直接减免
+
+<b>适用场景配置</b>：
+- 全场通用：所有订单可用
+- 指定演出：仅限特定演出项目使用
+- 指定商品：仅限特定商品使用
+- 新用户专享：仅限首次下单用户使用
+- 会员专享：指定会员等级可用
+
+<b>发放方式</b>：
+- 手动发放：指定用户定向发放
+- 活动领取：用户主动领取（可限制每人领取数量）
+- 自动发放：满足条件自动发放（如注册、首单）
+- 兑换码：生成兑换码批量发放`
+        },
+        {
+            title: '状态定义 - 优惠券',
+            content: `<b>优惠券状态及流转</b>：
+
+- <b>未开始</b>：当前时间早于开始时间<br>流转条件：到达开始时间→进行中
+
+- <b>进行中</b>：在有效期内且状态启用<br>流转条件：手动停用→已停用；到达结束时间→已结束
+
+- <b>已结束</b>：当前时间晚于结束时间<br>流转条件：终态，不可变更
+
+- <b>已停用</b>：手动停用<br>流转条件：重新启用→进行中/未开始（根据当前时间）`
+        },
+        {
+            title: '功能流程 - 营销活动',
+            content: `<b>活动类型</b>：
+
+- <b>限时折扣</b>：在指定时间内享受折扣价<br>配置项：折扣力度、限购数量、适用商品
+
+- <b>满减活动</b>：满足金额条件享受减免<br>配置项：阶梯满减规则（如满100减10，满200减30）、是否可叠加优惠券
+
+- <b>秒杀活动</b>：限时限量特价抢购<br>配置项：秒杀价、秒杀库存、每人限购数量
+
+- <b>拼团活动</b>：多人成团享受优惠价<br>配置项：成团人数、拼团价、成团有效期
+
+<b>活动效果指标</b>：
+- 活动页面浏览量/访客数
+- 参与活动的用户数
+- 订单转化率（参与→下单）
+- 成交金额和订单数量
+- ROI计算：活动带来的收益 ÷ 活动成本`
+        },
+        {
+            title: '状态定义 - 充值卡',
+            content: `<b>充值卡状态</b>：
+
+- <b>未使用</b>：已生成但未激活使用
+- <b>已激活</b>：已绑定到用户账号<br>流转条件：用户充值→已核销
+- <b>已核销</b>：充值金额已到账
+- <b>已过期</b>：超过有效期未使用<br>流转条件：终态，不可变更
+- <b>已作废</b>：被管理员作废<br>流转条件：终态，不可变更
+
+<b>充值卡配置</b>：
+- 面额：卡片面值金额
+- 售价：实际销售价格（可低于面额）
+- 赠送金额：充值时额外赠送金额
+- 有效期：自激活起有效期（天数）
+
+<b>发放方式</b>：
+- 批量导出卡密（Excel格式）
+- 单张发放给指定用户
+- 生成二维码扫码领取`
+        },
+        {
+            title: '功能流程 - 抽奖活动',
+            content: `<b>抽奖类型</b>：
+- 大转盘：转盘形式抽奖
+- 九宫格：九宫格形式抽奖
+- 砸金蛋：金蛋形式抽奖
+
+<b>奖品配置</b>：
+- 积分奖励：中奖后发放积分
+- 优惠券奖励：中奖后发放优惠券
+- 实物商品：中奖后发放实物奖品
+- 空奖：谢谢参与
+
+<b>抽奖规则</b>：
+- 免费次数：每日可免费抽奖次数
+- 积分抽奖：每次抽奖消耗积分数量
+- 分享得次数：分享后获得额外抽奖次数
+- 中奖限制：每人每日/总共中奖次数限制
+
+<b>概率配置</b>：
+- 各奖品设置中奖概率（万分比表示）
+- 所有奖品概率总和为100%
+- 实时校验奖品库存，库存为0时自动走空奖逻辑`
+        }
+    ,
+            {
+                title: 'PRD 需求文档 (US-11 营销中心)',
+                content: `<p><strong>US-11 营销管理</strong></p>
+<p>管理员管理营销活动和推广策略。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-11-1 AI智能营销</strong>：AI生成营销方案、智能推荐目标人群</li>
+<li><strong>F-11-2 轮播图管理</strong>：首页轮播图CRUD、排序、上下线</li>
+<li><strong>F-11-3 优惠券发放</strong>：优惠券创建、批量发放、使用统计</li>
+<li><strong>F-11-4 营销活动管理</strong>：活动创建、活动配置、效果追踪</li>
+</ul>`
+            }]
+  },
+
+  'pc-admin/ai-marketing.html': {
+    title: 'AI智能营销',
+    subtitle: '用户画像 + 精准推送 + 自动化营销 + 效果追踪',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>AI驱动的智能营销平台，整合用户画像分析、精准推送、自动化营销方案生成和效果追踪四大模块。系统通过分析用户行为数据和演出历史数据，自动生成个性化营销方案并评估预期效果，帮助运营人员实现精准营销。</p>`
+        },
+        {
+            title: '数据指标说明',
+            content: `<b>AI营销核心指标（4项）</b>：
+
+- <b>用户画像覆盖数</b>：统计系统中已完善画像标签的用户总数<br>业务含义：反映用户标签化程度，为精准营销提供数据基础<br>数据来源：具有完整画像标签（年龄、性别、地域、兴趣等维度）的用户统计
+
+- <b>精准推送次数</b>：近30天精准推送总次数<br>业务含义：反映精准营销触达频次<br>数据来源：推送记录统计
+
+- <b>平均转化率</b>：计算推送转化效果<br>业务含义：反映精准推送的转化效率<br>计算逻辑：推送后24小时内产生的订单数 ÷ 推送触达的用户数 × 100%
+
+- <b>AI生成方案数</b>：近30天AI自动生成的营销方案数量<br>业务含义：反映AI营销辅助能力的使用情况`
+        },
+        {
+            title: 'Tab功能说明',
+            content: `<b>AI智能营销Tab切换 - 4个Tab页签</b>：
+
+- <b>用户画像Tab</b>：展示用户群体特征分析<br>业务场景：了解用户构成、管理用户标签、筛选目标人群<br>数据来源：用户行为数据、注册信息、消费记录
+
+- <b>精准推送Tab</b>：向指定用户群体发送营销推送<br>业务场景：定向营销触达、活动推广、演出推荐<br>支持渠道：微信推送、短信推送
+
+- <b>自动化营销Tab</b>：AI自动分析演出销售数据并生成营销方案<br>业务场景：为新演出/在售演出自动生成营销策略<br>核心能力：AI分析售票进度、预测上座率、推荐营销方案
+
+- <b>效果追踪Tab</b>：追踪营销活动效果<br>业务场景：评估营销ROI、分析转化数据、优化营销策略<br>数据来源：推送数据、订单数据`
+        },
+        {
+            title: '数据指标说明 - 用户画像',
+            content: `<b>用户群体分析维度（5项）</b>：
+
+- <b>年龄分布</b>：各年龄段用户占比<br>业务含义：了解用户年龄结构，指导演出类型选择<br>数据来源：用户注册信息中的生日数据计算
+
+- <b>性别比例</b>：男女用户占比<br>业务含义：了解用户性别构成<br>数据来源：用户注册信息
+
+- <b>地域分布</b>：各城市用户占比<br>业务含义：了解用户地理分布，指导区域营销<br>数据来源：用户注册信息或IP定位
+
+- <b>兴趣偏好</b>：各演出类型偏好占比<br>业务含义：了解用户观演偏好，指导精准推荐<br>数据来源：用户浏览记录和购票历史分析
+
+- <b>消费能力</b>：用户客单价分布<br>业务含义：了解用户消费水平，指导票价策略<br>数据来源：用户历史订单金额统计
+
+<b>用户群体划分</b>：
+- 音乐发烧友：近6个月购买音乐会类演出≥3场
+- 话剧爱好者：近6个月购买话剧类演出≥2场
+- 家庭用户：购票时选择家庭套票或单次购票≥4张
+- VIP会员：会员等级达到指定级别`
+        },
+        {
+            title: '功能流程 - 精准推送',
+            content: `<b>推送目标群体（6个预设）</b>：
+
+- <b>全部用户</b>：系统中所有注册用户
+- <b>新用户</b>：注册时间≤7天且未购票的用户
+- <b>VIP会员</b>：会员等级≥指定级别的用户
+- <b>沉睡用户</b>：近30天未登录且历史有购票记录的用户
+- <b>音乐爱好者</b>：近6个月浏览/购买音乐会类演出≥2次的用户
+- <b>优惠券敏感用户</b>：历史优惠券使用率≥60%的用户
+
+<b>推送配置</b>：
+- 推送渠道：微信推送/短信推送（可多选）
+- 推送标题：最多30字
+- 推送内容：最多200字，支持变量插入（如用户名、演出名）
+- 推送时间：立即发送/定时发送
+- 跳转页面：演出详情/优惠券/首页/自定义链接
+- 关联演出：选择推送关联的演出项目
+
+<b>推送流程</b>：
+1. 选择目标群体
+2. 配置推送内容和渠道
+3. 预览推送效果
+4. 确认发送并查看发送统计`
+        },
+        {
+            title: '功能流程 - 自动化营销',
+            content: `<b>场景分类</b>：
+
+- <b>新演出场景</b>：针对即将开售的演出进行预热推广
+- <b>已开始场景</b>：针对正在售票的演出进行销售加速
+
+<b>演出状态标签</b>：
+- 需紧急启动：售票进度<10%且距开演≤14天
+- 待启动营销：售票进度<10%且距开演>14天
+- 初步推广中：10%≤售票进度<30%
+- 推广进行中：售票进度≥30%
+- 需加速：售票进度<30%
+- 增速放缓：30%≤售票进度<60%且销售趋势下降
+- 进展良好：60%≤售票进度<90%
+- 即将售罄：售票进度≥90%
+
+<b>AI营销方案生成逻辑</b>：
+根据售票进度和距离开演时间，AI自动生成1-3个营销方案：
+- 低进度+时间充裕：3个方案（预热推广/会员优先/抽奖引流）
+- 低进度+时间紧迫：1个方案（紧急启动）
+- 中等进度：2个方案（预热推广/会员优先）
+- 高进度：冲刺/稀缺营销方案
+
+<b>方案内容</b>：
+- 方案名称：如"预热推广 + 早鸟票 + 社交裂变"
+- 分阶段执行计划：时间节点+营销动作+预期效果
+- 预期指标：预计新增售票/预计新增营收/营销预算/预期ROI/预计上座率/覆盖人群
+- 使用工具：精准推送/票品折扣/优惠券等
+
+<b>执行流程</b>：
+1. 选择演出项目
+2. 查看AI分析的销售数据和诊断建议
+3. 选择要执行的营销方案（可多选）
+4. 预览方案详情
+5. 一键执行创建对应营销活动`
+        },
+        {
+            title: '数据指标说明 - 效果追踪',
+            content: `<b>效果分析维度</b>：
+
+- <b>活动效果趋势</b>：展示推送量和转化量的时间趋势<br>业务含义：了解营销效果的时间分布
+
+- <b>渠道转化分布</b>：各推送渠道的转化占比<br>业务含义：评估不同渠道的效果差异<br>计算逻辑：各渠道转化订单数 ÷ 总转化订单数
+
+<b>效果明细指标</b>：
+- 活动名称：营销活动名称
+- 推送时间：活动推送时间
+- 推送人数：触达的用户数量
+- 打开率：打开推送的用户占比<br>计算逻辑：打开人数 ÷ 推送人数 × 100%
+- 转化率：产生订单的用户占比<br>计算逻辑：推送后24小时内产生的订单数 ÷ 推送人数 × 100%
+- 营收：活动带来的成交金额
+
+<b>时间筛选</b>：
+- 今日/本周/本月/本年
+- 支持导出Excel报告`
+        }
+    ,
+            {
+                title: 'PRD 需求文档 (US-11 AI智能营销)',
+                content: `<p><strong>US-11 营销管理 - F-11-1</strong></p>
+<p>管理员使用AI智能工具辅助营销决策。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-11-1 AI智能营销</strong>：AI生成营销文案、智能推荐目标人群、营销效果预测、A/B测试建议</li>
+</ul>
+<p><strong>核心功能：</strong></p>
+<ul>
+<li>营销文案自动生成</li>
+<li>用户画像分析与精准推送</li>
+<li>营销活动效果预测</li>
+<li>智能投放策略推荐</li>
+</ul>`
+            }]
+  },
+
+  'pc-admin/banner-management.html': {
+    title: '轮播图管理',
+    subtitle: '首页轮播内容配置 - 小程序/PC多端管理',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>轮播图管理页面，用于管理小程序端和PC端首页轮播内容。支持轮播图的上传、排序、状态控制和展示策略配置，可按终端类型、页面位置、时间段等多维度管理轮播内容。</p>`
+        },
+        {
+            title: '数据指标说明',
+            content: `<b>统计卡片（4项指标）</b>：
+
+- <b>轮播图总数</b>：创建的轮播图总数量<br>业务含义：反映轮播内容规模
+
+- <b>启用中</b>：当前状态为启用的数量<br>业务含义：反映当前有效轮播数量
+
+- <b>小程序端</b>：小程序端展示数量<br>业务含义：反映小程序端轮播配置
+
+- <b>PC端</b>：PC端展示数量<br>业务含义：反映PC端轮播配置`
+        },
+        {
+            title: '状态定义',
+            content: `<b>轮播图状态及流转</b>：
+
+- <b>待生效</b>：当前时间早于开始时间<br>流转条件：到达开始时间→启用
+
+- <b>启用</b>：在有效期内且状态启用<br>流转条件：手动停用→停用；到达结束时间→已过期
+
+- <b>停用</b>：手动停用<br>流转条件：重新启用→启用/待生效（根据当前时间）
+
+- <b>已过期</b>：当前时间晚于结束时间<br>流转条件：终态，不可变更`
+        },
+        {
+            title: '功能流程 - 轮播图配置',
+            content: `<b>基础信息配置</b>：
+- 轮播图片（必填）：上传轮播图
+  - 小程序端规格：750×400px，JPG/PNG，<500KB
+  - PC端规格：1920×600px，JPG/PNG，<2MB
+- 标题：轮播图标题，最多20字
+- 描述：轮播图描述，最多50字
+
+<b>跳转配置</b>：
+- 跳转类型：演出详情/商品详情/外部链接/无跳转
+- 跳转目标：根据类型选择关联演出、商品或输入链接
+
+<b>展示配置</b>：
+- 展示终端：小程序/PC端/全部
+- 页面位置：首页顶部/首页中部/演出列表/个人中心/其他
+- 排序权重：数值越小排序越靠前，默认0
+- 有效期：轮播图展示时间范围
+- 状态：启用/停用
+
+<b>排序管理</b>：
+- 拖拽排序：列表页直接拖拽调整顺序
+- 权重调整：编辑时修改排序权重数值
+- 快捷操作：置顶/上移/下移/置底`
+        }
+    ,
+            {
+                title: 'PRD 需求文档 (US-11 轮播图管理)',
+                content: `<p><strong>US-11 营销管理 - F-11-2</strong></p>
+<p>管理员管理首页轮播图配置。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-11-2 轮播图管理</strong>：轮播图上传、标题设置、跳转配置、排序管理、上下线控制、展示时段设置</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>banner_id</code>：轮播图ID</li>
+<li><code>image_url</code>：图片URL</li>
+<li><code>title</code>：标题</li>
+<li><code>jump_type</code>：跳转类型（1-演出详情/2-演出列表/3-外部链接/4-无跳转）</li>
+<li><code>jump_params</code>：跳转参数</li>
+<li><code>sort_order</code>：排序</li>
+<li><code>start_time</code>, <code>end_time</code>：展示时段</li>
+</ul>`
+            }]
+  },
+
+  'pc-admin/product-service.html': {
+    title: '商品管理',
+    subtitle: '周边商城商品管理 - 商品/分类/库存/客服',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>周边商城商品管理平台，为周边商品运营提供完整的管理能力。包含商品管理和客服管理两个模块，支持商品创建与维护、分类管理、库存预警，以及在线客服配置。</p>`
+        },
+        {
+            title: 'Tab功能说明',
+            content: `<b>商品管理Tab切换 - 2个Tab页签</b>：
+
+- <b>商品管理Tab</b>：管理商城商品信息、分类、库存<br>业务场景：商品上下架、价格调整、库存管理<br>数据来源：商品基础数据
+
+- <b>客服管理Tab</b>：管理在线客服配置和会话记录<br>业务场景：客服配置、会话管理、AI客服训练<br>数据来源：客服系统数据
+
+Tab切换交互：
+- 点击Tab切换管理维度
+- 当前选中Tab高亮显示
+- 各Tab独立维护筛选和分页状态`
+        },
+        {
+            title: '数据指标说明 - 商品管理',
+            content: `<b>统计卡片（4项指标）</b>：
+
+- <b>商品总数</b>：创建的商品总数量<br>业务含义：反映商品SKU规模
+
+- <b>上架中</b>：状态为上架的商品数<br>业务含义：反映当前可售商品数量
+
+- <b>库存预警</b>：库存低于预警值的商品数<br>业务含义：反映需要补货的商品数量，需及时关注
+
+- <b>今日销量</b>：今日商品销售数量<br>业务含义：反映当日商品销售表现<br>数据来源：今日已完成的商品订单数量合计
+
+<b>筛选能力</b>：
+- 商品分类筛选：支持多级分类筛选
+- 商品状态筛选：上架中/已下架/售罄/草稿
+- 库存状态筛选：库存充足/库存紧张/已售罄
+- 价格区间筛选：按销售价格范围筛选
+- 关键词搜索：支持商品名称/编码/简介搜索`
+        },
+        {
+            title: '状态定义 - 商品',
+            content: `<b>商品状态及流转</b>：
+
+- <b>草稿</b>：商品信息已创建但未发布<br>流转条件：点击上架→上架中
+
+- <b>上架中</b>：商品正常销售中<br>流转条件：手动下架→已下架；库存为0→售罄
+
+- <b>已下架</b>：商品被手动下架<br>流转条件：重新上架→上架中（需库存>0）
+
+- <b>售罄</b>：商品库存为0<br>流转条件：补货后库存>0→上架中
+
+<b>商品分类层级</b>：
+- 最多支持3级分类
+- 一级分类：如周边商品/文创产品
+- 二级分类：如T恤/帽子/海报
+- 三级分类：如男款T恤/女款T恤`
+        },
+        {
+            title: '功能流程 - 商品配置',
+            content: `<b>基础信息配置</b>：
+- 商品名称（必填）：最多50字
+- 商品编码：商品唯一标识
+- 商品分类（必填）：选择所属分类
+- 商品简介：最多200字
+- 商品详情：富文本编辑器，支持图片上传
+
+<b>商品图片</b>：
+- 主图（必填）：商品主展示图
+- 轮播图：最多5张展示图
+- 图片规格：800×800px，JPG/PNG，<2MB
+
+<b>价格库存配置</b>：
+- 原价：商品原价/划线价
+- 销售价（必填）：实际销售价
+- 成本价：用于利润统计
+- 库存数量（必填）：当前可售库存
+- 库存预警值：库存低于此值时预警，默认10
+
+<b>规格SKU配置（可选）</b>：
+- 规格名称：如颜色/尺寸
+- 规格值：如红色/XL
+- 各规格组合可独立设置价格和库存
+
+<b>其他配置</b>：
+- 物流配置：商品重量、运费模板
+- 积分兑换：是否支持积分兑换及所需积分
+- 上架状态：上架/下架
+- 排序权重：数值越小排序越靠前`
+        },
+        {
+            title: '状态定义 - 客服会话',
+            content: `<b>会话状态</b>：
+- <b>等待中</b>：用户发起会话，等待客服接入
+- <b>处理中</b>：客服已接入，正在处理
+- <b>已关闭</b>：会话已结束
+
+<b>客服配置</b>：
+- 在线客服开关：启用/停用在线客服
+- 客服工作时间：工作日/周末/节假日设置
+- 自动回复规则：欢迎语/离线回复/超时提醒
+- 客服分配策略：轮流分配/负载均衡/技能分组
+- 快捷回复：预设常见问题的快捷回复
+
+<b>AI客服配置</b>：
+- AI客服开关：启用/停用AI自动回复
+- 知识库管理：添加问答对、批量导入导出
+- 转人工规则：AI无法回答/用户主动要求/关键词触发
+- AI训练优化：查看回答记录、标记正误、优化知识库`
+        }
+    ,
+            {
+                title: 'PRD 需求文档 (US-11 商品服务)',
+                content: `<p><strong>US-11 营销管理 - F-11-4</strong></p>
+<p>管理员管理商城商品和周边服务。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-11-4 营销活动管理</strong>：商品分类管理、商品上下架、库存管理、价格设置</li>
+</ul>`
+            }]
+  },
+
+  'pc-admin/activity-decoration.html': {
+    title: '运营活动',
+    subtitle: '活动管理与页面装修 - 活动/专题/首页配置',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>运营活动与页面装修管理平台，为运营人员提供活动创建和页面配置能力。包含活动管理和首页装修两个模块，支持运营活动的创建、编辑、效果追踪，以及小程序/PC端首页的模块化装修配置。</p>`
+        },
+        {
+            title: 'Tab功能说明',
+            content: `<b>运营活动Tab切换 - 2个Tab页签</b>：
+
+- <b>活动管理Tab</b>：管理运营活动和专题页面<br>业务场景：创建促销活动、配置活动规则、追踪活动效果<br>数据来源：运营活动数据
+
+- <b>首页装修Tab</b>：配置小程序/PC端首页模块<br>业务场景：首页布局配置、模块内容管理、页面发布<br>数据来源：页面装修配置数据
+
+Tab切换交互：
+- 点击Tab切换功能模块
+- 当前选中Tab高亮显示`
+        },
+        {
+            title: '数据指标说明 - 活动管理',
+            content: `<b>统计卡片（4项指标）</b>：
+
+- <b>活动总数</b>：创建的活动总数量<br>业务含义：反映活动运营规模
+
+- <b>进行中</b>：当前进行中的活动数<br>业务含义：反映当前有效活动数量
+
+- <b>待开始</b>：未开始的活动数<br>业务含义：反映待上线活动储备
+
+- <b>已结束</b>：已结束的活动数<br>业务含义：反映历史活动数量
+
+<b>活动类型</b>：
+- 专题活动：特定主题的营销活动
+- 节日活动：节假日相关营销活动
+- 品牌合作：与品牌联合营销活动
+- 会员专享：仅限会员参与的活动
+- 限时特惠：限时折扣促销活动
+
+<b>活动效果指标</b>：
+- 页面浏览量/访客数
+- 分享次数
+- 点击转化数
+- 下单转化数
+- 成交金额
+- ROI计算：活动带来的收益 ÷ 活动成本`
+        },
+        {
+            title: '状态定义 - 活动',
+            content: `<b>活动状态及流转</b>：
+
+- <b>待开始</b>：当前时间早于开始时间<br>流转条件：到达开始时间→进行中
+
+- <b>进行中</b>：在活动时间范围内<br>流转条件：手动停用→已停用；到达结束时间→已结束
+
+- <b>已结束</b>：当前时间晚于结束时间<br>流转条件：终态，不可变更
+
+- <b>已停用</b>：手动停用<br>流转条件：重新启用→进行中/待开始（根据当前时间）`
+        },
+        {
+            title: '功能流程 - 活动配置',
+            content: `<b>基础信息配置</b>：
+- 活动名称（必填）：活动标题
+- 活动类型（必填）：选择活动分类
+- 活动封面：活动宣传图片（建议750×400）
+- 活动简介：活动介绍
+- 分享配置：分享标题和分享图片
+
+<b>活动时间</b>：
+- 开始时间（必填）：活动开始时间
+- 结束时间（必填）：活动结束时间
+
+<b>关联内容</b>：
+- 关联演出：选择活动关联的演出项目
+- 关联商品：选择活动关联的商品
+- 关联优惠券：选择活动发放的优惠券
+
+<b>活动页面配置</b>：
+- 页面模板：选择预设模板或自定义
+- 页面组件：轮播图/演出列表/倒计时/优惠券/规则说明
+- 组件排序：拖拽调整组件展示顺序
+- 组件配置：各组件的内容配置
+
+<b>活动规则</b>：
+- 参与条件：全部用户/会员专享/新用户专享
+- 参与限制：每人参与次数限制
+- 活动说明：富文本编辑器编辑`
+        },
+        {
+            title: '功能流程 - 首页装修',
+            content: `<b>终端切换</b>：
+- 小程序端/PC端独立配置
+- 各终端装修配置互不影响
+
+<b>页面模块类型</b>：
+- 轮播图模块：展示轮播广告图
+- 演出推荐模块：展示热门/最新/即将开售演出
+- 分类入口模块：演出分类快捷入口
+- 活动入口模块：进行中活动入口
+- 优惠券模块：可领取优惠券列表
+- 商品推荐模块：热销/新品/积分兑换商品
+- 会员权益模块：会员等级权益说明
+- 自定义图文模块：富文本自定义内容
+
+<b>装修操作</b>：
+- 添加模块：点击添加按钮选择模块类型
+- 删除模块：点击模块右上角删除
+- 排序模块：拖拽调整模块上下位置
+- 编辑模块：点击模块进入配置面板
+- 预览效果：实时预览装修效果
+- 保存发布：保存配置并发布上线
+
+<b>版本管理</b>：
+- 保存历史版本记录
+- 支持回滚到历史版本
+- 对比不同版本差异`
+        }
+    ,
+            {
+                title: 'PRD 需求文档 (US-11 营销活动管理)',
+                content: `<p><strong>US-11 营销管理 - F-11-4</strong></p>
+<p>管理员创建和管理营销活动。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-11-4 营销活动管理</strong>：活动创建（名称/时间/规则/奖品）、活动页面装修、活动数据监控、活动上下线</li>
+</ul>
+<p><strong>核心字段：</strong></p>
+<ul>
+<li><code>activity_id</code>：活动ID</li>
+<li><code>name</code>：活动名称</li>
+<li><code>start_time</code>, <code>end_time</code>：活动时间</li>
+<li><code>status</code>：活动状态</li>
+<li><code>rules</code>：活动规则配置</li>
+</ul>`
+            }]
+  },
+
+  'pc-admin/agent-management.html': {
+    title: '代理管理',
+    subtitle: '渠道代理管理 - 代理/分润/结算',
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>渠道代理管理平台，为渠道合作提供完整的管理能力。支持代理信息管理、佣金比例配置、等级管理、结算规则配置和代理业绩追踪，帮助管理渠道合作伙伴。</p>`
+        },
+        {
+            title: '数据指标说明',
+            content: `<b>统计卡片（4项指标）</b>：
+
+- <b>代理总数</b>：注册代理总数<br>业务含义：反映渠道代理规模
+
+- <b>活跃代理</b>：本月有推广业绩的代理数<br>业务含义：反映代理活跃程度<br>计算逻辑：本月有产生佣金的代理数量
+
+- <b>本月佣金</b>：本月产生佣金总额<br>业务含义：反映本月渠道推广成本<br>数据来源：本月产生的佣金记录金额合计
+
+- <b>待结算</b>：待结算佣金总额<br>业务含义：反映待支付渠道成本`
+        },
+        {
+            title: '功能流程 - 佣金配置',
+            content: `<b>全局佣金比例配置</b>：
+- 默认佣金比例：所有演出的基础佣金比例，默认5%
+- 按演出类型配置：可为音乐会/话剧/舞蹈/戏曲/儿童剧/音乐剧分别设置佣金比例
+- 按演出单独配置：针对单个演出设置特殊佣金比例
+- 优先级：演出单独配置 > 类型配置 > 默认配置
+
+<b>佣金计算逻辑</b>：
+- 基础佣金 = 订单实付金额 × 佣金比例
+- 等级加成 = 基础佣金 × 等级加成比例
+- 最终佣金 = 基础佣金 + 等级加成
+
+<b>佣金生效规则</b>：
+- 订单完成且过退款期后计入佣金
+- 发生退款的订单扣除对应佣金
+- 佣金状态流转：待结算→可结算→已结算`
+        },
+        {
+            title: '功能流程 - 代理等级管理',
+            content: `<b>等级体系配置</b>：
+- 等级名称：如普通代理/铜牌/银牌/金牌/钻石
+- 等级图标：各等级对应的图标
+- 等级颜色：视觉区分标识
+- 升级门槛：达到该等级所需条件
+- 等级加成：该等级额外佣金加成比例
+
+<b>升级条件类型</b>：
+- 累计推广额：累计推广订单金额满指定金额<br>示例：银牌需累计推广满1万元
+- 累计订单数：累计推广订单数满指定单数<br>示例：金牌需累计推广满50单
+- 累计佣金：累计获得佣金满指定金额<br>示例：钻石需累计佣金满5000元
+- 月活跃：连续多个月有推广业绩<br>示例：需连续3个月有业绩
+- 组合条件：多条件同时满足
+
+<b>等级权益</b>：
+- 佣金加成：该等级额外佣金加成比例
+- 专属活动：该等级专属推广活动
+- 优先结算：高等级代理优先结算
+- 专属客服：高等级代理专属客服支持
+
+<b>等级变更记录</b>：
+- 记录代理等级升降级历史
+- 包含：变更前等级/变更后等级/变更原因/变更时间`
+        },
+        {
+            title: '状态定义',
+            content: `<b>代理状态</b>：
+- <b>待审核</b>：代理申请待审核<br>流转条件：审核通过→正常；审核拒绝→已拒绝
+- <b>正常</b>：代理正常推广中<br>流转条件：违规冻结→冻结；业绩不达标→等级变更
+- <b>冻结</b>：代理被冻结<br>流转条件：解冻→正常；永久封禁→已注销
+- <b>已拒绝</b>：代理申请被拒绝<br>流转条件：终态，不可变更
+- <b>已注销</b>：代理账号已注销<br>流转条件：终态，不可变更
+
+<b>佣金状态</b>：
+- <b>待结算</b>：佣金已产生，未到结算条件
+- <b>可结算</b>：满足结算条件，等待结算
+- <b>结算中</b>：结算申请处理中
+- <b>已结算</b>：佣金已打款
+- <b>结算失败</b>：打款失败，需重新处理
+
+<b>结算周期配置</b>：
+- 结算周期：日结/周结/月结
+- 最低结算金额：佣金满指定金额才可结算，默认100元
+- 订单确认天数：订单完成后指定天数可结算（防止退款），默认7天
+- 结算方式：自动结算/手动结算`
+        },
+        {
+            title: '功能流程 - 代理管理',
+            content: `<b>代理信息管理</b>：
+- 基础信息：头像/昵称/手机号/微信号/注册时间
+- 代理等级：当前等级/升级进度
+- 推广信息：推广码/推广链接/推广海报
+
+<b>业绩统计</b>：
+- 推广数据：累计推广订单数/累计推广金额/本月推广数据
+- 佣金数据：累计佣金收入/已结算佣金/待结算佣金/本月佣金收入
+- 推广趋势：近30天推广数据趋势
+
+<b>佣金明细</b>：
+- 订单号：产生佣金的订单
+- 演出名称：关联的演出项目
+- 订单金额：订单实付金额
+- 佣金比例：应用的佣金比例
+- 佣金金额：实际佣金金额
+- 状态：待结算/可结算/已结算
+
+<b>结算记录</b>：
+- 历史结算记录列表
+- 结算金额/结算方式/结算时间/结算状态
+
+<b>代理操作</b>：
+- 调整等级：手动调整代理等级
+- 冻结/解冻：冻结或恢复代理账号
+- 重置密码：重置代理登录密码
+- 发送通知：发送系统通知`
+        }
+    ,
+            {
+                title: 'PRD 需求文档',
+                content: `<p><strong>代理分销管理</strong></p>
+<p>管理员管理代理分销渠道和分销商。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li>代理分销商管理（CRUD）</li>
+<li>分销渠道配置</li>
+<li>分销政策设置</li>
+</ul>`
+            }]
+  },
+
+  'pc-admin/statistics.html': {
+    title: "报表中心",
+    subtitle: "多维度数据报表分析 - 16个业务维度",
+    sections: [
+        {
+            title: '功能说明',
+            content: `<p><strong>核心功能：</strong>报表中心提供多维度数据报表分析功能，涵盖演出票房、销售渠道、会员消费、商品销售、场馆运营、财务收支、充值卡、券包、优惠券、营销效果、用户行为、代理业务等维度。支持多维度筛选、数据导出、图表可视化和定时报表推送，为运营决策提供数据支持。</p>`
+        },
+        {
+            title: 'Tab功能说明',
+            content: `<b>报表中心Tab导航 - 16个报表维度</b>：
+
+<b>票务报表组</b>：
+- 演出票房：各演出票房数据统计
+- 销售渠道：各销售渠道数据对比
+- 票品折扣：票品折扣活动效果统计
+- 票务深度：票务数据深度分析
+
+<b>用户报表组</b>：
+- 会员消费：会员消费行为分析
+- 用户行为：用户行为路径分析
+
+<b>商品报表组</b>：
+- 商品销售：商城商品销售统计
+
+<b>场馆报表组</b>：
+- 场馆运营：场馆使用率和运营数据
+
+<b>财务报表组</b>：
+- 财务收支：收入支出财务报表
+- 充值卡：充值卡销售和使用统计
+- 券包：券包销售和核销统计
+- 优惠券：优惠券发放和使用统计
+
+<b>营销报表组</b>：
+- 营销效果：营销活动效果统计
+
+<b>代理报表组</b>：
+- 代理概览：代理整体数据统计
+- 代理排行：代理业绩排行
+- 佣金报表：佣金产生和结算统计`
+        },
+        {
+            title: '数据指标说明 - 演出票房',
+            content: `<b>核心指标</b>：
+- 总票房：累计票房收入金额<br>业务含义：反映演出整体营收规模<br>数据来源：已完成订单的实付金额合计
+
+- 总出票：累计出票数量<br>业务含义：反映演出实际销售数量
+
+- 平均上座率：平均座位销售比例<br>业务含义：反映演出座位销售饱和度<br>计算逻辑：出票数量 ÷ 总座位数 × 100%
+
+- 平均客单价：平均订单金额<br>业务含义：反映用户消费力度<br>计算逻辑：总票房 ÷ 订单数
+
+<b>分析维度</b>：
+- 票房趋势：按日/周/月展示票房走势
+- 类型占比：各演出类型票房占比
+- 剧院对比：各剧院票房对比
+- 退票分析：退票数量和退票率`
+        },
+        {
+            title: '数据指标说明 - 销售渠道',
+            content: `<b>核心指标</b>：
+- 总订单数：累计订单数量<br>业务含义：反映整体订单规模
+
+- 总销售额：累计销售金额<br>业务含义：反映整体营收规模
+
+- 渠道占比：各渠道销售额占比<br>业务含义：反映各渠道贡献度<br>计算逻辑：该渠道销售额 ÷ 总销售额 × 100%
+
+- 客单价对比：各渠道平均客单价<br>业务含义：对比各渠道用户消费水平
+
+<b>分析维度</b>：
+- 渠道占比饼图：各渠道销售占比可视化
+- 渠道趋势对比：各渠道销售趋势对比
+- 渠道客单价对比：各渠道客单价对比`
+        },
+        {
+            title: '数据指标说明 - 其他报表',
+            content: `<b>会员消费报表</b>：
+- 会员消费金额分布：不同消费金额区间的会员数量
+- 会员等级消费对比：各等级会员消费金额对比
+- 新老客消费占比：新客与老客消费金额占比
+- 会员消费频次分析：会员平均消费次数
+- 会员RFM分析：按最近消费/消费频次/消费金额分层
+
+<b>商品销售报表</b>：
+- 商品销售排行：按销售额/销量排序
+- 分类销售占比：各分类销售占比
+- 商品退货分析：退货数量和退货率
+- 库存周转分析：库存周转效率
+
+<b>场馆运营报表</b>：
+- 场馆使用率：场馆实际使用比例
+- 场馆票房排行：各场馆票房对比
+- 场馆场次统计：各场馆场次数量
+- 场馆上座率对比：各场馆上座率对比
+
+<b>财务收支报表</b>：
+- 收入明细：票房/商品/充值/其他收入
+- 支出明细：退款/佣金/营销/其他支出
+- 收支汇总：日/月/年收支汇总
+- 利润分析：收入-支出=利润
+
+<b>充值卡报表</b>：
+- 发卡量统计：累计发卡数量
+- 激活率分析：已激活卡片占比
+- 核销金额统计：累计核销金额
+
+<b>券包/优惠券报表</b>：
+- 销售/发放统计：销售/发放数量
+- 使用率分析：已使用占比
+- ROI分析：投入产出比
+
+<b>代理报表</b>：
+- 代理增长趋势：代理数量变化趋势
+- 代理等级分布：各等级代理占比
+- 推广业绩排行：按推广金额/订单排行
+- 佣金统计：佣金产生/结算/待结算金额`
+        }
+    ,
+            {
+                title: 'PRD 需求文档 (US-12 数据统计)',
+                content: `<p><strong>US-12 数据统计 - F-12-3 数据统计看板</strong></p>
+<p>管理员查看详细的业务数据统计报表。</p>
+<p><strong>功能模块：</strong></p>
+<ul>
+<li><strong>F-12-3 数据统计看板</strong>：票房统计、订单统计、会员统计、销售趋势分析、演出排行、地域分布</li>
+</ul>
+<p><strong>核心指标：</strong></p>
+<ul>
+<li>票房收入（日/周/月/年）</li>
+<li>订单量与客单价</li>
+<li>会员增长趋势</li>
+<li>售票率与上座率</li>
+<li>演出类型分布</li>
+</ul>`
+            }]
+  }
+};
+const defaultDevDoc = {
+    title: '页面开发说明',
+    subtitle: '该页面文档待完善',
+    sections: [
+        {
+            title: '📝 待完善',
+            content: `<p>该页面的详细开发说明尚未配置。</p>
+            <p>请补充以下信息：</p>
+            <ul>
+                <li>功能说明</li>
+                <li>API接口定义</li>
+                <li>数据模型</li>
+                <li>交互说明</li>
+            </ul>`
+        }
+    ]
+};
+
+const pagesData = {
+    pc: [
+        { name: '数据看板', url: 'pc-admin/dashboard.html', icon: '📈', desc: '核心指标、销售趋势、会员分析', tags: ['数据可视化', '趋势分析'] },
+        { name: '演出管理', url: 'pc-admin/show-management.html', icon: '🎭', desc: '演出项目、场次管理、座位配置', tags: ['演出项目', '座位配置', '分区管理'] },
+        { name: '售票管理', url: 'pc-admin/ticket-sales.html', icon: '🎫', desc: '窗口售票、选座售票、渠道分配', tags: ['窗口售票', '选座售票'] },
+        { name: '订单管理', url: 'pc-admin/order-management.html', icon: '📋', desc: '票务/充值/券包/商城订单', tags: ['票务订单', '退款审核'] },
+        { name: '会员管理', url: 'pc-admin/member-management.html', icon: '👥', desc: '会员列表、积分任务、会员政策', tags: ['会员政策', '积分管理'] },
+        { name: '营销中心', url: 'pc-admin/marketing-center.html', icon: '🎁', desc: '充值卡、优惠券、抽奖活动', tags: ['优惠券', '抽奖管理'] },
+        { name: 'AI智能营销', url: 'pc-admin/ai-marketing.html', icon: '🤖', desc: 'AI营销策略、智能推荐', tags: ['AI能力', '智能推荐'] },
+        { name: '轮播图管理', url: 'pc-admin/banner-management.html', icon: '🖼️', desc: '轮播图上传、排序配置', tags: ['轮播图', '内容管理'] },
+        { name: '商品管理', url: 'pc-admin/product-service.html', icon: '🛒', desc: '商品CRUD、分类管理', tags: ['商品管理', 'AI客服'] },
+        { name: '运营活动', url: 'pc-admin/activity-decoration.html', icon: '🎨', desc: '活动管理、首页装修', tags: ['活动管理', '拖拽装修'] },
+        { name: '代理管理', url: 'pc-admin/agent-management.html', icon: '🤝', desc: '代理列表、佣金配置', tags: ['代理体系', '佣金管理'] },
+        { name: '报表中心', url: 'pc-admin/statistics.html', icon: '📊', desc: '多维图表、报表导出', tags: ['多维图表', '报表导出'] },
+        { name: '登录页 v1', url: 'pc-admin/login.html', icon: '🔐', desc: '账号密码登录', tags: ['登录'] },
+        { name: '登录页 v2', url: 'pc-admin/login-v2.html', icon: '🔐', desc: '升级版登录页', tags: ['登录', 'v2'] },
+        { name: '代理首页', url: 'pc-admin/agent-miniapp.html', icon: '📱', desc: '代理端PC预览', tags: ['代理'] },
+        { name: '代理统计', url: 'pc-admin/agent-miniapp-stats.html', icon: '📊', desc: '代理数据统计', tags: ['代理', '统计'] },
+        { name: '佣金明细', url: 'pc-admin/agent-miniapp-commission.html', icon: '💰', desc: '代理佣金明细', tags: ['代理', '佣金'] },
+        { name: '代理提现', url: 'pc-admin/agent-miniapp-withdraw.html', icon: '💳', desc: '代理提现管理', tags: ['代理', '提现'] },
+        { name: '推广海报', url: 'pc-admin/agent-miniapp-poster.html', icon: '🖼️', desc: '代理推广海报', tags: ['代理', '海报'] },
+        { name: '代理二维码', url: 'pc-admin/agent-miniapp-qrcode.html', icon: '📱', desc: '代理推广二维码', tags: ['代理', '二维码'] },
+        { name: '代理规则', url: 'pc-admin/agent-miniapp-rules.html', icon: '📜', desc: '代理规则说明', tags: ['代理', '规则'] }
+    ],
+    user: [
+        { name: '首页', url: 'user-miniapp/home.html', icon: '🏠', desc: '轮播图、热门推荐、剧院导航', tags: ['轮播图', '热门推荐'] },
+        { name: '演出列表', url: 'user-miniapp/show-list-detail.html', icon: '🎭', desc: '分类筛选、智能搜索', tags: ['分类筛选', '演出详情'] },
+        { name: '演出详情', url: 'user-miniapp/show-detail.html', icon: '🎫', desc: '演出信息、场次选择', tags: ['演出详情', '评论'] },
+        { name: '选座购票', url: 'user-miniapp/seat-selection.html', icon: '💺', desc: '座位矩阵、早鸟票/优先购', tags: ['座位选择', '早鸟票', '混合支付'] },
+        { name: '订单确认', url: 'user-miniapp/order-ticket.html', icon: '🎫', desc: '订单详情、电子票', tags: ['订单', '电子票'] },
+        { name: '场馆列表', url: 'user-miniapp/theater-list.html', icon: '🏛️', desc: '场馆搜索、详情查看', tags: ['场馆'] },
+        { name: '会员中心', url: 'user-miniapp/member-center.html', icon: '👑', desc: '会员卡、等级权益、积分', tags: ['会员等级', '优先购'] },
+        { name: '个人中心', url: 'user-miniapp/profile.html', icon: '👤', desc: '用户信息、资产概览', tags: ['资产概览', '订单管理'] },
+        { name: '编辑资料', url: 'user-miniapp/profile-edit.html', icon: '✏️', desc: '修改个人信息', tags: ['个人资料'] },
+        { name: '钱包', url: 'user-miniapp/wallet.html', icon: '💰', desc: '余额管理、充值', tags: ['钱包', '交易记录'] },
+        { name: '积分中心', url: 'user-miniapp/points.html', icon: '⭐', desc: '积分余额、任务、兑换', tags: ['积分'] },
+        { name: '积分明细', url: 'user-miniapp/points-flow.html', icon: '📋', desc: '积分收支流水', tags: ['积分', '明细'] },
+        { name: '优惠券', url: 'user-miniapp/coupons.html', icon: '🎟️', desc: '优惠券列表、领取', tags: ['优惠券'] },
+        { name: '券包', url: 'user-miniapp/coupon-package.html', icon: '📦', desc: '演出券包、套票', tags: ['券包'] },
+        { name: '我的套票', url: 'user-miniapp/my-packages.html', icon: '📋', desc: '已购套票管理', tags: ['套票'] },
+        { name: '周边商城', url: 'user-miniapp/shop.html', icon: '🛍️', desc: '商品网格、积分兑换', tags: ['商品', '积分兑换'] },
+        { name: '商品订单', url: 'user-miniapp/product-order.html', icon: '🛒', desc: '商城订单管理', tags: ['订单'] },
+        { name: '搜索', url: 'user-miniapp/search.html', icon: '🔍', desc: '演出搜索、历史记录', tags: ['搜索'] },
+        { name: '消息通知', url: 'user-miniapp/message-service.html', icon: '💬', desc: '消息列表、AI客服', tags: ['消息', 'AI客服'] },
+        { name: '充值', url: 'user-miniapp/recharge-topup.html', icon: '💳', desc: '在线充值', tags: ['充值'] },
+        { name: '充值卡绑定', url: 'user-miniapp/recharge-card-bind.html', icon: '🎴', desc: '实体充值卡绑定', tags: ['充值卡'] },
+        { name: '实体卡申请', url: 'user-miniapp/physical-card-apply.html', icon: '💳', desc: '会员实体卡申请', tags: ['会员卡'] },
+        { name: '实名认证', url: 'user-miniapp/real-name-auth.html', icon: '🆔', desc: '身份证验证', tags: ['实名'] },
+        { name: '偏好设置', url: 'user-miniapp/preference-settings.html', icon: '⚙️', desc: '演出偏好、通知偏好', tags: ['设置'] },
+        { name: '隐私设置', url: 'user-miniapp/privacy-settings.html', icon: '🔒', desc: '隐私权限管理', tags: ['隐私'] },
+        { name: '交易记录', url: 'user-miniapp/transaction-record.html', icon: '📊', desc: '收支明细', tags: ['交易'] },
+        { name: '抽奖', url: 'user-miniapp/lottery.html', icon: '🎰', desc: '抽奖活动', tags: ['抽奖'] },
+        { name: '代理首页', url: 'user-miniapp/agent-miniapp.html', icon: '🤝', desc: '代理端首页', tags: ['代理'] },
+        { name: '代理统计', url: 'user-miniapp/agent-miniapp-stats.html', icon: '📊', desc: '代理销售统计', tags: ['代理', '统计'] },
+        { name: '佣金明细', url: 'user-miniapp/agent-miniapp-commission.html', icon: '💰', desc: '代理佣金明细', tags: ['代理', '佣金'] },
+        { name: '代理提现', url: 'user-miniapp/agent-miniapp-withdraw.html', icon: '💳', desc: '佣金提现', tags: ['代理', '提现'] },
+        { name: '推广海报', url: 'user-miniapp/agent-miniapp-poster.html', icon: '🖼️', desc: '代理推广海报', tags: ['代理', '海报'] },
+        { name: '代理二维码', url: 'user-miniapp/agent-miniapp-qrcode.html', icon: '📱', desc: '代理推广二维码', tags: ['代理', '二维码'] },
+        { name: '代理规则', url: 'user-miniapp/agent-miniapp-rules.html', icon: '📜', desc: '代理规则说明', tags: ['代理', '规则'] }
+    ],
+    admin: [
+        { name: '数据看板 & 扫码验票', url: 'admin-miniapp/admin-home-verify.html', icon: '📊', desc: '场馆数据、扫码验票', tags: ['数据看板', '扫码验票'] }
+    ]
+};
+
+let currentMode = 'card';
+let currentCategory = 'pc';
+
+// 初始化
+function init() {
+    renderAllCards();
+    renderDropdown();
+    initIframeListener();
+}
+
+// 渲染所有卡片
+function renderAllCards() {
+    renderCards('pc', 'pcGrid');
+    renderCards('user', 'userGrid');
+    renderCards('admin', 'adminGrid');
+}
+
+// 渲染卡片
+function renderCards(category, containerId) {
+    const container = document.getElementById(containerId);
+    const pages = pagesData[category];
+    const previewClass = category === 'pc' ? 'pc-preview' : (category === 'user' ? 'user-preview' : 'admin-preview');
+    const label = category === 'pc' ? '1440 × 900' : '375 × 812';
+
+    container.innerHTML = pages.map(page => `
+        <div class="card" data-url="${page.url}" onclick="handleCardClick('${page.url}')">
+            <div class="card-preview ${previewClass}">
+                <div class="card-preview-icon">${page.icon}</div>
+                <div class="card-preview-label">${label}</div>
+            </div>
+            <div class="card-body">
+                <div class="card-title">${page.name}</div>
+                <div class="card-desc">${page.desc}</div>
+                <div class="card-tags">
+                    ${page.tags.map(tag => `<span class="card-tag ${getTagColor(tag)}">${tag}</span>`).join('')}
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// 处理卡片点击 - 统一使用预览模式打开
+function handleCardClick(url) {
+    loadPage(url);
+}
+
+function getTagColor(tag) {
+    if (tag.includes('代理')) return 'purple';
+    if (tag.includes('会员') || tag.includes('积分') || tag.includes('佣金') || tag.includes('早鸟')) return 'gold';
+    if (tag.includes('座位') || tag.includes('订单') || tag.includes('优惠券') || tag.includes('抽奖') || tag.includes('活动') || tag.includes('海报')) return 'orange';
+    return 'blue';
+}
+
+// 渲染下拉菜单
+function renderDropdown() {
+    const container = document.getElementById('dropdownMenu');
+    const categories = [
+        { key: 'pc', name: 'PC管理后台', icon: '🖥️' },
+        { key: 'user', name: '用户小程序', icon: '📱' },
+        { key: 'admin', name: '管理员小程序', icon: '🔧' }
+    ];
+
+    container.innerHTML = categories.map(cat => `
+        <div class="dropdown-section">
+            <div class="dropdown-section-title">${cat.icon} ${cat.name}</div>
+            ${pagesData[cat.key].map(page => `
+                <div class="dropdown-item" onclick="loadPage('${page.url}')">
+                    <div class="dropdown-item-icon ${cat.key}">${page.icon}</div>
+                    <div class="dropdown-item-text">
+                        <div>${page.name}</div>
+                        <div class="dropdown-item-label">${page.desc}</div>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `).join('');
+}
+
+// 切换下拉菜单
+function toggleDropdown() {
+    const menu = document.getElementById('dropdownMenu');
+    menu.classList.toggle('show');
+}
+
+// 点击外部关闭下拉
+document.addEventListener('click', function(e) {
+    const dropdown = document.querySelector('.page-dropdown');
+    if (!dropdown.contains(e.target)) {
+        document.getElementById('dropdownMenu').classList.remove('show');
+    }
+});
+
+// 切换模式
+function switchMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.mode-btn:${mode === 'card' ? 'first-child' : 'last-child'}`).classList.add('active');
+    
+    document.getElementById('cardView').style.display = mode === 'card' ? 'block' : 'none';
+    document.getElementById('frameView').classList.toggle('active', mode === 'frame');
+}
+
+// 加载页面
+function loadPage(url) {
+    document.getElementById('dropdownMenu').classList.remove('show');
+    switchMode('frame');
+    updateDropdownButton(url);
+
+    const frame = document.getElementById('previewFrame');
+    const placeholder = document.getElementById('framePlaceholder');
+    const sidebar = document.getElementById('rightSidebar');
+
+    // 重置 lastIframeUrl，确保 iframe 加载后能检测到变化
+    lastIframeUrl = '';
+    
+    frame.src = url;
+    frame.style.display = 'block';
+    placeholder.style.display = 'none';
+    sidebar.classList.add('active');
+
+    // 立即更新右侧栏（首次加载）
+    updateSidebar(url);
+}
+
+// 监听 iframe 内部页面切换
+function initIframeListener() {
+    const frame = document.getElementById('previewFrame');
+    let lastUrl = '';
+    let checkCount = 0;
+    
+    // 轮询检测 iframe URL 变化
+    setInterval(function() {
+        checkCount++;
+        try {
+            // 检查 iframe 是否有内容
+            if (!frame.contentWindow || !frame.contentWindow.location) {
+                if (checkCount % 20 === 0) {
+                    console.log('[poll] check #' + checkCount + ': no contentWindow');
+                }
+                return;
+            }
+            
+            const href = frame.contentWindow.location.href;
+            
+            if (checkCount <= 5 || href !== lastUrl) {
+                console.log('[poll] #' + checkCount + ' href=' + href + ' last=' + lastUrl);
+            }
+            
+            if (href === lastUrl) return;
+            lastUrl = href;
+            
+            // 提取相对路径
+            let key = href;
+            const origin = window.location.origin;
+            if (key.startsWith(origin)) key = key.substring(origin.length);
+            if (key.startsWith('/')) key = key.substring(1);
+            key = key.split('?')[0].split('#')[0];
+            
+            // 兼容各种路径前缀（ui-design/、__virtual_fs__/xxx/ 等）
+            const knownPrefixes = ['user-miniapp/', 'pc-admin/', 'admin-miniapp/'];
+            let matched = false;
+            for (const prefix of knownPrefixes) {
+                const idx = key.indexOf(prefix);
+                if (idx > 0) {
+                    key = key.substring(idx);
+                    matched = true;
+                    break;
+                }
+            }
+            // 如果没匹配到已知前缀，尝试去掉 ui-design/
+            if (!matched && key.startsWith('ui-design/')) {
+                key = key.substring('ui-design/'.length);
+            }
+            
+            console.log('[poll] URL changed -> key=' + key + ' hasDoc=' + !!devDocs[key]);
+            
+            // 匹配到文档就更新
+            if (devDocs[key]) {
+                updateSidebar(key);
+                updateDropdownButton(key);
+            }
+        } catch (e) {
+            if (checkCount <= 3) {
+                console.log('[poll] error (expected for cross-origin):', e.message);
+            }
+        }
+    }, 300);
+}
+
+// 更新右侧栏
+function updateSidebar(url) {
+    const doc = devDocs[url] || defaultDevDoc;
+    const titleEl = document.getElementById('sidebarTitle');
+    const subtitleEl = document.getElementById('sidebarSubtitle');
+    const tabsEl = document.getElementById('sidebarTabs');
+    const contentEl = document.getElementById('sidebarContent');
+
+    if (!titleEl || !subtitleEl || !contentEl) {
+        console.error('sidebar elements not found!');
+        return;
+    }
+
+    titleEl.textContent = doc.title || '页面开发说明';
+    subtitleEl.textContent = doc.subtitle || '';
+
+    if (!doc.sections || doc.sections.length === 0) {
+        tabsEl.innerHTML = '';
+        contentEl.innerHTML = '<div class="sidebar-section"><div class="sidebar-content"><p>暂无内容</p></div></div>';
+        return;
+    }
+
+    // 生成 Tab 按钮
+    const tabsHtml = doc.sections.map((section, i) =>
+        `<button class="sidebar-tab${i === 0 ? ' active' : ''}" onclick="switchSidebarTab(${i})">${section.title}</button>`
+    ).join('');
+    tabsEl.innerHTML = tabsHtml;
+
+    // 生成 Tab 内容
+    const contentHtml = doc.sections.map((section, i) =>
+        `<div class="sidebar-tab-content${i === 0 ? ' active' : ''}" data-tab="${i}">
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">${section.title}</div>
+                <div class="sidebar-content">${section.content}</div>
+            </div>
+        </div>`
+    ).join('');
+    contentEl.innerHTML = contentHtml;
+    console.log('sidebar updated successfully');
+}
+
+// 新增：切换 Tab
+function switchSidebarTab(index) {
+    document.querySelectorAll('.sidebar-tab').forEach((tab, i) => {
+        tab.classList.toggle('active', i === index);
+    });
+    document.querySelectorAll('.sidebar-tab-content').forEach((content, i) => {
+        content.classList.toggle('active', i === index);
+    });
+}
+
+// 更新下拉按钮显示当前页面
+function updateDropdownButton(url) {
+    // 查找当前页面信息
+    let currentPage = null;
+    let currentCategory = null;
+
+    for (const [cat, pages] of Object.entries(pagesData)) {
+        const page = pages.find(p => p.url === url);
+        if (page) {
+            currentPage = page;
+            currentCategory = cat;
+            break;
+        }
+    }
+
+    const btn = document.querySelector('.dropdown-btn span:first-child');
+    if (currentPage) {
+        const catIcon = currentCategory === 'pc' ? '🖥️' : (currentCategory === 'user' ? '📱' : '🔧');
+        btn.textContent = `${catIcon} ${currentPage.name}`;
+    } else {
+        btn.textContent = '📄 页面导航';
+    }
+
+    // 高亮当前选中的下拉项
+    document.querySelectorAll('.dropdown-item').forEach(item => {
+        item.style.background = '';
+        item.style.fontWeight = '';
+    });
+
+    const items = document.querySelectorAll('.dropdown-item');
+    items.forEach(item => {
+        if (item.getAttribute('onclick').includes(url)) {
+            item.style.background = 'rgba(255, 107, 74, 0.1)';
+            item.style.fontWeight = '600';
+        }
+    });
+}
+
+// 筛选分类
+function filterCategory(category) {
+    currentCategory = category;
+    document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelector(`.nav-tab[data-category="${category}"]`).classList.add('active');
+    
+    // 滚动到对应section
+    const section = document.querySelector(`.section[data-section="${category}"]`);
+    if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+// 初始化
+init();
+</script>
+</body>
+</html>

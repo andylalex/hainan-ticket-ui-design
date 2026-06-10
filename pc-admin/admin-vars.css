@@ -1,0 +1,69 @@
+/* ========== PC Admin Design Tokens ========== */
+/* 公共 CSS 变量定义 - 所有 PC 管理后台页面共享 */
+:root {
+    /* 主色调 */
+    --primary: #0A1628;
+    --primary-light: #132240;
+    --primary-lighter: #1a2d4d;
+    --accent: #FF6B4A;
+    --accent-hover: #ff8266;
+    --gold: #D4A853;
+    --emerald: #00C9A7;
+
+    /* 背景 */
+    --bg-light: #F5F6FA;
+    --bg-white: #FFFFFF;
+    --bg-content: #F0F2F5;
+
+    /* 文字 */
+    --text-primary: #1a1a2e;
+    --text-secondary: #6b7280;
+    --text-light: #9ca3af;
+    --text-muted: #9ca3af;
+
+    /* 边框 */
+    --border: #e5e7eb;
+    --border-light: #f0f0f5;
+    --border-color: #e5e7eb;
+
+    /* 阴影 */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    --shadow-xl: 0 16px 48px rgba(0,0,0,0.16);
+
+    /* 圆角 */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 18px;
+
+    /* 布局 */
+    --sidebar-width: 240px;
+    --topbar-height: 64px;
+
+    /* 动画 */
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* 语义色 */
+    --danger: #EF4444;
+    --danger-light: rgba(239,68,68,0.1);
+    --success: #00C9A7;
+    --success-light: rgba(0,201,167,0.1);
+    --warning: #F59E0B;
+    --warning-light: rgba(245,158,11,0.1);
+    --info: #3B82F6;
+    --info-light: rgba(59,130,246,0.1);
+
+    /* 别名（向后兼容） */
+    --white: var(--bg-white, #FFFFFF);
+    --border-gray: var(--border, #e5e7eb);
+    --light-gray: var(--bg-light, #F5F6FA);
+    --coral-orange: var(--accent, #FF6B4A);
+    --coral-orange-light: rgba(255,107,74,0.1);
+    --deep-blue: var(--primary, #0A1628);
+    --coral: var(--accent, #FF6B4A);
+    --card-white: var(--bg-white, #FFFFFF);
+    --bg: var(--bg-light, #F5F6FA);
+    --green: var(--emerald, #00C9A7);
+}
