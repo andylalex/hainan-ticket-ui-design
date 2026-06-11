@@ -4463,9 +4463,9 @@ const devDocs = {
                   <li>统计卡片：年营业额（带同比趋势）、年订单数（带同比趋势）、预约订单数、待核销订单数、退款中订单数，均带环比趋势指示</li>
                   <li>筛选查询：支持订单状态（全部/预约/已支付/待核销/已核销/退款中/已取消）、关键词模糊搜索（订单号/演出名称/手机号）、渠道订单号精确查询、下单日期范围、支付方式（微信支付/支付宝/钱包支付/现金）、销售渠道（小程序/大麦/猫眼/美团/线下窗口）、出票状态（已出票/待出票/未出票）、销售员筛选</li>
                   <li>订单列表：展示订单号、渠道订单号、演出信息（名称+场次+票档）、数量、应收/实收金额、支付方式（带图标）、订单状态（彩色标签）、出票状态（圆点标签）、销售渠道（带图标标签）、销售员、下单时间、操作按钮</li>
-                  <li>订单详情弹窗：分区域展示订单信息（订单号/状态/时间/渠道/销售员/备注）、用户信息（姓名/手机号/会员等级）、演出信息（名称/场馆/场次/票档/数量）及座位明细表格、支付信息（商品总价/优惠减免/实付金额/支付时间/交易单号/组合支付明细）、减免明细（票品满减/优惠券/券包/会员折扣）、出票信息（出票状态/方式/渠道/取票码/操作员/打印日志折叠面板）、操作日志时间轴</li>
+                  <li>订单详情弹窗：分区域展示订单信息（订单号/状态/时间/渠道/销售员/备注）、用户信息（姓名/手机号/会员等级）、演出信息（名称/场馆/场次/票档/数量）及座位明细表格、支付信息（商品总价/优惠减免/实付金额/支付时间/交易单号/组合支付明细）、减免明细（票品满减/优惠券/券包/会员折扣）、出票信息（出票状态/渠道/取票码/出票明细折叠面板）、操作日志时间轴。出票日志分为出票明细（每次出票时记录，含出票时间/操作员/地点/设备/出票方式/打印次数）和操作日志（订单全生命周期关键操作记录，含操作时间/操作员/操作类型/操作描述/状态变更前后/涉及金额/支付方式/备注）</li>
                   <li>订单收款（3步流程）：Step1选择支付方式（微信支付/支付宝/现金/充值卡/钱包支付）→ 打开对应二级弹窗完成收款 → Step2选择出票方式（纸质票/电子票/暂不出票）及打印模板 → Step3完成，订单状态更新为"已支付"，出票状态更新为"待出票"</li>
-                  <li>打印出票：选择出票方式（纸质票/电子票）、是否显示票价，确认后更新出票状态为"已出票"，记录打印日志</li>
+                  <li>出票：选择出票方式（纸质票/电子票），确认后更新出票状态为"已出票"，记录出票明细</li>
                   <li>退票申请：选择退票原因（观众原因/演出取消/演出延期/场次合并/其他，可多选），填写退票说明，系统计算手续费（10%）和实际退款金额，确认后订单状态变为"退款中"</li>
                   <li>批量导入：下载Excel模板 → 填写渠道订单数据 → 上传文件 → 选择导入渠道 → 开始导入，支持大麦/猫眼/美团/票大师/票务通/线下窗口/其他渠道</li>
                   <li>订单状态流转：预约 → 收款 → 已支付 → 出票 → 已出票 → 核销 → 已核销；预约超时未支付 → 已取消；已支付/已出票 → 退款中 → 已退款</li>
@@ -4492,7 +4492,7 @@ const devDocs = {
               <li><strong>执行中：</strong>弹出订单详情弹窗（720px），分多个区域展示完整订单数据</li>
               <li><strong>成功：</strong>弹窗正常展示完整订单数据，底部根据状态显示不同操作按钮（已支付显示"打印订单"/"确认核销"/"申请退款"）</li>
               <li><strong>失败：</strong>Toast提示"加载失败"</li>
-              <li><strong>边界条件：</strong>弹窗内信息为只读，不可编辑；打印日志可点击展开/折叠</li>
+              <li><strong>边界条件：</strong>弹窗内信息为只读，不可编辑；出票明细可点击展开/折叠</li>
             </ul>
             <p><strong>订单收款（预约订单）</strong></p>
             <ul>
@@ -4506,7 +4506,7 @@ const devDocs = {
             <ul>
               <li><strong>触发：</strong>点击已支付订单操作列的"打印"按钮，或详情弹窗底部的"打印订单"按钮</li>
               <li><strong>执行中：</strong>弹出打印出票弹窗（580px），显示订单摘要、出票方式选择、是否显示票价选择、座位列表预览</li>
-              <li><strong>成功：</strong>确认打印后出票状态更新为"已出票"，记录打印日志（时间/操作员/地点），Toast提示"打印成功"</li>
+              <li><strong>成功：</strong>确认出票后出票状态更新为"已出票"，记录出票明细（时间/操作员/地点），Toast提示"出票成功"</li>
               <li><strong>失败：</strong>Toast提示"打印失败"</li>
               <li><strong>边界条件：</strong>已出票订单再次打印为"重印出票"；电子票无需打印直接发送短信</li>
             </ul>
@@ -4595,7 +4595,7 @@ const devDocs = {
                   ['operator', 'string', '否', '操作员'],
                   ['remark', 'string', '否', '订单备注'],
                   ['reserve_expire', 'string', '否', '预约到期时间，仅预约订单'],
-                  ['print_logs', 'array', '否', '打印日志数组，包含time/operator/location'],
+                  ['ticket_detail_logs', 'array', '否', '出票明细数组，包含time/operator/location/print_times'],
                   ['payment_details', 'array', '否', '组合支付明细数组，包含method/amount/transactionId'],
                   ['discount_details', 'array', '否', '减免明细数组，包含type/name/amount']
                 ]
@@ -4625,6 +4625,44 @@ const devDocs = {
                   ['import_buyer_phone', 'string', '否', '手机号'],
                   ['import_payment_method', 'string', '否', '支付方式'],
                   ['import_seat_info', 'string', '否', '座位信息']
+                ]
+              },
+              {
+                title: '出票日志字段',
+                headers: ['字段名', '类型', '必填', '说明'],
+                rows: [
+                  ['log_id', 'string', '是', '日志唯一标识'],
+                  ['log_type', 'enum', '是', '日志类型：ticket_detail(出票明细) / operation_log(操作日志)'],
+                  ['order_id', 'string', '是', '关联订单编号'],
+                  ['create_time', 'string', '是', '记录时间，格式YYYY-MM-DD HH:mm:ss'],
+                  ['pickup_code', 'string', '是', '取票码，8位随机数字(10000000-99999999)，订单支付成功后生成，用于线下取票核验']
+                ]
+              },
+              {
+                title: '出票明细字段',
+                headers: ['字段名', '类型', '必填', '说明'],
+                rows: [
+                  ['ticket_time', 'string', '是', '出票时间，格式YYYY-MM-DD HH:mm:ss'],
+                  ['operator_name', 'string', '是', '执行出票的操作员姓名'],
+                  ['ticket_location', 'string', '是', '出票地点，如售票窗口A/大厅自助机'],
+                  ['ticket_device', 'string', '否', '出票设备名称/编号'],
+                  ['ticket_type', 'enum', '是', '出票方式：纸质票/电子票'],
+                  ['print_times', 'number', '是', '打印次数，首次出票为1，每次重印累加']
+                ]
+              },
+              {
+                title: '操作日志字段',
+                headers: ['字段名', '类型', '必填', '说明'],
+                rows: [
+                  ['action_time', 'string', '是', '操作时间，格式YYYY-MM-DD HH:mm:ss'],
+                  ['operator_name', 'string', '是', '执行操作的操作员姓名'],
+                  ['action_type', 'enum', '是', '操作类型：收款/出票/核销/退款/取消/修改备注/重印'],
+                  ['action_desc', 'string', '是', '操作描述，如"确认收款 ¥380"'],
+                  ['before_status', 'enum', '否', '操作前订单状态：预约/已支付/已出票/已核销/退款中/已取消'],
+                  ['after_status', 'enum', '否', '操作后订单状态'],
+                  ['amount', 'number', '否', '涉及金额（元），收款/退款时必填'],
+                  ['payment_method', 'enum', '否', '支付方式：微信支付/支付宝/现金/充值卡/钱包支付'],
+                  ['remark', 'string', '否', '操作备注，如退款原因、特殊情况说明']
                 ]
               }
             ]
@@ -5459,23 +5497,26 @@ const devDocs = {
         sections: [
           {
             title: '功能描述',
-            content: `<p><strong>核心功能：</strong>线下窗口售票的三栏操作界面。左栏选择场馆和演出场次，中栏为可视化座位图（支持点选、框选、缩放），右栏为已选座位列表（带清除全部按钮）、购票人信息和订单摘要。座位图顶部有"STAGE · 舞台"标签，底部图例栏显示各分区颜色+价格图例。支持确认售票（3步流程：收款→出票→完成）和预约售票两种模式。确认售票支持5种支付方式（微信/支付宝/现金/充值卡/会员卡），出票支持纸质票/电子票/暂不出票。底部状态栏显示当前窗口和操作员信息。</p>
+            content: `<p><strong>核心功能：</strong>线下窗口售票的三栏操作界面。左栏选择场馆和演出场次（场次显示折扣类型标签：满减/折扣/早鸟），中栏为可视化座位图（支持点选、框选、缩放），右栏为已选座位列表（带清除全部按钮）、购票人信息、会员卡信息（默认显示，支持弹窗读取）、订单摘要（含票品折扣/早鸟票/会员卡折扣减免金额）。座位图顶部有"STAGE · 舞台"标签，底部图例栏显示各分区颜色+价格图例及当前场次优惠信息。支持确认售票（3步流程：收款→出票→完成）和预约售票两种模式。确认售票支持5种支付方式（微信/支付宝/现金/充值卡/会员卡），出票支持纸质票/电子票/暂不出票。页面布局为内容撑高滚动，无固定视口高度限制。</p>
 <p><strong>业务说明：</strong></p>
 <ul>
   <li><strong>前置条件：</strong>操作人需具有"窗口售票"权限；演出场次需处于"售票中"状态；窗口需已配置工号和操作员信息</li>
   <li><strong>功能实现逻辑：</strong>
     <ul>
       <li>场馆选择：下拉切换场馆，联动更新演出列表和座位图</li>
-      <li>演出选择：点击演出卡片展开场次列表，显示每个场次的售票数/总数和上座率</li>
+      <li>演出选择：点击演出卡片展开场次列表，显示每个场次的售票数/总数、上座率和折扣类型标签（满减/折扣/早鸟）</li>
       <li>座位选择：支持点选单个座位和鼠标拖拽框选多个座位，已售/不可选/待支付座位不可操作</li>
       <li>座位图：按楼层分组（一楼/二楼），每个分区用不同颜色标识，顶部有"STAGE · 舞台"标签，支持50%-300%缩放</li>
+      <li>会员卡信息：右栏默认显示会员卡信息面板（卡号/等级/折扣/余额），点击"读取会员卡"弹出读取弹窗（stReadCardModal，400px宽），模拟读卡器读取后自动填充会员信息并关闭弹窗</li>
+      <li>订单摘要：显示已选座位数量、原价总额、票品折扣减免（满减/折扣）、早鸟票减免、会员卡折扣减免、应付金额；折扣减免根据场次配置和会员卡信息自动计算</li>
+      <li>底部图例栏：显示各分区颜色+价格图例，以及当前选中场次的优惠类型标签（票品折扣/早鸟票）</li>
       <li>确认售票流程（3步）：Step1 选择支付方式→打开对应支付弹窗→Step2 选择出票方式（纸质票需选模板，电子票需填手机号）→Step3 显示成功</li>
       <li>支付方式：微信/支付宝弹出扫码弹窗（模拟扫码），现金需输入实收金额并自动计算找零（实收-应收），充值卡/会员卡弹出读卡弹窗（余额不足时扣除全部余额后进入二次支付，需选择其他支付方式补足差额）</li>
       <li>预约售票：输入手机号查找用户→显示用户信息→设置预约到期时间（默认24小时）→确认预约</li>
       <li>购票人信息：姓名、证件类型（身份证/护照/其他）、证件号码（非必填），支持读取证件（身份证读卡器自动填入）</li>
     </ul>
   </li>
-  <li><strong>权限控制：</strong>需"窗口售票"权限；读取证件需连接身份证读卡器硬件</li>
+  <li><strong>权限控制：</strong>需"窗口售票"权限；读取证件需连接身份证读卡器硬件；读取会员卡需连接读卡器硬件</li>
   <li><strong>数据约束：</strong>同一座位不可重复售卖；已售/不可选/待支付状态座位不可选中；无座位时确认售票和预约售票按钮disabled</li>
   <li><strong>能力边界：</strong>不支持退票操作（需到订单管理）；不支持批量售票；不支持跨场次选座</li>
 </ul>`
@@ -5485,18 +5526,26 @@ const devDocs = {
             content: `<p><strong>选择场次</strong></p>
 <ul>
   <li><strong>触发：</strong>在左栏点击演出卡片展开场次列表，再点击具体场次</li>
-  <li><strong>执行中：</strong>选中场次高亮（浅橙背景+橙色文字），中栏座位图重新加载</li>
-  <li><strong>成功：</strong>座位图显示该场次的座位布局，各分区颜色和票价正确渲染</li>
+  <li><strong>执行中：</strong>选中场次高亮（浅橙背景+橙色文字），中栏座位图重新加载，底部图例栏更新当前场次优惠信息标签</li>
+  <li><strong>成功：</strong>座位图显示该场次的座位布局，各分区颜色和票价正确渲染；有折扣的场次在列表中显示折扣类型标签（满减/折扣/早鸟）</li>
   <li><strong>失败：</strong>无</li>
-  <li><strong>边界条件：</strong>切换场次时已选座位自动清空</li>
+  <li><strong>边界条件：</strong>切换场次时已选座位自动清空；无折扣场次不显示折扣标签</li>
 </ul>
 <p><strong>选择座位</strong></p>
 <ul>
   <li><strong>触发：</strong>在中栏座位图上点击可售座位，或鼠标拖拽框选多个座位</li>
   <li><strong>执行中：</strong>选中座位显示白色描边+check标记，右栏已选列表实时更新，底部显示"已选座位：N"</li>
-  <li><strong>成功：</strong>右栏显示已选座位详情（分区标签+座位号+价格），订单摘要更新数量和金额</li>
+  <li><strong>成功：</strong>右栏显示已选座位详情（分区标签+座位号+价格），订单摘要更新数量和金额（含折扣减免）</li>
   <li><strong>失败：</strong>无</li>
-  <li><strong>边界条件：</strong>已售/不可选/待支付座位点击无反应；再次点击已选座位可取消选中；座位悬浮显示Tooltip（分区名+排号+座位号+票价）</li>
+  <li><strong>边界条件：</strong>已售/不可选/待支付座位点击无反应；再次点击已选座位可取消选中；座位悬浮显示Tooltip（分区名+排号+座位号+票价）；已选座位列表过多时页面出现滚动条</li>
+</ul>
+<p><strong>读取会员卡</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击右栏会员卡信息面板的"读取会员卡"按钮（fa-credit-card图标，宽度100%）</li>
+  <li><strong>执行中：</strong>弹出读取会员卡弹窗（stReadCardModal，400px宽），显示读卡器图标和"请在读卡器上放置会员卡..."提示</li>
+  <li><strong>成功：</strong>2秒后弹窗自动关闭，会员卡信息面板更新卡号/等级/折扣/余额，订单摘要重新计算会员折扣减免金额，Toast提示"会员卡读取成功：XX会员"</li>
+  <li><strong>失败：</strong>无</li>
+  <li><strong>边界条件：</strong>会员卡信息面板默认始终显示，未读卡时字段显示"-"；切换场次时会员卡信息保持不变</li>
 </ul>
 <p><strong>确认售票</strong></p>
 <ul>
@@ -5549,6 +5598,30 @@ const devDocs = {
                   ['buyer_name', 'string', '否', '购票人姓名'],
                   ['id_type', 'enum', '否', '证件类型：身份证/护照/其他'],
                   ['id_number', 'string', '否', '证件号码（非必填）']
+                ]
+              },
+              {
+                title: '会员卡字段',
+                headers: ['字段名', '类型', '必填', '说明'],
+                rows: [
+                  ['card_no', 'string', '是', '会员卡号'],
+                  ['member_level', 'enum', '是', '会员等级：普通会员/银卡会员/金卡会员/钻石会员'],
+                  ['member_discount', 'number', '是', '会员折扣（0-1之间，如0.9表示9折）'],
+                  ['card_balance', 'number', '是', '卡内余额（元）']
+                ]
+              },
+              {
+                title: '订单折扣字段',
+                headers: ['字段名', '类型', '必填', '说明'],
+                rows: [
+                  ['ticket_discount_type', 'enum', '否', '票品折扣类型：满减(amount)/折扣(percentage)'],
+                  ['ticket_discount_value', 'number', '否', '票品折扣值（满减为金额，折扣为比例）'],
+                  ['ticket_discount_threshold', 'number', '否', '满减门槛金额（元，仅满减类型）'],
+                  ['early_bird_discount', 'number', '否', '早鸟票折扣（0-1之间）'],
+                  ['early_bird_deadline', 'string', '否', '早鸟票截止日期，格式 YYYY-MM-DD'],
+                  ['member_discount_amount', 'number', '否', '会员卡折扣减免金额（元），只读，自动计算'],
+                  ['original_total', 'number', '是', '原价总额（元），只读'],
+                  ['final_total', 'number', '是', '应付金额（元），只读，原价-各项减免']
                 ]
               },
               {
@@ -8089,6 +8162,24 @@ const changelogData = [
                 pageName: '营销中心',
                 module: '票品折扣',
                 content: `新增和编辑弹窗增加售票渠道选择（小程序/窗口），默认全选，至少选择一个`
+            },
+            {
+                page: 'pc-admin/order-management.html',
+                pageName: '订单管理',
+                module: '票务订单',
+                content: `列表打印按钮改为出票；详情出票信息去掉出票方式和操作员；出票日志打印日志改为出票明细，明细增加出票方式和打印次数展示；新增出票日志字段（出票日志/出票明细/操作日志），出票日志增加取票码字段（8位随机数字），去掉操作员ID和操作员姓名`
+            },
+            {
+                page: 'index.html',
+                pageName: '设计总览',
+                module: '设计总览',
+                content: `导航栏新增流程图按钮，支持左侧导航列表和右侧图片展示区，图片支持放大缩小和拖动`
+            },
+            {
+                page: 'pc-admin/ticket-sales.html',
+                pageName: '售票管理',
+                module: '窗口售票',
+                content: `新增会员卡信息模块（默认显示，支持弹窗读取会员卡）；订单摘要增加票品折扣/早鸟票/会员卡折扣减免金额展示；左侧场次列表增加折扣类型标签（满减/折扣/早鸟）；底部图例栏增加当前场次优惠信息提示；移除底部员工信息状态栏；页面布局改为内容撑高滚动；已选座位移除按钮简化为图标`
             }
         ]
     },
@@ -8752,11 +8843,9 @@ function closeChangelogOnOverlay(event) {
     }
 }
 
-// 检查是否需要自动弹出更新日志
+// 页面加载时自动弹出更新日志
 function checkAutoShowChangelog() {
-    const viewed = sessionStorage.getItem('changelog_viewed');
-    if (!viewed && changelogData && changelogData.length > 0) {
-        // 延迟500ms弹出，等页面加载完成
+    if (changelogData && changelogData.length > 0) {
         setTimeout(() => {
             openChangelogModal();
         }, 500);
@@ -8832,9 +8921,10 @@ function selectFlowchart(id) {
     flowchartOffsetY = 0;
     updateFlowchartTransform();
 
-    // 加载图片
+    // 加载图片（加时间戳参数防止缓存）
     const wrapper = document.getElementById('flowchartImageWrapper');
-    wrapper.innerHTML = `<img src="${currentFlowchart.image}" alt="${currentFlowchart.title}" onload="onFlowchartImageLoad()" onerror="onFlowchartImageError()">`;
+    const ts = Date.now();
+    wrapper.innerHTML = `<img src="${currentFlowchart.image}?t=${ts}" alt="${currentFlowchart.title}" onload="onFlowchartImageLoad()" onerror="onFlowchartImageError()">`;
 }
 
 function onFlowchartImageLoad() {

@@ -133,8 +133,8 @@ ul { list-style: none; }
 .main-content {
   margin-left: 240px;
   width: calc(100% - 240px);
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   background: var(--bg-content, #F0F2F5);
@@ -282,8 +282,7 @@ ul { list-style: none; }
   display: flex;
   flex-direction: column;
   gap: 0;
-  min-height: 0;
-  overflow: hidden;
+  overflow-y: visible;
 }
 
 /* ========== Page Title ========== */
@@ -306,21 +305,7 @@ ul { list-style: none; }
 .page-title i { color: #FF6B4A; font-size: 20px; }
 
 /* ========== Bottom Status Bar ========== */
-.status-bar {
-  height: 40px;
-  background: #fff;
-  border-top: 1px solid #E8ECF1;
-  display: flex;
-  align-items: center;
-  padding: 0 28px;
-  gap: 24px;
-  font-size: 12px;
-  color: #94A3B8;
-  margin-top: auto;
-}
-.status-bar .status-item { display: flex; align-items: center; gap: 6px; }
-.status-bar .status-item i { font-size: 11px; }
-.status-bar .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #00C9A7; }
+/* 底部状态栏已移除 */
 
 /* ========== Toast ========== */
 .toast-container {
@@ -388,17 +373,15 @@ ul { list-style: none; }
   font-weight: 600;
 }
 .tab-item i { font-size: 14px; }
-.tab-content { display: none; flex: 1; min-height: 0; overflow: hidden; }
+.tab-content { display: none; flex: 1; overflow: visible; }
 .tab-content.active { display: flex; flex-direction: column; }
-#tab-window-ticket.active, #tab-channel-ticket.active { height: calc(100vh - 180px); min-height: 500px; }
+#tab-window-ticket.active, #tab-channel-ticket.active { flex: 1; }
 
 /* ========== 窗口售票/渠道售票 三栏布局 ========== */
 .seat-ticket-layout {
   display: flex;
   gap: 16px;
   flex: 1;
-  min-height: 0;
-  overflow: hidden;
 }
 /* 左栏：演出场次列表 */
 .st-left-panel {
@@ -409,7 +392,6 @@ ul { list-style: none; }
   display: flex;
   flex-direction: column;
   gap: 12px;
-  overflow-y: auto;
   padding-right: 4px;
 }
 .st-left-panel::-webkit-scrollbar { width: 4px; }
@@ -476,19 +458,42 @@ ul { list-style: none; }
 .st-session-expand-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  font-size: 12px;
+  gap: 6px;
+  padding: 8px 10px;
+  font-size: 11px;
   cursor: pointer;
   transition: background 0.2s;
   border-bottom: 1px solid #F8FAFC;
+  flex-wrap: wrap;
 }
 .st-session-expand-item:last-child { border-bottom: none; }
 .st-session-expand-item:hover { background: #FFF5F2; }
 .st-session-expand-item.active { background: #FFF5F2; color: #FF6B4A; font-weight: 600; }
-.st-session-expand-time { flex: 1; color: #2D3748; }
-.st-session-expand-rate { color: #94A3B8; font-size: 11px; }
-.st-session-expand-occupancy { font-size: 10px; padding: 1px 6px; border-radius: 4px; background: #ECFDF5; color: #059669; }
+.st-session-expand-main {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+.st-session-expand-time { flex: 1; color: #2D3748; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st-session-expand-rate { color: #94A3B8; font-size: 10px; white-space: nowrap; }
+.st-session-expand-occupancy { font-size: 10px; padding: 1px 5px; border-radius: 4px; background: #ECFDF5; color: #059669; white-space: nowrap; }
+.st-session-expand-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: 2px;
+}
+.st-session-expand-tag {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.st-session-expand-tag.discount { background: #E0E7FF; color: #6366F1; }
+.st-session-expand-tag.earlybird { background: #FEF3C7; color: #D97706; }
 
 /* 中栏：选座区域 */
 .st-center-panel {
@@ -497,8 +502,6 @@ ul { list-style: none; }
   flex-direction: column;
   gap: 12px;
   min-width: 0;
-  min-height: 0;
-  overflow: auto;
 }
 .st-top-bar {
   background: #fff;
@@ -700,11 +703,13 @@ ul { list-style: none; }
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 -1px 3px rgba(0,0,0,0.08);
-  padding: 12px 20px;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 56px;
+  min-height: 48px;
+  max-height: 56px;
+  overflow: hidden;
 }
 .st-bottom-empty {
   flex: 1;
@@ -755,18 +760,14 @@ ul { list-style: none; }
 /* 右栏：操作面板 */
 .st-right-panel {
   width: 30%;
-  min-width: 280px;
+  min-width: 260px;
   max-width: 380px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   padding-left: 4px;
-  overflow-y: auto;
-  min-height: 0;
 }
-.st-right-panel::-webkit-scrollbar { width: 4px; }
-.st-right-panel::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 4px; }
 .st-panel-card {
   background: #fff;
   border-radius: 12px;
@@ -774,23 +775,23 @@ ul { list-style: none; }
   overflow: hidden;
 }
 .st-panel-card-header {
-  padding: 14px 16px;
+  padding: 10px 14px;
   border-bottom: 1px solid #F0F2F5;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13.5px;
+  gap: 6px;
+  font-size: 13px;
   font-weight: 600;
   color: #1A202C;
 }
 .st-panel-card-header i { color: #FF6B4A; font-size: 14px; }
-.st-panel-card-body { padding: 14px 16px; }
+.st-panel-card-body { padding: 10px 14px; }
 /* 已选座位列表 */
 .st-selected-list {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  max-height: 180px;
+  max-height: 140px;
   overflow-y: auto;
 }
 .st-selected-list::-webkit-scrollbar { width: 3px; }
@@ -943,6 +944,7 @@ ul { list-style: none; }
   gap: 16px;
   padding: 8px 16px;
   flex-wrap: wrap;
+  flex: 1;
 }
 .st-bottom-legend-item {
   display: flex;
@@ -960,6 +962,30 @@ ul { list-style: none; }
   font-weight: 600;
   color: var(--text-primary, #1A202C);
 }
+/* 底部场次优惠信息 */
+.st-bottom-session-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, #FFF5F2, #FEF3C7);
+  border-radius: 6px;
+  font-size: 10px;
+  color: #92400E;
+  border: 1px solid #FDE68A;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.st-bottom-session-info i { color: #D97706; }
+.st-bottom-session-info .st-session-info-label { font-weight: 600; }
+.st-bottom-session-info .st-session-info-tag {
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+.st-bottom-session-info .st-session-info-tag.discount { background: #E0E7FF; color: #6366F1; }
+.st-bottom-session-info .st-session-info-tag.earlybird { background: #FEF3C7; color: #D97706; }
 
 /* 读取证件按钮 */
 .st-btn-read-id {
@@ -2507,6 +2533,9 @@ select.form-select-sm,
             <div class="st-bottom-legend" id="stBottomLegend">
               <!-- 由JS动态渲染分区颜色+价格图例 -->
             </div>
+            <div class="st-bottom-session-info" id="stBottomSessionInfo" style="display:none;">
+              <!-- 由JS动态渲染选中场次优惠信息 -->
+            </div>
           </div>
         </div>
 
@@ -2554,13 +2583,31 @@ select.form-select-sm,
             </div>
           </div>
 
+          <!-- 会员卡信息 -->
+          <div class="st-panel-card" id="stMemberCardPanel">
+            <div class="st-panel-card-header"><i class="fas fa-crown"></i> 会员卡信息</div>
+            <div class="st-panel-card-body">
+              <div class="st-member-card-info" id="stMemberCardInfo">
+                <div class="st-order-row"><span>会员卡号</span><span id="stMemberCardNo">-</span></div>
+                <div class="st-order-row"><span>会员等级</span><span id="stMemberLevel">-</span></div>
+                <div class="st-order-row"><span>会员折扣</span><span id="stMemberDiscount" style="color:#FF6B4A;font-weight:600;">-</span></div>
+                <div class="st-order-row"><span>卡内余额</span><span id="stMemberBalance">-</span></div>
+              </div>
+              <button class="st-btn-read-id" onclick="stReadMemberCard()" style="width:100%;margin-top:10px;"><i class="fas fa-credit-card"></i> 读取会员卡</button>
+            </div>
+          </div>
+
           <!-- 订单摘要 -->
           <div class="st-panel-card">
             <div class="st-panel-card-header"><i class="fas fa-receipt"></i> 订单摘要</div>
             <div class="st-panel-card-body">
               <div class="st-order-summary">
                 <div class="st-order-row"><span>座位数量</span><span id="stOrderCount">0</span></div>
-                <div class="st-order-row"><span>金额总计</span><span id="stOrderTotal" style="font-weight:700;color:#FF6B4A;">¥0</span></div>
+                <div class="st-order-row"><span>原价总计</span><span id="stOrderOriginalTotal" style="font-weight:600;">¥0</span></div>
+                <div class="st-order-row st-discount-row" id="stTicketDiscountRow" style="display:none;"><span id="stTicketDiscountLabel">票品折扣</span><span id="stTicketDiscountAmount" style="color:#6366F1;font-weight:600;">-¥0</span></div>
+                <div class="st-order-row st-discount-row" id="stEarlyBirdRow" style="display:none;"><span id="stEarlyBirdLabel">早鸟票优惠</span><span id="stEarlyBirdAmount" style="color:#D97706;font-weight:600;">-¥0</span></div>
+                <div class="st-order-row st-discount-row" id="stMemberDiscountRow" style="display:none;"><span id="stMemberDiscountLabel">会员折扣</span><span id="stMemberDiscountAmount" style="color:#D4A853;font-weight:600;">-¥0</span></div>
+                <div class="st-order-row st-pay-row" style="margin-top:8px;padding-top:8px;border-top:1px dashed #E5E7EB;"><span>应付金额</span><span id="stOrderTotal" style="font-weight:700;color:#FF6B4A;font-size:16px;">¥0</span></div>
               </div>
               <button class="st-btn-confirm" id="stConfirmBtn" onclick="stOpenSellFlow()" disabled>
                 <i class="fas fa-shopping-cart"></i> 确认售票
@@ -2644,26 +2691,6 @@ select.form-select-sm,
 
   </div><!-- end page-content -->
 
-  <!-- Bottom Status Bar -->
-  <div class="status-bar">
-    <div class="status-item">
-      <div class="status-dot"></div>
-      <span>在线</span>
-    </div>
-    <div class="status-item">
-      <i class="fas fa-id-badge"></i>
-      <span>工号 TS-001</span>
-    </div>
-    <div class="status-item">
-      <i class="fas fa-user"></i>
-      <span>张小花</span>
-    </div>
-    <div class="status-item">
-      <i class="fas fa-building"></i>
-      <span>海南大剧院窗口</span>
-    </div>
-  </div>
-
 </div>
 
 <!-- Toast Container -->
@@ -2671,6 +2698,18 @@ select.form-select-sm,
 
 <!-- Seat Tooltip -->
 <div class="seat-tooltip" id="seatTooltip"></div>
+
+<!-- ===== 读取会员卡弹窗 ===== -->
+<div class="st-modal-overlay" id="stReadCardModal" style="display:none;">
+  <div class="st-modal" style="width:400px;">
+    <div class="st-modal-header">
+      <span>读取会员卡</span>
+      <button class="st-modal-close" onclick="document.getElementById('stReadCardModal').style.display='none'"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="st-modal-body" id="stReadCardModalBody">
+    </div>
+  </div>
+</div>
 
 <!-- ===== 确认售票流程弹窗 ===== -->
 <div class="st-modal-overlay" id="stSellFlowModal" style="display:none;">
@@ -2979,34 +3018,34 @@ var stShows = [
     id: 'st1', name: '《天涯故事》大型歌舞秀', type: '歌舞剧',
     icon: 'fa-masks-theater', color: 'linear-gradient(135deg, #667eea, #764ba2)',
     totalSeats: 1200, soldSeats: 856, sessions: [
-      { id: 'st1-1', datetime: '2026-04-20 19:30', sold: 856, total: 1200, rate: '71.3%' },
-      { id: 'st1-2', datetime: '2026-04-21 14:00', sold: 620, total: 1200, rate: '51.7%' },
-      { id: 'st1-3', datetime: '2026-04-21 19:30', sold: 1100, total: 1200, rate: '91.7%' }
+      { id: 'st1-1', datetime: '2026-04-20 19:30', sold: 856, total: 1200, rate: '71.3%', ticketDiscount: { type: 'percentage', value: 0.85, label: '折扣' }, earlyBird: null },
+      { id: 'st1-2', datetime: '2026-04-21 14:00', sold: 620, total: 1200, rate: '51.7%', ticketDiscount: null, earlyBird: { discount: 0.8, deadline: '2026-04-15', label: '早鸟' } },
+      { id: 'st1-3', datetime: '2026-04-21 19:30', sold: 1100, total: 1200, rate: '91.7%', ticketDiscount: { type: 'amount', value: 50, threshold: 300, label: '满减' }, earlyBird: null }
     ]
   },
   {
     id: 'st2', name: '椰风海韵·交响音乐会', type: '音乐会',
     icon: 'fa-music', color: 'linear-gradient(135deg, #43e97b, #38f9d7)',
     totalSeats: 800, soldSeats: 500, sessions: [
-      { id: 'st2-1', datetime: '2026-04-20 15:00', sold: 180, total: 800, rate: '22.5%' },
-      { id: 'st2-2', datetime: '2026-04-21 19:30', sold: 320, total: 800, rate: '40.0%' }
+      { id: 'st2-1', datetime: '2026-04-20 15:00', sold: 180, total: 800, rate: '22.5%', ticketDiscount: null, earlyBird: null },
+      { id: 'st2-2', datetime: '2026-04-21 19:30', sold: 320, total: 800, rate: '40.0%', ticketDiscount: { type: 'percentage', value: 0.9, label: '折扣' }, earlyBird: { discount: 0.75, deadline: '2026-04-10', label: '早鸟' } }
     ]
   },
   {
     id: 'st3', name: '黎苗风情·民族舞蹈专场', type: '舞蹈',
     icon: 'fa-person-running', color: 'linear-gradient(135deg, #fa709a, #fee140)',
     totalSeats: 700, soldSeats: 685, sessions: [
-      { id: 'st3-1', datetime: '2026-04-21 14:30', sold: 285, total: 700, rate: '40.7%' },
-      { id: 'st3-2', datetime: '2026-04-22 19:30', sold: 400, total: 700, rate: '57.1%' }
+      { id: 'st3-1', datetime: '2026-04-21 14:30', sold: 285, total: 700, rate: '40.7%', ticketDiscount: null, earlyBird: null },
+      { id: 'st3-2', datetime: '2026-04-22 19:30', sold: 400, total: 700, rate: '57.1%', ticketDiscount: { type: 'amount', value: 30, threshold: 200, label: '满减' }, earlyBird: null }
     ]
   },
   {
     id: 'st4', name: '《南海奇缘》儿童剧', type: '儿童剧',
     icon: 'fa-child-reaching', color: 'linear-gradient(135deg, #a18cd1, #fbc2eb)',
     totalSeats: 500, soldSeats: 360, sessions: [
-      { id: 'st4-1', datetime: '2026-04-20 10:00', sold: 110, total: 500, rate: '22.0%' },
-      { id: 'st4-2', datetime: '2026-04-20 15:00', sold: 200, total: 500, rate: '40.0%' },
-      { id: 'st4-3', datetime: '2026-04-21 10:00', sold: 50, total: 500, rate: '10.0%' }
+      { id: 'st4-1', datetime: '2026-04-20 10:00', sold: 110, total: 500, rate: '22.0%', ticketDiscount: null, earlyBird: { discount: 0.85, deadline: '2026-04-15', label: '早鸟' } },
+      { id: 'st4-2', datetime: '2026-04-20 15:00', sold: 200, total: 500, rate: '40.0%', ticketDiscount: null, earlyBird: null },
+      { id: 'st4-3', datetime: '2026-04-21 10:00', sold: 50, total: 500, rate: '10.0%', ticketDiscount: { type: 'percentage', value: 0.88, label: '折扣' }, earlyBird: null }
     ]
   }
 ];
@@ -3035,6 +3074,16 @@ var stState = {
   selectedSeats: [],
   seatData: {},
   adjacentWarningTimer: null
+};
+
+// 会员卡信息
+var stMemberCardInfo = {
+  cardNo: '',
+  level: '',
+  discount: 1,
+  balance: 0,
+  points: 0,
+  loaded: false
 };
 
 // ==================== 窗口售票 - 缩放功能 ====================
@@ -3179,9 +3228,22 @@ function stRenderShowList() {
     show.sessions.forEach(function(sess) {
       var sessActive = stState.selectedSession && stState.selectedSession.id === sess.id;
       html += '<div class="st-session-expand-item' + (sessActive ? ' active' : '') + '" onclick="stSelectSession(\'' + show.id + '\',\'' + sess.id + '\')">';
-      html += '  <span class="st-session-expand-time">' + sess.datetime + '</span>';
-      html += '  <span class="st-session-expand-rate">' + sess.sold + '/' + sess.total + '</span>';
-      html += '  <span class="st-session-expand-occupancy">' + sess.rate + '</span>';
+      html += '  <div class="st-session-expand-main">';
+      html += '    <span class="st-session-expand-time">' + sess.datetime + '</span>';
+      html += '    <span class="st-session-expand-rate">' + sess.sold + '/' + sess.total + '</span>';
+      html += '    <span class="st-session-expand-occupancy">' + sess.rate + '</span>';
+      html += '  </div>';
+      // 折扣标签（换行显示）
+      if (sess.ticketDiscount || sess.earlyBird) {
+        html += '  <div class="st-session-expand-tags">';
+        if (sess.ticketDiscount) {
+          html += '    <span class="st-session-expand-tag discount">' + sess.ticketDiscount.label + '</span>';
+        }
+        if (sess.earlyBird) {
+          html += '    <span class="st-session-expand-tag earlybird">' + sess.earlyBird.label + '</span>';
+        }
+        html += '  </div>';
+      }
       html += '</div>';
     });
     html += '  </div>';
@@ -3208,6 +3270,8 @@ function stToggleShow(showId) {
   stState.selectedShow = show;
   stState.selectedSession = null;
   stState.selectedSeats = [];
+  // 切换演出时重置会员卡信息
+  stResetMemberCard();
   stRenderShowList();
   stClearSeatMap();
   stUpdateUI();
@@ -3388,6 +3452,23 @@ function stClearAll() {
   stUpdateUI();
 }
 
+// 重置会员卡信息
+function stResetMemberCard() {
+  stMemberCardInfo = {
+    cardNo: '',
+    level: '',
+    discount: 1,
+    balance: 0,
+    points: 0,
+    loaded: false
+  };
+  // 保持面板显示，只重置数据
+  document.getElementById('stMemberCardNo').textContent = '-';
+  document.getElementById('stMemberLevel').textContent = '-';
+  document.getElementById('stMemberDiscount').textContent = '-';
+  document.getElementById('stMemberBalance').textContent = '-';
+}
+
 // ==================== 窗口售票 - Tooltip ====================
 function stShowTip(e, seatId) {
   var seat = stState.seatData[seatId];
@@ -3425,20 +3506,108 @@ function stRenderBottomLegend() {
     html += '</div>';
   });
   legend.innerHTML = html;
+
+  // 渲染选中场次优惠信息
+  var sessionInfo = document.getElementById('stBottomSessionInfo');
+  if (sessionInfo) {
+    var session = stState.selectedSession;
+    if (session && (session.ticketDiscount || session.earlyBird)) {
+      var infoHtml = '<i class="fas fa-tag"></i>';
+      infoHtml += '<span class="st-session-info-label">当前场次优惠：</span>';
+      if (session.ticketDiscount) {
+        infoHtml += '<span class="st-session-info-tag discount">' + session.ticketDiscount.label + '</span>';
+      }
+      if (session.earlyBird) {
+        infoHtml += '<span class="st-session-info-tag earlybird">' + session.earlyBird.label + '</span>';
+      }
+      sessionInfo.innerHTML = infoHtml;
+      sessionInfo.style.display = 'flex';
+    } else {
+      sessionInfo.style.display = 'none';
+      sessionInfo.innerHTML = '';
+    }
+  }
 }
 
 // ==================== 窗口售票 - UI更新 ====================
 function stUpdateUI() {
   var count = stState.selectedSeats.length;
-  var total = 0;
+  var originalTotal = 0;
   stState.selectedSeats.forEach(function(sid) {
-    if (stState.seatData[sid]) total += stState.seatData[sid].price;
+    if (stState.seatData[sid]) originalTotal += stState.seatData[sid].price;
   });
 
-  // 顶部信息已移除
+  // 计算折扣
+  var ticketDiscountAmount = 0;
+  var earlyBirdAmount = 0;
+  var memberDiscountAmount = 0;
+  var session = stState.selectedSession;
+
+  if (session && count > 0) {
+    // 票品折扣
+    if (session.ticketDiscount) {
+      if (session.ticketDiscount.type === 'percentage') {
+        ticketDiscountAmount = Math.round(originalTotal * (1 - session.ticketDiscount.value));
+      } else if (session.ticketDiscount.type === 'amount') {
+        // 满减：每张符合条件的票减固定金额
+        var eligibleCount = 0;
+        stState.selectedSeats.forEach(function(sid) {
+          if (stState.seatData[sid] && stState.seatData[sid].price >= session.ticketDiscount.threshold) {
+            eligibleCount++;
+          }
+        });
+        ticketDiscountAmount = eligibleCount * session.ticketDiscount.value;
+      }
+    }
+
+    // 早鸟票（与会员互斥）
+    if (session.earlyBird && !stMemberCardInfo.loaded) {
+      earlyBirdAmount = Math.round(originalTotal * (1 - session.earlyBird.discount));
+    }
+
+    // 会员折扣（与早鸟互斥）
+    if (stMemberCardInfo.loaded && stMemberCardInfo.discount < 1 && !session.earlyBird) {
+      memberDiscountAmount = Math.round(originalTotal * (1 - stMemberCardInfo.discount));
+    }
+  }
+
+  var total = originalTotal - ticketDiscountAmount - earlyBirdAmount - memberDiscountAmount;
+  if (total < 0) total = 0;
 
   // 订单摘要
   document.getElementById('stOrderCount').textContent = count;
+  document.getElementById('stOrderOriginalTotal').textContent = '¥' + originalTotal;
+
+  // 票品折扣
+  var tdRow = document.getElementById('stTicketDiscountRow');
+  if (ticketDiscountAmount > 0) {
+    tdRow.style.display = 'flex';
+    document.getElementById('stTicketDiscountLabel').textContent = session.ticketDiscount.label;
+    document.getElementById('stTicketDiscountAmount').textContent = '-¥' + ticketDiscountAmount;
+  } else {
+    tdRow.style.display = 'none';
+  }
+
+  // 早鸟票
+  var ebRow = document.getElementById('stEarlyBirdRow');
+  if (earlyBirdAmount > 0) {
+    ebRow.style.display = 'flex';
+    document.getElementById('stEarlyBirdLabel').textContent = session.earlyBird.label;
+    document.getElementById('stEarlyBirdAmount').textContent = '-¥' + earlyBirdAmount;
+  } else {
+    ebRow.style.display = 'none';
+  }
+
+  // 会员折扣
+  var mdRow = document.getElementById('stMemberDiscountRow');
+  if (memberDiscountAmount > 0) {
+    mdRow.style.display = 'flex';
+    document.getElementById('stMemberDiscountLabel').textContent = '会员' + (stMemberCardInfo.discount * 10).toFixed(1) + '折';
+    document.getElementById('stMemberDiscountAmount').textContent = '-¥' + memberDiscountAmount;
+  } else {
+    mdRow.style.display = 'none';
+  }
+
   document.getElementById('stOrderTotal').textContent = '¥' + total;
 
   // 确认按钮状态
@@ -3462,7 +3631,7 @@ function stUpdateUI() {
       lHtml += '    <span>' + s.row + '排' + s.seat + '号</span>';
       lHtml += '  </div>';
       lHtml += '  <span class="st-selected-item-price">¥' + s.price + '</span>';
-      lHtml += '  <button class="st-selected-item-remove" onclick="stRemoveSeat(\'' + sid + '\')"><i class="fas fa-times"></i> 移除</button>';
+      lHtml += '  <button class="st-selected-item-remove" onclick="stRemoveSeat(\'' + sid + '\')" title="移除"><i class="fas fa-times"></i></button>';
       lHtml += '</div>';
     });
     listEl.innerHTML = lHtml;
@@ -3500,6 +3669,48 @@ function stConfirmReadId() {
   if (number) document.getElementById('stIdNumber').value = number;
   stCloseReadIdModal();
   showToast('success', '证件信息已填入');
+}
+
+// ==================== 窗口售票 - 读取会员卡 ====================
+function stReadMemberCard() {
+  // 弹窗提示读取会员卡
+  var modal = document.getElementById('stReadCardModal');
+  var modalBody = document.getElementById('stReadCardModalBody');
+  modalBody.innerHTML = '<div style="text-align:center;padding:24px 0;">' +
+    '<i class="fas fa-credit-card" style="font-size:48px;color:#D4A853;margin-bottom:16px;display:block;"></i>' +
+    '<p style="color:#64748B;font-size:14px;">请在读卡器上放置会员卡...</p>' +
+    '<div style="margin-top:12px;color:#94A3B8;font-size:13px;">正在读取中...</div>' +
+    '</div>';
+  modal.style.display = 'flex';
+
+  setTimeout(function() {
+    // 模拟数据
+    var levels = ['普通会员', '银卡会员', '金卡会员', '钻石会员'];
+    var discounts = [1, 0.95, 0.9, 0.85];
+    var idx = Math.floor(Math.random() * 4);
+    stMemberCardInfo = {
+      cardNo: 'HY' + String(Date.now()).slice(-8),
+      level: levels[idx],
+      discount: discounts[idx],
+      balance: Math.floor(Math.random() * 500) + 50,
+      points: Math.floor(Math.random() * 5000),
+      loaded: true
+    };
+
+    // 更新UI
+    document.getElementById('stMemberCardNo').textContent = stMemberCardInfo.cardNo;
+    document.getElementById('stMemberLevel').textContent = stMemberCardInfo.level;
+    document.getElementById('stMemberDiscount').textContent = (stMemberCardInfo.discount * 10).toFixed(1) + '折';
+    document.getElementById('stMemberBalance').textContent = '¥' + stMemberCardInfo.balance;
+
+    // 关闭弹窗
+    modal.style.display = 'none';
+
+    // 重新计算订单金额
+    stUpdateUI();
+
+    showToast('success', '会员卡读取成功：' + stMemberCardInfo.level);
+  }, 2000);
 }
 
 // ==================== 窗口售票 - 售票流程弹窗 ====================
@@ -4461,7 +4672,7 @@ function chUpdateUI() {
         listHtml += '    <span>' + s.row + '排' + s.seat + '号</span>';
         listHtml += '  </div>';
         listHtml += '  <span class="st-selected-item-price">¥' + s.price + '</span>';
-        listHtml += '  <button class="st-selected-item-remove" onclick="chRemoveSeat(\'' + sid + '\')"><i class="fas fa-times"></i> 移除</button>';
+        listHtml += '  <button class="st-selected-item-remove" onclick="chRemoveSeat(\'' + sid + '\')" title="移除"><i class="fas fa-times"></i></button>';
         listHtml += '</div>';
       });
       selectedList.innerHTML = listHtml;

@@ -4739,7 +4739,7 @@ function renderOrderTable(data) {
       actions += '<button class="action-btn view" onclick="openOrderModal(\'' + o.id + '\')"><i class="fas fa-eye"></i> 查看</button>';
     } else if (o.status === '已支付') {
       actions = '<button class="action-btn view" onclick="openOrderModal(\'' + o.id + '\')"><i class="fas fa-eye"></i> 查看</button>';
-      actions += '<button class="action-btn verify" onclick="openPrintModal(\'' + o.id + '\')"><i class="fas fa-print"></i> 打印</button>';
+      actions += '<button class="action-btn verify" onclick="openPrintModal(\'' + o.id + '\')"><i class="fas fa-ticket-alt"></i> 出票</button>';
     } else if (o.status === '已核销') {
       actions = '<button class="action-btn view" onclick="openOrderModal(\'' + o.id + '\')"><i class="fas fa-eye"></i> 查看</button>';
     } else if (o.status === '退款中') {
@@ -4875,15 +4875,13 @@ function openOrderModal(orderId) {
   tab4 += '<div class="detail-section"><div class="detail-section-title">出票信息</div>' +
     '<div class="detail-card">' +
     '<div class="detail-card-row"><span class="dcr-label">出票状态</span><span class="dcr-value"><span class="ticket-status-tag ' + tsCls + '">' + order.ticketStatus + '</span></span></div>' +
-    '<div class="detail-card-row"><span class="dcr-label">出票方式</span><span class="dcr-value">' + order.ticketMethod + '</span></div>' +
     '<div class="detail-card-row"><span class="dcr-label">出票渠道</span><span class="dcr-value">' + (order.ticketChannel || '窗口') + '</span></div>' +
-    '<div class="detail-card-row"><span class="dcr-label">取票码</span><span class="dcr-value mono">' + (order.pickupCode || '未生成') + '</span></div>' +
-    '<div class="detail-card-row"><span class="dcr-label">操作员</span><span class="dcr-value">' + order.operator + '</span></div>';
+    '<div class="detail-card-row"><span class="dcr-label">取票码</span><span class="dcr-value mono">' + (order.pickupCode || '未生成') + '</span></div>';
 
   if (order.printLogs.length > 0) {
-    tab4 += '<div class="print-log-collapse"><div class="print-log-header" onclick="togglePrintLog(this)"><span><i class="fas fa-list-alt" style="margin-right:6px;"></i>打印日志 (' + order.printLogs.length + '次)</span><i class="fas fa-chevron-right"></i></div><div class="print-log-body">';
+    tab4 += '<div class="print-log-collapse"><div class="print-log-header" onclick="togglePrintLog(this)"><span><i class="fas fa-list-alt" style="margin-right:6px;"></i>出票明细 (' + order.printLogs.length + '次)</span><i class="fas fa-chevron-right"></i></div><div class="print-log-body">';
     order.printLogs.forEach(function(log, i) {
-      tab4 += '<div class="print-log-item"><span class="print-log-num">第' + (i+1) + '次</span><span class="print-log-time">' + log.time + '</span><span class="print-log-operator">' + log.operator + '</span><span class="print-log-location">' + log.location + '</span></div>';
+      tab4 += '<div class="print-log-item"><span class="print-log-num">第' + (i+1) + '次</span><span class="print-log-time">' + log.time + '</span><span class="print-log-operator">' + log.operator + '</span><span class="print-log-location">' + log.location + '</span>' + (log.ticketType ? '<span class="print-log-type">' + log.ticketType + '</span>' : '') + (log.printTimes ? '<span class="print-log-count">打印' + log.printTimes + '次</span>' : '') + '</div>';
     });
     tab4 += '</div></div>';
   }
