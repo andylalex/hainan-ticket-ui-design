@@ -876,7 +876,7 @@ table { border-collapse: collapse; width: 100%; }
 #panel-shows .data-table th:nth-child(4),
 #panel-shows .data-table td:nth-child(4) { width: 100px; min-width: 100px; text-align: center; }
 #panel-shows .data-table th:nth-child(5),
-#panel-shows .data-table td:nth-child(5) { width: auto; min-width: 420px; }
+#panel-shows .data-table td:nth-child(5) { width: auto; min-width: 200px; }
 #panel-shows .data-table td:nth-child(5) .action-btns {
   flex-wrap: wrap;
   justify-content: flex-start;
@@ -5330,7 +5330,8 @@ table { border-collapse: collapse; width: 100%; }
 }
 .session-table-scroll table {
   width: 100%;
-  table-layout: fixed;
+  min-width: 1100px;
+  table-layout: auto;
   box-sizing: border-box;
 }
 .session-table-scroll th,
@@ -5510,7 +5511,8 @@ table { border-collapse: collapse; width: 100%; }
     overflow-x: hidden;
   }
   .data-table-wrapper,
-  .table-wrapper {
+  .table-wrapper,
+  .session-table-scroll {
     max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
