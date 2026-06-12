@@ -1789,21 +1789,68 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>按分类标签筛选并展示演出列表。</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>按演出分类标签筛选并展示演出列表。用户选择分类后，系统从演出库中过滤对应分类的演出数据，按推荐排序返回列表。列表支持分页加载，支持下拉刷新获取更多演出数据。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>导航栏</strong>：标题"演出" + 搜索按钮（点击弹出toast"搜索演出"）</li>
-                    <li><strong>分类标签</strong>：水平滚动分类标签（全部/演唱会/话剧/音乐剧/体育赛事/儿童亲子/舞蹈芭蕾/脱口秀/展览），选中态为渐变橙色背景</li>
-                    <li><strong>演出列表</strong>：垂直卡片列表，每项包含封面图（含tag-badge角标：热卖/会员/新上）+ 名称 + 场馆 + 时间 + 价格 + labels底部标签描述（即将开演/会员专享/9折/限时特惠/早鸟价等）</li>
-                    <li><strong>底部 Tab 栏</strong>：5 个 Tab，当前激活"演出"</li>
+                  <li><strong>前置条件：</strong>用户已登录或处于游客状态；演出数据已在后台管理系统中录入并发布</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>数据来源：从演出库查询已发布的演出数据，按分类字段过滤，默认按推荐权重排序</li>
+                      <li>分页加载：首次加载N条，上拉加载更多时请求下一页数据</li>
+                      <li>状态判断：根据演出售票状态（售票中/已售罄/即将开演）返回对应状态标识</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>无需特殊权限，所有用户均可浏览</li>
+                  <li><strong>数据约束：</strong>仅展示已发布状态的演出；已下架或草稿状态演出不显示</li>
+                  <li><strong>能力边界：</strong>不支持按价格区间筛选；不支持按地理位置筛选；不支持按日期范围筛选</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>分类切换：</strong>点击分类标签切换active状态，标签高亮切换</p>
-                <p><strong>搜索按钮：</strong>点击右上角搜索按钮，弹出toast提示"搜索演出"</p>
-                <p><strong>卡片点击：</strong>点击演出卡片跳转 show-detail.html</p>
-                <p><strong>加载状态：</strong>首次加载骨架屏、下拉刷新顶部loading、加载更多底部loading、无数据空状态插画</p>`
+                content: `<p><strong>分类标签切换</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击水平滚动分类标签栏中的任意标签（全部/演唱会/话剧/音乐剧/体育赛事/儿童亲子/舞蹈芭蕾/脱口秀/展览），标签为圆角胶囊样式</li>
+  <li><strong>执行中：</strong>被点击标签切换为渐变橙色背景（active态），演出列表区域显示骨架屏loading，同时发起分类筛选请求</li>
+  <li><strong>成功：</strong>列表刷新为该分类下的演出卡片，按默认排序展示；若该分类无演出，显示空状态插画+"暂无相关演出"</li>
+  <li><strong>失败：</strong>弹出toast"网络异常，请稍后重试"，保留当前分类标签选中态，列表保持上次成功加载的内容</li>
+  <li><strong>边界条件：</strong>当前已是选中态的分类标签再次点击时不重复请求；切换分类时若正在加载中，取消上一次未完成的请求</li>
+</ul>
+
+<p><strong>搜索按钮点击</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击导航栏右上角搜索图标按钮（搜索图标class：fa-magnifying-glass）</li>
+  <li><strong>执行中：</strong>无loading，直接跳转</li>
+  <li><strong>成功：</strong>跳转至 search.html 搜索页</li>
+  <li><strong>失败：</strong>页面跳转失败时弹出toast"页面加载失败，请重试"</li>
+  <li><strong>边界条件：</strong>无</li>
+</ul>
+
+<p><strong>演出卡片点击</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击列表中任意演出卡片（封面图+名称+场馆+时间+价格区域）</li>
+  <li><strong>执行中：</strong>卡片无loading态，直接跳转</li>
+  <li><strong>成功：</strong>跳转至 show-detail.html?show_id=xxx 演出详情页</li>
+  <li><strong>失败：</strong>跳转失败时弹出toast"页面加载失败，请重试"</li>
+  <li><strong>边界条件：</strong>演出状态为"已售罄"时仍可点击进入详情页查看信息，但无法购票</li>
+</ul>
+
+<p><strong>下拉刷新</strong></p>
+<ul>
+  <li><strong>触发：</strong>在演出列表区域手指下拉超过阈值距离</li>
+  <li><strong>执行中：</strong>顶部显示下拉loading动画，列表内容置灰不可操作</li>
+  <li><strong>成功：</strong>loading动画消失，列表重新加载当前分类的最新数据，弹出toast"刷新成功"</li>
+  <li><strong>失败：</strong>loading动画消失，弹出toast"刷新失败，请检查网络"，列表保持原有数据</li>
+  <li><strong>边界条件：</strong>列表为空时仍支持下拉刷新；连续快速下拉只触发一次刷新请求</li>
+</ul>
+
+<p><strong>加载更多</strong></p>
+<ul>
+  <li><strong>触发：</strong>滚动列表至底部，触发上拉加载更多</li>
+  <li><strong>执行中：</strong>列表底部显示loading动画（三个圆点跳动），同时发起分页请求</li>
+  <li><strong>成功：</strong>新数据追加到列表末尾，loading动画消失；若已加载全部数据，底部显示"没有更多了"</li>
+  <li><strong>失败：</strong>loading动画消失，弹出toast"加载失败，请重试"，保留已加载的数据</li>
+  <li><strong>边界条件：</strong>列表总数小于分页大小时不显示加载更多；连续快速上拉只触发一次加载请求</li>
+</ul>`
             },
             {
                 title: '核心字段',
@@ -1836,25 +1883,87 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>展示演出完整信息，支持场次选择、评论查看，提供购票入口。</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>展示单个演出的完整信息，聚合演出基础信息、场次列表、评论内容和购票须知。用户选择场次后进入选座购票流程。系统根据用户会员等级判断优先购资格，在优先购时段内仅对符合条件的会员开放购票。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>Hero大图</strong>：演出主视觉图 + 返回按钮 + 分享按钮 + 更多按钮 + 底部演出类型标签（如"演唱会"）</li>
-                    <li><strong>演出信息</strong>：演出名称 + meta标签行（演出类型/时长/语言/入场时间/儿童全票）</li>
-                    <li><strong>早鸟票/会员优先购横幅</strong>：早鸟票优惠横幅（含倒计时）+ 会员优先购横幅（含VIP标识和状态指示）</li>
-                    <li><strong>场次选择</strong>：水平滚动场次卡片，含早鸟票场次样式（黄色渐变背景+早鸟标签）和优先购场次标识（priority-tag）</li>
-                    <li><strong>详情Tab</strong>：详情/评论/须知三个Tab切换</li>
-                    <li><strong>场馆信息</strong>：场馆图片 + 名称 + 地址 + 导航链接</li>
-                    <li><strong>底部操作栏</strong>：心愿单（收藏）+ 分享（复制链接）+ 立即购票按钮（含价格显示）</li>
+                  <li><strong>前置条件：</strong>演出数据已在后台录入并发布；用户需登录后才能收藏和购票；优先购功能仅限金卡及以上会员</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>数据来源：演出基础信息、场次列表、评论数据分别从对应服务接口获取，按show_id聚合</li>
+                      <li>场次状态：根据场次库存计算余票状态（充足/紧张/售罄），结合当前时间判断早鸟票和优先购时段</li>
+                      <li>优先购规则：优先购开始时间早于公开售票时间，仅限指定会员等级用户在优先购时段内购买</li>
+                      <li>收藏状态：用户收藏数据关联用户ID和演出ID，切换收藏时调用收藏服务接口</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>浏览演出详情无需登录；收藏和购票需登录；优先购需金卡及以上会员等级</li>
+                  <li><strong>数据约束：</strong>已售罄场次不可选座；优先购时段内非目标等级会员无法购票；演出下架后页面不可访问</li>
+                  <li><strong>能力边界：</strong>不支持直接在此页面完成支付；不支持场次时间修改；不支持退款操作</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>余票状态：</strong>以文字形式显示（热卖中/余票紧张/早鸟票/充足/跨年专场等），非颜色编码</p>
-                <p><strong>分享按钮：</strong>点击Hero区分享按钮，弹出toast"已分享到朋友圈"</p>
-                <p><strong>Tab切换：</strong>点击详情/评论/须知Tab切换内容区域，选中态底部橙色下划线</p>
-                <p><strong>收藏交互：</strong>点击底部心愿单图标切换收藏状态（实心/空心），弹出toast"已加入心愿单"或"已移出心愿单"</p>
-                <p><strong>页面跳转：</strong>立即购买->seat-selection.html；返回按钮->show-list-detail.html；场馆导航->toast"正在打开导航..."</p>`
+                content: `<p><strong>场次卡片选择</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击水平滚动场次卡片中的任意场次（显示日期/星期/时间/价格/余票状态）</li>
+  <li><strong>执行中：</strong>被点击场次卡片边框变为橙色高亮（selected态），其他场次取消高亮；底部"立即购票"按钮价格更新为该场次最低票价</li>
+  <li><strong>成功：</strong>场次选中态保持，购票按钮可点击跳转</li>
+  <li><strong>失败：</strong>若场次数据加载失败，弹出toast"场次信息加载失败"，场次区域显示重试按钮</li>
+  <li><strong>边界条件：</strong>仅有一个场次时默认选中；场次状态为"已售罄"时不可点击选中，卡片置灰显示</li>
+</ul>
+
+<p><strong>分享按钮点击</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击Hero大图区域右上角分享图标按钮（分享图标class：fa-share-nodes）</li>
+  <li><strong>执行中：</strong>弹出底部分享面板（含"分享给朋友""分享到朋友圈""复制链接"选项）</li>
+  <li><strong>成功：</strong>选择分享方式后关闭面板，弹出toast"已分享"或"链接已复制"</li>
+  <li><strong>失败：</strong>分享接口调用失败时弹出toast"分享失败，请重试"</li>
+  <li><strong>边界条件：</strong>未登录用户点击分享时先跳转登录页，登录成功后返回当前页并继续分享流程</li>
+</ul>
+
+<p><strong>详情/评论/须知 Tab 切换</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击内容区顶部Tab栏中的"详情"/"评论"/"须知"标签</li>
+  <li><strong>执行中：</strong>被点击Tab底部显示橙色下划线（选中态），内容区域切换为对应面板，切换过程无loading</li>
+  <li><strong>成功：</strong>对应内容面板展示，评论Tab首次切换时加载评论列表数据</li>
+  <li><strong>失败：</strong>评论数据加载失败时显示"加载失败，点击重试"按钮</li>
+  <li><strong>边界条件：</strong>评论Tab无评论时显示空状态插画+"暂无评论"；当前已是选中态的Tab再次点击不重复加载</li>
+</ul>
+
+<p><strong>收藏（心愿单）切换</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击底部操作栏左侧心愿单图标按钮（空心/实心 heart 图标）</li>
+  <li><strong>执行中：</strong>图标切换动画（空心变实心或实心变空心），同时发起收藏/取消收藏请求</li>
+  <li><strong>成功：</strong>弹出toast"已加入心愿单"或"已移出心愿单"，图标保持切换后的状态</li>
+  <li><strong>失败：</strong>弹出toast"操作失败，请重试"，图标恢复为操作前的状态</li>
+  <li><strong>边界条件：</strong>未登录用户点击时先跳转登录页，登录成功后自动完成收藏操作并返回当前页</li>
+</ul>
+
+<p><strong>立即购票</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击底部操作栏右侧"立即购票"渐变橙色按钮（显示当前选中场次的最低票价）</li>
+  <li><strong>执行中：</strong>按钮显示loading态，校验是否已选场次及用户登录状态</li>
+  <li><strong>成功：</strong>跳转至 seat-selection.html?show_id=xxx&session_id=xxx 选座购票页</li>
+  <li><strong>失败：</strong>未选择场次时弹出toast"请先选择场次"；未登录时跳转登录页</li>
+  <li><strong>边界条件：</strong>演出状态为"已售罄"时按钮置灰不可点击；优先购场次需校验会员等级权限，无权限时弹出toast"金卡会员可优先购买"</li>
+</ul>
+
+<p><strong>返回上一页</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击导航栏左侧返回箭头图标按钮</li>
+  <li><strong>执行中：</strong>无loading，直接返回</li>
+  <li><strong>成功：</strong>返回 show-list-detail.html 演出列表页（或进入详情页前的上一个页面）</li>
+  <li><strong>失败：</strong>无</li>
+  <li><strong>边界条件：</strong>无历史页面时返回首页 home.html</li>
+</ul>
+
+<p><strong>场馆导航</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击场馆信息区域的"导航"按钮或地址文字</li>
+  <li><strong>执行中：</strong>弹出toast"正在打开导航..."</li>
+  <li><strong>成功：</strong>调起系统地图应用或微信小程序地图导航至场馆地址</li>
+  <li><strong>失败：</strong>无法调起地图时弹出toast"无法打开导航，请检查地图应用"</li>
+  <li><strong>边界条件：</strong>场馆地址为空时不显示导航按钮</li>
+</ul>`
             },
             {
                 title: '核心字段',
@@ -2167,24 +2276,87 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>全局搜索演出，支持搜索建议面板（输入即触发）、搜索历史记录（localStorage最多10条，支持单条删除和清空全部）、热门搜索排行（Top3高亮：红/橙/金）、搜索结果（关键词高亮+类型标签）、空状态</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>提供演出全局搜索能力，用户输入关键词后系统对演出名称、类型、场馆进行模糊匹配，返回匹配的演出列表。搜索历史保存在本地存储中，支持快捷复用历史关键词。热门搜索按搜索频次排序，帮助用户发现热门演出。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>搜索导航栏</strong>：返回按钮（跳转home.html）+ 搜索输入框（含搜索图标、清空按钮、聚焦态橙色边框）+ 取消按钮</li>
-                    <li><strong>搜索建议面板</strong>：输入时下拉显示匹配的演出名称，最多5条，关键词高亮，右侧显示类型标签</li>
-                    <li><strong>搜索历史</strong>：标签式展示，每条带删除按钮，右上角"清空"按钮</li>
-                    <li><strong>热门搜索</strong>：标签式展示，Top3序号高亮（红/橙/金）</li>
-                    <li><strong>搜索结果</strong>：卡片列表（封面图+名称+类型标签+场馆+时间+价格+labels），结果数统计</li>
-                    <li><strong>空状态</strong>：搜索图标 + "未找到相关演出" + "换个关键词试试吧"</li>
+                  <li><strong>前置条件：</strong>用户已登录或处于游客状态；演出数据已在后台录入并发布</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>数据来源：从演出库中查询已发布的演出数据，对演出名称、类型、场馆字段进行模糊匹配</li>
+                      <li>搜索建议：输入过程中实时请求接口返回最多5条匹配建议，按相关度排序</li>
+                      <li>历史记录：搜索历史存储在本地，最多保留10条，新搜索去重后插入队首</li>
+                      <li>热门搜索：按全站用户搜索频次统计Top关键词，定时更新缓存</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>无需特殊权限，所有用户均可使用搜索功能</li>
+                  <li><strong>数据约束：</strong>仅搜索已发布状态的演出；空关键词不触发搜索；无匹配结果时返回空列表</li>
+                  <li><strong>能力边界：</strong>不支持按价格区间搜索；不支持按日期范围搜索；不支持搜索已下架演出</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>搜索流程：</strong>初始->历史+热门；输入中->搜索建议面板；回车/点击建议->搜索结果列表；无结果->空状态</p>
-                <p><strong>匹配逻辑：</strong>使用includes匹配，对演出名称、类型、场馆进行模糊匹配</p>
-                <p><strong>历史管理：</strong>点击历史标签直接搜索；点击单条删除按钮移除该条历史；点击"清空"按钮清空全部历史并弹出toast"搜索历史已清空"</p>
-                <p><strong>取消按钮：</strong>输入框有内容时清空输入并恢复默认；输入框为空时跳转home.html</p>
-                <p><strong>结果卡片点击：</strong>弹出toast"跳转到演出详情: xxx"</p>`
+                content: `<p><strong>输入搜索关键词</strong></p>
+<ul>
+  <li><strong>触发：</strong>在搜索输入框中输入任意字符（输入即触发，无需回车）</li>
+  <li><strong>执行中：</strong>搜索建议面板从输入框下方下拉展开，显示最多5条匹配结果，关键词高亮显示，每条右侧显示类型标签</li>
+  <li><strong>成功：</strong>建议面板展示匹配的演出名称列表，点击任意建议可跳转搜索结果</li>
+  <li><strong>失败：</strong>无匹配结果时建议面板显示"暂无相关建议"</li>
+  <li><strong>边界条件：</strong>输入为空时收起建议面板，恢复显示历史+热门区域；连续输入时防抖300ms后发起请求</li>
+</ul>
+
+<p><strong>回车/点击建议执行搜索</strong></p>
+<ul>
+  <li><strong>触发：</strong>在搜索框中按回车键，或点击搜索建议面板中的某条建议</li>
+  <li><strong>执行中：</strong>收起建议面板，页面切换至搜索结果列表区域，显示骨架屏loading</li>
+  <li><strong>成功：</strong>搜索结果列表展示（封面图+名称+类型标签+场馆+时间+价格+labels），顶部显示"共x个结果"；同时将关键词保存至搜索历史（localStorage最多10条，新关键词插入头部，重复关键词移至头部）</li>
+  <li><strong>失败：</strong>弹出toast"搜索失败，请稍后重试"，显示空状态插画</li>
+  <li><strong>边界条件：</strong>搜索关键词超过50个字符时截断至50字符；搜索结果为空时显示空状态插画+"未找到相关演出"+"换个关键词试试吧"</li>
+</ul>
+
+<p><strong>点击搜索历史标签</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击搜索历史区域中的任意历史标签</li>
+  <li><strong>执行中：</strong>该关键词回填至搜索输入框，收起历史+热门区域，显示搜索结果loading</li>
+  <li><strong>成功：</strong>展示该关键词的搜索结果列表，该历史标签移至历史列表头部</li>
+  <li><strong>失败：</strong>弹出toast"搜索失败，请稍后重试"</li>
+  <li><strong>边界条件：</strong>历史记录为空时不显示历史区域；历史标签文字超长时显示省略号</li>
+</ul>
+
+<p><strong>删除单条搜索历史</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击历史标签右侧的删除图标按钮（x图标）</li>
+  <li><strong>执行中：</strong>该条历史记录从列表中移除，同步更新localStorage</li>
+  <li><strong>成功：</strong>历史列表重新渲染，无toast提示</li>
+  <li><strong>失败：</strong>localStorage写入失败时不影响UI展示，下次进入页面时该记录可能恢复</li>
+  <li><strong>边界条件：</strong>删除后历史记录为空时，整个历史区域隐藏，只显示热门搜索</li>
+</ul>
+
+<p><strong>清空全部搜索历史</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击搜索历史区域右上角的"清空"文字按钮</li>
+  <li><strong>执行中：</strong>弹出确认弹窗"确定清空全部搜索历史？"</li>
+  <li><strong>成功：</strong>关闭确认弹窗，清空localStorage中的搜索历史，历史区域隐藏，弹出toast"搜索历史已清空"</li>
+  <li><strong>失败：</strong>localStorage操作失败时弹出toast"操作失败，请重试"</li>
+  <li><strong>边界条件：</strong>历史记录为空时"清空"按钮不显示或置灰不可点击</li>
+</ul>
+
+<p><strong>取消按钮点击</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击搜索导航栏右侧"取消"文字按钮</li>
+  <li><strong>执行中：</strong>若输入框有内容，清空输入框内容并收起建议面板，恢复历史+热门区域；若输入框为空，直接跳转</li>
+  <li><strong>成功：</strong>输入框为空时跳转至 home.html 首页</li>
+  <li><strong>失败：</strong>无</li>
+  <li><strong>边界条件：</strong>无</li>
+</ul>
+
+<p><strong>搜索结果卡片点击</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击搜索结果列表中的任意演出卡片</li>
+  <li><strong>执行中：</strong>无loading，直接跳转</li>
+  <li><strong>成功：</strong>跳转至 show-detail.html?show_id=xxx 演出详情页</li>
+  <li><strong>失败：</strong>跳转失败时弹出toast"页面加载失败，请重试"</li>
+  <li><strong>边界条件：</strong>无</li>
+</ul>`
             },
             {
                 title: '核心字段',
@@ -2227,22 +2399,96 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>展示会员等级信息、权益列表、优先购票资格、推荐有奖功能。</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>展示用户会员等级、成长值进度和会员权益，提供优先购票资格查询和推荐有奖功能。系统根据用户成长值计算当前等级和升级进度，不同等级对应不同的购票折扣、积分倍数和优先购权益。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>会员卡片区域</strong>：深色渐变背景 + 顶部发光线条（card-glow-line动画）+ 装饰粒子动画（6个浮动粒子）+ 用户头像（金色边框）+ 昵称 + 金卡徽章 + 成长值进度条（3200/5000）+ 卡号 + "申请实体卡"按钮（跳转physical-card-apply.html）</li>
-                    <li><strong>会员权益</strong>：标题"会员权益" + "全部权益"入口 + 水平滚动5项权益卡片（优先购票/等级折扣/生日赠礼/定期发券/专属客服），已解锁金色边框、未解锁灰色半透明</li>
-                    <li><strong>优先购演出</strong>：标题"优先购演出" + "更多"入口 + 倒计时栏（含实时倒计时）+ 演出卡片列表（封面+名称+场馆+优先购时间+操作按钮）</li>
-                    <li><strong>推荐有礼</strong>：邀请好友赢取成长值，含"生成海报"和"复制链接"按钮</li>
-                    <li><strong>底部Tab栏</strong>：5个Tab，当前激活"会员"</li>
+                  <li><strong>前置条件：</strong>用户已登录；会员等级和成长值数据由系统在用户消费、签到等行为后自动计算更新</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>等级体系：普通(0)->银卡(1000)->金卡(5000)->钻石(20000)，按成长值区间划分</li>
+                      <li>成长值来源：购票消费（按比例返还）、每日签到、发布评论、分享演出、邀请好友注册</li>
+                      <li>权益计算：等级折扣（银95折/金9折/钻石85折）、积分倍数（银1.2x/金1.5x/钻石2x）、优先购（金卡以上提前24小时）</li>
+                      <li>优先购演出：从演出库筛选设置了优先购的演出，按优先购开始时间排序</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>需登录后才能查看会员中心；优先购权益仅限金卡及以上会员</li>
+                  <li><strong>数据约束：</strong>成长值不会为负数；等级只升不降；优先购演出需在优先购时段内才显示操作入口</li>
+                  <li><strong>能力边界：</strong>不支持手动调整成长值；不支持降级操作；不支持跨等级继承权益</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>等级体系：</strong>普通(注册)->银卡(1000)->金卡(5000)->钻石(20000)</p>
-                <p><strong>等级权益：</strong>折扣(银95/金9/钻石85折)、优先购(金卡以上提前24h)、积分倍数(银1.2x/金1.5x/钻石2x)</p>
-                <p><strong>倒计时：</strong>优先购倒计时每秒实时更新，倒计时结束后显示"已开始"</p>
-                <p><strong>申请实体卡：</strong>点击"申请实体卡"按钮跳转 physical-card-apply.html</p>`
+                content: `<p><strong>权益卡片横向滚动</strong></p>
+<ul>
+  <li><strong>触发：</strong>在会员权益区域左右滑动或拖动水平滚动条</li>
+  <li><strong>执行中：</strong>权益卡片列表跟随手指/鼠标横向滚动，已解锁权益卡片显示金色边框，未解锁显示灰色半透明遮罩</li>
+  <li><strong>成功：</strong>滚动至目标权益卡片位置，卡片完整展示</li>
+  <li><strong>失败：</strong>无</li>
+  <li><strong>边界条件：</strong>权益数量较少（少于屏幕可展示数量）时不显示滚动指示器；滚动到边界时触发弹性回弹效果</li>
+</ul>
+
+<p><strong>点击"全部权益"入口</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击会员权益区域标题栏右侧"全部权益"文字按钮（带右箭头图标）</li>
+  <li><strong>执行中：</strong>无loading，直接跳转</li>
+  <li><strong>成功：</strong>跳转至会员权益详情页（或展开全部权益弹窗），展示所有等级权益的完整说明</li>
+  <li><strong>失败：</strong>跳转失败时弹出toast"页面加载失败，请重试"</li>
+  <li><strong>边界条件：</strong>无</li>
+</ul>
+
+<p><strong>优先购演出卡片点击</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击优先购演出区域中的任意演出卡片（封面+名称+场馆+优先购时间）</li>
+  <li><strong>执行中：</strong>无loading，直接跳转</li>
+  <li><strong>成功：</strong>跳转至 show-detail.html?show_id=xxx 演出详情页</li>
+  <li><strong>失败：</strong>跳转失败时弹出toast"页面加载失败，请重试"</li>
+  <li><strong>边界条件：</strong>优先购倒计时未开始时操作按钮显示"即将开放"且置灰不可点击；倒计时结束后按钮变为"立即抢购"可点击</li>
+</ul>
+
+<p><strong>优先购倒计时实时更新</strong></p>
+<ul>
+  <li><strong>触发：</strong>页面进入优先购演出区域可见时自动启动倒计时</li>
+  <li><strong>执行中：</strong>倒计时栏每秒自动刷新，显示"距开始 xx天xx小时xx分xx秒"</li>
+  <li><strong>成功：</strong>倒计时正常递减，时间格式动态适配（大于24小时显示天数，小于1分钟显示秒数）</li>
+  <li><strong>失败：</strong>倒计时计算异常时显示"--"，不影响页面其他功能</li>
+  <li><strong>边界条件：</strong>倒计时结束后自动切换为"已开始"状态，操作按钮从"即将开放"变为"立即抢购"；页面切至后台时倒计时暂停，返回前台时自动校准</li>
+</ul>
+
+<p><strong>点击"更多"优先购演出</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击优先购演出区域标题栏右侧"更多"文字按钮（带右箭头图标）</li>
+  <li><strong>执行中：</strong>无loading，直接跳转</li>
+  <li><strong>成功：</strong>跳转至优先购演出列表页，展示全部可优先购的演出</li>
+  <li><strong>失败：</strong>跳转失败时弹出toast"页面加载失败，请重试"</li>
+  <li><strong>边界条件：</strong>无优先购演出时"更多"按钮不显示</li>
+</ul>
+
+<p><strong>申请实体卡</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击会员卡片区域内的"申请实体卡"按钮（白色边框按钮）</li>
+  <li><strong>执行中：</strong>无loading，直接跳转</li>
+  <li><strong>成功：</strong>跳转至 physical-card-apply.html 实体卡申请页</li>
+  <li><strong>失败：</strong>跳转失败时弹出toast"页面加载失败，请重试"</li>
+  <li><strong>边界条件：</strong>未登录用户点击时先跳转登录页，登录成功后自动跳转申请页；已申请过实体卡的用户按钮显示"查看实体卡"并跳转卡片管理页</li>
+</ul>
+
+<p><strong>生成推荐海报</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击推荐有礼区域的"生成海报"按钮</li>
+  <li><strong>执行中：</strong>弹出loading"海报生成中..."，后台生成带用户邀请码的推广海报图片</li>
+  <li><strong>成功：</strong>loading消失，弹出海报预览弹窗，展示生成的海报图片，底部提供"保存到相册"和"分享给好友"按钮</li>
+  <li><strong>失败：</strong>loading消失，弹出toast"海报生成失败，请重试"</li>
+  <li><strong>边界条件：</strong>未登录用户点击时先跳转登录页；生成海报需要用户授权保存图片权限，未授权时引导用户开启</li>
+</ul>
+
+<p><strong>复制推荐链接</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击推荐有礼区域的"复制链接"按钮</li>
+  <li><strong>执行中：</strong>将带用户邀请码的推广链接复制至剪贴板</li>
+  <li><strong>成功：</strong>弹出toast"链接已复制，快去分享给好友吧"</li>
+  <li><strong>失败：</strong>剪贴板写入失败时弹出toast"复制失败，请重试"</li>
+  <li><strong>边界条件：</strong>未登录用户点击时先跳转登录页；部分浏览器不支持剪贴板API时降级为手动选中链接文本</li>
+</ul>`
             },
             {
                 title: '核心字段',
@@ -2296,21 +2542,51 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>管理用户优惠券，按状态筛选（全部/未使用/已使用/已过期），查看详情和使用。</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>管理用户已领取的优惠券，按使用状态筛选展示。系统根据优惠券有效期和使用记录自动计算每张券的当前状态（未使用/已使用/已过期），用户可在购票结算时选择符合条件的优惠券抵扣订单金额。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>导航栏</strong>：深色渐变背景 + 返回按钮（跳转profile.html）+ 标题"我的优惠券"</li>
-                    <li><strong>筛选Tab</strong>：4个Tab（全部/未使用/已使用/已过期），无角标，选中态为渐变橙色背景</li>
-                    <li><strong>优惠券列表</strong>：卡片式布局，左侧金额区（渐变橙色背景+半圆缺口，已使用/已过期为灰色）+ 右侧信息区（名称+使用条件+有效期+coupon-scope标签+去使用按钮），已使用/已过期卡片右上角显示status-badge角标</li>
-                    <li><strong>空状态</strong>：图标 + "暂无优惠券" + "快去参加活动获取优惠券吧"</li>
+                  <li><strong>前置条件：</strong>用户已登录；优惠券需通过领取、发放或购买等方式获得</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>数据来源：从用户优惠券关联表查询当前用户拥有的所有优惠券记录</li>
+                      <li>状态流转：未使用 -> 已使用（在订单中抵扣后）/ 已过期（超过有效期且未使用）</li>
+                      <li>券类型：满减券（满足门槛金额后减免固定金额）、折扣券（按比例折扣）、无门槛券、新人券</li>
+                      <li>使用范围：部分券限定特定演出或全场通用，结算时按使用范围过滤可用券</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>需登录后查看；仅展示当前登录用户拥有的优惠券</li>
+                  <li><strong>数据约束：</strong>已过期券不可使用；已使用券不可重复使用；使用范围外的演出不可使用该券</li>
+                  <li><strong>能力边界：</strong>不支持在此页面直接领取优惠券；不支持转赠优惠券；不支持优惠券叠加使用</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>券类型：</strong>满减券、折扣券、新人券</p>
-                <p><strong>Tab切换：</strong>点击Tab按状态筛选，无匹配时显示空状态</p>
-                <p><strong>去使用按钮：</strong>未使用券显示渐变橙色"去使用"按钮；已使用显示灰色"已使用"按钮；已过期显示灰色"已过期"按钮</p>
-                <p><strong>有效期：</strong>固定日期格式显示</p>`
+                content: `<p><strong>优惠券状态 Tab 切换</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击筛选Tab栏中的"全部"/"未使用"/"已使用"/"已过期"标签，Tab为圆角胶囊样式</li>
+  <li><strong>执行中：</strong>被点击Tab切换为渐变橙色背景（active态），优惠券列表区域显示骨架屏loading，同时按状态筛选请求数据</li>
+  <li><strong>成功：</strong>列表刷新为对应状态的优惠券卡片；若该状态下无优惠券，显示空状态插画+"暂无优惠券"+"快去参加活动获取优惠券吧"</li>
+  <li><strong>失败：</strong>弹出toast"加载失败，请稍后重试"，保留当前Tab选中态，列表保持上次成功加载的内容</li>
+  <li><strong>边界条件：</strong>当前已是选中态的Tab再次点击时不重复请求；切换Tab时若正在加载中，取消上一次未完成的请求</li>
+</ul>
+
+<p><strong>点击"去使用"按钮</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击未使用优惠券卡片右侧的渐变橙色"去使用"按钮</li>
+  <li><strong>执行中：</strong>按钮显示loading态，校验优惠券可用状态及适用范围</li>
+  <li><strong>成功：</strong>跳转至适用演出列表页（或演出详情页），该优惠券自动标记为"待使用"状态</li>
+  <li><strong>失败：</strong>弹出toast"优惠券使用失败，请重试"；若优惠券已过期则刷新列表并弹出toast"该优惠券已过期"</li>
+  <li><strong>边界条件：</strong>优惠券适用范围为"全场通用"时跳转演出列表页；适用范围为指定演出时直接跳转该演出详情页；未登录用户点击时先跳转登录页</li>
+</ul>
+
+<p><strong>返回上一页</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击导航栏左侧返回箭头图标按钮</li>
+  <li><strong>执行中：</strong>无loading，直接返回</li>
+  <li><strong>成功：</strong>返回 profile.html 个人中心页</li>
+  <li><strong>失败：</strong>无</li>
+  <li><strong>边界条件：</strong>无历史页面时返回首页 home.html</li>
+</ul>`
             },
             {
                 title: '核心字段',
@@ -2344,27 +2620,60 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>展示券包列表，支持购买和查看详情。</p>
-                <p><strong>页面模块：</strong>统计头部（3项横排：精选券包数/最高折扣/累计可省）、筛选Tab（全部/热卖推荐/新品上线/亲子家庭/周末休闲）、可展开券包卡片（封面+badge角标+折扣标签+名称+card-count+演出chips+价格+购买按钮）、确认弹窗</p>`
+                content: `<p><strong>核心功能：</strong>展示平台在售的演出券包列表，用户可按分类筛选券包并购买。券包是将多场演出组合打包销售的优惠产品，购买后用户获得对应演出的观演资格，通常比单场购买更优惠。</p>
+                <p><strong>业务说明：</strong></p>
+                <ul>
+                  <li><strong>前置条件：</strong>用户已登录；券包数据由运营人员在后台配置并上架</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>数据来源：从券包商品库查询已上架的券包数据，按分类标签过滤，支持按推荐权重排序</li>
+                      <li>券包结构：每个券包包含封面图、名称、包含的演出列表、原价、折扣价和节省金额</li>
+                      <li>购买流程：用户选择券包 -> 弹出确认弹窗 -> 确认后进入支付流程 -> 支付成功后券包加入用户账户</li>
+                      <li>分类筛选：券包按主题分类（热卖推荐/新品上线/亲子家庭/周末休闲），用户可按分类浏览</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>浏览券包列表无需登录；购买券包需登录并完成支付</li>
+                  <li><strong>数据约束：</strong>仅展示已上架状态的券包；已下架券包不显示；券包内演出需均为已发布状态</li>
+                  <li><strong>能力边界：</strong>不支持券包内单场演出的单独退订；不支持券包转赠；不支持券包与优惠券叠加使用</li>
+                </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>点击券包卡片封面</strong></p>
-                <ul>
-                    <li><strong>触发：</strong>点击券包卡片封面区域</li>
-                    <li><strong>成功：</strong>展开/收起券包详情，显示包含的演出名称chips和价格信息</li>
-                </ul>
-                <p><strong>点击购买按钮</strong></p>
-                <ul>
-                    <li><strong>触发：</strong>点击"立即抢购"按钮</li>
-                    <li><strong>执行中：</strong>弹出底部确认弹窗，显示券包名称+badge、包含演出列表、价格和节省金额</li>
-                    <li><strong>成功：</strong>关闭弹窗，弹出toast提示"已加入购物车 - [券包名称]"</li>
-                </ul>
-                <p><strong>筛选Tab切换</strong></p>
-                <ul>
-                    <li><strong>触发：</strong>点击"全部"/"热卖推荐"/"新品上线"/"亲子家庭"/"周末休闲"Tab</li>
-                    <li><strong>成功：</strong>列表按分类筛选刷新</li>
-                </ul>`
+                content: `<p><strong>券包卡片展开/收起</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击券包卡片封面区域（封面图+badge角标+折扣标签区域）</li>
+  <li><strong>执行中：</strong>卡片下方平滑展开详情区域，显示包含的演出名称chips列表和价格信息；展开时封面区域显示向上箭头图标，收起时显示向下箭头图标</li>
+  <li><strong>成功：</strong>券包详情完整展开/收起，动画流畅无卡顿</li>
+  <li><strong>失败：</strong>展开动画异常时直接显示/隐藏详情区域，不影响其他卡片</li>
+  <li><strong>边界条件：</strong>同时只能展开一个券包卡片，点击新卡片时自动收起已展开的卡片；网络异常时展开区域显示缓存的演出名称列表</li>
+</ul>
+
+<p><strong>点击"立即抢购"购买按钮</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击券包卡片右侧或底部的渐变橙色"立即抢购"按钮</li>
+  <li><strong>执行中：</strong>弹出底部确认弹窗（从底部滑入），弹窗标题显示券包名称+badge角标，内容区展示包含演出列表、原价、折扣价和节省金额</li>
+  <li><strong>成功：</strong>用户在弹窗内点击"确认购买"后关闭弹窗，弹出toast"已加入购物车 - [券包名称]"，跳转订单确认页或购物车页</li>
+  <li><strong>失败：</strong>库存不足时弹窗内提示"库存不足"并置灰确认按钮；网络异常时弹出toast"购买失败，请重试"</li>
+  <li><strong>边界条件：</strong>未登录用户点击时先跳转登录页，登录成功后返回当前页并重新弹出确认弹窗；券包已下架时按钮置灰显示"已下架"</li>
+</ul>
+
+<p><strong>筛选 Tab 切换</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击筛选Tab栏中的"全部"/"热卖推荐"/"新品上线"/"亲子家庭"/"周末休闲"标签，Tab为圆角胶囊样式</li>
+  <li><strong>执行中：</strong>被点击Tab切换为渐变橙色背景（active态），券包列表区域显示骨架屏loading，同时按分类筛选请求数据</li>
+  <li><strong>成功：</strong>列表刷新为对应分类的券包卡片；若该分类下无券包，显示空状态插画+"暂无相关券包"</li>
+  <li><strong>失败：</strong>弹出toast"加载失败，请稍后重试"，保留当前Tab选中态，列表保持上次成功加载的内容</li>
+  <li><strong>边界条件：</strong>当前已是选中态的Tab再次点击时不重复请求；切换Tab时若正在加载中，取消上一次未完成的请求</li>
+</ul>
+
+<p><strong>返回上一页</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击导航栏左侧返回箭头图标按钮</li>
+  <li><strong>执行中：</strong>无loading，直接返回</li>
+  <li><strong>成功：</strong>返回进入券包中心前的上一个页面</li>
+  <li><strong>失败：</strong>无</li>
+  <li><strong>边界条件：</strong>无历史页面时返回首页 home.html</li>
+</ul>`
             },
             {
                 title: '核心字段',
@@ -2406,13 +2715,69 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>展示积分余额2,580、会员等级进度（金卡会员Lv.3）、每日任务（签到+5/评论+20/分享+10/购买+50固定）、功能入口（积分兑换/积分抽奖/积分流水）</p>
-                <p><strong>页面模块：</strong>积分卡片（余额+等级+进度条）、积分任务列表（4项任务含图标+名称+描述+奖励+按钮）、积分兑换入口、积分抽奖入口、积分流水入口</p>`
+                content: `<p><strong>核心功能：</strong>展示用户当前积分余额和会员等级进度，提供积分任务完成入口和功能导航。用户通过完成每日任务获取积分奖励，积分可用于兑换商品、参与抽奖或抵扣订单金额。系统根据用户会员等级计算积分获取倍数，等级越高单次任务获得的积分越多。</p>
+                <p><strong>业务说明：</strong></p>
+                <ul>
+                  <li><strong>前置条件：</strong>用户已登录；积分数据由系统在用户完成任务或消费后自动计算更新</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>数据来源：积分余额和任务状态从用户积分服务接口获取，按用户ID查询</li>
+                      <li>任务体系：每日签到、发布评论、分享演出、购买演出等任务，完成后发放对应积分奖励</li>
+                      <li>积分倍数：根据会员等级计算积分获取倍数（普通1x/银卡1.2x/金卡1.5x/钻石2x）</li>
+                      <li>积分消耗：积分可用于积分商城兑换、积分抽奖、订单抵扣等场景</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>需登录后查看积分中心；任务完成状态按用户维度隔离</li>
+                  <li><strong>数据约束：</strong>积分余额不为负数；每日任务每日重置；已完成的任务当日不可重复完成</li>
+                  <li><strong>能力边界：</strong>不支持积分提现；不支持积分转赠；不支持积分与优惠券同时抵扣同一笔订单</li>
+                </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>完成任务：</strong>点击任务右侧"去签到/去评论/去购买"按钮，按钮变为"已完成"灰色状态</p>
-                <p><strong>功能入口：</strong>点击"积分兑换""积分抽奖""积分流水"卡片跳转对应页面</p>`
+                content: `<p><strong>点击任务操作按钮</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击积分任务列表中任意任务右侧的操作按钮（"去签到"/"去评论"/"去分享"/"去购买"），按钮为渐变橙色样式</li>
+  <li><strong>执行中：</strong>按钮显示loading态，根据任务类型跳转至对应页面或执行对应操作</li>
+  <li><strong>成功：</strong>完成任务后返回积分中心页，该任务按钮变为灰色"已完成"状态，积分余额数字动画增加至新数值，弹出toast"任务完成，积分+xx"</li>
+  <li><strong>失败：</strong>任务未完成时返回积分中心页，按钮保持原状态，弹出toast"任务未完成，请重试"</li>
+  <li><strong>边界条件：</strong>每日任务每日0点重置为"未完成"状态；已完成任务按钮置灰不可点击；未登录用户点击时先跳转登录页</li>
+</ul>
+
+<p><strong>点击"积分兑换"入口</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击积分卡片下方的"积分兑换"功能入口卡片（含兑换图标和说明文字）</li>
+  <li><strong>执行中：</strong>无loading，直接跳转</li>
+  <li><strong>成功：</strong>跳转至积分兑换商品列表页（或 shop.html?tab=points 商城积分兑换Tab）</li>
+  <li><strong>失败：</strong>跳转失败时弹出toast"页面加载失败，请重试"</li>
+  <li><strong>边界条件：</strong>无</li>
+</ul>
+
+<p><strong>点击"积分抽奖"入口</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击积分卡片下方的"积分抽奖"功能入口卡片（含抽奖图标和说明文字）</li>
+  <li><strong>执行中：</strong>无loading，直接跳转</li>
+  <li><strong>成功：</strong>跳转至 lottery.html 积分抽奖页</li>
+  <li><strong>失败：</strong>跳转失败时弹出toast"页面加载失败，请重试"</li>
+  <li><strong>边界条件：</strong>无</li>
+</ul>
+
+<p><strong>点击"积分流水"入口</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击积分卡片下方的"积分流水"功能入口卡片（含流水图标和说明文字）</li>
+  <li><strong>执行中：</strong>无loading，直接跳转</li>
+  <li><strong>成功：</strong>跳转至 points-flow.html 积分明细页</li>
+  <li><strong>失败：</strong>跳转失败时弹出toast"页面加载失败，请重试"</li>
+  <li><strong>边界条件：</strong>无</li>
+</ul>
+
+<p><strong>积分余额刷新</strong></p>
+<ul>
+  <li><strong>触发：</strong>页面每次进入时自动刷新，或用户手动下拉刷新积分卡片区域</li>
+  <li><strong>执行中：</strong>积分余额数字显示loading骨架屏，同时发起积分信息请求</li>
+  <li><strong>成功：</strong>积分余额、会员等级、进度条数据更新为最新值，数字变化带递增动画效果</li>
+  <li><strong>失败：</strong>弹出toast"积分信息加载失败"，显示上次缓存的积分数据</li>
+  <li><strong>边界条件：</strong>积分为0时正常显示"0"；会员等级进度条满时显示"已满级"</li>
+</ul>`
             },
             {
                 title: '核心字段',
@@ -2450,12 +2815,60 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>展示积分收支流水，按时间筛选（全部/本月/近三月/近半年），汇总栏（累计收入/支出/余额），按日期分组列表（图标+标题+时间+金额+余额）</p>
-                <p><strong>页面模块：</strong>筛选Tab栏、汇总统计栏（累计收入/累计支出/当前积分）、按月分组的流水列表（含签到/评论/购买/退款/抽奖等多种类型图标）</p>`
+                content: `<p><strong>核心功能：</strong>展示用户积分收支明细流水，按时间范围筛选并汇总统计。系统记录每笔积分变动的类型、金额和变动后余额，支持按收入、支出、退款、抽奖等类型分类展示，帮助用户追踪积分来源和去向。</p>
+                <p><strong>业务说明：</strong></p>
+                <ul>
+                  <li><strong>前置条件：</strong>用户已登录；积分流水数据由系统在积分变动时自动记录</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>数据来源：从积分流水表查询当前用户的所有积分变动记录，按时间降序排列</li>
+                      <li>流水类型：收入（任务奖励、消费返还）、支出（兑换商品、抽奖、订单抵扣）、退款（订单取消返还）</li>
+                      <li>汇总计算：累计收入 = 所有收入类型流水金额之和；累计支出 = 所有支出类型流水金额之和；当前余额 = 累计收入 - 累计支出</li>
+                      <li>时间筛选：按全部/本月/近三月/近半年过滤流水记录，汇总统计同步按筛选范围计算</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>需登录后查看；仅展示当前登录用户的积分流水</li>
+                  <li><strong>数据约束：</strong>流水记录不可删除或修改；每笔流水变动后余额必须与上一笔流水余额 + 本次变动金额相等</li>
+                  <li><strong>能力边界：</strong>不支持导出流水记录；不支持按流水类型单独筛选；不支持流水详情页查看</li>
+                </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p>按日期降序分组，收入绿色"+"，支出红色"-"，每条显示操作后余额。支持按时间范围Tab筛选切换</p>`
+                content: `<p><strong>时间范围 Tab 切换</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击筛选Tab栏中的"全部"/"本月"/"近三月"/"近半年"标签，Tab为圆角胶囊样式</li>
+  <li><strong>执行中：</strong>被点击Tab切换为渐变橙色背景（active态），汇总统计栏和流水列表区域显示骨架屏loading，同时按时间范围请求数据</li>
+  <li><strong>成功：</strong>汇总统计栏（累计收入/累计支出/当前积分）更新为对应时间范围的数值，流水列表按日期分组刷新；若无流水记录，显示空状态插画+"暂无积分明细"</li>
+  <li><strong>失败：</strong>弹出toast"加载失败，请稍后重试"，保留当前Tab选中态，列表保持上次成功加载的内容</li>
+  <li><strong>边界条件：</strong>当前已是选中态的Tab再次点击时不重复请求；切换Tab时若正在加载中，取消上一次未完成的请求；时间范围跨度较大时分页加载</li>
+</ul>
+
+<p><strong>流水列表滚动加载</strong></p>
+<ul>
+  <li><strong>触发：</strong>滚动流水列表至底部，触发上拉加载更多</li>
+  <li><strong>执行中：</strong>列表底部显示loading动画（三个圆点跳动），同时发起分页请求</li>
+  <li><strong>成功：</strong>新流水记录按日期分组追加到列表末尾，loading动画消失；若已加载全部数据，底部显示"没有更多了"</li>
+  <li><strong>失败：</strong>loading动画消失，弹出toast"加载失败，请重试"，保留已加载的数据</li>
+  <li><strong>边界条件：</strong>当前时间范围内流水总数小于分页大小时不显示加载更多；连续快速上拉只触发一次加载请求</li>
+</ul>
+
+<p><strong>流水记录展开查看详情</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击任意流水记录行（图标+标题+时间+金额+余额区域）</li>
+  <li><strong>执行中：</strong>该行下方展开详情面板，显示流水完整信息（流水号、变动类型、变动时间、变动前后余额、关联订单号等）</li>
+  <li><strong>成功：</strong>详情面板完整展开，再次点击该行收起详情</li>
+  <li><strong>失败：</strong>详情数据加载失败时展开区域显示"详情加载失败，点击重试"</li>
+  <li><strong>边界条件：</strong>同时只能展开一条流水记录，点击新记录时自动收起已展开的记录；无关联订单号时不显示订单号字段</li>
+</ul>
+
+<p><strong>返回上一页</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击导航栏左侧返回箭头图标按钮</li>
+  <li><strong>执行中：</strong>无loading，直接返回</li>
+  <li><strong>成功：</strong>返回 points.html 积分中心页</li>
+  <li><strong>失败：</strong>无</li>
+  <li><strong>边界条件：</strong>无历史页面时返回首页 home.html</li>
+</ul>`
             },
             {
                 title: '核心字段',
@@ -2494,12 +2907,40 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>展示钱包余额1,280.00元、冻结金额、累计充值/消费，快捷操作（充值/提现/交易记录），促销横幅"充值满500送50"，工具卡片（充值卡绑定含"新"角标+支付安全），充值弹窗（金额网格50/100/200/500/1000+自定义输入）</p>`
+                content: `<p><strong>核心功能：</strong>为用户提供钱包余额的统一管理入口，包括余额展示、充值、提现以及交易记录查询。用户可查看当前可用余额、冻结金额及累计充值/消费统计，通过快捷操作入口进入充值、提现或交易记录页面。系统根据充值金额自动计算赠送金额，并支持充值卡绑定功能。</p>
+                <p><strong>业务说明：</strong></p>
+                <ul>
+                  <li><strong>前置条件：</strong>用户已登录并完成账号注册</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时请求用户钱包概要数据（余额、冻结金额、累计充值/消费）</li>
+                      <li>充值时根据金额档位自动匹配赠送金额规则</li>
+                      <li>充值卡绑定需校验卡号有效性（至少8位字母数字）</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>仅登录用户可访问，余额数据按用户ID隔离</li>
+                  <li><strong>数据约束：</strong>余额精度为小数点后2位；自定义充值金额最低10元，最高5000元</li>
+                  <li><strong>能力边界：</strong>提现功能需先完成实名认证；充值卡绑定仅支持未使用过的有效充值卡</li>
+                </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>充值优惠：</strong>充100赠5/充200赠15/充500赠50/充1000赠120</p>
-                <p><strong>充值弹窗：</strong>点击"充值"按钮或促销横幅弹出底部弹窗，选择预设金额或自定义输入，点击"确认充值"完成</p>`
+                content: `<p><strong>充值操作</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击"充值"按钮或促销横幅</li>
+                  <li><strong>执行中：</strong>弹出底部充值弹窗，展示金额网格（50/100/200/500/1000）及自定义输入框；选择金额后显示对应赠送金额</li>
+                  <li><strong>成功：</strong>调起支付，支付成功后余额实时更新，显示"充值成功"toast提示</li>
+                  <li><strong>失败：</strong>支付失败或取消时关闭弹窗，余额不变，显示"充值失败"toast提示</li>
+                  <li><strong>边界条件：</strong>自定义金额低于10元或超过5000元时，确认按钮置灰并提示金额范围</li>
+                </ul>
+                <p><strong>充值卡绑定</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击"充值卡绑定"工具卡片</li>
+                  <li><strong>执行中：</strong>跳转充值卡绑定页面，输入卡号后点击绑定</li>
+                  <li><strong>成功：</strong>卡号有效且未使用时，余额增加对应金额，显示"绑定成功"toast提示</li>
+                  <li><strong>失败：</strong>卡号无效、已使用或已过期时，显示对应错误提示</li>
+                  <li><strong>边界条件：</strong>卡号少于8位或非字母数字组合时，绑定按钮置灰</li>
+                </ul>`
             },
             {
                 title: '核心字段',
@@ -2534,27 +2975,47 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>九宫格抽奖（8奖品格+中心"开始"按钮），旋转动画3-4秒，消耗100积分/次，中奖弹窗（彩纸动画+奖品信息+继续抽奖/查看奖品按钮），费用提示条cost-info、我的奖品入口、抽奖规则</p>
-                <p><strong>页面模块：</strong>导航栏（含"我的奖品"入口）、积分余额展示、九宫格抽奖卡片（8个奖品含prize-tag标签：大奖/限量/稀有）、cost-info提示条、我的奖品入口卡片、抽奖规则列表</p>`
+                content: `<p><strong>核心功能：</strong>为用户提供积分抽奖活动入口，用户消耗固定积分参与九宫格抽奖，系统根据奖品概率随机抽取结果。支持查看奖品列表、抽奖规则以及中奖记录，中奖后通过弹窗展示奖品信息并提供后续操作入口。</p>
+                <p><strong>业务说明：</strong></p>
+                <ul>
+                  <li><strong>前置条件：</strong>用户已登录且可用积分大于等于单次抽奖消耗积分（100积分）</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时加载抽奖活动配置（奖品列表、概率、消耗积分）</li>
+                      <li>用户点击开始抽奖后，前端先校验积分余额，满足条件则扣除积分并请求后端抽奖接口</li>
+                      <li>后端根据奖品概率分布随机计算中奖结果，返回奖品信息</li>
+                      <li>前端根据中奖结果播放九宫格旋转动画，最终停在对应奖品位置</li>
+                      <li>中奖结果写入用户奖品记录，积分变动写入积分流水</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>仅登录用户可参与抽奖，积分扣除操作需用户身份校验</li>
+                  <li><strong>数据约束：</strong>每次抽奖固定消耗100积分；奖品概率总和为100%；用户积分余额不能为负</li>
+                  <li><strong>能力边界：</strong>积分不足时禁止抽奖；网络异常时旋转动画结束后提示"网络异常，请稍后查看奖品"；同一用户无抽奖次数上限</li>
+                </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>点击开始抽奖</strong></p>
+                content: `<p><strong>开始抽奖</strong></p>
                 <ul>
-                    <li><strong>触发：</strong>点击九宫格中心"开始"按钮</li>
-                    <li><strong>执行中：</strong>扣除100积分，九宫格高亮依次转动，3-4秒后逐渐减速停在目标位置</li>
-                    <li><strong>成功：</strong>弹出中奖弹窗，显示奖品信息+彩纸动画</li>
-                    <li><strong>边界条件：</strong>积分不足时按钮不可点击</li>
+                  <li><strong>触发：</strong>点击九宫格中心"开始"按钮</li>
+                  <li><strong>执行中：</strong>扣除100积分，九宫格高亮依次转动，3-4秒后逐渐减速停在目标位置</li>
+                  <li><strong>成功：</strong>弹出中奖弹窗，显示奖品信息+彩纸动画</li>
+                  <li><strong>失败：</strong>网络异常或接口报错时，旋转动画结束后提示"抽奖失败，积分已退回"</li>
+                  <li><strong>边界条件：</strong>积分不足时"开始"按钮置灰不可点击，点击时toast提示"积分不足"</li>
                 </ul>
                 <p><strong>中奖弹窗操作</strong></p>
                 <ul>
-                    <li><strong>继续抽奖：</strong>点击"继续抽奖"按钮关闭弹窗，可再次抽奖</li>
-                    <li><strong>查看奖品：</strong>点击"查看奖品"按钮关闭弹窗，跳转奖品记录页面</li>
+                  <li><strong>触发：</strong>抽奖成功后自动弹出中奖弹窗</li>
+                  <li><strong>执行中：</strong>展示奖品名称、图标及彩纸动画效果</li>
+                  <li><strong>继续抽奖：</strong>点击"继续抽奖"按钮关闭弹窗，可再次抽奖</li>
+                  <li><strong>查看奖品：</strong>点击"查看奖品"按钮关闭弹窗，跳转奖品记录页面</li>
+                  <li><strong>边界条件：</strong>弹窗外点击蒙层也可关闭弹窗</li>
                 </ul>
                 <p><strong>查看我的奖品</strong></p>
                 <ul>
-                    <li><strong>触发：</strong>点击导航栏右侧"我的奖品"或页面底部"我的奖品"入口</li>
-                    <li><strong>成功：</strong>跳转奖品记录页面</li>
+                  <li><strong>触发：</strong>点击导航栏右侧"我的奖品"或页面底部"我的奖品"入口</li>
+                  <li><strong>成功：</strong>跳转奖品记录页面</li>
+                  <li><strong>失败：</strong>未登录时跳转登录页</li>
                 </ul>`
             },
             {
@@ -2593,13 +3054,50 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>用户信息展示、资产概览、订单管理入口、工具服务入口。</p>
-                <p><strong>页面模块：</strong>用户卡片顶部集成消息入口（铃铛图标+红点跳转消息中心）、用户卡片（头像VIP徽章+昵称+会员标签+用户ID+编辑资料+代理中心入口）、实名认证提示（橙色横幅）、资产概览（钱包/积分/优惠券/演出券）、我的订单（5类型入口含角标：待支付/待核销/已完成/已退款/商品订单）、常用工具（列表形式：电子票夹/实名认证/充值卡绑定/隐私设置/偏好设置/地址管理）、其他服务（在线客服/关于我们）、底部Tab栏</p>`
+                content: `<p><strong>核心功能：</strong>作为用户端的个人主页入口，聚合展示用户基本信息、资产数据、订单状态及常用工具入口。用户可在此页面快速了解账户概况，并通过各模块入口跳转到对应功能页面完成进一步操作。</p>
+                <p><strong>业务说明：</strong></p>
+                <ul>
+                  <li><strong>前置条件：</strong>用户已登录</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时并行请求用户基本信息、资产概览、订单统计及未读消息数</li>
+                      <li>实名认证状态根据服务端返回动态展示提示横幅（未认证/审核中/已认证）</li>
+                      <li>订单入口角标根据各状态订单数量实时渲染</li>
+                      <li>消息红点根据未读消息数是否大于0显示</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>仅登录用户可访问，未登录时跳转登录页</li>
+                  <li><strong>数据约束：</strong>用户ID全局唯一；会员等级按积分区间计算；资产数据精度为小数点后2位</li>
+                  <li><strong>能力边界：</strong>代理中心入口仅对代理商身份用户显示；实名认证提示仅对未认证和审核中用户显示</li>
+                </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>实名认证：</strong>未认证橙色横幅/审核中灰色/已认证不显示</p>
-                <p><strong>消息红点：</strong>用户卡片顶部铃铛图标显示红点，点击跳转消息中心</p>`
+                content: `<p><strong>查看消息</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击用户卡片顶部铃铛图标</li>
+                  <li><strong>执行中：</strong>跳转消息中心页面</li>
+                  <li><strong>成功：</strong>进入消息中心，红点标记清除</li>
+                  <li><strong>失败：</strong>网络异常时toast提示"加载失败，请重试"</li>
+                  <li><strong>边界条件：</strong>未读消息数为0时红点隐藏</li>
+                </ul>
+                <p><strong>编辑资料</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击用户卡片"编辑资料"按钮</li>
+                  <li><strong>成功：</strong>跳转编辑资料页面</li>
+                </ul>
+                <p><strong>实名认证提示</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击实名认证提示横幅</li>
+                  <li><strong>成功：</strong>跳转实名认证页面</li>
+                  <li><strong>边界条件：</strong>已认证用户不显示该横幅</li>
+                </ul>
+                <p><strong>订单入口</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击我的订单区域各状态入口</li>
+                  <li><strong>成功：</strong>跳转订单与电子票页面并自动切换到对应Tab</li>
+                  <li><strong>边界条件：</strong>商品订单入口跳转商品订单页面</li>
+                </ul>`
             },
             {
                 title: '核心字段',
@@ -2647,23 +3145,40 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>编辑个人资料。头像上传（直接调用文件选择器，5MB限制，jpg/png）、表单（昵称可编辑1-20字符/真实姓名readonly/手机号readonly脱敏/性别三选一含保密/生日年月日联动select 1950-当前年）、底部保存按钮（校验+toast提示）</p>`
+                content: `<p><strong>核心功能：</strong>允许用户编辑个人资料信息，包括头像上传、昵称修改、性别选择和生日设置。真实姓名和手机号为只读字段，由实名认证和注册信息自动填充。编辑完成后通过保存操作将变更同步到服务端。</p>
+                <p><strong>业务说明：</strong></p>
+                <ul>
+                  <li><strong>前置条件：</strong>用户已登录</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时加载当前用户资料数据填充表单</li>
+                      <li>头像上传时校验文件类型和大小，通过后上传至OSS并返回URL</li>
+                      <li>昵称变更时实时校验长度（1-20字符）和非法字符</li>
+                      <li>点击保存时汇总所有变更字段，调用更新接口同步数据</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>仅允许修改当前登录用户自己的资料</li>
+                  <li><strong>数据约束：</strong>昵称1-20字符，不允许空值；头像仅支持jpg/png，最大5MB；生日年份范围1950-当前年</li>
+                  <li><strong>能力边界：</strong>真实姓名和手机号不可编辑；头像上传无裁剪功能</li>
+                </ul>`
             },
             {
                 title: '交互说明',
                 content: `<p><strong>头像上传</strong></p>
                 <ul>
-                    <li><strong>触发：</strong>点击头像区域</li>
-                    <li><strong>执行中：</strong>直接调用系统文件选择器（accept: image/jpeg,image/png）</li>
-                    <li><strong>成功：</strong>选择图片后直接预览更新，无裁剪功能</li>
-                    <li><strong>边界条件：</strong>图片大小超过5MB提示"图片大小不能超过 5MB"；仅支持jpg/png格式</li>
+                  <li><strong>触发：</strong>点击头像区域</li>
+                  <li><strong>执行中：</strong>直接调用系统文件选择器（accept: image/jpeg,image/png）</li>
+                  <li><strong>成功：</strong>选择图片后直接预览更新，无裁剪功能</li>
+                  <li><strong>失败：</strong>文件选择取消时无操作</li>
+                  <li><strong>边界条件：</strong>图片大小超过5MB提示"图片大小不能超过 5MB"；仅支持jpg/png格式，其他格式提示"仅支持 JPG/PNG 格式"</li>
                 </ul>
                 <p><strong>保存资料</strong></p>
                 <ul>
-                    <li><strong>触发：</strong>点击导航栏右侧"保存"或底部"保存修改"按钮</li>
-                    <li><strong>执行中：</strong>校验昵称非空</li>
-                    <li><strong>成功：</strong>显示"资料保存成功"toast提示，不自动返回</li>
-                    <li><strong>失败：</strong>校验失败显示toast错误提示</li>
+                  <li><strong>触发：</strong>点击导航栏右侧"保存"或底部"保存修改"按钮</li>
+                  <li><strong>执行中：</strong>校验昵称非空且长度在1-20字符范围内</li>
+                  <li><strong>成功：</strong>显示"资料保存成功"toast提示，不自动返回</li>
+                  <li><strong>失败：</strong>校验失败显示对应toast错误提示（如"昵称不能为空"）；接口失败显示"保存失败，请重试"</li>
+                  <li><strong>边界条件：</strong>无任何修改时点击保存仍提示"资料保存成功"</li>
                 </ul>`
             },
             {
@@ -2693,25 +3208,45 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>管理通知偏好、查看隐私政策、注销账号。</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>为用户提供隐私相关设置的统一管理入口，包括消息通知偏好设置、隐私政策文档查看以及账号注销申请。用户可自主控制是否接收营销类推送通知，并在充分了解风险后提交账号注销请求。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>通知开关</strong>：营销通知/演出推广/优惠活动</li>
-                    <li><strong>隐私链接</strong>：隐私政策 + 数据使用说明</li>
-                    <li><strong>数据隐私说明卡片</strong>：蓝色渐变背景，展示隐私保护法律声明（《个人信息保护法》等相关法律法规）</li>
-                    <li><strong>危险区域</strong>：注销账号(红色) + 确认弹窗</li>
+                  <li><strong>前置条件：</strong>用户已登录</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时加载当前用户的通知设置状态</li>
+                      <li>切换通知开关时实时调用接口更新设置，并给出操作反馈</li>
+                      <li>隐私政策链接跳转至H5页面展示完整法律文本</li>
+                      <li>账号注销需二次确认，提交后进入审核流程</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>仅登录用户可修改自己的隐私设置</li>
+                  <li><strong>数据约束：</strong>通知开关状态持久化存储；注销申请需记录申请时间和原因</li>
+                  <li><strong>能力边界：</strong>注销账号后用户数据按法律法规要求保留一定期限后删除；系统通知类消息不受开关控制</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>通知开关：</strong></p>
+                content: `<p><strong>通知开关切换</strong></p>
                 <ul>
-                    <li>切换后实时保存并显示toast提示（如"营销通知已开启"）</li>
+                  <li><strong>触发：</strong>点击通知开关（营销通知/演出推广/优惠活动）</li>
+                  <li><strong>执行中：</strong>开关状态切换，调用接口保存新设置</li>
+                  <li><strong>成功：</strong>显示toast提示（如"营销通知已开启"/"营销通知已关闭"）</li>
+                  <li><strong>失败：</strong>接口失败时开关自动回弹至原状态，toast提示"设置失败，请重试"</li>
+                  <li><strong>边界条件：</strong>网络异常时开关状态不变更，提示网络错误</li>
                 </ul>
-                <p><strong>注销流程：</strong></p>
+                <p><strong>查看隐私政策</strong></p>
                 <ul>
-                    <li>点击"注销账号" -> 确认弹窗（含警告说明） -> 确认注销 -> toast提示"账号注销申请已提交"</li>
-                    <li>无验证码环节</li>
+                  <li><strong>触发：</strong>点击"隐私政策"或"数据使用说明"链接</li>
+                  <li><strong>成功：</strong>跳转H5页面展示完整隐私政策内容</li>
+                </ul>
+                <p><strong>注销账号</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击"注销账号"按钮</li>
+                  <li><strong>执行中：</strong>弹出确认弹窗，展示注销警告说明（账号数据将清除且不可恢复）</li>
+                  <li><strong>成功：</strong>点击确认后提交注销申请，toast提示"账号注销申请已提交"</li>
+                  <li><strong>失败：</strong>存在未完成的订单或余额未清零时，提示"请先处理未完成事项"</li>
+                  <li><strong>边界条件：</strong>无验证码环节；注销申请提交后账号进入冻结期，期间可撤销</li>
                 </ul>`
             },
             {
@@ -2746,26 +3281,46 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>设置用户兴趣偏好标签和会员权限通知开关。</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>允许用户设置个人兴趣偏好标签和会员权限通知开关。兴趣标签用于驱动首页个性化推荐算法，为用户推送符合偏好的演出内容；通知开关控制各类会员权益提醒和系统推送的接收状态。设置完成后需手动保存生效。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>兴趣标签</strong>：演出类型标签组（话剧/音乐剧/音乐会/舞蹈/戏曲/儿童剧/演唱会/其他），已选高亮，含已选数量角标</li>
-                    <li><strong>根据偏好自动推荐标签</strong>：根据已选标签动态生成推荐标签（如"热门话剧""经典音乐剧"等）</li>
-                    <li><strong>会员权限开关</strong>：优先购票提醒/生日专属优惠/积分变动通知/个性化推荐</li>
-                    <li><strong>导航栏右侧保存按钮</strong></li>
+                  <li><strong>前置条件：</strong>用户已登录</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时加载用户当前偏好设置（兴趣标签和通知开关状态）</li>
+                      <li>兴趣标签支持多选，选中状态实时更新本地UI，保存时批量提交</li>
+                      <li>根据已选标签动态生成推荐标签，用于首页内容推荐加权</li>
+                      <li>通知开关变更后需点击保存按钮统一提交</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>仅登录用户可修改自己的偏好设置</li>
+                  <li><strong>数据约束：</strong>兴趣标签至少选择1个，最多无上限；通知开关为布尔值</li>
+                  <li><strong>能力边界：</strong>偏好设置仅影响推荐排序权重，不会过滤掉非偏好类型的演出；推荐标签为系统根据已选标签自动生成，不可手动编辑</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>标签选择：</strong></p>
+                content: `<p><strong>标签选择</strong></p>
                 <ul>
-                    <li>点击切换选中/未选中，选中标签金色渐变高亮</li>
-                    <li>切换标签后实时更新已选数量角标和推荐标签区域</li>
+                  <li><strong>触发：</strong>点击兴趣标签（话剧/音乐剧/音乐会/舞蹈/戏曲/儿童剧/演唱会/其他）</li>
+                  <li><strong>执行中：</strong>切换选中/未选中状态，选中标签金色渐变高亮</li>
+                  <li><strong>成功：</strong>已选数量角标实时更新，推荐标签区域动态刷新</li>
+                  <li><strong>边界条件：</strong>至少选择1个标签，全部取消时保存按钮仍可点击但服务端会拒绝</li>
                 </ul>
-                <p><strong>数据用途：</strong></p>
+                <p><strong>通知开关切换</strong></p>
                 <ul>
-                    <li>兴趣标签用于首页个性化推荐算法</li>
-                    <li>通知开关控制推送消息类型</li>
+                  <li><strong>触发：</strong>点击会员权限开关（优先购票提醒/生日专属优惠/积分变动通知/个性化推荐）</li>
+                  <li><strong>执行中：</strong>开关状态切换，变更暂存本地</li>
+                  <li><strong>成功：</strong>点击保存后统一提交，显示"保存成功"toast</li>
+                  <li><strong>失败：</strong>接口失败时toast提示"保存失败，请重试"</li>
+                </ul>
+                <p><strong>保存偏好设置</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击导航栏右侧"保存"按钮</li>
+                  <li><strong>执行中：</strong>校验至少选择1个兴趣标签，调用更新接口</li>
+                  <li><strong>成功：</strong>显示"保存成功"toast提示</li>
+                  <li><strong>失败：</strong>校验失败或接口报错时显示对应错误提示</li>
+                  <li><strong>边界条件：</strong>未做任何修改时点击保存仍显示"保存成功"</li>
                 </ul>`
             },
             {
@@ -2802,26 +3357,40 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>用户实名认证，提交身份信息和证件照片。</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>为用户提供实名认证服务，采集并核验用户真实身份信息。用户提交真实姓名、身份证号及身份证正反面照片后，系统进入人工或自动审核流程。实名认证是部分功能（如提现、购买限制类演出票）的前置条件。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>认证状态卡片</strong>：未认证/审核中/已认证</li>
-                    <li><strong>表单</strong>：真实姓名/身份证号(仅数字)/身份证正反面(上传)</li>
-                    <li><strong>认证须知</strong></li>
-                    <li><strong>底部提交按钮</strong></li>
+                  <li><strong>前置条件：</strong>用户已登录且未完成实名认证</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时查询当前用户认证状态，已认证用户展示认证信息，未认证/审核中展示对应表单</li>
+                      <li>用户填写表单并上传身份证正反面照片，前端进行基础格式校验</li>
+                      <li>提交后进入审核流程，审核中状态不可再次提交</li>
+                      <li>审核通过后更新用户实名状态，真实姓名同步到用户资料</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>仅允许当前登录用户提交自己的实名认证信息</li>
+                  <li><strong>数据约束：</strong>真实姓名2-20字符；身份证号18位（末位可为X）；身份证照片必填，仅支持jpg/png，单张最大5MB</li>
+                  <li><strong>能力边界：</strong>每个用户仅可提交一次认证申请，审核中不可修改；审核结果通过消息中心推送</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>表单校验：</strong></p>
+                content: `<p><strong>提交认证</strong></p>
                 <ul>
-                    <li>真实姓名：2-20 字符</li>
-                    <li>身份证号：18 位，最后一位可为 X</li>
-                    <li>身份证正反面照片：必填</li>
+                  <li><strong>触发：</strong>点击底部"提交认证"按钮</li>
+                  <li><strong>执行中：</strong>前端校验表单完整性（姓名、身份证号、正反面照片），通过后调用提交接口</li>
+                  <li><strong>成功：</strong>状态变为"审核中"，显示"认证申请已提交，请等待审核"toast提示</li>
+                  <li><strong>失败：</strong>校验失败时显示对应错误提示（如"请输入真实姓名""身份证号格式不正确"）；接口失败显示"提交失败，请重试"</li>
+                  <li><strong>边界条件：</strong>审核中状态隐藏提交按钮，仅展示状态卡片；已认证用户不可再次提交</li>
                 </ul>
-                <p><strong>状态流转：</strong></p>
+                <p><strong>证件上传</strong></p>
                 <ul>
-                    <li>未认证 -> 提交 -> 审核中 -> 已认证</li>
+                  <li><strong>触发：</strong>点击身份证正/反面上传区域</li>
+                  <li><strong>执行中：</strong>调用系统文件选择器或相机</li>
+                  <li><strong>成功：</strong>图片上传至OSS后回显预览</li>
+                  <li><strong>失败：</strong>文件过大或格式不支持时提示"请上传不超过5MB的JPG/PNG图片"</li>
+                  <li><strong>边界条件：</strong>支持拍照和相册选择两种方式</li>
                 </ul>`
             },
             {
@@ -2850,28 +3419,47 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>分类展示系统通知、订单状态变更、积分变动等消息。</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>为用户提供系统消息的统一查看和管理入口。消息按类型分为系统通知、订单状态变更和积分变动三类，支持按Tab切换浏览。用户可查看消息详情、执行关联操作（如查看订单），并将消息标记为已读或全部已读。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>导航栏</strong>：返回 + "消息中心" + "全部已读"</li>
-                    <li><strong>消息 Tab</strong>：系统通知(badge:2)/订单状态(badge:3)/积分变动(badge:2)</li>
-                    <li><strong>系统通知面板</strong>：按日期分组，金色渐变图标，未读有彩色条+脉冲红点</li>
-                    <li><strong>订单状态面板</strong>：购票成功/退款到账/核销提醒/配送发货</li>
-                    <li><strong>积分变动面板</strong>：积分到账/即将到期/消耗通知/签到奖励</li>
-                    <li><strong>消息详情视图</strong>：大图标+标题+时间+正文+高亮提示+操作按钮</li>
+                  <li><strong>前置条件：</strong>用户已登录</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时加载消息列表，按类型分组并统计各Tab未读数量</li>
+                      <li>消息按时间降序排列，支持分页加载</li>
+                      <li>点击单条消息时标记为已读，并展开或跳转消息详情</li>
+                      <li>点击"全部已读"将当前Tab下所有未读消息批量标记为已读</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>仅登录用户可查看自己的消息，消息数据按用户ID隔离</li>
+                  <li><strong>数据约束：</strong>消息正文支持富文本；单用户消息保留最近90天</li>
+                  <li><strong>能力边界：</strong>不支持消息删除；不支持消息搜索；系统通知类消息不可回复</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>消息状态：</strong></p>
+                content: `<p><strong>查看消息详情</strong></p>
                 <ul>
-                    <li>未读：左侧彩色竖条 + 脉冲红点 + 标题加粗</li>
-                    <li>已读：无竖条，标题正常字重</li>
+                  <li><strong>触发：</strong>点击单条消息</li>
+                  <li><strong>执行中：</strong>消息标记为已读，展开详情视图或跳转详情页</li>
+                  <li><strong>成功：</strong>展示消息完整内容（图标+标题+时间+正文+高亮提示+操作按钮）</li>
+                  <li><strong>失败：</strong>网络异常时toast提示"加载失败，请重试"</li>
+                  <li><strong>边界条件：</strong>已读消息再次点击不重复标记</li>
                 </ul>
-                <p><strong>Tab 切换：</strong></p>
+                <p><strong>Tab切换</strong></p>
                 <ul>
-                    <li>切换 Tab 不保留滚动位置</li>
-                    <li>不自动标记已读，仅点击消息或点击"全部已读"时标记</li>
+                  <li><strong>触发：</strong>点击系统通知/订单状态/积分变动Tab</li>
+                  <li><strong>执行中：</strong>切换消息列表，加载对应类型消息</li>
+                  <li><strong>成功：</strong>展示对应类型消息列表，不保留滚动位置</li>
+                  <li><strong>边界条件：</strong>切换Tab不自动标记消息为已读</li>
+                </ul>
+                <p><strong>全部已读</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击导航栏"全部已读"按钮</li>
+                  <li><strong>执行中：</strong>调用批量已读接口</li>
+                  <li><strong>成功：</strong>当前Tab下所有未读消息标记为已读，角标清零，toast提示"已全部标记为已读"</li>
+                  <li><strong>失败：</strong>接口失败时toast提示"操作失败，请重试"</li>
+                  <li><strong>边界条件：</strong>当前Tab无未读消息时，"全部已读"按钮仍可点击但无实际效果</li>
                 </ul>`
             },
             {
@@ -2915,30 +3503,52 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>管理演出订单和电子票，支持订单筛选、电子票查看。</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>为用户提供演出订单管理和电子票查看的统一入口。支持按订单状态筛选浏览，查看订单详情并执行对应操作（支付、取消、查看电子票等）。电子票夹提供已购演出票的集中管理，支持二维码展示和离线查看，方便用户在剧场现场快速核销入场。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>视图切换器</strong>：我的订单/电子票夹</li>
-                    <li><strong>订单 Tab</strong>：全部/待付款/待核销/已完成/已退款(含badge)</li>
-                    <li><strong>订单列表</strong>：订单卡片(订单号+状态/封面+演出信息/操作按钮)</li>
-                    <li><strong>电子票夹</strong>：离线提示 + 电子票卡片(4种渐变主题，含QR码+撕裂线设计)</li>
-                    <li><strong>空状态</strong></li>
+                  <li><strong>前置条件：</strong>用户已登录</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时默认展示"我的订单"视图，加载全部状态订单列表</li>
+                      <li>订单按状态分组（待付款/待核销/已完成/已退款），支持Tab切换筛选</li>
+                      <li>电子票数据本地缓存，确保离线场景下仍可查看已保存的票券</li>
+                      <li>电子票二维码动态生成，支持亮度调节以适应不同光照环境</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>仅登录用户可查看自己的订单和电子票</li>
+                  <li><strong>数据约束：</strong>订单列表按下单时间降序排列；电子票二维码有效期为演出场次开始前2小时至结束后2小时</li>
+                  <li><strong>能力边界：</strong>已过期演出票不可核销；退款订单不可查看电子票；电子票不支持转赠</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>订单状态操作：</strong></p>
+                content: `<p><strong>订单支付</strong></p>
                 <ul>
-                    <li>待付款：去支付 / 取消订单</li>
-                    <li>待核销：查看电子票</li>
-                    <li>已完成：再次购买</li>
-                    <li>已退款：查看详情</li>
+                  <li><strong>触发：</strong>点击待付款订单的"去支付"按钮</li>
+                  <li><strong>执行中：</strong>跳转支付页面或调起支付收银台</li>
+                  <li><strong>成功：</strong>支付成功后订单状态变为"待核销"，toast提示"支付成功"</li>
+                  <li><strong>失败：</strong>支付失败或取消时返回订单列表，状态不变</li>
+                  <li><strong>边界条件：</strong>订单超过支付有效期（如下单后15分钟）时，"去支付"按钮置灰</li>
                 </ul>
-                <p><strong>电子票离线：</strong></p>
+                <p><strong>取消订单</strong></p>
                 <ul>
-                    <li>电子票数据本地缓存</li>
-                    <li>离线状态下可查看已缓存的票</li>
-                    <li>QR 码支持亮度调节</li>
+                  <li><strong>触发：</strong>点击待付款订单的"取消订单"按钮</li>
+                  <li><strong>执行中：</strong>弹出确认弹窗，确认后调用取消接口</li>
+                  <li><strong>成功：</strong>订单状态变为"已取消"，toast提示"订单已取消"</li>
+                  <li><strong>失败：</strong>已支付订单不可取消，按钮不展示</li>
+                </ul>
+                <p><strong>查看电子票</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击待核销/已完成订单的"查看电子票"按钮，或切换至电子票夹视图</li>
+                  <li><strong>执行中：</strong>展示电子票详情页，含二维码、演出信息、座位信息</li>
+                  <li><strong>成功：</strong>二维码正常渲染，支持亮度调节和截图保存</li>
+                  <li><strong>边界条件：</strong>离线状态下展示本地缓存的电子票；已退款订单不展示电子票入口</li>
+                </ul>
+                <p><strong>视图切换</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击顶部"我的订单"/"电子票夹"切换器</li>
+                  <li><strong>执行中：</strong>切换视图并加载对应数据</li>
+                  <li><strong>边界条件：</strong>切换视图保留各自滚动位置</li>
                 </ul>`
             },
             {
@@ -2984,28 +3594,54 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>管理商城商品订单，查看物流信息和订单详情。</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>为用户提供商城商品订单的集中管理入口，支持按订单状态筛选浏览、查看物流轨迹和订单详情。用户可对待付款订单进行支付或取消操作，对已完成订单查看物流信息并再次购买。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>订单 Tab</strong>：全部/待付款/待发货/已完成</li>
-                    <li><strong>商品订单列表</strong>：店铺名+状态/商品图+名称+规格+价格+数量/合计+操作</li>
-                    <li><strong>物流信息</strong>(已完成)：快递公司+单号+时间线</li>
-                    <li><strong>订单详情弹窗</strong>：订单信息+收货信息+商品信息+费用明细</li>
-                    <li><strong>空状态</strong></li>
+                  <li><strong>前置条件：</strong>用户已登录</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时加载全部商品订单列表，按下单时间降序排列</li>
+                      <li>支持按状态Tab切换筛选（全部/待付款/待发货/已完成）</li>
+                      <li>已完成订单展示物流信息入口，点击后展开物流时间线</li>
+                      <li>订单详情以弹窗形式展示，包含商品信息、收货地址和费用明细</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>仅登录用户可查看自己的商品订单</li>
+                  <li><strong>数据约束：</strong>订单状态流转为：待付款 -> 待发货 -> 已完成；待付款订单可在支付有效期内取消</li>
+                  <li><strong>能力边界：</strong>不支持订单修改（如修改收货地址）；已完成订单不支持退货退款（需联系客服）</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>订单状态流转：</strong></p>
+                content: `<p><strong>订单支付</strong></p>
                 <ul>
-                    <li>待付款(pending) -> 待发货(shipping) -> 已完成(completed)</li>
-                    <li>待付款 -> 已取消</li>
+                  <li><strong>触发：</strong>点击待付款订单的"去支付"按钮</li>
+                  <li><strong>执行中：</strong>跳转支付页面或调起支付收银台</li>
+                  <li><strong>成功：</strong>支付成功后订单状态变为"待发货"，toast提示"支付成功"</li>
+                  <li><strong>失败：</strong>支付失败或取消时返回订单列表，状态不变</li>
+                  <li><strong>边界条件：</strong>订单超过支付有效期时，"去支付"按钮置灰，显示"已过期"</li>
                 </ul>
-                <p><strong>操作按钮：</strong></p>
+                <p><strong>取消订单</strong></p>
                 <ul>
-                    <li>待付款：去支付 / 取消订单</li>
-                    <li>待发货：联系客服 / 催发货</li>
-                    <li>已完成：再次购买 / 查看详情</li>
+                  <li><strong>触发：</strong>点击待付款订单的"取消订单"按钮</li>
+                  <li><strong>执行中：</strong>弹出确认弹窗，确认后调用取消接口</li>
+                  <li><strong>成功：</strong>订单状态变为"已取消"，toast提示"订单已取消"</li>
+                  <li><strong>失败：</strong>已支付订单不可取消，按钮不展示</li>
+                </ul>
+                <p><strong>查看物流</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击已完成订单的"查看物流"按钮</li>
+                  <li><strong>执行中：</strong>展开物流信息区域或跳转物流详情页</li>
+                  <li><strong>成功：</strong>展示快递公司、运单号及物流时间线</li>
+                  <li><strong>失败：</strong>物流信息未同步时显示"物流信息更新中，请稍后查看"</li>
+                  <li><strong>边界条件：</strong>待发货状态订单物流信息为空，不展示查看物流入口</li>
+                </ul>
+                <p><strong>查看订单详情</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击订单卡片的"查看详情"按钮或订单区域</li>
+                  <li><strong>执行中：</strong>弹出订单详情弹窗</li>
+                  <li><strong>成功：</strong>展示订单信息、收货信息、商品列表及费用明细</li>
+                  <li><strong>边界条件：</strong>点击弹窗外蒙层或关闭按钮可关闭弹窗</li>
                 </ul>`
             },
             {
@@ -3072,29 +3708,55 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>周边商品展示、分类筛选、商品详情、购物车管理。</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>为用户提供演出周边商品和文创产品的浏览与购买入口。支持按商品分类筛选浏览、查看商品详情（含规格选择）、管理购物车以及结算下单。商城与演出票务系统共用用户账号和支付体系。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>商城头部</strong>：标题"商城" + 搜索栏 + 购物车图标(角标)</li>
-                    <li><strong>Banner</strong>：背景图 + 标题 + "立即探索"</li>
-                    <li><strong>分类侧边栏 + 商品网格</strong>：左侧分类(全部/演出衍生品/文创周边等)，右侧双列商品</li>
-                    <li><strong>商品详情视图</strong>：图片轮播+价格+名称+规格选择+配送方式+详情图文+底部操作栏(购物车/收藏/加入购物车/立即购买)</li>
-                    <li><strong>购物车视图</strong>：购物车列表(勾选+数量控制+删除)+底部栏(全选+合计+结算)</li>
-                    <li><strong>底部 Tab 栏</strong>：5 个 Tab，当前激活"商城"</li>
+                  <li><strong>前置条件：</strong>用户已登录（浏览商品无需登录，加购和购买需登录）</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时加载商品分类列表和默认分类下的商品列表</li>
+                      <li>左侧分类切换时，右侧商品网格异步刷新，支持分页加载</li>
+                      <li>商品详情页展示轮播图、价格、规格选项及图文详情</li>
+                      <li>购物车数据实时同步服务端，支持跨设备同步</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>浏览商品无需登录；加购、结算需登录</li>
+                  <li><strong>数据约束：</strong>商品库存实时校验，库存为0时显示"已售罄"；购物车单商品限购99件</li>
+                  <li><strong>能力边界：</strong>不支持商品收藏功能；不支持商品评价；不支持优惠券抵扣</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>分类联动：</strong></p>
+                content: `<p><strong>分类切换</strong></p>
                 <ul>
-                    <li>左侧分类切换，右侧商品列表刷新</li>
-                    <li>选中分类高亮，右侧列表平滑过渡</li>
+                  <li><strong>触发：</strong>点击左侧分类列表中的分类项</li>
+                  <li><strong>执行中：</strong>选中分类高亮，右侧商品列表刷新</li>
+                  <li><strong>成功：</strong>展示对应分类商品，列表平滑过渡</li>
+                  <li><strong>失败：</strong>网络异常时toast提示"加载失败，请重试"</li>
+                  <li><strong>边界条件：</strong>分类下无商品时展示空状态</li>
                 </ul>
-                <p><strong>购物车操作：</strong></p>
+                <p><strong>加入购物车</strong></p>
                 <ul>
-                    <li>加购成功显示 toast 提示</li>
-                    <li>数量加减实时更新合计金额</li>
-                    <li>未选商品时结算按钮置灰</li>
+                  <li><strong>触发：</strong>在商品详情页点击"加入购物车"按钮</li>
+                  <li><strong>执行中：</strong>校验登录状态和商品库存，调用加购接口</li>
+                  <li><strong>成功：</strong>购物车角标数量+1，toast提示"已加入购物车"</li>
+                  <li><strong>失败：</strong>未登录时跳转登录页；库存不足时提示"库存不足"</li>
+                  <li><strong>边界条件：</strong>同一商品多次加购，数量累加；超过99件时提示"已达购买上限"</li>
+                </ul>
+                <p><strong>购物车结算</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>在购物车视图点击"结算"按钮</li>
+                  <li><strong>执行中：</strong>校验是否有选中商品，跳转订单确认页</li>
+                  <li><strong>成功：</strong>跳转订单确认页面，展示商品清单和收货地址</li>
+                  <li><strong>失败：</strong>未选中商品时结算按钮置灰，点击无响应</li>
+                  <li><strong>边界条件：</strong>商品库存变动导致选中商品库存不足时，提示"部分商品库存不足，请重新选择"</li>
+                </ul>
+                <p><strong>立即购买</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>在商品详情页点击"立即购买"按钮</li>
+                  <li><strong>执行中：</strong>校验登录状态和库存，直接跳转订单确认页（跳过购物车）</li>
+                  <li><strong>成功：</strong>跳转订单确认页面，该商品自动带入</li>
+                  <li><strong>失败：</strong>未登录时跳转登录页；库存不足时提示"库存不足"</li>
                 </ul>`
             },
             {
@@ -3151,19 +3813,47 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>管理已购买的券包，查看包含的演出券详情。</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>为用户提供已购买券包的集中管理入口，支持查看券包基本信息、展开查看包含的演出券详情以及进行选座操作。券包状态根据内部演出券的使用情况动态计算，用户可直观了解每个券包的使用进度和有效期。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>券包列表</strong>（可展开）：图标+名称+券数量+有效期+状态+展开箭头</li>
-                    <li><strong>展开后</strong>：演出券列表（封面缩略图+演出名称+场次时间+座位信息+状态+选座按钮）</li>
+                  <li><strong>前置条件：</strong>用户已登录且购买过券包</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时加载用户已购券包列表，按购买时间降序排列</li>
+                      <li>券包卡片展示概要信息（名称、券数量、有效期、整体状态）</li>
+                      <li>点击券包展开后加载并展示内部演出券列表</li>
+                      <li>演出券状态根据是否选座、是否使用、是否过期自动计算</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>仅登录用户可查看自己购买的券包</li>
+                  <li><strong>数据约束：</strong>券包有效期以最早过期演出券的时间为准；演出券必须在场次开始前完成选座</li>
+                  <li><strong>能力边界：</strong>不支持券包转赠；不支持部分退款；过期券包不可使用但可查看记录</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>展开/收起：</strong></p>
+                content: `<p><strong>展开/收起券包</strong></p>
                 <ul>
-                    <li>点击券包卡片切换展开/收起</li>
-                    <li>展开动画：高度过渡 + 箭头旋转</li>
+                  <li><strong>触发：</strong>点击券包卡片</li>
+                  <li><strong>执行中：</strong>展开或收起券包详情，加载内部演出券列表</li>
+                  <li><strong>成功：</strong>展开动画（高度过渡 + 箭头旋转），展示演出券列表</li>
+                  <li><strong>失败：</strong>网络异常时toast提示"加载失败，请重试"</li>
+                  <li><strong>边界条件：</strong>券包内无演出券时展开后展示空状态</li>
+                </ul>
+                <p><strong>选座操作</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击未使用演出券的"选座"按钮</li>
+                  <li><strong>执行中：</strong>跳转选座页面</li>
+                  <li><strong>成功：</strong>进入选座流程，选座成功后演出券状态变为"已选座"</li>
+                  <li><strong>失败：</strong>演出券已过期或已使用时按钮置灰不可点击</li>
+                  <li><strong>边界条件：</strong>选座后不可更改座位，如需调整需联系客服</li>
+                </ul>
+                <p><strong>查看演出券详情</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击演出券卡片</li>
+                  <li><strong>执行中：</strong>跳转演出券详情页或弹出详情弹窗</li>
+                  <li><strong>成功：</strong>展示演出封面、名称、场次时间、座位信息及使用状态</li>
+                  <li><strong>边界条件：</strong>已使用的演出券展示核销时间和入场记录</li>
                 </ul>`
             },
             {
@@ -3204,28 +3894,45 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>在线充值余额，支持预设金额和自定义金额。</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>为用户提供钱包余额的在线充值入口，支持选择预设充值金额或输入自定义金额，并选择支付方式进行支付。系统根据充值金额档位自动计算赠送金额，充值成功后余额实时更新。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>余额显示</strong>（深色渐变）：当前余额</li>
-                    <li><strong>充值金额选择</strong>：5项金额网格(¥50/¥100赠¥5/¥200赠¥15/¥500赠¥50/自定义)</li>
-                    <li><strong>自定义金额输入</strong></li>
-                    <li><strong>支付方式</strong>：微信支付(推荐) + 支付宝</li>
-                    <li><strong>充值说明</strong></li>
-                    <li><strong>底部立即充值按钮</strong></li>
+                  <li><strong>前置条件：</strong>用户已登录</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时加载当前余额和充值优惠活动配置</li>
+                      <li>用户选择预设金额或输入自定义金额，系统实时计算赠送金额和到账总额</li>
+                      <li>选择支付方式（微信支付/支付宝），点击立即充值调起对应支付SDK</li>
+                      <li>支付成功后异步通知服务端，更新用户余额并写入充值流水</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>仅登录用户可充值，余额数据按用户ID隔离</li>
+                  <li><strong>数据约束：</strong>自定义充值金额最低10元，最高5000元；赠送金额按档位固定计算</li>
+                  <li><strong>能力边界：</strong>充值金额不可退款；充值赠送金额与充值本金同时到账；不支持充值卡支付</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>充值优惠：</strong></p>
+                content: `<p><strong>选择充值金额</strong></p>
                 <ul>
-                    <li>¥100 赠 ¥5</li>
-                    <li>¥200 赠 ¥15</li>
-                    <li>¥500 赠 ¥50</li>
+                  <li><strong>触发：</strong>点击预设金额网格（¥50/¥100/¥200/¥500）或输入自定义金额</li>
+                  <li><strong>执行中：</strong>选中金额高亮，实时展示赠送金额和到账总额</li>
+                  <li><strong>成功：</strong>金额选中，立即充值按钮变为可点击状态</li>
+                  <li><strong>边界条件：</strong>自定义金额低于10元或超过5000元时，输入框下方提示错误信息，充值按钮置灰</li>
                 </ul>
-                <p><strong>支付流程：</strong></p>
+                <p><strong>立即充值</strong></p>
                 <ul>
-                    <li>选择金额 -> 选择支付方式 -> 点击充值 -> 调起支付 -> 支付成功 -> 余额更新</li>
+                  <li><strong>触发：</strong>点击底部"立即充值"按钮</li>
+                  <li><strong>执行中：</strong>校验金额和支付方式，调起支付SDK</li>
+                  <li><strong>成功：</strong>支付完成后返回页面，余额实时更新，toast提示"充值成功"</li>
+                  <li><strong>失败：</strong>支付取消时无提示，返回页面状态不变；支付失败时toast提示"支付失败，请重试"</li>
+                  <li><strong>边界条件：</strong>网络异常导致支付状态未同步时，用户可手动下拉刷新余额</li>
+                </ul>
+                <p><strong>切换支付方式</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击支付方式选项（微信支付/支付宝）</li>
+                  <li><strong>执行中：</strong>切换选中状态</li>
+                  <li><strong>边界条件：</strong>默认选中微信支付；仅支持单选</li>
                 </ul>`
             },
             {
@@ -3254,19 +3961,38 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>绑定实体充值卡，管理已绑定的充值卡。</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>为用户提供实体充值卡的线上绑定入口，用户输入充值卡号后系统将卡内金额充值到用户钱包余额。同时展示已绑定充值卡的历史记录，方便用户查询和管理。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>绑定新卡</strong>：充值卡号输入框(至少8位字母数字) + "绑定充值卡"按钮</li>
-                    <li><strong>已绑定充值卡列表</strong>：卡号后4位+绑定时间+金额+状态(已激活/已使用/已过期)</li>
+                  <li><strong>前置条件：</strong>用户已登录</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时加载已绑定充值卡列表</li>
+                      <li>用户输入充值卡号，前端校验格式（至少8位字母数字）</li>
+                      <li>点击绑定后，后端校验卡号有效性（是否存在、是否已使用、是否过期）</li>
+                      <li>校验通过后，卡面金额充值到用户钱包余额，并写入充值流水和绑定记录</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>仅登录用户可绑定充值卡，每张卡只能绑定一次</li>
+                  <li><strong>数据约束：</strong>卡号至少8位，仅允许字母和数字；已绑定的卡不可重复绑定；过期卡不可绑定</li>
+                  <li><strong>能力边界：</strong>不支持充值卡解绑；不支持充值卡转赠；充值卡金额一次性全额充值，不可分批</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>绑定校验：</strong></p>
+                content: `<p><strong>绑定充值卡</strong></p>
                 <ul>
-                    <li>卡号至少 8 位，允许字母和数字</li>
-                    <li>无效卡号提示"请输入完整的充值卡号"</li>
+                  <li><strong>触发：</strong>输入卡号后点击"绑定充值卡"按钮</li>
+                  <li><strong>执行中：</strong>前端校验卡号格式（至少8位字母数字），通过后调用绑定接口</li>
+                  <li><strong>成功：</strong>卡号有效且未使用时，余额增加对应金额，toast提示"绑定成功，余额已到账"，已绑定卡片列表自动刷新</li>
+                  <li><strong>失败：</strong>卡号无效时提示"请输入有效的充值卡号"；卡号已使用时提示"该充值卡已被使用"；卡号过期时提示"该充值卡已过期"</li>
+                  <li><strong>边界条件：</strong>卡号少于8位或非字母数字组合时，绑定按钮置灰不可点击</li>
+                </ul>
+                <p><strong>查看已绑定卡片</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>进入页面自动加载</li>
+                  <li><strong>成功：</strong>展示已绑定充值卡列表（卡号后4位+绑定时间+金额+状态）</li>
+                  <li><strong>边界条件：</strong>无绑定记录时展示空状态</li>
                 </ul>`
             },
             {
@@ -3296,25 +4022,45 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>申请会员实体卡，查看权益和申请记录。</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>为符合条件的会员用户提供实体会员卡申请服务。用户可查看当前会员等级、可选卡片类型及对应权益，填写收件信息后提交申请。系统审核通过后安排实体卡制作和邮寄。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>当前等级横幅</strong>（深色渐变）：金卡会员 + VIP 3</li>
-                    <li><strong>卡片类型选择</strong>：金卡(可选)/钻石卡(锁定)</li>
-                    <li><strong>权益展示</strong>：2x2网格(折扣/优先购票/生日礼遇/专属客服)</li>
-                    <li><strong>申请表单</strong>：姓名/手机号/所在地区(省+市select)/详细地址</li>
-                    <li><strong>申请记录入口</strong></li>
-                    <li><strong>底部提交按钮</strong> + 成功弹窗</li>
+                  <li><strong>前置条件：</strong>用户已登录且会员等级达到金卡及以上</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时加载当前会员等级和已解锁的卡片类型</li>
+                      <li>低等级卡片类型自动解锁可选，高等级卡片类型根据会员等级锁定或解锁</li>
+                      <li>用户选择卡片类型，填写收件信息（姓名、手机号、地址）</li>
+                      <li>提交申请后进入审核流程，审核通过后安排制卡和邮寄</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>仅金卡及以上会员可申请；每个用户限申请一张实体卡</li>
+                  <li><strong>数据约束：</strong>姓名2-20字符；手机号11位；所在地区必选（省+市）；详细地址5-100字符</li>
+                  <li><strong>能力边界：</strong>已申请过实体卡的用户不可再次申请；申请提交后不可修改收件信息；不支持到付，邮费由平台承担</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>表单校验：</strong></p>
+                content: `<p><strong>选择卡片类型</strong></p>
                 <ul>
-                    <li>姓名：必填</li>
-                    <li>手机号：必填，11 位手机号</li>
-                    <li>所在地区：必选</li>
-                    <li>详细地址：必填</li>
+                  <li><strong>触发：</strong>点击金卡或钻石卡选项</li>
+                  <li><strong>执行中：</strong>切换选中状态</li>
+                  <li><strong>成功：</strong>选中卡片高亮，下方权益展示区域更新为对应卡片权益</li>
+                  <li><strong>边界条件：</strong>未解锁的卡片类型置灰不可选，点击时提示"该卡片需达到XX等级后解锁"</li>
+                </ul>
+                <p><strong>提交申请</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击底部"提交申请"按钮</li>
+                  <li><strong>执行中：</strong>前端校验表单完整性（姓名、手机号、所在地区、详细地址），通过后调用提交接口</li>
+                  <li><strong>成功：</strong>弹出成功弹窗，提示"申请已提交，审核通过后将安排邮寄"</li>
+                  <li><strong>失败：</strong>校验失败时显示对应错误提示（如"请输入正确的手机号"）；接口失败显示"提交失败，请重试"</li>
+                  <li><strong>边界条件：</strong>已申请过的用户提交按钮置灰，提示"您已申请过实体卡"</li>
+                </ul>
+                <p><strong>查看申请记录</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击"申请记录"入口</li>
+                  <li><strong>成功：</strong>跳转申请记录页面，展示历史申请状态（审核中/已邮寄/已签收）</li>
+                  <li><strong>边界条件：</strong>无申请记录时展示空状态</li>
                 </ul>`
             },
             {
@@ -3357,22 +4103,46 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>展示钱包交易流水明细，支持按时间筛选和汇总统计。</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>为用户提供钱包交易流水的查询和统计入口。支持按时间范围筛选交易记录，展示累计收入、累计支出和当前余额的汇总数据。交易列表按月份分组展示，包含交易类型、标题、时间、金额及交易后余额，帮助用户清晰了解资金变动情况。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>筛选标签</strong>：全部/本月/近三月/近半年</li>
-                    <li><strong>汇总栏</strong>：累计收入 + 累计支出 + 当前余额</li>
-                    <li><strong>交易列表</strong>：按月份分组，含图标+标题+时间+金额+余额</li>
+                  <li><strong>前置条件：</strong>用户已登录</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时加载默认全部时间范围的交易流水和汇总数据</li>
+                      <li>切换时间筛选标签时，重新请求对应范围的数据并更新汇总栏</li>
+                      <li>交易列表按月份降序分组，组内按时间降序排列</li>
+                      <li>支持分页加载，滚动到底部自动加载更多</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>仅登录用户可查看自己的交易记录</li>
+                  <li><strong>数据约束：</strong>交易记录保留最近2年；金额精度为小数点后2位；汇总数据实时计算</li>
+                  <li><strong>能力边界：</strong>不支持按交易类型筛选；不支持导出；不支持交易记录删除</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>列表展示：</strong></p>
+                content: `<p><strong>时间筛选切换</strong></p>
                 <ul>
-                    <li>按月份降序分组，组内按时间降序</li>
-                    <li>收入记录金额绿色带"+"前缀</li>
-                    <li>支出记录金额深色带"-"前缀</li>
-                    <li>每条记录显示操作后余额</li>
+                  <li><strong>触发：</strong>点击筛选标签（全部/本月/近三月/近半年）</li>
+                  <li><strong>执行中：</strong>切换选中标签，请求对应时间范围的数据</li>
+                  <li><strong>成功：</strong>交易列表和汇总栏（累计收入/累计支出/当前余额）同步更新</li>
+                  <li><strong>失败：</strong>网络异常时toast提示"加载失败，请重试"</li>
+                  <li><strong>边界条件：</strong>当前选中标签再次点击无操作；筛选结果为空时展示空状态</li>
+                </ul>
+                <p><strong>查看交易详情</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击单条交易记录</li>
+                  <li><strong>执行中：</strong>展开或跳转交易详情</li>
+                  <li><strong>成功：</strong>展示交易完整信息（类型、标题、时间、金额、交易后余额、关联订单号）</li>
+                  <li><strong>边界条件：</strong>无关联订单的交易不展示订单号字段</li>
+                </ul>
+                <p><strong>列表加载</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>页面进入或滚动到底部</li>
+                  <li><strong>执行中：</strong>分页加载交易记录</li>
+                  <li><strong>成功：</strong>新记录追加到列表底部</li>
+                  <li><strong>边界条件：</strong>无更多数据时展示"没有更多记录"提示</li>
                 </ul>`
             },
             {
@@ -3413,22 +4183,46 @@ const devDocs = {
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>按城市筛选展示剧院列表，查看剧院详情和演出场次。</p>
-                <p><strong>页面模块：</strong></p>
+                content: `<p><strong>核心功能：</strong>为用户提供合作剧院的浏览和筛选入口。支持按城市快速筛选剧院，展示剧院基本信息（封面、地址、演出场次、座位数等），用户可点击剧院卡片查看详情和当前演出场次。该页面帮助用户发现附近的演出场馆并规划观演行程。</p>
+                <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>城市筛选</strong>：水平滚动城市标签(全部/海口/三亚/琼海/万宁/儋州)</li>
-                    <li><strong>剧院列表</strong>：封面图+城市定位标签+名称/地址+演出场次+座位数</li>
-                    <li><strong>空状态</strong></li>
+                  <li><strong>前置条件：</strong>无特殊前置条件，所有用户均可浏览</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时加载全部城市标签和全部剧院列表</li>
+                      <li>城市标签支持水平滚动，点击切换时剧院列表异步刷新</li>
+                      <li>剧院列表按城市分组或按默认排序展示</li>
+                      <li>点击剧院卡片跳转剧院详情页，展示该剧院当前演出场次</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>浏览剧院列表无需登录</li>
+                  <li><strong>数据约束：</strong>仅展示有合作关系的剧院；演出场次数为当前在售场次数量</li>
+                  <li><strong>能力边界：</strong>不支持剧院搜索；不支持地图导航；不支持在线选座（需跳转演出详情页）</li>
                 </ul>`
             },
             {
                 title: '交互说明',
-                content: `<p><strong>城市筛选：</strong></p>
+                content: `<p><strong>城市筛选</strong></p>
                 <ul>
-                    <li>默认显示"全部"城市</li>
-                    <li>切换城市标签，列表带淡入淡出动画刷新</li>
-                    <li>标签栏水平滚动</li>
-                    <li>无数据时显示空状态</li>
+                  <li><strong>触发：</strong>点击城市标签（全部/海口/三亚/琼海/万宁/儋州等）</li>
+                  <li><strong>执行中：</strong>切换选中标签，请求对应城市的剧院数据</li>
+                  <li><strong>成功：</strong>剧院列表带淡入淡出动画刷新，展示选中城市的剧院</li>
+                  <li><strong>失败：</strong>网络异常时toast提示"加载失败，请重试"</li>
+                  <li><strong>边界条件：</strong>默认显示"全部"城市；标签栏支持水平滚动；选中城市无剧院时展示空状态</li>
+                </ul>
+                <p><strong>查看剧院详情</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击剧院卡片</li>
+                  <li><strong>执行中：</strong>跳转剧院详情页面</li>
+                  <li><strong>成功：</strong>展示剧院详细信息（封面大图、地址、简介、当前演出场次列表）</li>
+                  <li><strong>失败：</strong>网络异常时toast提示"加载失败，请重试"</li>
+                </ul>
+                <p><strong>列表加载</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>页面进入或滚动到底部</li>
+                  <li><strong>执行中：</strong>分页加载剧院列表</li>
+                  <li><strong>成功：</strong>新记录追加到列表底部</li>
+                  <li><strong>边界条件：</strong>无更多数据时展示"没有更多剧院"提示</li>
                 </ul>`
             },
             {
