@@ -794,13 +794,15 @@ body {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--coral-orange), var(--coral-orange-light));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 14px;
+  overflow: hidden;
   box-shadow: 0 2px 8px rgba(255, 107, 74, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+}
+
+.reply-card .reply-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* 气泡主体 */
@@ -1402,7 +1404,7 @@ body {
               <img src="https://picsum.photos/seed/review-img3/144/144" alt="评论图片">
             </div>
             <div class="reply-card">
-              <div class="reply-avatar"><i class="fas fa-check"></i></div>
+              <div class="reply-avatar"><img src="https://raw.githubusercontent.com/andylalex/hainan-ticket-ui-design/main/assets/official-avatar.jpg" alt="官方"></div>
               <div class="reply-bubble">
                 <div class="reply-header">
                   <span class="reply-badge"><i class="fas fa-shield-alt"></i> 官方回复</span>
@@ -1423,7 +1425,7 @@ body {
             </div>
             <div class="review-text">带家人一起来的，现场氛围特别好，美食区的东西也很有海南特色。孩子玩得很开心，强烈推荐亲子家庭来体验！</div>
             <div class="reply-card">
-              <div class="reply-avatar"><i class="fas fa-check"></i></div>
+              <div class="reply-avatar"><img src="https://raw.githubusercontent.com/andylalex/hainan-ticket-ui-design/main/assets/official-avatar.jpg" alt="官方"></div>
               <div class="reply-bubble">
                 <div class="reply-header">
                   <span class="reply-badge"><i class="fas fa-shield-alt"></i> 官方回复</span>
@@ -1444,7 +1446,7 @@ body {
             </div>
             <div class="review-text">阵容很强大，舞台设计很有创意。唯一不足的是交通稍微不太方便，建议提前规划好出行路线。整体来说还是很值得的体验。</div>
             <div class="reply-card">
-              <div class="reply-avatar"><i class="fas fa-check"></i></div>
+              <div class="reply-avatar"><img src="https://raw.githubusercontent.com/andylalex/hainan-ticket-ui-design/main/assets/official-avatar.jpg" alt="官方"></div>
               <div class="reply-bubble">
                 <div class="reply-header">
                   <span class="reply-badge"><i class="fas fa-shield-alt"></i> 官方回复</span>
@@ -1469,7 +1471,7 @@ body {
               <img src="https://picsum.photos/seed/review-img5/144/144" alt="评论图片">
             </div>
             <div class="reply-card">
-              <div class="reply-avatar"><i class="fas fa-check"></i></div>
+              <div class="reply-avatar"><img src="https://raw.githubusercontent.com/andylalex/hainan-ticket-ui-design/main/assets/official-avatar.jpg" alt="官方"></div>
               <div class="reply-bubble">
                 <div class="reply-header">
                   <span class="reply-badge"><i class="fas fa-shield-alt"></i> 官方回复</span>
