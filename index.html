@@ -668,7 +668,7 @@
         .sidebar-sub-content {
             overflow-y: auto;
             flex: 1;
-            padding: 12px 10px;
+            padding: 16px;
         }
 
         .sidebar-sub-panel {
@@ -689,7 +689,7 @@
 
         .sidebar-tab-panel {
             display: none;
-            padding: 0;
+            padding: 16px;
         }
 
         .sidebar-tab-panel.active {
@@ -1788,7 +1788,7 @@ const devDocs = {
         subtitle: '分类筛选 + 多维筛选 + 演出列表',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>按分类、区域、时间、价格等多维度筛选并展示演出列表。</p>
                 <p><strong>页面模块：</strong></p>
                 <ul>
@@ -1801,10 +1801,11 @@ const devDocs = {
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '演出列表字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['show_id', '演出ID', 'number', '是', '演出唯一标识'],
                             ['title', '标题', 'string', '是', '演出名称'],
@@ -1819,7 +1820,7 @@ const devDocs = {
                     },
                     {
                         title: '筛选条件字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['category_id', '分类ID', 'number', '否', '分类ID，0为全部'],
                             ['category_name', '分类名称', 'string', '否', '分类名称'],
@@ -1880,16 +1881,17 @@ const devDocs = {
         subtitle: '演出信息 + 场次选择 + 评论 + 购票入口',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>展示演出完整信息，支持场次选择、评论查看，提供购票入口。</p>
                 <p><strong>页面模块：</strong>演出大图+返回/分享按钮、演出信息（名称/标签/评分/时长/年龄限制）、早鸟/会员优先横幅、场次选择（水平滚动卡片）、详情Tab（详情/评论/须知）、场馆信息（名称/地址/距离）、底部操作栏（收藏+分享+立即购买）</p>`
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '演出详情字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['show_id', '演出ID', 'number', '是', '演出唯一标识'],
                             ['title', '标题', 'string', '是', '演出名称'],
@@ -1907,7 +1909,7 @@ const devDocs = {
                     },
                     {
                         title: '场次字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['session_id', '会话ID', 'number', '是', '场次唯一标识'],
                             ['show_date', '演出日期', 'string', '是', '演出日期'],
@@ -1921,7 +1923,7 @@ const devDocs = {
                     },
                     {
                         title: '场馆信息字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['venue_name', '场馆名称', 'string', '是', '场馆名称'],
                             ['venue_address', '场馆地址', 'string', '是', '场馆地址'],
@@ -1932,7 +1934,7 @@ const devDocs = {
                     },
                     {
                         title: '评论字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['comment_id', 'commentID', 'number', '是', '评论唯一标识'],
                             ['user_avatar', '用户头像', 'string', '是', '评论者头像URL'],
@@ -2212,15 +2214,16 @@ const devDocs = {
         subtitle: '关键词搜索 + 搜索建议 + 历史 + 热门',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>全局搜索演出，支持搜索建议（防抖300ms）、历史记录（localStorage最多10条）、热门搜索排行（Top3高亮）、搜索结果（关键词高亮）、空状态</p>`
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '搜索结果字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['keyword', 'keyword', 'string', '是', '搜索关键词'],
                             ['show_id', '演出ID', 'number', '是', '演出唯一标识'],
@@ -2234,7 +2237,7 @@ const devDocs = {
                     },
                     {
                         title: '搜索建议字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['suggestion_list[]', 'suggestion_list[]', 'array', '是', '搜索建议列表，最多8条'],
                             ['hot_keywords[]', 'hot_keywords[]', 'array', '是', '热门搜索关键词列表'],
@@ -2269,16 +2272,17 @@ const devDocs = {
         subtitle: '会员卡片 + 等级权益 + 优先购票 + 推荐有奖',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>展示会员等级信息、权益列表、优先购票资格、推荐有奖功能。</p>
                 <p><strong>页面模块：</strong>会员卡片（深色渐变，头像+昵称+金卡徽章+成长值进度条3200/5000+卡号）、会员权益（水平滚动5项：优先购票/等级折扣/生日赠礼/定期发券/专属客服）、优先购票（倒计时+演出卡片列表）、推荐有奖（海报+分享链接）、底部Tab栏</p>`
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '会员信息字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['avatar', 'avatar', 'string', '是', '用户头像URL'],
                             ['nickname', 'nickname', 'string', '是', '用户昵称'],
@@ -2290,7 +2294,7 @@ const devDocs = {
                     },
                     {
                         title: '会员权益字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['benefit_id', 'benefitID', 'number', '是', '权益唯一标识'],
                             ["name", "名称", "string", "是", "权益名称，如\"优先购票\"\"等级折扣\""],
@@ -2301,7 +2305,7 @@ const devDocs = {
                     },
                     {
                         title: '优先购票字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['show_id', '演出ID', 'number', '是', '演出唯一标识'],
                             ['title', '标题', 'string', '是', '演出名称'],
@@ -2332,16 +2336,17 @@ const devDocs = {
         subtitle: '优惠券列表 + 状态筛选 + 使用',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>管理用户优惠券，按状态筛选（全部/未使用/已使用/已过期），查看详情和使用。</p>
                 <p><strong>页面模块：</strong>导航栏（返回+"我的优惠券"+"去使用"）、筛选Tab（4项含角标）、优惠券列表（左侧金额区半圆缺口+右侧信息区）、空状态</p>`
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '优惠券字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['coupon_id', '优惠券ID', 'number', '是', '优惠券唯一标识'],
                             ['amount', '金额', 'number', '是', '优惠金额'],
@@ -2374,16 +2379,17 @@ const devDocs = {
         subtitle: '统计概览 + 券包列表 + 购买',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>展示券包列表，支持购买和查看详情。</p>
                 <p><strong>页面模块：</strong>统计头部（2x2网格：券包数/最低折扣/累计节省/可用券数）、筛选Tab（全部/可使用/已过期）、可展开券包卡片（封面+名称+演出chips+价格+购买按钮）、确认弹窗</p>`
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '券包统计字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['total_packages', '总packages', 'number', '是', '券包总数'],
                             ['min_discount', '最低折扣', 'string', '是', '最低折扣信息'],
@@ -2393,7 +2399,7 @@ const devDocs = {
                     },
                     {
                         title: '券包字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['package_id', '券包ID', 'number', '是', '券包唯一标识'],
                             ['cover_image', '封面图片', 'string', '是', '券包封面图URL'],
@@ -2409,10 +2415,25 @@ const devDocs = {
                 ]
             },
             {
-                title: '页面模块详细说明',
-                content: `<p><strong>券包卡片 (.package-card)</strong></p>
-                <ul><li>封面+名称+适用演出chips+原价删除线+折扣价红色+节省绿色+"购买"按钮</li><li>展开后显示包含券列表（名称+面额+有效期）</li><li>数据字段：<code>package_id</code>, <code>cover_image</code>, <code>name</code>, <code>show_tags[]</code>, <code>original_price</code>, <code>sale_price</code>, <code>saved_amount</code>, <code>coupons[]</code></li></ul>`
-            },
+                title: '交互说明',
+                content: `<p><strong>点击券包卡片</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击券包卡片</li>
+                    <li><strong>成功：</strong>展开/收起券包详情，显示包含的优惠券列表</li>
+                </ul>
+                <p><strong>点击购买按钮</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击"购买"按钮</li>
+                    <li><strong>执行中：</strong>弹出确认弹窗，显示券包详情和价格</li>
+                    <li><strong>成功：</strong>调起微信支付完成购买</li>
+                    <li><strong>边界条件：</strong>余额不足时提示充值；已过期券包不可购买</li>
+                </ul>
+                <p><strong>筛选Tab切换</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击"全部"/"可使用"/"已过期"Tab</li>
+                    <li><strong>成功：</strong>列表按状态筛选刷新</li>
+                </ul>`
+            }
         ]
     },
 
@@ -2421,15 +2442,16 @@ const devDocs = {
         subtitle: '积分余额 + 任务列表 + 兑换入口',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>展示积分余额2,580、会员等级进度、每日任务（签到+10/评论+50/分享+20/购买1元=1积分）、功能入口（积分兑换/抽奖/积分明细）</p>`
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '积分信息字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['available_points', 'available_points', 'number', '是', '可用积分余额'],
                             ['member_level', '会员等级', 'enum', '是', '会员等级：0-普通 1-银卡 2-金卡 3-黑卡'],
@@ -2439,7 +2461,7 @@ const devDocs = {
                     },
                     {
                         title: '任务字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['task_id', 'taskID', 'number', '是', '任务唯一标识'],
                             ["name", "名称", "string", "是", "任务名称，如\"每日签到\"\"评论演出\""],
@@ -2470,15 +2492,16 @@ const devDocs = {
         subtitle: '积分流水 + 筛选 + 汇总',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>展示积分收支流水，按时间筛选（全部/本月/近三月/近半年），汇总栏（累计收入/支出/余额），按日期分组列表（图标+标题+时间+金额+余额）</p>`
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '积分汇总字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['total_income', '总income', 'number', '是', '累计获得积分'],
                             ['total_expend', '总expend', 'number', '是', '累计消耗积分'],
@@ -2487,7 +2510,7 @@ const devDocs = {
                     },
                     {
                         title: '积分流水字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['flow_id', 'flowID', 'number', '是', '流水唯一标识'],
                             ['type', '类型', 'enum', '是', '类型：1-收入 2-支出'],
@@ -2512,15 +2535,16 @@ const devDocs = {
         subtitle: '余额管理 + 充值 + 提现 + 交易记录',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>展示钱包余额¥1,280.00、冻结金额、累计充值/消费，快捷操作（充值/提现/交易记录），促销横幅"充值满500送50"，工具卡片（充值卡绑定+支付安全），充值弹窗（金额网格50/100/200/500+自定义输入）</p>`
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '钱包信息字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['balance', 'balance', 'number', '是', '可用余额'],
                             ['frozen_balance', 'frozen_balance', 'number', '是', '冻结金额'],
@@ -2530,7 +2554,7 @@ const devDocs = {
                     },
                     {
                         title: '充值字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['amount', '金额', 'number', '是', '充值金额'],
                             ['bonus', 'bonus', 'number', '否', '赠送金额'],
@@ -2559,15 +2583,16 @@ const devDocs = {
         subtitle: '九宫格抽奖 + 奖品展示 + 中奖弹窗',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>九宫格抽奖（8奖品格+中心"开始"按钮），旋转动画3-4秒，消耗50积分/次，中奖弹窗（彩纸动画+奖品信息+领取/继续抽奖按钮），费用提示+我的奖品+抽奖规则</p>`
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '抽奖活动字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['activity_id', 'activityID', 'number', '是', '活动唯一标识'],
                             ['cost_points', 'cost_points', 'number', '是', '每次抽奖消耗积分'],
@@ -2577,7 +2602,7 @@ const devDocs = {
                     },
                     {
                         title: '奖品字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['prize_id', '奖品ID', 'number', '是', '奖品唯一标识'],
                             ['name', '名称', 'string', '是', '奖品名称'],
@@ -2590,12 +2615,25 @@ const devDocs = {
                 ]
             },
             {
-                title: '页面模块详细说明',
-                content: `<p><strong>九宫格 (.lottery-grid)</strong></p>
-                <ul><li>3x3网格，高亮依次转动逐渐减速停在目标位置</li><li>数据字段：<code>activity_id</code>, <code>cost_points</code>(50), <code>prizes[]</code>(<code>prize_id</code>, <code>name</code>, <code>icon</code>, <code>probability</code>, <code>type</code>)</li></ul>
-                <p><strong>中奖弹窗 (.win-modal)</strong></p>
-                <ul><li>数据字段：<code>prize_type</code>(coupon/goods/points/thanks), <code>is_winning</code></li></ul>`
-            },
+                title: '交互说明',
+                content: `<p><strong>点击开始抽奖</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击九宫格中心"开始"按钮</li>
+                    <li><strong>执行中：</strong>扣除50积分，九宫格高亮依次转动，3-4秒后逐渐减速停在目标位置</li>
+                    <li><strong>成功：</strong>弹出中奖弹窗，显示奖品信息+彩纸动画</li>
+                    <li><strong>边界条件：</strong>积分不足时提示"积分不足"；无剩余次数时按钮置灰</li>
+                </ul>
+                <p><strong>中奖弹窗操作</strong></p>
+                <ul>
+                    <li><strong>领取奖品：</strong>点击"领取"按钮，奖品发放到账户</li>
+                    <li><strong>继续抽奖：</strong>点击"继续抽奖"关闭弹窗，可再次抽奖</li>
+                </ul>
+                <p><strong>查看我的奖品</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击"我的奖品"入口</li>
+                    <li><strong>成功：</strong>跳转奖品记录页面</li>
+                </ul>`
+            }
         ]
     },
 
@@ -2604,16 +2642,17 @@ const devDocs = {
         subtitle: '用户信息 + 资产概览 + 订单入口 + 工具栏',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>用户信息展示、资产概览、订单管理入口、工具服务入口。</p>
                 <p><strong>页面模块：</strong>消息入口栏（铃铛+红点）、用户卡片（头像VIP徽章+昵称+金卡+编辑资料+代理商入口）、实名认证提示（黄色横幅）、资产概览（钱包/积分/优惠券/演出票）、我的订单（5类型入口含角标）、工具栏（3x2网格：收货地址/偏好设置/隐私设置/实名认证/充值卡绑定/实体卡申请）、其他服务（客服/关于我们）、底部Tab栏</p>`
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '用户信息字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['avatar', 'avatar', 'string', '是', '用户头像URL'],
                             ['nickname', 'nickname', 'string', '是', '用户昵称'],
@@ -2625,7 +2664,7 @@ const devDocs = {
                     },
                     {
                         title: '资产概览字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['balance', 'balance', 'number', '是', '钱包余额'],
                             ['available_points', 'available_points', 'number', '是', '可用积分'],
@@ -2635,7 +2674,7 @@ const devDocs = {
                     },
                     {
                         title: '订单入口字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['order_type', '订单类型', 'enum', '是', '订单类型：pending_pay-待付款 pending_verify-待核销 completed-已完成 refunded-已退款'],
                             ['count', '数量', 'number', '是', '对应类型订单数量']
@@ -2656,15 +2695,16 @@ const devDocs = {
         subtitle: '头像上传 + 信息编辑 + 保存',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>编辑个人资料。头像上传（拍照/相册，裁剪正方形，5MB限制，jpg/png）、表单（昵称可编辑1-20字符/真实姓名readonly/手机号readonly脱敏/性别picker/生日年月日联动select 1940-当前年）、底部保存按钮（loading状态+校验+成功返回）</p>`
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '用户资料字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['avatar', 'avatar', 'string', '是', '头像URL，支持jpg/png，最大5MB'],
                             ['nickname', 'nickname', 'string', '是', '昵称，1-20字符'],
@@ -2676,6 +2716,23 @@ const devDocs = {
                     }
                 ]
             },
+            {
+                title: '交互说明',
+                content: `<p><strong>头像上传</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击头像区域</li>
+                    <li><strong>执行中：</strong>弹出选择菜单（拍照/从相册选择）</li>
+                    <li><strong>成功：</strong>进入图片裁剪页面，裁剪正方形后上传</li>
+                    <li><strong>边界条件：</strong>图片大小超过5MB提示压缩；仅支持jpg/png格式</li>
+                </ul>
+                <p><strong>保存资料</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击底部"保存"按钮</li>
+                    <li><strong>执行中：</strong>校验昵称1-20字符</li>
+                    <li><strong>成功：</strong>显示"保存成功"并返回个人中心</li>
+                    <li><strong>失败：</strong>校验失败显示具体错误提示</li>
+                </ul>`
+            }
         ]
     },
 
@@ -2684,7 +2741,7 @@ const devDocs = {
         subtitle: '通知开关 + 隐私政策 + 注销账号',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>管理通知偏好、查看隐私政策、注销账号。</p>
                 <p><strong>页面模块：</strong></p>
                 <ul>
@@ -2696,10 +2753,11 @@ const devDocs = {
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '通知设置字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['marketing_notification', 'marketing_notification', 'boolean', '是', '营销通知开关'],
                             ['show_promotion', '演出promotion', 'boolean', '是', '演出推广通知开关'],
@@ -2708,7 +2766,7 @@ const devDocs = {
                     },
                     {
                         title: '账户信息字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['phone', 'phone', 'string', '是', '手机号（脱敏显示）'],
                             ['register_time', 'register时间', 'string', '是', '注册时间'],
@@ -2718,7 +2776,7 @@ const devDocs = {
                     },
                     {
                         title: '隐私链接字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['privacy_policy_url', 'privacy_policyURL', 'string', '是', '隐私政策H5页面URL'],
                             ['data_usage_url', 'data_usageURL', 'string', '是', '数据使用说明H5页面URL']
@@ -2775,7 +2833,7 @@ const devDocs = {
         subtitle: '兴趣标签 + 会员权限开关',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>设置用户兴趣偏好标签和会员权限通知开关。</p>
                 <p><strong>页面模块：</strong></p>
                 <ul>
@@ -2786,10 +2844,11 @@ const devDocs = {
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '偏好标签字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['interest_tags[]', 'interest_tags[]', 'array', '是', '兴趣标签ID数组，至少1个，最多5个'],
                             ['tag_id', '标签ID', 'number', '是', '标签唯一标识'],
@@ -2798,7 +2857,7 @@ const devDocs = {
                     },
                     {
                         title: '通知偏好字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['priority_remind', '优先提醒', 'boolean', '是', '优先购票提醒开关'],
                             ['birthday_offer', 'birthday_offer', 'boolean', '是', '生日专属优惠开关'],
@@ -2851,7 +2910,7 @@ const devDocs = {
         subtitle: '认证状态 + 身份信息 + 证件上传',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>用户实名认证，提交身份信息和证件照片。</p>
                 <p><strong>页面模块：</strong></p>
                 <ul>
@@ -2863,10 +2922,11 @@ const devDocs = {
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '认证信息字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['auth_status', 'auth状态', 'enum', '是', '认证状态：0-未认证 1-审核中 2-已认证 3-认证失败'],
                             ['real_name', 'real名称', 'string', '是', '真实姓名，2-20字符'],
@@ -2932,7 +2992,7 @@ const devDocs = {
         subtitle: '系统通知 + 订单状态 + 积分变动 + 消息详情',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>分类展示系统通知、订单状态变更、积分变动等消息。</p>
                 <p><strong>页面模块：</strong></p>
                 <ul>
@@ -2946,10 +3006,11 @@ const devDocs = {
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '消息字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['message_id', 'messageID', 'number', '是', '消息唯一标识'],
                             ['type', '类型', 'enum', '是', '消息类型：system-系统通知 order-订单状态 points-积分变动'],
@@ -2964,7 +3025,7 @@ const devDocs = {
                     },
                     {
                         title: '消息详情字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['highlight', 'highlight', 'string', '否', '高亮提示文字'],
                             ["action_text", "action文本", "string", "否", "操作按钮文字，如\"查看订单\""],
@@ -3040,7 +3101,7 @@ const devDocs = {
         subtitle: '订单列表 + 电子票夹 + QR码',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>管理演出订单和电子票，支持订单筛选、电子票查看。</p>
                 <p><strong>页面模块：</strong></p>
                 <ul>
@@ -3053,10 +3114,11 @@ const devDocs = {
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '订单字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['order_id', '排序ID', 'number', '是', '订单唯一标识'],
                             ['order_no', '订单编号', 'string', '是', '订单编号'],
@@ -3071,7 +3133,7 @@ const devDocs = {
                     },
                     {
                         title: '电子票字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['ticket_id', '票ID', 'number', '是', '电子票唯一标识'],
                             ['qr_code', 'qr代码', 'string', '是', '二维码数据'],
@@ -3148,7 +3210,7 @@ const devDocs = {
         subtitle: '商城订单列表 + 物流信息 + 订单详情',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>管理商城商品订单，查看物流信息和订单详情。</p>
                 <p><strong>页面模块：</strong></p>
                 <ul>
@@ -3161,10 +3223,11 @@ const devDocs = {
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '商品订单字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['order_id', '排序ID', 'number', '是', '订单唯一标识'],
                             ['order_no', '订单编号', 'string', '是', '订单编号'],
@@ -3177,7 +3240,7 @@ const devDocs = {
                     },
                     {
                         title: '订单商品字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['product_image', '商品图片', 'string', '是', '商品图片URL'],
                             ['product_name', '商品名称', 'string', '是', '商品名称'],
@@ -3188,7 +3251,7 @@ const devDocs = {
                     },
                     {
                         title: '物流信息字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['express_company', '快递company', 'string', '是', '快递公司名称'],
                             ['express_no', 'express编号', 'string', '是', '快递单号'],
@@ -3200,7 +3263,7 @@ const devDocs = {
                     },
                     {
                         title: '订单详情字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['pay_method', 'pay方式', 'string', '否', '支付方式'],
                             ['receiver_name', 'receiver名称', 'string', '是', '收件人姓名'],
@@ -3263,7 +3326,7 @@ const devDocs = {
         subtitle: '分类导航 + 商品网格 + 购物车 + 商品详情',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>周边商品展示、分类筛选、商品详情、购物车管理。</p>
                 <p><strong>页面模块：</strong></p>
                 <ul>
@@ -3277,10 +3340,11 @@ const devDocs = {
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '商品分类字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['category_id', '分类ID', 'number', '是', '分类唯一标识'],
                             ["category_name", "category名称", "string", "是", "分类名称，如\"演出衍生品\"\"文创周边\""]
@@ -3288,7 +3352,7 @@ const devDocs = {
                     },
                     {
                         title: '商品字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['product_id', '商品ID', 'number', '是', '商品唯一标识'],
                             ['cover_image', '封面图片', 'string', '是', '商品封面图URL'],
@@ -3304,7 +3368,7 @@ const devDocs = {
                     },
                     {
                         title: '购物车字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['cart_id', 'cartID', 'number', '是', '购物车项唯一标识'],
                             ['product_id', '商品ID', 'number', '是', '商品ID'],
@@ -3374,7 +3438,7 @@ const devDocs = {
         subtitle: '已购券包管理 + 展开查看演出券',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>管理已购买的券包，查看包含的演出券详情。</p>
                 <p><strong>页面模块：</strong></p>
                 <ul>
@@ -3384,10 +3448,11 @@ const devDocs = {
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '已购券包字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['package_id', '券包ID', 'number', '是', '券包唯一标识'],
                             ['name', '名称', 'string', '是', '券包名称'],
@@ -3398,7 +3463,7 @@ const devDocs = {
                     },
                     {
                         title: '演出券字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['coupon_id', '优惠券ID', 'number', '是', '演出券唯一标识'],
                             ['show_title', '演出标题', 'string', '是', '演出名称'],
@@ -3441,7 +3506,7 @@ const devDocs = {
         subtitle: '余额显示 + 金额选择 + 支付方式',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>在线充值余额，支持预设金额和自定义金额。</p>
                 <p><strong>页面模块：</strong></p>
                 <ul>
@@ -3455,10 +3520,11 @@ const devDocs = {
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '充值记录字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['balance', 'balance', 'number', '是', '当前余额'],
                             ['amount', '金额', 'number', '是', '充值金额'],
@@ -3524,7 +3590,7 @@ const devDocs = {
         subtitle: '绑定新卡 + 已绑定卡片列表',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>绑定实体充值卡，管理已绑定的充值卡。</p>
                 <p><strong>页面模块：</strong></p>
                 <ul>
@@ -3534,10 +3600,11 @@ const devDocs = {
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '充值卡字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['card_number', '卡number', 'string', '是', '充值卡号，16位数字'],
                             ['card_id', '卡ID', 'number', '是', '已绑定卡片唯一标识'],
@@ -3581,7 +3648,7 @@ const devDocs = {
         subtitle: '等级展示 + 卡片选择 + 权益 + 申请表单',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>申请会员实体卡，查看权益和申请记录。</p>
                 <p><strong>页面模块：</strong></p>
                 <ul>
@@ -3595,10 +3662,11 @@ const devDocs = {
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '申请信息字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['member_level', '会员等级', 'enum', '是', '当前会员等级：0-普通 1-银卡 2-金卡 3-黑卡'],
                             ["level_name", "level名称", "string", "是", "等级名称，如\"金卡会员\""],
@@ -3614,7 +3682,7 @@ const devDocs = {
                     },
                     {
                         title: '权益字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['benefit_id', 'benefitID', 'number', '是', '权益唯一标识'],
                             ['name', '名称', 'string', '是', '权益名称'],
@@ -3685,7 +3753,7 @@ const devDocs = {
         subtitle: '交易流水 + 筛选 + 汇总',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>展示钱包交易流水明细，支持按时间筛选和汇总统计。</p>
                 <p><strong>页面模块：</strong></p>
                 <ul>
@@ -3696,10 +3764,11 @@ const devDocs = {
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '交易汇总字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['total_income', '总income', 'number', '是', '累计收入金额'],
                             ['total_expend', '总expend', 'number', '是', '累计支出金额'],
@@ -3709,7 +3778,7 @@ const devDocs = {
                     },
                     {
                         title: '交易流水字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['record_id', '记录ID', 'number', '是', '流水唯一标识'],
                             ['type', '类型', 'enum', '是', '类型：recharge-充值 consume-消费 refund-退款 withdraw-提现'],
@@ -3767,7 +3836,7 @@ const devDocs = {
         subtitle: '城市筛选 + 剧院搜索 + 剧院详情',
         sections: [
             {
-                title: '功能说明',
+                title: '功能描述',
                 content: `<p><strong>核心功能：</strong>按城市筛选展示剧院列表，查看剧院详情和演出场次。</p>
                 <p><strong>页面模块：</strong></p>
                 <ul>
@@ -3778,10 +3847,11 @@ const devDocs = {
             },
             {
                 title: '核心字段',
+                noTableWrap: true,
                 tables: [
                     {
                         title: '剧院字段',
-                        headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                        headers: ['字段名', '类型', '必填', '说明'],
                         rows: [
                             ['theater_id', '剧院ID', 'number', '是', '剧院唯一标识'],
                             ['image', '图片', 'string', '是', '剧院封面图URL'],
@@ -3844,56 +3914,73 @@ const devDocs = {
     subtitle: '代理端小程序',
     sections: [
         {
-            title: '功能说明',
-            content: `<p><strong>核心功能：</strong>代理中心首页，采用浅色主题（背景色 #F5F6FA），展示代理角色信息、佣金统计、操作入口、热门推广及推广数据概览。</p>`
+            title: '功能描述',
+            content: `<p><strong>核心功能：</strong>代理中心首页，采用浅色主题（背景色 #F5F6FA），展示代理角色信息、佣金统计、操作入口、热门推广及推广数据概览。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>代理角色信息卡片</strong>：金色渐变圆形头像+名称+等级+编号+类型+加入时间</li>
+                    <li><strong>佣金统计</strong>：累计佣金/待结算/可提现三项数据，右侧"提现"快捷按钮</li>
+                    <li><strong>操作入口</strong>：7项功能入口（分销码/分享海报/推广链接/佣金明细/提现记录/推广数据/分销规则）</li>
+                    <li><strong>热门推广</strong>：3个热门演出推广卡片，含佣金比例和推广按钮</li>
+                    <li><strong>推广数据概览</strong>：时间Tab切换（今日/本周/本月）+ 访客/下单/支付/退款漏斗数据</li>
+                </ul>`
+        },
+        {
+            title: '交互说明',
+            content: `<p><strong>点击提现按钮</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击佣金统计右侧"提现"按钮</li>
+                    <li><strong>成功：</strong>跳转 agent-miniapp-withdraw.html 提现申请页面</li>
+                </ul>
+                <p><strong>点击操作入口</strong></p>
+                <ul>
+                    <li><strong>我的分销码：</strong>跳转 agent-miniapp-qrcode.html</li>
+                    <li><strong>分享海报：</strong>跳转 agent-miniapp-poster.html</li>
+                    <li><strong>推广链接：</strong>点击复制个人推广链接到剪贴板，显示"复制成功"</li>
+                    <li><strong>佣金明细：</strong>跳转 agent-miniapp-commission.html</li>
+                    <li><strong>提现记录：</strong>跳转 agent-miniapp-withdraw.html 并切换到提现记录Tab</li>
+                    <li><strong>推广数据：</strong>跳转 agent-miniapp-stats.html</li>
+                    <li><strong>分销规则：</strong>跳转 agent-miniapp-rules.html</li>
+                </ul>
+                <p><strong>点击推广按钮</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击热门推广卡片上的"推广"按钮</li>
+                    <li><strong>成功：</strong>生成该演出的推广链接/海报</li>
+                </ul>
+                <p><strong>时间Tab切换</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击今日/本周/本月Tab</li>
+                    <li><strong>成功：</strong>推广数据概览按所选时间维度刷新</li>
+                </ul>`
         },
         {
             title: '核心字段',
+            noTableWrap: true,
             tables: [
                 {
                     title: '代理信息字段',
-                    headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                    headers: ['字段名', '类型', '必填', '说明'],
                     rows: [
-                        ['agent_id', '代理ID', 'number', '是', '代理唯一标识'],
-                        ['avatar', 'avatar', 'string', '是', '代理头像URL'],
-                        ['nickname', 'nickname', 'string', '是', '代理昵称'],
-                        ['level', 'level', 'enum', '是', '代理等级：普通代理/铜牌/银牌/金牌/钻石'],
-                        ['agent_no', '代理编号', 'string', '是', '代理编号'],
-                        ['type', '类型', 'enum', '是', '代理类型：员工代理/外部代理'],
-                        ['join_time', 'join时间', 'string', '是', '加入时间']
+                        ['agent_id', 'number', '是', '代理唯一标识'],
+                        ['avatar', 'string', '是', '代理头像URL'],
+                        ['nickname', 'string', '是', '代理昵称'],
+                        ['level', 'enum', '是', '代理等级：普通代理/铜牌/银牌/金牌/钻石'],
+                        ['agent_no', 'string', '是', '代理编号'],
+                        ['type', 'enum', '是', '代理类型：员工代理/外部代理'],
+                        ['join_time', 'string', '是', '加入时间']
                     ]
                 },
                 {
                     title: '佣金统计字段',
-                    headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                    headers: ['字段名', '类型', '必填', '说明'],
                     rows: [
-                        ['total_commission', '总佣金', 'number', '是', '累计佣金（元）'],
-                        ['pending_commission', '待处理佣金', 'number', '是', '待结算佣金（元）'],
-                        ['available_commission', 'available_commission', 'number', '是', '可提现佣金（元）']
+                        ['total_commission', 'number', '是', '累计佣金（元）'],
+                        ['pending_commission', 'number', '是', '待结算佣金（元）'],
+                        ['available_commission', 'number', '是', '可提现佣金（元）']
                     ]
                 }
             ]
-        },
-        {
-            title: '代理角色信息卡片',
-            content: `展示代理基本信息，包含： - <b>头像</b>：金色渐变圆形头像，显示姓氏"王" - <b>名称</b>：王建华 - <b>等级</b>：金牌代理（gold 级别标识） - <b>编号</b>：A20260001 - <b>类型</b>：员工代理 - <b>加入时间</b>：代理注册/加入的日期时间`
-        },
-        {
-            title: '代理佣金统计',
-            content: `三项核心佣金数据展示： - <b>累计佣金</b>：¥15,420 - <b>待结算</b>：¥3,200 - <b>可提现</b>：¥12,200 - 右侧提供"提现"快捷按钮，点击跳转至提现申请页面`
-        },
-        {
-            title: '操作入口列表',
-            content: `7项功能入口，采用宫格/列表布局： 1. <b>我的分销码</b> - 查看个人专属分销二维码 2. <b>分享海报</b> - 生成推广海报图片 3. <b>推广链接</b> - 复制个人推广链接（点击即复制） 4. <b>佣金明细</b> - 查看佣金收入详细记录 5. <b>提现记录</b> - 查看历史提现申请及状态 6. <b>推广数据</b> - 查看推广效果统计数据 7. <b>分销规则</b> - 查看分销体系规则说明`
-        },
-        {
-            title: '热门推广',
-            content: `展示3个热门演出推广卡片，每个卡片包含： - <b>演出名称</b> - <b>演出时间</b> - <b>佣金比例</b> - <b>"推广"按钮</b> - 点击生成该演出的推广链接/海报`
-        },
-        {
-            title: '推广数据概览',
-            content: `展示推广漏斗数据，顶部为时间Tab切换（今日/本周/本月）： - <b>访客</b>：256 - <b>下单</b>：42 - <b>支付</b>：38 - <b>退款</b>：3 数据以漏斗形式呈现，直观展示各环节转化情况`
-        },
+        }
     ]
   },
 
@@ -3902,48 +3989,63 @@ const devDocs = {
     subtitle: '代理端小程序',
     sections: [
         {
-            title: '功能说明',
-            content: `<p><strong>核心功能：</strong>佣金提现管理页面，包含提现申请和提现记录两个子Tab，支持快捷金额选择和提现到微信零钱。</p>`
+            title: '功能描述',
+            content: `<p><strong>核心功能：</strong>佣金提现管理页面，包含提现申请和提现记录两个子Tab，支持快捷金额选择和提现到微信零钱。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>子Tab切换</strong>：提现申请 / 提现记录</li>
+                    <li><strong>提现申请</strong>：余额卡片+金额输入框+快捷金额按钮+提现方式+规则提示+确认按钮</li>
+                    <li><strong>提现记录</strong>：历史提现记录列表，含金额/状态/申请时间/提现方式</li>
+                </ul>`
+        },
+        {
+            title: '交互说明',
+            content: `<p><strong>子Tab切换</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击"提现申请"或"提现记录"Tab</li>
+                    <li><strong>成功：</strong>切换对应面板内容</li>
+                </ul>
+                <p><strong>快捷金额选择</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击¥50/¥100/¥500/¥1000/全部按钮</li>
+                    <li><strong>成功：</strong>一键填入对应金额到输入框</li>
+                </ul>
+                <p><strong>提交提现申请</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击"确认提现"按钮</li>
+                    <li><strong>执行中：</strong>校验提现金额（不超过可提现余额）</li>
+                    <li><strong>成功：</strong>提交申请，状态变为"审核中"，刷新提现记录列表</li>
+                    <li><strong>失败：</strong>金额超限提示"提现金额超过可提现余额"</li>
+                </ul>`
         },
         {
             title: '核心字段',
+            noTableWrap: true,
             tables: [
                 {
                     title: '提现申请字段',
-                    headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                    headers: ['字段名', '类型', '必填', '说明'],
                     rows: [
-                        ['available_balance', 'available_balance', 'number', '是', '当前可提现余额'],
-                        ['withdraw_amount', 'withdraw金额', 'number', '是', '提现金额'],
-                        ['withdraw_method', 'withdraw方式', 'enum', '是', '提现方式：微信零钱'],
-                        ['quick_amounts', 'quick_amounts', 'array', '是', '快捷金额选项（如[50,100,500,1000]）']
+                        ['available_balance', 'number', '是', '当前可提现余额'],
+                        ['withdraw_amount', 'number', '是', '提现金额'],
+                        ['withdraw_method', 'enum', '是', '提现方式：微信零钱'],
+                        ['quick_amounts', 'array', '是', '快捷金额选项（如[50,100,500,1000]）']
                     ]
                 },
                 {
                     title: '提现记录字段',
-                    headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                    headers: ['字段名', '类型', '必填', '说明'],
                     rows: [
-                        ['record_id', '记录ID', 'number', '是', '提现记录唯一标识'],
-                        ['withdraw_amount', 'withdraw金额', 'number', '是', '提现金额'],
-                        ['status', '状态', 'enum', '是', '状态：已到账/审核中/已驳回'],
-                        ['apply_time', 'apply时间', 'string', '是', '申请时间'],
-                        ['withdraw_method', 'withdraw方式', 'string', '是', '提现方式'],
-                        ['remark', 'remark', 'string', '否', '驳回原因（驳回状态时显示）']
+                        ['record_id', 'number', '是', '提现记录唯一标识'],
+                        ['withdraw_amount', 'number', '是', '提现金额'],
+                        ['status', 'enum', '是', '状态：已到账/审核中/已驳回'],
+                        ['apply_time', 'string', '是', '申请时间'],
+                        ['withdraw_method', 'string', '是', '提现方式'],
+                        ['remark', 'string', '否', '驳回原因（驳回状态时显示）']
                     ]
                 }
             ]
-        },
-        {
-            title: '子Tab切换',
-            content: `页面顶部提供两个子Tab： - <b>提现申请</b> - 发起佣金提现申请 - <b>提现记录</b> - 查看历史提现记录列表`
-        },
-        {
-            title: '提现申请',
-            content: `提现申请表单区域，包含： - <b>余额卡片</b>：显示当前可提现余额 ¥12,200 - <b>金额输入框</b>：手动输入提现金额 - <b>快捷金额按钮</b>：¥50 / ¥100 / ¥500 / ¥1000 / 全部（一键填入对应金额） - <b>提现方式</b>：提现到微信零钱 - <b>规则提示</b>：展示提现相关规则说明 - <b>确认按钮</b>：提交提现申请`
-        },
-        {
-            title: '提现记录',
-            content: `展示6条历史提现记录，每条记录包含： - <b>提现金额</b> - <b>状态</b>：已到账（绿色）/ 审核中（橙色）/ 已驳回（红色） - <b>申请时间</b> - <b>提现方式</b>：如微信零钱`
-        },
+        }
     ]
   },
 
@@ -3952,50 +4054,55 @@ const devDocs = {
     subtitle: '代理端小程序',
     sections: [
         {
-            title: '功能说明',
-            content: `<p><strong>核心功能：</strong>代理推广数据统计页面，提供时间维度的数据概览、转化漏斗分析和热门推广排行。</p>`
+            title: '功能描述',
+            content: `<p><strong>核心功能：</strong>代理推广数据统计页面，提供时间维度的数据概览、转化漏斗分析和热门推广排行。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>时间筛选</strong>：顶部Tab切换（今日/本周/本月）</li>
+                    <li><strong>数据概览</strong>：2x2网格展示访客/下单/支付/退款四项指标</li>
+                    <li><strong>转化漏斗</strong>：四级漏斗图展示各环节转化率</li>
+                    <li><strong>热门推广排行</strong>：Top5演出排行（排名/名称/访客/下单/转化率）</li>
+                </ul>`
+        },
+        {
+            title: '交互说明',
+            content: `<p><strong>时间Tab切换</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击今日/本周/本月Tab</li>
+                    <li><strong>成功：</strong>数据概览、转化漏斗、热门排行按所选时间维度刷新</li>
+                </ul>
+                <p><strong>查看排行详情</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击热门推广排行中的演出项</li>
+                    <li><strong>成功：</strong>跳转该演出的推广详情页</li>
+                </ul>`
         },
         {
             title: '核心字段',
+            noTableWrap: true,
             tables: [
                 {
                     title: '数据概览字段',
-                    headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                    headers: ['字段名', '类型', '必填', '说明'],
                     rows: [
-                        ['time_range', 'time范围', 'enum', '是', '时间维度：今日/本周/本月'],
-                        ['visitors', 'visitors', 'number', '是', '访客数'],
-                        ['orders', 'orders', 'number', '是', '下单数'],
-                        ['payments', 'payments', 'number', '是', '支付数'],
-                        ['refunds', 'refunds', 'number', '是', '退款数']
+                        ['time_range', 'enum', '是', '时间维度：今日/本周/本月'],
+                        ['visitors', 'number', '是', '访客数'],
+                        ['orders', 'number', '是', '下单数'],
+                        ['payments', 'number', '是', '支付数'],
+                        ['refunds', 'number', '是', '退款数']
                     ]
                 },
                 {
                     title: '转化漏斗字段',
-                    headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                    headers: ['字段名', '类型', '必填', '说明'],
                     rows: [
-                        ['stage', 'stage', 'string', '是', '漏斗阶段：访客/下单/支付/退款'],
-                        ['count', '数量', 'number', '是', '该阶段数量'],
-                        ['conversion_rate', 'conversion比例', 'number', '是', '转化率（百分比），相对于上一阶段']
+                        ['stage', 'string', '是', '漏斗阶段：访客/下单/支付/退款'],
+                        ['count', 'number', '是', '该阶段数量'],
+                        ['conversion_rate', 'number', '是', '转化率（百分比），相对于上一阶段']
                     ]
                 }
             ]
-        },
-        {
-            title: '时间筛选',
-            content: `顶部时间Tab切换，支持三种时间维度： - <b>今日</b> - <b>本周</b> - <b>本月</b>`
-        },
-        {
-            title: '数据概览',
-            content: `2x2网格布局展示四项核心指标： - <b>访客</b>：256（橙色标识） - <b>下单</b>：42（蓝色标识） - <b>支付</b>：38（绿色标识） - <b>退款</b>：3（红色标识）`
-        },
-        {
-            title: '转化漏斗',
-            content: `四级转化漏斗图，展示各环节转化率： - <b>访客 → 下单</b>：显示转化率百分比 - <b>下单 → 支付</b>：显示转化率百分比 - <b>支付 → 退款</b>：显示转化率百分比 漏斗宽度随数据递减，直观展示转化流失情况`
-        },
-        {
-            title: '热门推广排行',
-            content: `展示Top5热门推广演出排行列表，每条记录包含： - <b>排名</b>：1-5名 - <b>演出名称</b> - <b>访客数</b> - <b>下单数</b> - <b>转化率</b>：百分比显示`
-        },
+        }
     ]
   },
 
@@ -4004,43 +4111,45 @@ const devDocs = {
     subtitle: '代理端小程序',
     sections: [
         {
-            title: '功能说明',
-            content: `<p><strong>核心功能：</strong>分销体系规则说明页面，详细展示分销说明、佣金比例、结算规则、提现规则和注意事项。</p>`
+            title: '功能描述',
+            content: `<p><strong>核心功能：</strong>分销体系规则说明页面，详细展示分销说明、佣金比例、结算规则、提现规则和注意事项。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>一级分销说明</strong>：分销体系基本概念和运作方式</li>
+                    <li><strong>佣金比例表格</strong>：5种演出类型对应的佣金比例</li>
+                    <li><strong>结算规则</strong>：4条佣金结算规则（周期/条件/方式）</li>
+                    <li><strong>提现规则</strong>：5条提现规则（门槛/额度/到账时间/手续费）</li>
+                    <li><strong>注意事项</strong>：5条分销注意事项（违规/冻结/调整等）</li>
+                </ul>`
+        },
+        {
+            title: '交互说明',
+            content: `<p><strong>页面浏览</strong></p>
+                <ul>
+                    <li>页面为纯信息展示，无复杂交互</li>
+                    <li>支持上下滚动查看完整规则内容</li>
+                </ul>
+                <p><strong>规则更新提示</strong></p>
+                <ul>
+                    <li>规则更新时进入页面显示"规则已更新"提示条</li>
+                    <li>点击提示条可查看更新内容摘要</li>
+                </ul>`
         },
         {
             title: '核心字段',
+            noTableWrap: true,
             tables: [
                 {
                     title: '佣金比例字段',
-                    headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                    headers: ['字段名', '类型', '必填', '说明'],
                     rows: [
-                        ['show_type', '演出类型', 'string', '是', '演出类型（如音乐会/话剧/舞蹈等）'],
-                        ['commission_rate', '佣金比例', 'number', '是', '佣金比例（百分比）'],
-                        ['level_bonus', '等级bonus', 'number', '否', '等级加成比例（百分比）']
+                        ['show_type', 'string', '是', '演出类型（如音乐会/话剧/舞蹈等）'],
+                        ['commission_rate', 'number', '是', '佣金比例（百分比）'],
+                        ['level_bonus', 'number', '否', '等级加成比例（百分比）']
                     ]
                 }
             ]
-        },
-        {
-            title: '一级分销说明',
-            content: `分销体系基本说明，介绍一级分销的概念和运作方式`
-        },
-        {
-            title: '佣金比例表格',
-            content: `展示5种演出类型对应的佣金比例，表格形式呈现： - 演出类型1 + 对应佣金比例 - 演出类型2 + 对应佣金比例 - 演出类型3 + 对应佣金比例 - 演出类型4 + 对应佣金比例 - 演出类型5 + 对应佣金比例`
-        },
-        {
-            title: '结算规则',
-            content: `4条佣金结算规则说明，涵盖结算周期、结算条件、结算方式等内容`
-        },
-        {
-            title: '提现规则',
-            content: `5条提现相关规则说明，涵盖提现门槛、提现额度、到账时间、手续费等内容`
-        },
-        {
-            title: '注意事项',
-            content: `5条分销注意事项，涵盖违规行为、账号冻结、佣金调整等提醒事项`
-        },
+        }
     ]
   },
 
@@ -4049,38 +4158,48 @@ const devDocs = {
     subtitle: '代理端小程序',
     sections: [
         {
-            title: '功能说明',
-            content: `<p><strong>核心功能：</strong>展示代理专属分销二维码页面，用户可保存图片或分享给他人进行推广。</p>`
+            title: '功能描述',
+            content: `<p><strong>核心功能：</strong>展示代理专属分销二维码页面，用户可保存图片或分享给他人进行推广。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>提示文字</strong>：页面顶部使用说明，引导扫码或分享</li>
+                    <li><strong>分销码卡片</strong>：居中展示200x200像素专属二维码+代理信息</li>
+                    <li><strong>操作按钮</strong>：保存图片 / 分享</li>
+                </ul>`
+        },
+        {
+            title: '交互说明',
+            content: `<p><strong>保存图片</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击"保存图片"按钮</li>
+                    <li><strong>执行中：</strong>请求相册权限</li>
+                    <li><strong>成功：</strong>分销码卡片保存到手机相册，显示"保存成功"</li>
+                    <li><strong>失败：</strong>权限被拒绝时引导用户开启权限</li>
+                </ul>
+                <p><strong>分享</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击"分享"按钮</li>
+                    <li><strong>成功：</strong>调起微信分享面板，可分享给好友或群聊</li>
+                </ul>`
         },
         {
             title: '核心字段',
+            noTableWrap: true,
             tables: [
                 {
                     title: '分销码字段',
-                    headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                    headers: ['字段名', '类型', '必填', '说明'],
                     rows: [
-                        ['agent_id', '代理ID', 'number', '是', '代理唯一标识'],
-                        ['agent_name', '代理名称', 'string', '是', '代理姓名'],
-                        ['agent_no', '代理编号', 'string', '是', '代理编号'],
-                        ['agent_level', '代理等级', 'enum', '是', '代理等级'],
-                        ['qrcode_url', 'qrcodeURL', 'string', '是', '分销二维码图片URL'],
-                        ['qrcode_size', 'qrcode大小', 'number', '是', '二维码尺寸（像素），默认200x200']
+                        ['agent_id', 'number', '是', '代理唯一标识'],
+                        ['agent_name', 'string', '是', '代理姓名'],
+                        ['agent_no', 'string', '是', '代理编号'],
+                        ['agent_level', 'enum', '是', '代理等级'],
+                        ['qrcode_url', 'string', '是', '分销二维码图片URL'],
+                        ['qrcode_size', 'number', '是', '二维码尺寸（像素），默认200x200']
                     ]
                 }
             ]
-        },
-        {
-            title: '提示文字',
-            content: `页面顶部展示分销码使用说明提示文字，引导用户扫码或分享`
-        },
-        {
-            title: '分销码卡片',
-            content: `居中展示的分销码卡片，包含： - <b>二维码</b>：200x200像素的专属分销二维码 - <b>代理信息</b>：展示代理姓名、编号、等级等信息`
-        },
-        {
-            title: '操作按钮',
-            content: `底部两个操作按钮： - <b>保存图片</b> - 将分销码卡片保存为图片到手机相册 - <b>分享</b> - 调起微信分享功能，分享分销码给好友或群聊`
-        },
+        }
     ]
   },
 
@@ -4089,42 +4208,55 @@ const devDocs = {
     subtitle: '代理端小程序',
     sections: [
         {
-            title: '功能说明',
-            content: `<p><strong>核心功能：</strong>代理推广海报生成页面，支持选择不同演出海报模板，预览并保存或分享。</p>`
+            title: '功能描述',
+            content: `<p><strong>核心功能：</strong>代理推广海报生成页面，支持选择不同演出海报模板，预览并保存或分享。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>海报预览</strong>：大尺寸预览区域（高度560px），含封面图+演出信息+代理信息+二维码</li>
+                    <li><strong>海报选择</strong>：底部3个缩略图模板（天涯海角/椰风海韵/南海奇缘）</li>
+                    <li><strong>操作按钮</strong>：保存海报 / 分享好友</li>
+                </ul>`
+        },
+        {
+            title: '交互说明',
+            content: `<p><strong>切换海报模板</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击底部缩略图</li>
+                    <li><strong>成功：</strong>预览区切换为选中模板样式，选中项高亮边框</li>
+                </ul>
+                <p><strong>保存海报</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击"保存海报"按钮</li>
+                    <li><strong>成功：</strong>海报保存到手机相册，显示"保存成功"</li>
+                </ul>
+                <p><strong>分享好友</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击"分享好友"按钮</li>
+                    <li><strong>成功：</strong>调起微信分享面板</li>
+                </ul>`
         },
         {
             title: '核心字段',
+            noTableWrap: true,
             tables: [
                 {
                     title: '海报字段',
-                    headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                    headers: ['字段名', '类型', '必填', '说明'],
                     rows: [
-                        ['poster_id', 'posterID', 'number', '是', '海报唯一标识'],
-                        ['show_id', '演出ID', 'number', '是', '关联演出ID'],
-                        ['show_name', '演出名称', 'string', '是', '演出名称'],
-                        ['show_time', '演出时间', 'string', '是', '演出时间'],
-                        ['show_venue', '演出场馆', 'string', '否', '演出场馆'],
-                        ['cover_image', '封面图片', 'string', '是', '海报封面图URL'],
-                        ['agent_name', '代理名称', 'string', '是', '代理名称'],
-                        ['agent_no', '代理编号', 'string', '是', '代理编号'],
-                        ['mini_qrcode', 'mini_qrcode', 'string', '是', '代理专属分销二维码URL'],
-                        ['poster_url', 'posterURL', 'string', '是', '生成的海报图片URL']
+                        ['poster_id', 'number', '是', '海报唯一标识'],
+                        ['show_id', 'number', '是', '关联演出ID'],
+                        ['show_name', 'string', '是', '演出名称'],
+                        ['show_time', 'string', '是', '演出时间'],
+                        ['show_venue', 'string', '否', '演出场馆'],
+                        ['cover_image', 'string', '是', '海报封面图URL'],
+                        ['agent_name', 'string', '是', '代理名称'],
+                        ['agent_no', 'string', '是', '代理编号'],
+                        ['mini_qrcode', 'string', '是', '代理专属分销二维码URL'],
+                        ['poster_url', 'string', '是', '生成的海报图片URL']
                     ]
                 }
             ]
-        },
-        {
-            title: '海报预览',
-            content: `大尺寸海报预览区域（高度560px），海报内容包含： - <b>封面图</b>：演出宣传封面 - <b>演出信息</b>：演出名称、时间、地点等 - <b>代理信息条</b>：代理名称、编号等推广者信息 - <b>迷你二维码</b>：代理专属分销二维码`
-        },
-        {
-            title: '海报选择',
-            content: `底部展示3个海报缩略图供选择，点击可切换预览： 1. 天涯海角 2. 椰风海韵 3. 南海奇缘 选中状态有高亮边框标识`
-        },
-        {
-            title: '操作按钮',
-            content: `底部两个操作按钮： - <b>保存海报</b> - 将当前预览海报保存为图片到手机相册 - <b>分享好友</b> - 调起微信分享功能，分享海报给好友或群聊`
-        },
+        }
     ]
   },
 
@@ -4133,50 +4265,59 @@ const devDocs = {
     subtitle: '代理端小程序',
     sections: [
         {
-            title: '功能说明',
-            content: `<p><strong>核心功能：</strong>代理佣金收入明细页面，支持时间筛选，展示佣金汇总和详细的佣金记录列表。</p>`
+            title: '功能描述',
+            content: `<p><strong>核心功能：</strong>代理佣金收入明细页面，支持时间筛选，展示佣金汇总和详细的佣金记录列表。</p>
+                <p><strong>页面模块：</strong></p>
+                <ul>
+                    <li><strong>筛选栏</strong>：顶部时间筛选（今日/本周/本月/自定义）</li>
+                    <li><strong>佣金汇总</strong>：本月佣金/已结算/待结算三项数据</li>
+                    <li><strong>明细列表</strong>：8条佣金记录（演出/状态/购买人/金额/比例/时间）</li>
+                </ul>`
+        },
+        {
+            title: '交互说明',
+            content: `<p><strong>时间筛选</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击今日/本周/本月/自定义Tab</li>
+                    <li><strong>成功：</strong>佣金汇总和明细列表按所选时间刷新</li>
+                    <li><strong>自定义：</strong>点击"自定义"弹出日期范围选择器</li>
+                </ul>
+                <p><strong>查看明细</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击佣金明细记录</li>
+                    <li><strong>成功：</strong>展开显示该笔佣金的详细信息</li>
+                </ul>`
         },
         {
             title: '核心字段',
+            noTableWrap: true,
             tables: [
                 {
                     title: '佣金汇总字段',
-                    headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                    headers: ['字段名', '类型', '必填', '说明'],
                     rows: [
-                        ['time_range', 'time范围', 'enum', '是', '时间维度：今日/本周/本月/自定义'],
-                        ['month_commission', 'month_commission', 'number', '是', '本月佣金（元）'],
-                        ['settled_commission', 'settled_commission', 'number', '是', '已结算佣金（元）'],
-                        ['pending_commission', '待处理佣金', 'number', '是', '待结算佣金（元）']
+                        ['time_range', 'enum', '是', '时间维度：今日/本周/本月/自定义'],
+                        ['month_commission', 'number', '是', '本月佣金（元）'],
+                        ['settled_commission', 'number', '是', '已结算佣金（元）'],
+                        ['pending_commission', 'number', '是', '待结算佣金（元）']
                     ]
                 },
                 {
                     title: '佣金流水字段',
-                    headers: ['字段名', '中文名', '类型', '必填', '说明'],
+                    headers: ['字段名', '类型', '必填', '说明'],
                     rows: [
-                        ['record_id', '记录ID', 'number', '是', '佣金流水唯一标识'],
-                        ['show_name', '演出名称', 'string', '是', '关联演出名称'],
-                        ['status', '状态', 'enum', '是', '状态：已结算/待结算'],
-                        ['buyer_name', '买家名称', 'string', '是', '购买人'],
-                        ['order_amount', '订单金额', 'number', '是', '订单金额'],
-                        ['commission_rate', '佣金比例', 'number', '是', '佣金比例（百分比）'],
-                        ['commission_amount', '佣金金额', 'number', '是', '佣金金额'],
-                        ['create_time', '创建时间', 'string', '是', '交易时间']
+                        ['record_id', 'number', '是', '佣金流水唯一标识'],
+                        ['show_name', 'string', '是', '关联演出名称'],
+                        ['status', 'enum', '是', '状态：已结算/待结算'],
+                        ['buyer_name', 'string', '是', '购买人'],
+                        ['order_amount', 'number', '是', '订单金额'],
+                        ['commission_rate', 'number', '是', '佣金比例（百分比）'],
+                        ['commission_amount', 'number', '是', '佣金金额'],
+                        ['create_time', 'string', '是', '交易时间']
                     ]
                 }
             ]
-        },
-        {
-            title: '筛选栏',
-            content: `顶部时间筛选栏，支持四种时间维度： - <b>今日</b> - <b>本周</b> - <b>本月</b> - <b>自定义</b> - 选择自定义日期范围`
-        },
-        {
-            title: '佣金汇总',
-            content: `展示三项佣金汇总数据： - <b>本月佣金</b>：¥5,280 - <b>已结算</b>：¥3,680（绿色标识） - <b>待结算</b>：¥1,600（橙色标识）`
-        },
-        {
-            title: '明细列表',
-            content: `展示8条佣金明细记录，每条记录包含： - <b>演出名称</b> - <b>状态</b>：已结算/待结算 - <b>购买人</b> - <b>订单金额</b> - <b>佣金比例</b> - <b>佣金金额</b> - <b>时间</b>：交易发生时间`
-        },
+        }
     ]
   },
 
