@@ -774,6 +774,72 @@ body {
   object-fit: cover;
 }
 
+/* Official Reply Card - 带缩进的精致卡片样式 */
+.reply-card {
+  margin-top: 16px;
+  margin-left: 44px;
+  margin-right: 8px;
+  padding: 16px 18px;
+  background: linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 107, 74, 0.15);
+  box-shadow: 0 4px 16px rgba(10, 22, 40, 0.06), 0 1px 4px rgba(255, 107, 74, 0.08);
+  position: relative;
+}
+
+/* 左侧装饰线 */
+.reply-card::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: 0;
+  width: 4px;
+  height: calc(100% - 24px);
+  background: linear-gradient(180deg, var(--coral-orange) 0%, var(--coral-orange-light) 100%);
+  border-radius: 0 4px 4px 0;
+}
+
+/* 小三角箭头 - 指向用户评论 */
+.reply-card::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: -8px;
+  width: 14px;
+  height: 14px;
+  background: #FFFFFF;
+  transform: rotate(45deg);
+  border-left: 1px solid rgba(255, 107, 74, 0.15);
+  border-bottom: 1px solid rgba(255, 107, 74, 0.15);
+  box-shadow: -2px 2px 4px rgba(10, 22, 40, 0.04);
+}
+
+.reply-card .reply-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--coral-orange);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reply-card .reply-label::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--coral-orange);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.reply-card .reply-text {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  padding-left: 12px;
+}
+
 /* Notice Tab */
 .notice-section {
   margin-bottom: 20px;
@@ -1313,8 +1379,8 @@ body {
               <img src="https://picsum.photos/seed/review-img2/144/144" alt="评论图片">
               <img src="https://picsum.photos/seed/review-img3/144/144" alt="评论图片">
             </div>
-            <div class="reply-content">
-              <div class="reply-label">官方回复：</div>
+            <div class="reply-card">
+              <div class="reply-label">官方回复</div>
               <div class="reply-text">感谢您的评价，我们会继续努力！</div>
             </div>
           </div>
@@ -1328,8 +1394,8 @@ body {
               <div class="review-time">5天前</div>
             </div>
             <div class="review-text">带家人一起来的，现场氛围特别好，美食区的东西也很有海南特色。孩子玩得很开心，强烈推荐亲子家庭来体验！</div>
-            <div class="reply-content">
-              <div class="reply-label">官方回复：</div>
+            <div class="reply-card">
+              <div class="reply-label">官方回复</div>
               <div class="reply-text">感谢您的评价，我们会继续努力！</div>
             </div>
           </div>
@@ -1343,8 +1409,8 @@ body {
               <div class="review-time">1周前</div>
             </div>
             <div class="review-text">阵容很强大，舞台设计很有创意。唯一不足的是交通稍微不太方便，建议提前规划好出行路线。整体来说还是很值得的体验。</div>
-            <div class="reply-content">
-              <div class="reply-label">官方回复：</div>
+            <div class="reply-card">
+              <div class="reply-label">官方回复</div>
               <div class="reply-text">感谢您的评价，我们会继续努力！</div>
             </div>
           </div>
@@ -1362,8 +1428,8 @@ body {
               <img src="https://picsum.photos/seed/review-img4/144/144" alt="评论图片">
               <img src="https://picsum.photos/seed/review-img5/144/144" alt="评论图片">
             </div>
-            <div class="reply-content">
-              <div class="reply-label">官方回复：</div>
+            <div class="reply-card">
+              <div class="reply-label">官方回复</div>
               <div class="reply-text">感谢您的评价，我们会继续努力！</div>
             </div>
           </div>
