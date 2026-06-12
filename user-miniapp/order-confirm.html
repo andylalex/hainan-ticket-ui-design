@@ -331,6 +331,10 @@
       <input type="tel" class="form-input" placeholder="请输入手机号" value="138****8888">
       <div class="form-hint">电子票将通过短信发送至该手机号</div>
     </div>
+    <div class="form-group">
+      <label class="form-label">身份证号</label>
+      <input type="text" class="form-input" placeholder="请输入身份证号" maxlength="18">
+    </div>
   </div>
 
   <!-- Payment Method -->
@@ -389,7 +393,7 @@
         seatList.innerHTML +=
           '<div class="seat-item">' +
             '<div class="seat-item-left">' +
-              '<span class="seat-item-tag">' + s.zone + '</span>' +
+              '<span class="seat-item-tag">' + (s.tier || 'A档') + '</span>' +
               '<span class="seat-item-pos">' + s.row + '排 ' + s.col + '座</span>' +
             '</div>' +
             '<div class="seat-item-price">¥' + s.price + '</div>' +

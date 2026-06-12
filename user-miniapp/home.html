@@ -110,7 +110,6 @@
       left: 0;
       right: 0;
       height: 40px;
-      background: linear-gradient(135deg, #0A1628 0%, #132744 50%, #0A1628 100%);
       border-radius: 0 0 50% 50%;
       z-index: 5;
     }
@@ -676,7 +675,7 @@
 
     /* ========== Coupon Package Section ========== */
     .coupon-section {
-      padding: 12px 16px 16px;
+      padding: 12px 0 16px;
     }
 
     .coupon-scroll {
@@ -686,7 +685,7 @@
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
       scroll-snap-type: x mandatory;
-      padding: 4px 4px 12px;
+      padding: 4px 16px 12px;
     }
 
     .coupon-scroll::-webkit-scrollbar {
@@ -930,12 +929,13 @@
     /* ========== Hot Recommend ========== */
     .hot-section {
       position: relative;
+      padding: 12px 0 16px;
     }
 
     .hot-scroll {
       display: flex;
       gap: 10px;
-      padding: 0 16px 4px;
+      padding: 4px 16px 12px;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
@@ -1081,13 +1081,13 @@
 
     /* ========== Theater Section ========== */
     .theater-section {
-      padding-bottom: 16px;
+      padding: 12px 0 16px;
     }
 
     .theater-scroll {
       display: flex;
       gap: 12px;
-      padding: 0 16px 4px;
+      padding: 4px 16px 12px;
       overflow-x: auto;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
@@ -1706,7 +1706,7 @@
     <!-- Theater Navigation -->
     <div class="theater-section animate-in delay-4">
       <div class="section-header">
-        <div class="section-title">合作剧院</div>
+        <div class="section-title">演出剧院</div>
         <a class="section-more" href="theater-list.html" style="text-decoration:none;">
           全部剧院 <i class="fas fa-chevron-right"></i>
         </a>
