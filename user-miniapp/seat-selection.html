@@ -1818,11 +1818,11 @@
           <span class="price-value" id="priceSubtotal">¥0</span>
         </div>
         <div class="price-row" id="earlyBirdDiscountRow" style="display:none;">
-          <span class="price-label">票品折扣（早鸟票）</span>
+          <span class="price-label">票品折扣（早鸟票9.5折）</span>
           <span class="price-value discount" id="priceEarlyBirdDiscount" style="color:var(--coral-orange);">-¥0</span>
         </div>
         <div class="price-row" id="memberDiscountRow" style="display:none;">
-          <span class="price-label">会员折扣（白金会员9折）</span>
+          <span class="price-label">黄金会员9折</span>
           <span class="price-value discount" id="priceMemberDiscount" style="color:var(--coral-orange);">-¥0</span>
         </div>
         <div class="price-row" id="packageDiscountRow" style="display:none;">
@@ -2015,13 +2015,7 @@
 
   // 获取当前限购数量
   function getPurchaseLimit() {
-    if (isEarlyBirdPeriod()) {
-      return TICKET_POLICY.earlyBird.limitPerUser;
-    }
-    if (isPriorityPeriod()) {
-      return TICKET_POLICY.memberPriority.limitPerMember;
-    }
-    return 6; // 默认限购6张
+    return 999; // 不限制选座上限
   }
 
   // 计算折扣后价格
@@ -2682,28 +2676,29 @@
     const couponHintRow = document.getElementById('couponHintRow');
     const memberDiscountRow = document.getElementById('memberDiscountRow');
 
-    // 计算早鸟票折扣金额
+    // 计算早鸟票折扣金额（原价的5%，VIP区不参与）
     let earlyBirdDeduct = 0;
     if (isEarlyBirdPeriod()) {
-      const origSum = selectedSeats.reduce((sum, s) => sum + (s.originalPrice || s.price), 0);
-      const discSum = selectedSeats.reduce((sum, s) => sum + s.price, 0);
-      earlyBirdDeduct = origSum - discSum;
+      const nonVipOriginalTotal = selectedSeats
+        .filter(s => s.tier !== 'vip')
+        .reduce((sum, s) => sum + (s.originalPrice || s.price), 0);
+      earlyBirdDeduct = Math.round(nonVipOriginalTotal * 0.05);
     }
 
-    // 计算会员折扣（白金会员9折，减免10%）
+    // 计算会员折扣（黄金会员9折，减免10%）
     const discSumForMember = selectedSeats.reduce((sum, s) => sum + s.price, 0);
     let memberDiscount = Math.floor(discSumForMember * 0.1);
 
-    // 票品折扣行：早鸟票只做展示，始终显示9.5折
-    if (isEarlyBirdPeriod()) {
+    // 票品折扣行：早鸟票9.5折，显示具体优惠金额
+    if (isEarlyBirdPeriod() && earlyBirdDeduct > 0) {
       earlyBirdRow.style.display = 'flex';
-      document.getElementById('priceEarlyBirdDiscount').textContent = '9.5折';
+      document.getElementById('priceEarlyBirdDiscount').textContent = `-¥${earlyBirdDeduct}`;
     } else {
       earlyBirdRow.style.display = 'none';
     }
 
-    // 会员折扣行：只在无套票时显示
-    if (selectedVouchers.length === 0 && memberDiscount > 0) {
+    // 会员折扣行：黄金会员9折，始终显示具体优惠金额
+    if (memberDiscount > 0) {
       memberDiscountRow.style.display = 'flex';
       document.getElementById('priceMemberDiscount').textContent = `-¥${memberDiscount}`;
     } else {
