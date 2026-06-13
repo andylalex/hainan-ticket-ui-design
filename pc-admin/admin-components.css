@@ -427,3 +427,17 @@
     font-size: 12px;
   }
 }
+
+/* 低分辨率下操作按钮只显示图标 */
+@media screen and (max-width: 1200px) {
+  .action-btn {
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    justify-content: center;
+    font-size: 0;
+  }
+  .action-btn i {
+    font-size: 13px;
+  }
+}

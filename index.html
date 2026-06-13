@@ -159,33 +159,82 @@
             background: #fff;
             border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            min-width: 280px;
+            min-width: 320px;
             max-height: 70vh;
-            overflow-y: auto;
+            overflow: hidden;
             display: none;
             z-index: 1001;
         }
 
         .dropdown-menu.show {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Dropdown Tabs */
+        .dropdown-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            background: #F8FAFC;
+            border-radius: 12px 12px 0 0;
+            padding: 4px;
+            gap: 2px;
+        }
+
+        .dropdown-tab {
+            flex: 1;
+            padding: 8px 4px;
+            border: none;
+            background: transparent;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .dropdown-tab:hover {
+            background: rgba(0,0,0,0.04);
+        }
+
+        .dropdown-tab.active {
+            background: #fff;
+            color: var(--text);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .dropdown-tab .tab-icon {
+            margin-right: 4px;
+        }
+
+        /* Dropdown Content */
+        .dropdown-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 4px 0;
+        }
+
+        .dropdown-panel {
+            display: none;
+        }
+
+        .dropdown-panel.active {
             display: block;
         }
 
-        .dropdown-section {
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .dropdown-section:last-child {
-            border-bottom: none;
-        }
-
-        .dropdown-section-title {
-            padding: 8px 16px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 13px;
+            transition: background 0.15s;
+            cursor: pointer;
         }
 
         .dropdown-item {
@@ -1654,6 +1703,99 @@
 const devDocs = {
     // ========== 用户端小程序 ==========
     // ========== 用户端小程序 ==========
+
+    'user-miniapp/login.html': {
+        title: '登录',
+        subtitle: '微信一键登录 - 手机号授权',
+        sections: [
+            {
+                title: '功能描述',
+                content: `<p><strong>核心功能：</strong>用户端小程序的登录入口页面，支持微信一键登录。用户点击"微信一键登录"按钮后，弹出微信手机号授权弹窗（底部滑出式），显示应用名称和授权手机号（脱敏显示），用户确认授权后进入登录加载状态，成功后跳转小程序首页。页面采用深色渐变背景，品牌Logo居中展示（使用PC端同款logo.png），底部提供用户协议和隐私政策勾选。</p>
+<p><strong>业务说明：</strong></p>
+<ul>
+  <li><strong>前置条件：</strong>用户已打开小程序，未登录状态</li>
+  <li><strong>功能实现逻辑：</strong>
+    <ul>
+      <li>品牌展示：页面中央展示品牌Logo（PC端同款logo.png，带发光脉冲环+浮动动画）和品牌名称"海南演艺"</li>
+      <li>登录卡片：毛玻璃效果卡片（带微光扫过动画），包含欢迎标题、登录说明、微信一键登录按钮（绿色渐变）、用户协议勾选</li>
+      <li>微信一键登录：点击按钮前需勾选用户协议，未勾选时提示"请先同意用户服务协议和隐私政策"</li>
+      <li>手机号授权弹窗：底部滑出式弹窗（authModal），显示微信图标、授权标题、应用名称、脱敏手机号（138****8888），支持确认授权或取消</li>
+      <li>登录加载：确认授权后显示全屏加载遮罩（loadingOverlay，毛玻璃背景+旋转动画+"登录中..."），1.5秒后跳转</li>
+      <li>登录跳转逻辑：登录成功后优先跳转 sessionStorage 中存储的 loginRedirect 目标页面（需获取用户信息的页面未登录时写入），无 redirect 则默认跳转首页</li>
+      <li>未注册处理：未注册手机号验证后自动创建账号，底部提示"未注册手机号验证后将自动创建账号"</li>
+      <li>页面特效：背景粒子漂浮动画（20个随机粒子）、三个光球缓慢漂移呼吸动画、Logo浮动+发光脉冲环、卡片微光扫过、入场 fadeInUp 分层动画</li>
+    </ul>
+  </li>
+  <li><strong>数据约束：</strong>手机号必须为有效中国大陆手机号；用户协议必须勾选才能继续</li>
+  <li><strong>能力边界：</strong>不支持手机号验证码登录；不支持账号密码登录；不支持第三方登录（仅微信）</li>
+</ul>
+<p><strong>登录跳转场景：</strong>以下页面需要获取用户信息，未登录时跳转到登录页（login.html），登录后通过 sessionStorage.loginRedirect 回跳：</p>
+<ul>
+  <li><strong>个人中心</strong>（profile.html）：显示用户头像、昵称、会员等级、资产概览</li>
+  <li><strong>编辑资料</strong>（profile-edit.html）：修改用户姓名、头像、手机号等个人信息</li>
+  <li><strong>钱包</strong>（wallet.html）：余额管理、充值提现，需实名认证</li>
+  <li><strong>充值</strong>（recharge-topup.html）：余额充值，需绑定手机号</li>
+  <li><strong>实名认证</strong>（real-name-auth.html）：身份证实名认证，需登录态</li>
+  <li><strong>会员中心</strong>（member-center.html）：会员卡、等级权益、积分，需用户身份</li>
+  <li><strong>积分中心</strong>（points.html）：积分余额、任务、兑换，需用户身份</li>
+  <li><strong>优惠券</strong>（coupons.html）：用户优惠券列表、领取，需用户身份</li>
+  <li><strong>我的套票</strong>（my-packages.html）：已购套票管理，需用户身份</li>
+  <li><strong>订单确认</strong>（order-confirm.html）：确认订单、选座购票后下单，需用户身份</li>
+  <li><strong>票务订单</strong>（order-ticket.html）：查看电子票、订单详情，需用户身份</li>
+  <li><strong>商品订单</strong>（product-order.html）：商城订单管理，需用户身份</li>
+  <li><strong>交易记录</strong>（transaction-record.html）：钱包交易流水，需用户身份</li>
+  <li><strong>积分明细</strong>（points-flow.html）：积分收支流水，需用户身份</li>
+  <li><strong>隐私设置</strong>（privacy-settings.html）：隐私权限管理，需用户身份</li>
+  <li><strong>偏好设置</strong>（preference-settings.html）：演出偏好配置，需用户身份</li>
+  <li><strong>消息服务</strong>（message-service.html）：消息通知列表，需用户身份</li>
+  <li><strong>充值卡绑定</strong>（recharge-card-bind.html）：实体充值卡绑定，需用户身份</li>
+  <li><strong>实体卡申请</strong>（physical-card-apply.html）：实体会员卡申请，需用户身份</li>
+</ul>`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>点击微信一键登录</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击"微信一键登录"按钮（绿色渐变，fa-weixin图标）</li>
+  <li><strong>执行中：</strong>检查用户协议勾选状态→未勾选则alert提示→已勾选则弹出手机号授权弹窗（底部滑入动画）</li>
+  <li><strong>成功：</strong>弹窗底部滑入显示，背景变暗（backdrop-filter: blur）</li>
+  <li><strong>边界条件：</strong>未勾选协议时阻止弹窗打开</li>
+</ul>
+<p><strong>确认授权并登录</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击授权弹窗"确认授权并登录"按钮（绿色渐变）</li>
+  <li><strong>执行中：</strong>关闭授权弹窗→显示全屏加载遮罩（旋转动画+"登录中..."）→模拟登录请求（1.5秒）</li>
+  <li><strong>成功：</strong>加载完成后跳转 home.html</li>
+  <li><strong>失败：</strong>无（演示环境）</li>
+  <li><strong>边界条件：</strong>登录过程中不可取消</li>
+</ul>
+<p><strong>取消授权</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击授权弹窗"取消"按钮或点击弹窗外区域</li>
+  <li><strong>执行中：</strong>弹窗向下滑出关闭，返回登录页面</li>
+  <li><strong>成功：</strong>弹窗关闭，用户可重新点击登录</li>
+</ul>`
+            },
+            {
+                title: '核心字段',
+                noTableWrap: true,
+                tables: [
+                    {
+                        title: '登录字段',
+                        headers: ['字段名', '类型', '必填', '说明'],
+                        rows: [
+                            ['phone', 'string', '是', '用户手机号（微信授权获取）'],
+                            ['openid', 'string', '是', '微信用户唯一标识'],
+                            ['unionid', 'string', '否', '微信UnionID（多应用互通时）'],
+                            ['nickname', 'string', '否', '微信昵称'],
+                            ['avatar_url', 'string', '否', '微信头像URL'],
+                            ['agreement_accepted', 'boolean', '是', '是否同意用户协议和隐私政策']
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
 
     'user-miniapp/home.html': {
         title: '首页',
@@ -4669,6 +4811,79 @@ const devDocs = {
   // 管理员小程序 (Admin Mini App)
   // ============================================================
 
+  'admin-miniapp/login.html': {
+    title: '管理员登录',
+    subtitle: '管理员小程序',
+    sections: [
+      {
+        title: '功能描述',
+        content: `<p><strong>核心功能：</strong>管理员端小程序的登录入口页面，仅支持账号密码登录，需输入图形验证码。页面采用深色渐变背景（与用户端风格统一但使用金色主题色），品牌Logo居中展示（PC端同款logo.png），带"管理员端"标识徽章。</p>
+<p><strong>业务说明：</strong></p>
+<ul>
+  <li><strong>前置条件：</strong>管理员已开通系统账号（由PC管理后台创建）</li>
+  <li><strong>功能实现逻辑：</strong>
+    <ul>
+      <li>品牌展示：页面中央展示品牌Logo（浮动动画）和品牌名称"海南演艺"，下方显示金色"管理员端"徽章</li>
+      <li>登录表单：毛玻璃效果卡片，包含账号输入框（fa-user图标）、密码输入框（fa-lock图标+密码可见切换）、验证码输入框+Canvas图形验证码</li>
+      <li>图形验证码：Canvas绘制4位字母数字（排除易混淆字符0/O/I/1），深色背景+金色文字+随机旋转角度+干扰线和噪点，点击验证码图片可刷新</li>
+      <li>密码可见切换：点击眼睛图标切换密码明文/密文显示</li>
+      <li>登录验证：校验账号非空、密码非空、验证码匹配（不区分大小写），验证码错误时显示红色错误提示并自动刷新验证码</li>
+      <li>登录加载：验证通过后显示全屏加载遮罩（毛玻璃背景+金色旋转动画），1.5秒后跳转</li>
+      <li>登录跳转：优先跳转 sessionStorage.adminLoginRedirect 目标页面，无则默认跳转管理员首页（admin-home-verify.html）</li>
+      <li>页面特效：背景粒子漂浮、光球漂移、Logo浮动、卡片微光扫过、入场分层动画</li>
+    </ul>
+  </li>
+  <li><strong>数据约束：</strong>账号为PC管理后台创建的管理员账号；密码长度不少于6位；验证码4位字母数字</li>
+  <li><strong>安全策略：</strong>验证码错误后自动刷新；不支持微信登录；不支持手机号登录；连续错误5次建议锁定账号（演示环境未实现）</li>
+  <li><strong>能力边界：</strong>仅支持账号密码登录；不支持忘记密码找回（需联系PC管理后台重置）；不支持注册（账号由后台创建）</li>
+</ul>`
+      },
+      {
+        title: '交互说明',
+        content: `<p><strong>输入账号</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击账号输入框</li>
+  <li><strong>执行中：</strong>输入框获得焦点，边框变为金色半透明</li>
+  <li><strong>成功：</strong>输入管理员账号</li>
+</ul>
+<p><strong>输入密码</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击密码输入框</li>
+  <li><strong>执行中：</strong>输入框获得焦点，右侧显示/隐藏密码图标</li>
+  <li><strong>密码切换：</strong>点击眼睛图标切换密文/明文显示，图标在 fa-eye 和 fa-eye-slash 之间切换</li>
+</ul>
+<p><strong>图形验证码</strong></p>
+<ul>
+  <li><strong>生成：</strong>页面加载时自动生成4位验证码（Canvas绘制），包含干扰线和噪点</li>
+  <li><strong>刷新：</strong>点击验证码图片区域重新生成，输入框自动清空</li>
+  <li><strong>校验：</strong>不区分大小写，错误时显示红色提示"验证码错误"并自动刷新</li>
+</ul>
+<p><strong>点击登录</strong></p>
+<ul>
+  <li><strong>触发：</strong>点击"登录"按钮（金色渐变）或按 Enter 键</li>
+  <li><strong>执行中：</strong>依次校验账号→密码→验证码非空→验证码匹配→显示加载遮罩→模拟登录（1.5秒）</li>
+  <li><strong>成功：</strong>跳转管理员首页或 redirect 目标页面</li>
+  <li><strong>失败：</strong>验证码错误时显示错误提示+刷新验证码，不触发登录</li>
+</ul>`
+      },
+      {
+        title: '核心字段',
+        noTableWrap: true,
+        tables: [
+          {
+            title: '登录字段',
+                            headers: ['字段名', '类型', '必填', '说明'],
+                rows: [
+                    ['username', 'string', '是', '管理员账号'],
+                    ['password', 'string', '是', '密码（最少6位）'],
+                    ['captcha', 'string', '是', '图形验证码（4位，不区分大小写）']
+                ]
+          }
+        ]
+      }
+    ]
+  },
+
   'admin-miniapp/admin-home-verify.html': {
     title: '管理员首页 & 验票',
     subtitle: '管理员小程序',
@@ -5674,6 +5889,14 @@ const devDocs = {
               <li><strong>成功：</strong>营销中心页面打开，票品折扣Tab激活，关联演出筛选自动匹配该演出</li>
               <li><strong>失败：</strong>若演出名称无匹配项，筛选保持"全部演出"</li>
               <li><strong>边界条件：</strong>无</li>
+            </ul>
+            <p><strong>标签管理</strong></p>
+            <ul>
+              <li><strong>触发：</strong>点击列表行操作列"标签"按钮（fa-tag + 标签/已有标签名），无标签时显示灰色"标签"文字，有标签时显示带背景色的标签名称</li>
+              <li><strong>执行中：</strong>弹出标签编辑弹窗（modalTagEdit），包含：标签名称输入框（最多6个字符）、10色颜色选择器（圆形色块，选中带白色对勾和深蓝边框）、预览区域（实时显示标签效果）</li>
+              <li><strong>成功：</strong>弹窗关闭，操作按钮更新为带背景色的标签样式（--tag-bg + --tag-color），Toast提示"标签设置成功"</li>
+              <li><strong>失败：</strong>标签名称为空时Toast提示"请输入标签名称"</li>
+              <li><strong>边界条件：</strong>点击"清除标签"可移除标签，按钮恢复为灰色默认样式，Toast提示"标签已清除"；标签名称最多6个字符，超出截断</li>
             </ul>`
           },
           {
@@ -5707,6 +5930,15 @@ const devDocs = {
                   ['yearly_revenue', 'number', '是', '今年票房收入（元）'],
                   ['box_revenue', 'number', '是', '累计票房收入（元）'],
                   ['created_at', 'string', '是', '创建时间']
+                ]
+              },
+              {
+                title: '演出标签字段',
+                headers: ['字段名', '类型', '必填', '说明'],
+                rows: [
+                  ['tag_name', 'string', '否', '标签名称，最多6个字符，如：热门/推荐/限时'],
+                  ['tag_color', 'string', '否', '标签颜色（HEX格式），如：#FF6B4A'],
+                  ['tag_bg', 'string', '否', '标签背景色（带透明度），如：rgba(255,107,74,0.1)']
                 ]
               },
               {
@@ -6126,7 +6358,7 @@ const devDocs = {
         sections: [
           {
             title: '功能描述',
-            content: `<p><strong>核心功能：</strong>线下窗口售票的三栏操作界面。左栏选择场馆和演出场次（场次显示折扣类型标签：满减/折扣/早鸟），中栏为可视化座位图（支持点选、框选、缩放），右栏为已选座位列表（带清除全部按钮）、购票人信息、会员卡信息（默认显示，支持弹窗读取）、订单摘要（含票品折扣/早鸟票/会员卡折扣减免金额）。座位图顶部有"STAGE · 舞台"标签，底部图例栏显示各分区颜色+价格图例及当前场次优惠信息。支持确认售票（3步流程：收款→出票→完成）和预约售票两种模式。确认售票支持5种支付方式（微信/支付宝/现金/充值卡/会员卡），出票支持纸质票/电子票/暂不出票。页面布局为内容撑高滚动，无固定视口高度限制。</p>
+            content: `<p><strong>核心功能：</strong>线下窗口售票的三栏操作界面。左栏选择场馆和演出场次（场次显示折扣类型标签：满减/折扣/早鸟），中栏为可视化座位图（支持点选、框选、缩放），右栏为已选座位列表（带清除全部按钮）、购票人信息、会员卡信息（默认显示，支持弹窗读取）、订单摘要（含票品折扣/早鸟票/会员卡折扣减免金额）。座位图顶部有"STAGE · 舞台"标签，底部图例栏显示各分区颜色+价格图例及当前场次优惠信息。支持确认售票（订单确认→收款→出票→完成）和预约售票两种模式。确认售票流程：点击确认售票→弹出订单生成确认弹窗（显示座位数量/原价总计/优惠信息/应付金额）→确认后生成待支付订单（自动生成订单号）→进入收款步骤（3步流程：收款→出票→完成）。收款支持5种支付方式（微信/支付宝/现金/充值卡/会员卡），现金支付提供"全额支付"快捷按钮自动填入应付金额。出票支持纸质票/电子票/暂不出票。任何环节关闭或取消弹窗均进入待支付订单页面（显示订单编号/演出信息/座位列表/15分钟倒计时），支持取消订单或继续支付。页面布局为内容撑高滚动，无固定视口高度限制。</p>
 <p><strong>业务说明：</strong></p>
 <ul>
   <li><strong>前置条件：</strong>操作人需具有"窗口售票"权限；演出场次需处于"售票中"状态；窗口需已配置工号和操作员信息</li>
@@ -6139,8 +6371,10 @@ const devDocs = {
       <li>会员卡信息：右栏默认显示会员卡信息面板（卡号/等级/折扣/余额），点击"读取会员卡"弹出读取弹窗（stReadCardModal，400px宽），模拟读卡器读取后自动填充会员信息并关闭弹窗</li>
       <li>订单摘要：显示已选座位数量、原价总额、票品折扣减免（满减/折扣）、早鸟票减免、会员卡折扣减免、应付金额；折扣减免根据场次配置和会员卡信息自动计算</li>
       <li>底部图例栏：显示各分区颜色+价格图例，以及当前选中场次的优惠类型标签（票品折扣/早鸟票）</li>
-      <li>确认售票流程（3步）：Step1 选择支付方式→打开对应支付弹窗→Step2 选择出票方式（纸质票需选模板，电子票需填手机号）→Step3 显示成功</li>
-      <li>支付方式：微信/支付宝弹出扫码弹窗（模拟扫码），现金需输入实收金额并自动计算找零（实收-应收），充值卡/会员卡弹出读卡弹窗（余额不足时扣除全部余额后进入二次支付，需选择其他支付方式补足差额）</li>
+      <li>确认售票流程：点击确认售票→弹出订单生成确认弹窗（stOrderConfirmModal，440px宽，显示订单摘要）→确认后生成待支付订单（订单号ORD+时间戳）→进入3步售票流程弹窗（stSellFlowModal，520px宽）</li>
+      <li>订单生成确认弹窗：显示即将生成订单提示、座位数量、原价总计、优惠信息、应付金额，支持取消（不生成订单）或确认生成订单</li>
+      <li>待支付订单页面：任何环节关闭/取消弹窗后进入，显示订单编号、演出名称、场次时间、座位数量、应付金额、已选座位标签列表、15分钟支付倒计时（不足2分钟变红色，超时提示重新下单），支持取消订单（释放座位）或继续支付（重新进入收款步骤）</li>
+      <li>支付方式：微信/支付宝弹出扫码弹窗（模拟扫码），现金需输入实收金额（提供"全额支付"按钮自动填入应付金额）并自动计算找零（实收-应收），充值卡/会员卡弹出读卡弹窗（余额不足时扣除全部余额后进入二次支付，需选择其他支付方式补足差额）</li>
       <li>预约售票：输入手机号查找用户→显示用户信息→设置预约到期时间（默认24小时）→确认预约</li>
       <li>购票人信息：姓名、证件类型（身份证/护照/其他）、证件号码（非必填），支持读取证件（身份证读卡器自动填入）</li>
     </ul>
@@ -6179,10 +6413,13 @@ const devDocs = {
 <p><strong>确认售票</strong></p>
 <ul>
   <li><strong>触发：</strong>点击右栏"确认售票"按钮（橙色渐变，fa-shopping-cart图标）</li>
-  <li><strong>执行中：</strong>弹出确认售票弹窗（stSellFlowModal，520px宽），3步流程。Step1显示应收金额+5种支付方式选择→选择后打开对应支付弹窗→Step2选择出票方式→Step3显示成功</li>
-  <li><strong>成功：</strong>Step3显示绿色大勾+"售票成功"+"已成功售出X张门票"，座位图更新为已售状态，右栏清空</li>
+  <li><strong>执行中：</strong>弹出订单生成确认弹窗（stOrderConfirmModal，440px宽），显示即将生成订单提示和订单摘要（座位数量/原价总计/优惠信息/应付金额），用户可取消（不生成订单）或确认生成订单</li>
+  <li><strong>确认生成订单：</strong>自动生成订单号（ORD+时间戳），保存订单信息，进入确认售票流程弹窗（stSellFlowModal，520px宽），3步流程。Step1显示应收金额+5种支付方式选择→选择后打开对应支付弹窗→Step2选择出票方式→Step3显示成功</li>
+  <li><strong>关闭/取消：</strong>在订单确认弹窗、售票流程弹窗（任何步骤）或支付弹窗中关闭/取消，均进入待支付订单页面（stPendingOrderModal，480px宽），显示订单编号/演出信息/座位列表/15分钟倒计时，header和footer固定不滚动，body区域可独立滚动</li>
+  <li><strong>待支付订单操作：</strong>支持"取消订单"（释放座位，清空已选，返回选座界面）或"继续支付"（保留订单，重新进入收款步骤）</li>
+  <li><strong>成功：</strong>Step3显示绿色大勾+"售票成功"+"已成功售出X张门票"，座位图更新为已售状态，右栏清空，订单状态清除</li>
   <li><strong>失败：</strong>支付失败时Toast提示"支付失败，请重试"</li>
-  <li><strong>边界条件：</strong>无座位时按钮disabled；现金支付时输入实收金额后自动计算找零（实收-应收），实收不足提示"实收金额不足，还差XX"；充值卡/会员卡余额不足时扣除全部余额，剩余金额进入二次支付流程，需选择其他支付方式补足差额</li>
+  <li><strong>边界条件：</strong>无座位时按钮disabled；现金支付时提供"全额支付"按钮自动填入应付金额，输入实收金额后自动计算找零（实收-应收），实收不足提示"实收金额不足，还差XX"；充值卡/会员卡余额不足时扣除全部余额，剩余金额进入二次支付流程，需选择其他支付方式补足差额；待支付订单15分钟倒计时超时后提示"订单已超时，请重新下单"</li>
 </ul>
 <p><strong>预约售票</strong></p>
 <ul>
@@ -8794,85 +9031,173 @@ Tab切换交互：
 // entries.page 对应 devDocs 中的页面URL键名
 const changelogData = [
     {
-        date: '2026-06-12',
+        date: '2026-06-13',
         entries: [
             {
-                page: 'pc-admin/member-management.html',
-                pageName: '会员管理',
-                module: '积分管理',
-                content: `任务配置：发表评论/分享演出增加每日次数上限设置，移除邀请好友任务；过期规则：过期结算方式仅保留"按获取月份逐月过期"并禁用下拉框；任务配置/使用规则/过期规则均增加配置保存时间展示`
-            },
-            {
-                page: 'pc-admin/member-management.html',
-                pageName: '会员管理',
-                module: '会员政策',
-                content: `等级配置卡片删除/编辑按钮改为右上角圆形半透明图标按钮；成长值配置顺序调整（推荐会员移到最后）；新增等级按钮改为白底虚线框卡片样式；成长值配置增加配置保存时间展示`
-            },
-            {
-                page: 'user-miniapp/home.html',
-                pageName: '首页',
-                module: '首页',
-                content: `超值券包卡片阴影修复（增加padding），点击卡片跳转券包详情；合作剧院卡片点击跳转剧院详情；热门推荐演出卡片点击直达演出详情`
-            },
-            {
-                page: 'user-miniapp/theater-detail.html',
-                pageName: '剧院详情',
-                module: '剧院详情',
-                content: `新增剧院详情页面，包含剧院大图、信息统计、演出厅列表、当前演出列表，支持URL参数切换不同剧院`
-            },
-            {
-                page: 'user-miniapp/order-confirm.html',
-                pageName: '确认订单',
-                module: '确认订单',
-                content: `新增确认订单页面，包含演出信息、已选座位、费用明细、取票人信息、支付方式，底部固定确认支付栏`
+                page: 'user-miniapp/seat-selection.html',
+                pageName: '选座购票',
+                module: '选座购票',
+                time: '02:30',
+                content: `观演券支持自动匹配：选择座位时自动匹配对应票档的可用观演券，取消座位时自动解绑关联观演券，支持多张观演券同时使用；观演券数据增加指定演出+指定票档双重匹配条件，模拟4个演出11张观演券的多种匹配场景`
             },
             {
                 page: 'user-miniapp/seat-selection.html',
                 pageName: '选座购票',
                 module: '选座购票',
-                content: `确认选座按钮点击后跳转确认订单页面，携带演出名称/时间/场馆/座位数据`
+                time: '02:00',
+                content: `套票图标优化为金色系（fa-layer-group），与优惠券图标区分；弹窗中观演券标题从"*区免费"改为"*区观演券"；非本场演出的观演券显示具体演出名称并标注"限「演出名」使用"`
             },
             {
-                page: 'pc-admin/marketing-center.html',
-                pageName: '营销中心',
-                module: '优惠券',
-                content: `优惠券列表有效期列增加"领取后N天"显示格式（绿色标签），区分固定日期范围和动态天数两种有效期类型`
+                page: 'user-miniapp/seat-selection.html',
+                pageName: '选座购票',
+                module: '选座购票',
+                time: '01:30',
+                content: `券包更名为套票，数据结构重构为套票→观演券层级，观演券绑定指定演出和票档；票档筛选Tab上显示"套票"徽章标识有可用观演券的票档；弹窗展示所有观演券，非本场演出显示为禁用状态`
+            },
+            {
+                page: 'user-miniapp/seat-selection.html',
+                pageName: '选座购票',
+                module: '选座购票',
+                time: '01:00',
+                content: `移除钱包支付、充值卡支付、积分抵扣入口和逻辑；新增使用套票入口（底部弹窗选择观演券，匹配对应票档座位全额减免）；优惠券/套票图标改为Font Awesome扁平图标（fa-ticket/fa-layer-group），引入Font Awesome CDN`
+            },
+            {
+                page: 'user-miniapp/order-confirm.html',
+                pageName: '确认订单',
+                module: '确认订单',
+                time: '01:00',
+                content: `新增支付方式区域：微信支付（始终显示，自动补足剩余金额）、钱包支付（输入金额+全部使用）、充值卡支付（多选充值卡组合）、积分抵扣（输入积分，最多抵扣10%）；支持混合支付模式，钱包/充值卡/积分可同时启用，剩余不足部分自动用微信支付补足`
+            }
+        ]
+    },
+    {
+        date: '2026-06-12',
+        entries: [
+            {
+                page: 'admin-miniapp/login.html',
+                pageName: '管理员登录',
+                module: '登录',
+                time: '23:45',
+                content: `新增管理员端登录页面，仅支持账号密码登录，Canvas图形验证码（4位字母数字，排除易混淆字符），点击验证码可刷新，密码可见切换，登录后跳转管理员首页`
+            },
+            {
+                page: 'user-miniapp/login.html',
+                pageName: '登录',
+                module: '登录',
+                time: '23:30',
+                content: `新增登录页面，支持微信一键登录，点击后弹出微信手机号授权弹窗（底部滑出式，显示应用名称和脱敏手机号），确认授权后显示加载状态并跳转首页`
+            },
+            {
+                page: 'pc-admin/ticket-sales.html',
+                pageName: '售票管理',
+                module: '窗口售票',
+                time: '22:50',
+                content: `现金支付弹窗实收金额输入框旁新增"全额支付"按钮，点击后自动填入应付金额并计算找零`
+            },
+            {
+                page: 'pc-admin/ticket-sales.html',
+                pageName: '售票管理',
+                module: '窗口售票',
+                time: '22:30',
+                content: `确认售票流程新增订单生成确认弹窗（显示订单摘要，确认后生成待支付订单并自动分配订单号）；任何环节关闭/取消弹窗均进入待支付订单页面（显示订单编号/演出信息/座位列表/15分钟倒计时，header和footer固定不滚动），支持取消订单或继续支付`
+            },
+            {
+                page: 'pc-admin/show-management.html',
+                pageName: '演出管理',
+                module: '演出项目',
+                time: '22:10',
+                content: `列表操作栏新增标签管理按钮，支持设置/编辑/清除演出在小程序端的展示标签（标签名称+颜色），用于小程序演出列表和详情页的推荐标识展示`
             },
             {
                 page: 'pc-admin/member-management.html',
                 pageName: '会员管理',
                 module: '积分管理',
+                time: '21:30',
                 content: `使用规则-积分抵扣比例固定为1积分=0.01元，输入框设为只读不可编辑`
-            },
-            {
-                page: 'user-miniapp/home.html',
-                pageName: '首页',
-                module: '首页',
-                content: `header-area::after移除background渐变；超值券包/热门推荐/演出剧院卡片阴影修复（增加scroll padding）；合作剧院栏目名称改为演出剧院`
-            },
-            {
-                page: 'user-miniapp/theater-list.html',
-                pageName: '剧院列表',
-                module: '剧院列表',
-                content: `页面标题改为演出剧院；移除城市筛选栏；剧院卡片点击跳转剧院详情`
-            },
-            {
-                page: 'user-miniapp/theater-detail.html',
-                pageName: '剧院详情',
-                module: '剧院详情',
-                content: `移除演出厅栏目`
             },
             {
                 page: 'user-miniapp/show-detail.html',
                 pageName: '演出详情',
                 module: '演出详情',
+                time: '21:00',
                 content: `早鸟票横幅文案改为"前7天购票享8.5折优惠，每人限购5张"；评论Tab移除所有星级元素，增加官方回复内容`
             },
             {
                 page: 'user-miniapp/order-confirm.html',
                 pageName: '确认订单',
                 module: '确认订单',
+                time: '20:30',
                 content: `座位标签显示票档名称（tier字段）；取票人信息增加身份证号输入框`
+            },
+            {
+                page: 'user-miniapp/theater-detail.html',
+                pageName: '剧院详情',
+                module: '剧院详情',
+                time: '20:00',
+                content: `移除演出厅栏目`
+            },
+            {
+                page: 'user-miniapp/theater-list.html',
+                pageName: '剧院列表',
+                module: '剧院列表',
+                time: '19:30',
+                content: `页面标题改为演出剧院；移除城市筛选栏；剧院卡片点击跳转剧院详情`
+            },
+            {
+                page: 'user-miniapp/home.html',
+                pageName: '首页',
+                module: '首页',
+                time: '19:00',
+                content: `header-area::after移除background渐变；超值券包/热门推荐/演出剧院卡片阴影修复（增加scroll padding）；合作剧院栏目名称改为演出剧院`
+            },
+            {
+                page: 'pc-admin/member-management.html',
+                pageName: '会员管理',
+                module: '积分管理',
+                time: '18:00',
+                content: `任务配置：发表评论/分享演出增加每日次数上限设置，移除邀请好友任务；过期规则：过期结算方式仅保留"按获取月份逐月过期"并禁用下拉框；任务配置/使用规则/过期规则均增加配置保存时间展示`
+            },
+            {
+                page: 'pc-admin/member-management.html',
+                pageName: '会员管理',
+                module: '会员政策',
+                time: '17:30',
+                content: `等级配置卡片删除/编辑按钮改为右上角圆形半透明图标按钮；成长值配置顺序调整（推荐会员移到最后）；新增等级按钮改为白底虚线框卡片样式；成长值配置增加配置保存时间展示`
+            },
+            {
+                page: 'user-miniapp/home.html',
+                pageName: '首页',
+                module: '首页',
+                time: '17:00',
+                content: `超值券包卡片阴影修复（增加padding），点击卡片跳转券包详情；合作剧院卡片点击跳转剧院详情；热门推荐演出卡片点击直达演出详情`
+            },
+            {
+                page: 'user-miniapp/theater-detail.html',
+                pageName: '剧院详情',
+                module: '剧院详情',
+                time: '16:30',
+                content: `新增剧院详情页面，包含剧院大图、信息统计、演出厅列表、当前演出列表，支持URL参数切换不同剧院`
+            },
+            {
+                page: 'user-miniapp/order-confirm.html',
+                pageName: '确认订单',
+                module: '确认订单',
+                time: '16:00',
+                content: `新增确认订单页面，包含演出信息、已选座位、费用明细、取票人信息、支付方式，底部固定确认支付栏`
+            },
+            {
+                page: 'user-miniapp/seat-selection.html',
+                pageName: '选座购票',
+                module: '选座购票',
+                time: '15:30',
+                content: `确认选座按钮点击后跳转确认订单页面，携带演出名称/时间/场馆/座位数据`
+            },
+            {
+                page: 'pc-admin/marketing-center.html',
+                pageName: '营销中心',
+                module: '优惠券',
+                time: '15:00',
+                content: `优惠券列表有效期列增加"领取后N天"显示格式（绿色标签），区分固定日期范围和动态天数两种有效期类型`
             }
         ]
     },
@@ -8880,46 +9205,53 @@ const changelogData = [
         date: '2026-06-11',
         entries: [
             {
-                page: 'pc-admin/show-management.html',
-                pageName: '演出管理',
-                module: '演出项目',
-                content: `新建/编辑步骤3移除早鸟票设置；列表操作栏新增票品折扣按钮，点击跳转营销中心票品折扣Tab`
+                page: 'pc-admin/ticket-sales.html',
+                pageName: '售票管理',
+                module: '窗口售票',
+                time: '23:00',
+                content: `新增会员卡信息模块（默认显示，支持弹窗读取会员卡）；订单摘要增加票品折扣/早鸟票/会员卡折扣减免金额展示；左侧场次列表增加折扣类型标签（满减/折扣/早鸟）；底部图例栏增加当前场次优惠信息提示；移除底部员工信息状态栏；页面布局改为内容撑高滚动；已选座位移除按钮简化为图标`
             },
             {
-                page: 'pc-admin/marketing-center.html',
-                pageName: '营销中心',
-                module: '票品折扣',
-                content: `折扣类型新增早鸟票（折扣比例/最大优惠金额/持续天数，不设活动时间）；关联演出移除全部演出选项；列表新增关联演出筛选；列表新增一条早鸟票数据`
+                page: 'index.html',
+                pageName: '设计总览',
+                module: '设计总览',
+                time: '22:00',
+                content: `导航栏新增流程图按钮，支持左侧导航列表和右侧图片展示区，图片支持放大缩小和拖动`
             },
             {
                 page: 'pc-admin/marketing-center.html',
                 pageName: '营销中心',
                 module: '优惠券',
-                content: `新建/编辑/查看弹窗的有效期设置，选择"领取后N天"模式时，时间范围改为"有效天数"输入框（单位：天），固定日期模式保持生效/失效时间输入框`
+                time: '21:00',
+                content: `新建/编辑/查看弹窗叠加设置移除早鸟票叠加选项`
             },
             {
                 page: 'pc-admin/order-management.html',
                 pageName: '订单管理',
                 module: '票务订单',
+                time: '20:00',
                 content: `批量导入按钮改为珊瑚红色；订单详情演出信息移除票档字段，新增演出厅字段；支付减免tab统一表格样式，表头"优惠类型"改为"减免类型"，始终显示5种减免类型行（票品折扣/优惠券/券包/会员折扣/积分抵扣）；移除订单详情打印订单按钮；出票日志增加取票码模拟数据；付款弹窗电子票手机号输入框增加图标和提示文案；申请退款弹窗新增手续费比例选择（0%/5%/10%），提示文案改为仅返还实付/钱包/充值卡金额`
             },
             {
                 page: 'pc-admin/marketing-center.html',
                 pageName: '营销中心',
                 module: '优惠券',
-                content: `新建/编辑/查看弹窗叠加设置移除早鸟票叠加选项`
+                time: '19:00',
+                content: `新建/编辑/查看弹窗的有效期设置，选择"领取后N天"模式时，时间范围改为"有效天数"输入框（单位：天），固定日期模式保持生效/失效时间输入框`
             },
             {
-                page: 'index.html',
-                pageName: '设计总览',
-                module: '设计总览',
-                content: `导航栏新增流程图按钮，支持左侧导航列表和右侧图片展示区，图片支持放大缩小和拖动`
+                page: 'pc-admin/marketing-center.html',
+                pageName: '营销中心',
+                module: '票品折扣',
+                time: '18:00',
+                content: `折扣类型新增早鸟票（折扣比例/最大优惠金额/持续天数，不设活动时间）；关联演出移除全部演出选项；列表新增关联演出筛选；列表新增一条早鸟票数据`
             },
             {
-                page: 'pc-admin/ticket-sales.html',
-                pageName: '售票管理',
-                module: '窗口售票',
-                content: `新增会员卡信息模块（默认显示，支持弹窗读取会员卡）；订单摘要增加票品折扣/早鸟票/会员卡折扣减免金额展示；左侧场次列表增加折扣类型标签（满减/折扣/早鸟）；底部图例栏增加当前场次优惠信息提示；移除底部员工信息状态栏；页面布局改为内容撑高滚动；已选座位移除按钮简化为图标`
+                page: 'pc-admin/show-management.html',
+                pageName: '演出管理',
+                module: '演出项目',
+                time: '17:00',
+                content: `新建/编辑步骤3移除早鸟票设置；列表操作栏新增票品折扣按钮，点击跳转营销中心票品折扣Tab`
             }
         ]
     },
@@ -8927,40 +9259,46 @@ const changelogData = [
         date: '2026-06-10',
         entries: [
             {
-                page: 'pc-admin/member-management.html',
-                pageName: '会员管理',
-                module: '会员管理',
-                content: `会员编辑移除会员等级和会员卡状态；详情移除会员卡状态；会员卡管理取消审核/拒绝功能，状态筛选改为待发货/已发货/已锁定/已注销`
-            },
-            {
-                page: 'pc-admin/marketing-center.html',
-                pageName: '营销中心',
-                module: '优惠券',
-                content: `券类型改为现金券/折扣券；新增消费门槛、适用范围（演出-场次层级多选）、叠加设置（早鸟票/会员折扣/票品折扣）；编辑弹窗按状态控制可编辑内容；列表操作栏新增数据/二维码按钮；移除底部二维码区域和领券二维码按钮；数据弹窗增加领取使用明细（含领取时间/订单号）、搜索筛选和分页；已过期状态仅可查看不可编辑不可复制`
-            },
-            {
-                page: 'index.html',
-                pageName: '设计总览',
-                module: '设计总览',
-                content: `新增更新日志弹窗和侧边栏更新日志Tab；新增售票管理与订单管理完整流程图`
-            },
-            {
-                page: 'pc-admin/show-management.html',
-                pageName: '演出管理',
-                module: '演出管理',
-                content: `重构侧边栏为二级标签结构（功能描述/交互说明/核心字段）`
+                page: 'user-miniapp/home.html',
+                pageName: '首页',
+                module: '首页',
+                time: '20:00',
+                content: `重构侧边栏为二级标签结构`
             },
             {
                 page: 'pc-admin/order-management.html',
                 pageName: '订单管理',
                 module: '订单管理',
+                time: '19:00',
                 content: `重构侧边栏为二级标签结构`
             },
             {
-                page: 'user-miniapp/home.html',
-                pageName: '首页',
-                module: '首页',
-                content: `重构侧边栏为二级标签结构`
+                page: 'pc-admin/show-management.html',
+                pageName: '演出管理',
+                module: '演出管理',
+                time: '18:00',
+                content: `重构侧边栏为二级标签结构（功能描述/交互说明/核心字段）`
+            },
+            {
+                page: 'index.html',
+                pageName: '设计总览',
+                module: '设计总览',
+                time: '17:00',
+                content: `新增更新日志弹窗和侧边栏更新日志Tab；新增售票管理与订单管理完整流程图`
+            },
+            {
+                page: 'pc-admin/marketing-center.html',
+                pageName: '营销中心',
+                module: '优惠券',
+                time: '16:00',
+                content: `券类型改为现金券/折扣券；新增消费门槛、适用范围（演出-场次层级多选）、叠加设置（早鸟票/会员折扣/票品折扣）；编辑弹窗按状态控制可编辑内容；列表操作栏新增数据/二维码按钮；移除底部二维码区域和领券二维码按钮；数据弹窗增加领取使用明细（含领取时间/订单号）、搜索筛选和分页；已过期状态仅可查看不可编辑不可复制`
+            },
+            {
+                page: 'pc-admin/member-management.html',
+                pageName: '会员管理',
+                module: '会员管理',
+                time: '15:00',
+                content: `会员编辑移除会员等级和会员卡状态；详情移除会员卡状态；会员卡管理取消审核/拒绝功能，状态筛选改为待发货/已发货/已锁定/已注销`
             }
         ]
     }
@@ -8988,7 +9326,7 @@ const pagesData = {
     pc: [
         { name: '数据看板', url: 'pc-admin/dashboard.html', icon: '📈', desc: '核心指标、销售趋势、会员分析', tags: ['数据可视化', '趋势分析'] },
         { name: '演出管理', url: 'pc-admin/show-management.html', icon: '🎭', desc: '演出项目、场次管理、座位配置', tags: ['演出项目', '座位配置', '分区管理'] },
-        { name: '售票管理', url: 'pc-admin/ticket-sales.html', icon: '🎫', desc: '窗口售票、选座售票、渠道分配', tags: ['窗口售票', '选座售票'] },
+        { name: '售票管理', url: 'pc-admin/ticket-sales.html', icon: '🎫', desc: '窗口售票（订单确认→收款→出票）、待支付订单、渠道分配', tags: ['窗口售票', '订单确认', '待支付', '选座售票'] },
         { name: '订单管理', url: 'pc-admin/order-management.html', icon: '📋', desc: '票务/充值/券包/商城订单', tags: ['票务订单', '退款审核'] },
         { name: '会员管理', url: 'pc-admin/member-management.html', icon: '👥', desc: '会员列表、积分任务、会员政策', tags: ['会员政策', '积分管理'] },
         { name: '营销中心', url: 'pc-admin/marketing-center.html', icon: '🎁', desc: '充值卡、优惠券、抽奖活动', tags: ['优惠券', '抽奖管理'] },
@@ -8999,17 +9337,12 @@ const pagesData = {
         { name: '代理管理', url: 'pc-admin/agent-management.html', icon: '🤝', desc: '代理列表、佣金配置', tags: ['代理体系', '佣金管理'] },
         { name: '报表中心', url: 'pc-admin/statistics.html', icon: '📊', desc: '多维图表、报表导出', tags: ['多维图表', '报表导出'] },
         { name: '登录页 v1', url: 'pc-admin/login.html', icon: '🔐', desc: '账号密码登录', tags: ['登录'] },
-        { name: '登录页 v2', url: 'pc-admin/login-v2.html', icon: '🔐', desc: '升级版登录页', tags: ['登录', 'v2'] },
-        { name: '代理首页', url: 'pc-admin/agent-miniapp.html', icon: '📱', desc: '代理端PC预览', tags: ['代理'] },
-        { name: '代理统计', url: 'pc-admin/agent-miniapp-stats.html', icon: '📊', desc: '代理数据统计', tags: ['代理', '统计'] },
-        { name: '佣金明细', url: 'pc-admin/agent-miniapp-commission.html', icon: '💰', desc: '代理佣金明细', tags: ['代理', '佣金'] },
-        { name: '代理提现', url: 'pc-admin/agent-miniapp-withdraw.html', icon: '💳', desc: '代理提现管理', tags: ['代理', '提现'] },
-        { name: '推广海报', url: 'pc-admin/agent-miniapp-poster.html', icon: '🖼️', desc: '代理推广海报', tags: ['代理', '海报'] },
-        { name: '代理二维码', url: 'pc-admin/agent-miniapp-qrcode.html', icon: '📱', desc: '代理推广二维码', tags: ['代理', '二维码'] },
-        { name: '代理规则', url: 'pc-admin/agent-miniapp-rules.html', icon: '📜', desc: '代理规则说明', tags: ['代理', '规则'] }
+        { name: '登录页 v2', url: 'pc-admin/login-v2.html', icon: '🔐', desc: '升级版登录页', tags: ['登录', 'v2'] }
     ],
     user: [
+        { name: '登录', url: 'user-miniapp/login.html', icon: '🔐', desc: '微信一键登录、手机号授权', tags: ['微信登录', '手机号授权'] },
         { name: '首页', url: 'user-miniapp/home.html', icon: '🏠', desc: '轮播图、热门推荐、剧院导航', tags: ['轮播图', '热门推荐'] },
+        { name: '搜索', url: 'user-miniapp/search.html', icon: '🔍', desc: '演出搜索、历史记录', tags: ['搜索'] },
         { name: '演出列表', url: 'user-miniapp/show-list-detail.html', icon: '🎭', desc: '分类筛选、智能搜索', tags: ['分类筛选', '演出详情'] },
         { name: '演出详情', url: 'user-miniapp/show-detail.html', icon: '🎫', desc: '演出信息、场次选择', tags: ['演出详情', '评论'] },
         { name: '选座购票', url: 'user-miniapp/seat-selection.html', icon: '💺', desc: '座位矩阵、早鸟票/优先购', tags: ['座位选择', '早鸟票', '混合支付'] },
@@ -9019,6 +9352,8 @@ const pagesData = {
         { name: '个人中心', url: 'user-miniapp/profile.html', icon: '👤', desc: '用户信息、资产概览', tags: ['资产概览', '订单管理'] },
         { name: '编辑资料', url: 'user-miniapp/profile-edit.html', icon: '✏️', desc: '修改个人信息', tags: ['个人资料'] },
         { name: '钱包', url: 'user-miniapp/wallet.html', icon: '💰', desc: '余额管理、充值', tags: ['钱包', '交易记录'] },
+        { name: '充值', url: 'user-miniapp/recharge-topup.html', icon: '💳', desc: '在线充值', tags: ['充值'] },
+        { name: '交易记录', url: 'user-miniapp/transaction-record.html', icon: '📊', desc: '收支明细', tags: ['交易'] },
         { name: '积分中心', url: 'user-miniapp/points.html', icon: '⭐', desc: '积分余额、任务、兑换', tags: ['积分'] },
         { name: '积分明细', url: 'user-miniapp/points-flow.html', icon: '📋', desc: '积分收支流水', tags: ['积分', '明细'] },
         { name: '优惠券', url: 'user-miniapp/coupons.html', icon: '🎟️', desc: '优惠券列表、领取', tags: ['优惠券'] },
@@ -9026,16 +9361,13 @@ const pagesData = {
         { name: '我的套票', url: 'user-miniapp/my-packages.html', icon: '📋', desc: '已购套票管理', tags: ['套票'] },
         { name: '周边商城', url: 'user-miniapp/shop.html', icon: '🛍️', desc: '商品网格、积分兑换', tags: ['商品', '积分兑换'] },
         { name: '商品订单', url: 'user-miniapp/product-order.html', icon: '🛒', desc: '商城订单管理', tags: ['订单'] },
-        { name: '搜索', url: 'user-miniapp/search.html', icon: '🔍', desc: '演出搜索、历史记录', tags: ['搜索'] },
-        { name: '消息通知', url: 'user-miniapp/message-service.html', icon: '💬', desc: '消息列表、AI客服', tags: ['消息', 'AI客服'] },
-        { name: '充值', url: 'user-miniapp/recharge-topup.html', icon: '💳', desc: '在线充值', tags: ['充值'] },
         { name: '充值卡绑定', url: 'user-miniapp/recharge-card-bind.html', icon: '🎴', desc: '实体充值卡绑定', tags: ['充值卡'] },
         { name: '实体卡申请', url: 'user-miniapp/physical-card-apply.html', icon: '💳', desc: '会员实体卡申请', tags: ['会员卡'] },
         { name: '实名认证', url: 'user-miniapp/real-name-auth.html', icon: '🆔', desc: '身份证验证', tags: ['实名'] },
+        { name: '消息通知', url: 'user-miniapp/message-service.html', icon: '💬', desc: '消息列表、AI客服', tags: ['消息', 'AI客服'] },
+        { name: '抽奖', url: 'user-miniapp/lottery.html', icon: '🎰', desc: '抽奖活动', tags: ['抽奖'] },
         { name: '偏好设置', url: 'user-miniapp/preference-settings.html', icon: '⚙️', desc: '演出偏好、通知偏好', tags: ['设置'] },
         { name: '隐私设置', url: 'user-miniapp/privacy-settings.html', icon: '🔒', desc: '隐私权限管理', tags: ['隐私'] },
-        { name: '交易记录', url: 'user-miniapp/transaction-record.html', icon: '📊', desc: '收支明细', tags: ['交易'] },
-        { name: '抽奖', url: 'user-miniapp/lottery.html', icon: '🎰', desc: '抽奖活动', tags: ['抽奖'] },
         { name: '代理首页', url: 'user-miniapp/agent-miniapp.html', icon: '🤝', desc: '代理端首页', tags: ['代理'] },
         { name: '代理统计', url: 'user-miniapp/agent-miniapp-stats.html', icon: '📊', desc: '代理销售统计', tags: ['代理', '统计'] },
         { name: '佣金明细', url: 'user-miniapp/agent-miniapp-commission.html', icon: '💰', desc: '代理佣金明细', tags: ['代理', '佣金'] },
@@ -9045,6 +9377,7 @@ const pagesData = {
         { name: '代理规则', url: 'user-miniapp/agent-miniapp-rules.html', icon: '📜', desc: '代理规则说明', tags: ['代理', '规则'] }
     ],
     admin: [
+        { name: '管理员登录', url: 'admin-miniapp/login.html', icon: '🔐', desc: '账号密码登录、图形验证码', tags: ['登录', '验证码'] },
         { name: '数据看板 & 扫码验票', url: 'admin-miniapp/admin-home-verify.html', icon: '📊', desc: '场馆数据、扫码验票', tags: ['数据看板', '扫码验票'] }
     ]
 };
@@ -9112,20 +9445,38 @@ function renderDropdown() {
         { key: 'admin', name: '管理员小程序', icon: '🔧' }
     ];
 
-    container.innerHTML = categories.map(cat => `
-        <div class="dropdown-section">
-            <div class="dropdown-section-title">${cat.icon} ${cat.name}</div>
-            ${pagesData[cat.key].map(page => `
-                <div class="dropdown-item" onclick="loadPage('${page.url}')">
-                    <div class="dropdown-item-icon ${cat.key}">${page.icon}</div>
-                    <div class="dropdown-item-text">
-                        <div>${page.name}</div>
-                        <div class="dropdown-item-label">${page.desc}</div>
-                    </div>
+    container.innerHTML = `
+        <div class="dropdown-tabs">
+            ${categories.map((cat, idx) => `
+                <button class="dropdown-tab ${idx === 0 ? 'active' : ''}" data-tab="${cat.key}" onclick="switchDropdownTab('${cat.key}')">
+                    <span class="tab-icon">${cat.icon}</span>${cat.name}
+                </button>
+            `).join('')}
+        </div>
+        <div class="dropdown-content">
+            ${categories.map((cat, idx) => `
+                <div class="dropdown-panel ${idx === 0 ? 'active' : ''}" data-panel="${cat.key}">
+                    ${pagesData[cat.key].map(page => `
+                        <div class="dropdown-item" onclick="loadPage('${page.url}')">
+                            <div class="dropdown-item-icon ${cat.key}">${page.icon}</div>
+                            <div class="dropdown-item-text">
+                                <div>${page.name}</div>
+                                <div class="dropdown-item-label">${page.desc}</div>
+                            </div>
+                        </div>
+                    `).join('')}
                 </div>
             `).join('')}
         </div>
-    `).join('');
+    `;
+}
+
+// 切换下拉菜单Tab
+function switchDropdownTab(key) {
+    document.querySelectorAll('.dropdown-tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelector(`.dropdown-tab[data-tab="${key}"]`).classList.add('active');
+    document.querySelectorAll('.dropdown-panel').forEach(panel => panel.classList.remove('active'));
+    document.querySelector(`.dropdown-panel[data-panel="${key}"]`).classList.add('active');
 }
 
 // 切换下拉菜单
@@ -9509,24 +9860,24 @@ function renderChangelogModal() {
         return;
     }
     
-    // 按日期分组，合并同一日期的条目
+    // 按日期分组，组内按时间倒序
     const grouped = {};
     changelogData.forEach(item => {
         if (!grouped[item.date]) grouped[item.date] = [];
         item.entries.forEach(entry => grouped[item.date].push(entry));
     });
-    
+
     const dates = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
-    
-    let html = '<table class="changelog-table"><thead><tr><th>日期</th><th>更新内容</th></tr></thead><tbody>';
+
+    let html = '<table class="changelog-table"><thead><tr><th style="width:110px;">日期</th><th style="width:60px;">时间</th><th>更新内容</th></tr></thead><tbody>';
     dates.forEach(date => {
-        const entries = grouped[date];
-        html += `<tr><td rowspan="${entries.length}" class="changelog-date">${date}</td>`;
+        // 组内按 time 倒序
+        const entries = grouped[date].sort((a, b) => (b.time || '').localeCompare(a.time || ''));
         entries.forEach((entry, idx) => {
-            if (idx > 0) html += '<tr>';
             const platformPrefix = entry.page.startsWith('pc-admin/') ? '后台' : entry.page.startsWith('user-miniapp/') ? '小程序' : entry.page.startsWith('admin-miniapp/') ? '管理端' : '';
             const platformTag = platformPrefix ? `${platformPrefix}-` : '';
-            html += `<td><div class="changelog-entry"><span class="changelog-page-tag">${platformTag}${entry.pageName}</span>${entry.content}</div></td></tr>`;
+            const dateCell = idx === 0 ? `<td rowspan="${entries.length}" class="changelog-date">${date}</td>` : '';
+            html += `<tr>${dateCell}<td class="changelog-time">${entry.time || '-'}</td><td><div class="changelog-entry"><span class="changelog-page-tag">${platformTag}${entry.pageName}</span>${entry.content}</div></td></tr>`;
         });
     });
     html += '</tbody></table>';

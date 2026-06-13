@@ -223,6 +223,188 @@
     }
     .bottom-btn:active { transform: scale(0.97); box-shadow: 0 2px 8px rgba(255,107,74,0.25); }
 
+    /* Payment Methods */
+    .payment-section { margin: 0 16px 12px; }
+    .payment-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 2px 12px rgba(10,22,40,0.06);
+      margin-bottom: 12px;
+    }
+    .payment-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0A1628;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .payment-card-title i { font-size: 14px; color: #FF6B4A; }
+    .payment-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(10,22,40,0.06);
+      cursor: pointer;
+    }
+    .payment-option:last-child { border-bottom: none; }
+    .payment-option-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .payment-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .payment-icon.wechat { background: linear-gradient(135deg, #07C160, #05a350); color: #fff; }
+    .payment-icon.wallet { background: linear-gradient(135deg, #FF6B4A, #FF8F6B); color: #fff; }
+    .payment-icon.card { background: linear-gradient(135deg, #D4A853, #E8C878); color: #fff; }
+    .payment-icon.points { background: linear-gradient(135deg, #8B5CF6, #A78BFA); color: #fff; }
+    .payment-info { display: flex; flex-direction: column; gap: 2px; }
+    .payment-name { font-size: 14px; font-weight: 600; color: #0A1628; }
+    .payment-desc { font-size: 11px; color: #999; }
+    .payment-check {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .payment-check.checked {
+      background: linear-gradient(135deg, #FF6B4A, #FF8F6B);
+      border-color: #FF6B4A;
+      color: #fff;
+      font-size: 12px;
+    }
+    .payment-check i { display: none; }
+    .payment-check.checked i { display: block; }
+
+    /* Points input */
+    .points-input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0 0;
+    }
+    .points-input {
+      flex: 1;
+      height: 36px;
+      border: 1px solid rgba(10,22,40,0.1);
+      border-radius: 8px;
+      padding: 0 10px;
+      font-size: 13px;
+      color: #0A1628;
+      background: #F8F9FC;
+      font-family: inherit;
+    }
+    .points-input:focus { outline: none; border-color: #8B5CF6; background: #fff; }
+    .points-use-all-btn {
+      padding: 0 12px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .points-deduct-display {
+      font-size: 12px;
+      color: #8B5CF6;
+      font-weight: 600;
+      padding-top: 6px;
+    }
+
+    /* Recharge card list */
+    .recharge-card-list { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; }
+    .recharge-card-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: #F8F9FC;
+      border-radius: 10px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .recharge-card-item.selected { border-color: #D4A853; background: #FFF9F0; }
+    .recharge-card-checkbox {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .recharge-card-item.selected .recharge-card-checkbox {
+      background: linear-gradient(135deg, #D4A853, #E8C878);
+      border-color: #D4A853;
+      color: #fff;
+      font-size: 10px;
+    }
+    .recharge-card-info { flex: 1; }
+    .recharge-card-name { font-size: 13px; font-weight: 600; color: #0A1628; }
+    .recharge-card-no { font-size: 11px; color: #999; }
+    .recharge-card-balance { font-size: 13px; font-weight: 700; color: #D4A853; }
+
+    /* Wallet input */
+    .wallet-input-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0 0;
+    }
+    .wallet-input {
+      flex: 1;
+      height: 36px;
+      border: 1px solid rgba(10,22,40,0.1);
+      border-radius: 8px;
+      padding: 0 10px;
+      font-size: 13px;
+      color: #0A1628;
+      background: #F8F9FC;
+      font-family: inherit;
+    }
+    .wallet-input:focus { outline: none; border-color: #FF6B4A; background: #fff; }
+    .wallet-use-all-btn {
+      padding: 0 12px;
+      height: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #FF6B4A, #FF8F6B);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .wallet-deduct-display {
+      font-size: 12px;
+      color: #FF6B4A;
+      font-weight: 600;
+      padding-top: 6px;
+    }
+
     /* Toast */
     .toast {
       position: fixed;
@@ -337,7 +519,80 @@
     </div>
   </div>
 
-  <!-- Payment Method removed per requirement -->
+  <!-- Payment Methods -->
+  <div class="payment-section">
+    <div class="payment-card">
+      <div class="payment-card-title"><i class="fas fa-credit-card"></i> 支付方式</div>
+
+      <!-- WeChat Pay (always shown, auto pays remainder) -->
+      <div class="payment-option" style="cursor:default;">
+        <div class="payment-option-left">
+          <div class="payment-icon wechat"><i class="fab fa-weixin"></i></div>
+          <div class="payment-info">
+            <span class="payment-name">微信支付</span>
+            <span class="payment-desc" id="wechatDesc">剩余应付 ¥1,034.00</span>
+          </div>
+        </div>
+        <div class="payment-check checked" style="pointer-events:none;"><i class="fas fa-check"></i></div>
+      </div>
+
+      <!-- Wallet Pay -->
+      <div class="payment-option" onclick="toggleWallet()">
+        <div class="payment-option-left">
+          <div class="payment-icon wallet"><i class="fas fa-wallet"></i></div>
+          <div class="payment-info">
+            <span class="payment-name">钱包支付</span>
+            <span class="payment-desc" id="walletDesc">可用余额 ¥1,280.00</span>
+          </div>
+        </div>
+        <div class="payment-check" id="checkWallet"><i class="fas fa-check"></i></div>
+      </div>
+      <div id="walletInputArea" style="display:none;">
+        <div class="wallet-input-row">
+          <input type="number" class="wallet-input" id="walletInput" placeholder="输入使用金额" min="0" step="0.01" oninput="onWalletInput()">
+          <button class="wallet-use-all-btn" onclick="event.stopPropagation(); useAllWallet()">全部使用</button>
+        </div>
+        <div class="wallet-deduct-display" id="walletDeductDisplay">抵扣 ¥0.00</div>
+      </div>
+
+      <!-- Recharge Card -->
+      <div class="payment-option" onclick="toggleRechargeCard()">
+        <div class="payment-option-left">
+          <div class="payment-icon card"><i class="fas fa-credit-card"></i></div>
+          <div class="payment-info">
+            <span class="payment-name">充值卡支付</span>
+            <span class="payment-desc" id="rechargeCardDesc">可用 ¥1,700.00</span>
+          </div>
+        </div>
+        <div class="payment-check" id="checkRechargeCard"><i class="fas fa-check"></i></div>
+      </div>
+      <div id="rechargeCardListArea" style="display:none;">
+        <div class="recharge-card-list" id="rechargeCardList">
+          <!-- Generated by JS -->
+        </div>
+        <div class="wallet-deduct-display" id="rechargeCardDeductDisplay" style="color:var(--gold);padding-top:8px;">抵扣 ¥0.00</div>
+      </div>
+
+      <!-- Points -->
+      <div class="payment-option" onclick="togglePoints()">
+        <div class="payment-option-left">
+          <div class="payment-icon points"><i class="fas fa-star"></i></div>
+          <div class="payment-info">
+            <span class="payment-name">积分抵扣</span>
+            <span class="payment-desc" id="pointsDesc">可用 1,280 积分</span>
+          </div>
+        </div>
+        <div class="payment-check" id="checkPoints"><i class="fas fa-check"></i></div>
+      </div>
+      <div id="pointsInputArea" style="display:none;">
+        <div class="points-input-row">
+          <input type="number" class="points-input" id="pointsInput" placeholder="输入使用积分" min="0" step="1" oninput="onPointsInput()">
+          <button class="points-use-all-btn" onclick="event.stopPropagation(); useAllPoints()">全部使用</button>
+        </div>
+        <div class="points-deduct-display" id="pointsDeductDisplay">抵扣 ¥0.00</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Bottom Bar -->
@@ -386,6 +641,245 @@
     } catch(e) {}
   }
 
+  // ========== Payment State ==========
+  const AVAILABLE_BALANCE = 1280.00;
+  const AVAILABLE_POINTS = 1280;
+  const POINTS_RATE = 0.01;
+  const POINTS_MAX_PERCENT = 0.10;
+
+  let walletEnabled = false;
+  let walletUsed = 0;
+  let rechargeCardEnabled = false;
+  let pointsEnabled = false;
+  let pointsUsed = 0;
+
+  const RECHARGE_CARDS = [
+    { id: 'rc001', name: 'VIP充值卡', balance: 500, cardNo: '8888****1234' },
+    { id: 'rc002', name: '礼品卡', balance: 200, cardNo: '8888****5678' },
+    { id: 'rc003', name: '会员储值卡', balance: 1000, cardNo: '8888****9012' }
+  ];
+  let selectedRechargeCards = new Set();
+
+  let orderTotal = 1034; // 默认应付金额，会从URL参数更新
+
+  // ========== Toggle Functions ==========
+  function toggleWallet() {
+    walletEnabled = !walletEnabled;
+    document.getElementById('checkWallet').classList.toggle('checked', walletEnabled);
+    document.getElementById('walletInputArea').style.display = walletEnabled ? 'block' : 'none';
+    if (!walletEnabled) {
+      walletUsed = 0;
+      document.getElementById('walletInput').value = '';
+      document.getElementById('walletDeductDisplay').textContent = '抵扣 ¥0.00';
+    }
+    recalcTotal();
+  }
+
+  function toggleRechargeCard() {
+    rechargeCardEnabled = !rechargeCardEnabled;
+    document.getElementById('checkRechargeCard').classList.toggle('checked', rechargeCardEnabled);
+    document.getElementById('rechargeCardListArea').style.display = rechargeCardEnabled ? 'block' : 'none';
+    if (!rechargeCardEnabled) {
+      selectedRechargeCards.clear();
+      renderRechargeCards();
+    } else {
+      renderRechargeCards();
+    }
+    recalcTotal();
+  }
+
+  function togglePoints() {
+    pointsEnabled = !pointsEnabled;
+    document.getElementById('checkPoints').classList.toggle('checked', pointsEnabled);
+    document.getElementById('pointsInputArea').style.display = pointsEnabled ? 'block' : 'none';
+    if (!pointsEnabled) {
+      pointsUsed = 0;
+      document.getElementById('pointsInput').value = '';
+      document.getElementById('pointsDeductDisplay').textContent = '抵扣 ¥0.00';
+    }
+    recalcTotal();
+  }
+
+  // ========== Wallet Logic ==========
+  function onWalletInput() {
+    const input = document.getElementById('walletInput');
+    let val = parseFloat(input.value) || 0;
+    // 计算当前剩余可抵扣金额（扣除已选充值卡和积分）
+    const remaining = getRemainingPayable();
+    const maxUsable = Math.min(AVAILABLE_BALANCE, remaining);
+
+    if (val > maxUsable) {
+      val = maxUsable;
+      input.value = val.toFixed(2);
+    }
+    if (val < 0) {
+      val = 0;
+      input.value = '';
+    }
+
+    walletUsed = val;
+    document.getElementById('walletDeductDisplay').textContent = `抵扣 ¥${walletUsed.toFixed(2)}`;
+    recalcTotal();
+  }
+
+  function useAllWallet() {
+    const remaining = getRemainingPayable();
+    const maxUsable = Math.min(AVAILABLE_BALANCE, remaining);
+    walletUsed = maxUsable;
+    document.getElementById('walletInput').value = walletUsed.toFixed(2);
+    document.getElementById('walletDeductDisplay').textContent = `抵扣 ¥${walletUsed.toFixed(2)}`;
+    recalcTotal();
+  }
+
+  function updateWalletDesc() {
+    const desc = document.getElementById('walletDesc');
+    if (walletEnabled && walletUsed > 0) {
+      desc.textContent = `已用 ¥${walletUsed.toFixed(2)}`;
+    } else {
+      desc.textContent = `可用余额 ¥${AVAILABLE_BALANCE.toFixed(2)}`;
+    }
+  }
+
+  // ========== Recharge Card Logic ==========
+  function renderRechargeCards() {
+    const container = document.getElementById('rechargeCardList');
+    if (RECHARGE_CARDS.length === 0) {
+      container.innerHTML = '<div style="text-align:center;color:#999;padding:12px;font-size:11px;">暂无绑定的充值卡</div>';
+      return;
+    }
+    container.innerHTML = RECHARGE_CARDS.map(card => {
+      const isSelected = selectedRechargeCards.has(card.id);
+      return `
+        <div class="recharge-card-item ${isSelected ? 'selected' : ''}" onclick="event.stopPropagation(); toggleRechargeCardItem('${card.id}')">
+          <div class="recharge-card-checkbox"><i class="fas fa-check"></i></div>
+          <div class="recharge-card-info">
+            <div class="recharge-card-name">${card.name}</div>
+            <div class="recharge-card-no">${card.cardNo}</div>
+          </div>
+          <div class="recharge-card-balance">¥${card.balance}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function toggleRechargeCardItem(cardId) {
+    if (selectedRechargeCards.has(cardId)) {
+      selectedRechargeCards.delete(cardId);
+    } else {
+      selectedRechargeCards.add(cardId);
+    }
+    renderRechargeCards();
+    recalcTotal();
+  }
+
+  function getRechargeCardDeduct() {
+    const totalCardBalance = RECHARGE_CARDS
+      .filter(c => selectedRechargeCards.has(c.id))
+      .reduce((sum, c) => sum + c.balance, 0);
+    return Math.min(totalCardBalance, orderTotal);
+  }
+
+  function updateRechargeCardDesc() {
+    const desc = document.getElementById('rechargeCardDesc');
+    const deduct = getRechargeCardDeduct();
+    if (selectedRechargeCards.size > 0 && deduct > 0) {
+      desc.textContent = `已选${selectedRechargeCards.size}张，抵扣¥${deduct.toFixed(2)}`;
+    } else if (selectedRechargeCards.size > 0) {
+      desc.textContent = `已选${selectedRechargeCards.size}张`;
+    } else {
+      const total = RECHARGE_CARDS.reduce((sum, c) => sum + c.balance, 0);
+      desc.textContent = `可用 ¥${total.toFixed(2)}`;
+    }
+    document.getElementById('rechargeCardDeductDisplay').textContent = `抵扣 ¥${deduct.toFixed(2)}`;
+  }
+
+  // ========== Points Logic ==========
+  function onPointsInput() {
+    const input = document.getElementById('pointsInput');
+    let val = parseInt(input.value) || 0;
+    const remaining = getRemainingPayable();
+    const maxPointsDeduct = Math.floor(remaining * POINTS_MAX_PERCENT / POINTS_RATE);
+    const maxUsable = Math.min(AVAILABLE_POINTS, maxPointsDeduct);
+
+    if (val > maxUsable) {
+      val = maxUsable;
+      input.value = val;
+    }
+    if (val < 0) {
+      val = 0;
+      input.value = '';
+    }
+
+    pointsUsed = val;
+    const deductValue = (pointsUsed * POINTS_RATE).toFixed(2);
+    document.getElementById('pointsDeductDisplay').textContent = `抵扣 ¥${deductValue}`;
+    recalcTotal();
+  }
+
+  function useAllPoints() {
+    const remaining = getRemainingPayable();
+    const maxPointsDeduct = Math.floor(remaining * POINTS_MAX_PERCENT / POINTS_RATE);
+    const maxUsable = Math.min(AVAILABLE_POINTS, maxPointsDeduct);
+    pointsUsed = maxUsable;
+    document.getElementById('pointsInput').value = pointsUsed;
+    const deductValue = (pointsUsed * POINTS_RATE).toFixed(2);
+    document.getElementById('pointsDeductDisplay').textContent = `抵扣 ¥${deductValue}`;
+    recalcTotal();
+  }
+
+  function updatePointsDesc() {
+    const desc = document.getElementById('pointsDesc');
+    if (pointsEnabled && pointsUsed > 0) {
+      desc.textContent = `已用 ${pointsUsed} 积分`;
+    } else {
+      desc.textContent = `可用 ${AVAILABLE_POINTS} 积分`;
+    }
+  }
+
+  // ========== Remaining Payable (for clamping inputs) ==========
+  function getRemainingPayable() {
+    let remaining = orderTotal;
+    // 扣除已选充值卡
+    if (rechargeCardEnabled && selectedRechargeCards.size > 0) {
+      remaining -= getRechargeCardDeduct();
+    }
+    // 扣除已用积分
+    if (pointsEnabled && pointsUsed > 0) {
+      remaining -= pointsUsed * POINTS_RATE;
+    }
+    return Math.max(0, remaining);
+  }
+
+  // ========== Price Recalculation ==========
+  function recalcTotal() {
+    let finalTotal = orderTotal;
+
+    // 积分抵扣
+    if (pointsEnabled && pointsUsed > 0) {
+      finalTotal = Math.max(0, finalTotal - pointsUsed * POINTS_RATE);
+    }
+
+    // 充值卡抵扣
+    if (rechargeCardEnabled && selectedRechargeCards.size > 0) {
+      const cardDeduct = getRechargeCardDeduct();
+      finalTotal = Math.max(0, finalTotal - cardDeduct);
+    }
+
+    // 钱包抵扣
+    if (walletEnabled && walletUsed > 0) {
+      finalTotal = Math.max(0, finalTotal - walletUsed);
+    }
+
+    // finalTotal 即为微信支付需补足的金额
+    document.getElementById('totalPrice').textContent = '¥' + finalTotal.toFixed(2);
+    document.getElementById('wechatDesc').textContent = finalTotal > 0 ? `需补足 ¥${finalTotal.toFixed(2)}` : '已全额抵扣，无需微信支付';
+
+    // 更新描述
+    updateWalletDesc();
+    updatePointsDesc();
+    updateRechargeCardDesc();
+  }
+
   function showToast(msg) {
     const toast = document.getElementById('toast');
     toast.textContent = msg;
@@ -399,6 +893,9 @@
       window.location.href = 'order-list.html';
     }, 1500);
   }
+
+  // Init
+  renderRechargeCards();
 </script>
 </body>
 </html>

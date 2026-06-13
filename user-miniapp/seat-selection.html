@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>海南演艺票务 - 选座购票</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
   /* ========== CSS Reset & Base ========== */
   *, *::before, *::after {
@@ -642,6 +643,18 @@
     margin-left: 4px;
   }
 
+  .tier-tag .tier-badge {
+    display: inline-block;
+    margin-left: 4px;
+    padding: 1px 5px;
+    border-radius: 8px;
+    font-size: 9px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+    color: #fff;
+    vertical-align: middle;
+  }
+
   /* ========== Ticket Policy Banner ========== */
   .policy-banner {
     margin: 8px 16px;
@@ -868,6 +881,11 @@
   .entry-icon.coupon {
     background: rgba(255, 107, 74, 0.15);
     color: var(--coral-orange);
+  }
+
+  .entry-icon.package {
+    background: rgba(212, 168, 83, 0.18);
+    color: var(--gold);
   }
 
   .entry-icon.points {
@@ -1242,15 +1260,16 @@
   }
 
   .coupon-amount {
-    width: 90px;
+    width: 96px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(255, 107, 74, 0.18), rgba(255, 138, 110, 0.08));
+    background: linear-gradient(135deg, rgba(255, 107, 74, 0.22), rgba(255, 138, 110, 0.1));
     flex-shrink: 0;
-    padding: 12px 8px;
+    padding: 14px 10px;
     position: relative;
+    gap: 6px;
   }
 
   .coupon-card.disabled .coupon-amount {
@@ -1258,10 +1277,11 @@
   }
 
   .coupon-amount .amount-value {
-    font-size: 24px;
+    font-size: 15px;
     font-weight: 700;
     color: var(--coral-orange);
-    line-height: 1;
+    line-height: 1.2;
+    text-align: center;
   }
 
   .coupon-card.disabled .coupon-amount .amount-value {
@@ -1271,23 +1291,24 @@
   .coupon-amount .amount-unit {
     font-size: 10px;
     color: var(--text-secondary);
-    margin-top: 2px;
+    text-align: center;
+    line-height: 1.3;
   }
 
   .coupon-info {
     flex: 1;
-    padding: 10px 12px;
+    padding: 12px 14px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     min-width: 0;
+    gap: 3px;
   }
 
   .coupon-name {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--text-primary);
-    margin-bottom: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1296,7 +1317,6 @@
   .coupon-condition {
     font-size: 11px;
     color: var(--text-secondary);
-    margin-bottom: 2px;
   }
 
   .coupon-expire {
@@ -1314,8 +1334,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 12px;
-    margin-top: 4px;
+    padding: 14px;
+    margin-top: 8px;
     border-radius: 12px;
     border: 1px dashed rgba(255,255,255,0.12);
     color: var(--text-secondary);
@@ -1756,9 +1776,9 @@
       <div class="tier-scroll" id="tierScroll">
         <div class="tier-tag active" data-tier="all" onclick="selectTier(this)">全部票档</div>
         <div class="tier-tag" data-tier="vip" onclick="selectTier(this)">VIP区 <span class="tier-price" data-original="880">¥880</span></div>
-        <div class="tier-tag" data-tier="a" onclick="selectTier(this)">A区 <span class="tier-price" data-original="580">¥580</span></div>
-        <div class="tier-tag" data-tier="b" onclick="selectTier(this)">B区 <span class="tier-price" data-original="380">¥380</span></div>
-        <div class="tier-tag" data-tier="c" onclick="selectTier(this)">C区 <span class="tier-price" data-original="180">¥180</span></div>
+        <div class="tier-tag" data-tier="a" onclick="selectTier(this)">A区 <span class="tier-price" data-original="580">¥580</span><span class="tier-badge" id="badgeA" style="display:none;">套票</span></div>
+        <div class="tier-tag" data-tier="b" onclick="selectTier(this)">B区 <span class="tier-price" data-original="380">¥380</span><span class="tier-badge" id="badgeB" style="display:none;">套票</span></div>
+        <div class="tier-tag" data-tier="c" onclick="selectTier(this)">C区 <span class="tier-price" data-original="180">¥180</span><span class="tier-badge" id="badgeC" style="display:none;">套票</span></div>
       </div>
     </div>
 
@@ -1789,117 +1809,28 @@
           <span class="price-label">优惠减免</span>
           <span class="price-value discount" id="priceCouponDiscount">-¥0</span>
         </div>
-        <div class="price-row" id="pointsDiscountRow" style="display:none;">
-          <span class="price-label">积分抵扣</span>
-          <span class="price-value discount" id="pricePointsDiscount" style="color:var(--gold);">-¥0.00</span>
-        </div>
-        <div class="price-row" id="balanceDiscountRow" style="display:none;">
-          <span class="price-label">余额支付</span>
-          <span class="price-value discount" id="priceBalanceDiscount" style="color:var(--emerald);">-¥0.00</span>
-        </div>
-        <div class="price-row" id="rechargeCardDiscountRow" style="display:none;">
-          <span class="price-label">充值卡抵扣</span>
-          <span class="price-value discount" id="priceRechargeCardDiscount" style="color:var(--gold);">-¥0.00</span>
+        <div class="price-row" id="packageDiscountRow" style="display:none;">
+          <span class="price-label">套票抵扣</span>
+          <span class="price-value discount" id="pricePackageDiscount" style="color:var(--coral-orange);">-¥0</span>
         </div>
       </div>
 
       <!-- Coupon entry -->
       <div class="entry-row" id="couponEntry" onclick="openCouponSheet()">
         <div class="entry-left">
-          <div class="entry-icon coupon">&#127873;</div>
+          <div class="entry-icon coupon"><i class="fas fa-ticket" style="font-size:13px"></i></div>
           <span class="entry-text" id="couponEntryText">使用优惠券</span>
         </div>
         <span class="entry-arrow" id="couponEntryArrow">›</span>
       </div>
 
-      <!-- Balance entry -->
-      <div class="entry-row" id="balanceEntry" onclick="toggleBalancePanel()">
+      <!-- Package (套票) entry -->
+      <div class="entry-row" id="packageEntry" onclick="openPackageSheet()">
         <div class="entry-left">
-          <div class="entry-icon wallet">&#128179;</div>
-          <span class="entry-text" id="balanceEntryText">余额支付（可用¥1,280.00）</span>
+          <div class="entry-icon package"><i class="fas fa-layer-group" style="font-size:12px"></i></div>
+          <span class="entry-text" id="packageEntryText">使用套票</span>
         </div>
-        <span class="entry-arrow-down" id="balanceEntryArrow">▾</span>
-      </div>
-
-      <!-- Balance expand panel -->
-      <div class="expand-panel" id="balancePanel">
-        <div class="expand-content">
-          <div class="expand-row">
-            <span class="expand-label">当前余额</span>
-            <span class="expand-value">¥1,280.00</span>
-          </div>
-          <div class="expand-row">
-            <span class="expand-label">启用余额支付</span>
-            <div class="toggle-switch" id="balanceToggle" onclick="event.stopPropagation(); toggleBalanceSwitch()"></div>
-          </div>
-          <div id="balanceInputArea" style="display:none;">
-            <div class="balance-input-row">
-              <input type="number" class="balance-input" id="balanceInput" placeholder="输入使用金额" min="0" step="0.01" oninput="onBalanceInput()">
-              <button class="balance-use-all-btn" onclick="event.stopPropagation(); useAllBalance()">全部使用</button>
-            </div>
-            <div class="expand-row">
-              <span class="expand-label">使用余额抵扣</span>
-              <span class="expand-value" id="balanceDeductDisplay" style="color:var(--emerald);">¥0.00</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Recharge Card entry -->
-      <div class="entry-row" id="rechargeCardEntry" onclick="toggleRechargeCardPanel()">
-        <div class="entry-left">
-          <div class="entry-icon recharge-card"><i class="fas fa-credit-card" style="font-size:11px"></i></div>
-          <span class="entry-text" id="rechargeCardEntryText">充值卡支付（可用¥1,700.00）</span>
-        </div>
-        <span class="entry-arrow-down" id="rechargeCardEntryArrow">▾</span>
-      </div>
-
-      <!-- Recharge Card expand panel -->
-      <div class="recharge-card-expand-panel" id="rechargeCardPanel">
-        <div class="expand-content">
-          <div class="expand-desc" style="margin-bottom:8px;">选择要使用的充值卡，支持多张卡组合支付</div>
-          <div class="recharge-card-list" id="rechargeCardList">
-            <!-- Generated by JS -->
-          </div>
-          <div class="recharge-card-summary" id="rechargeCardSummary" style="display:none;">
-            <span class="expand-label">充值卡合计抵扣</span>
-            <span class="expand-value" id="rechargeCardDeductDisplay">¥0.00</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Points entry -->
-      <div class="entry-row" id="pointsEntry" onclick="togglePointsPanel()">
-        <div class="entry-left">
-          <div class="entry-icon points">&#9733;</div>
-          <span class="entry-text" id="pointsEntryText">积分抵扣（可用1,280积分）</span>
-        </div>
-        <span class="entry-arrow-down" id="pointsEntryArrow">▾</span>
-      </div>
-
-      <!-- Points expand panel -->
-      <div class="expand-panel" id="pointsPanel">
-        <div class="expand-content">
-          <div class="expand-row">
-            <span class="expand-label">当前可用积分</span>
-            <span class="expand-value">1,280积分</span>
-          </div>
-          <div class="expand-desc">1积分=¥0.01，本单最多可抵扣订单金额的10%</div>
-          <div class="expand-row">
-            <span class="expand-label">启用积分抵扣</span>
-            <div class="toggle-switch" id="pointsToggle" onclick="event.stopPropagation(); togglePointsSwitch()"></div>
-          </div>
-          <div id="pointsSliderArea" style="display:none;">
-            <div class="slider-row">
-              <input type="range" id="pointsSlider" min="0" max="0" value="0" oninput="onPointsSliderChange()">
-              <span class="slider-value" id="pointsSliderValue">0积分</span>
-            </div>
-            <div class="expand-row">
-              <span class="expand-label">积分抵扣</span>
-              <span class="expand-value" id="pointsDeductDisplay" style="color:var(--gold);">¥0.00</span>
-            </div>
-          </div>
-        </div>
+        <span class="entry-arrow" id="packageEntryArrow">›</span>
       </div>
     </div>
 
@@ -1984,17 +1915,69 @@
 
   let selectedCoupon = null;
 
-  // ========== Points State ==========
-  const AVAILABLE_POINTS = 1280;
-  const POINTS_RATE = 0.01; // 1 point = ¥0.01
-  const POINTS_MAX_PERCENT = 0.10; // max 10% of order
-  let pointsEnabled = false;
-  let pointsUsed = 0;
+  // ========== Show Data ==========
+  const SHOWS = {
+    'show_001': { name: '《天涯故事》大型沉浸式歌舞秀', venue: '海南大剧院' },
+    'show_002': { name: '《天鹅湖》经典芭蕾舞剧', venue: '海南大剧院' },
+    'show_003': { name: '《雷雨》话剧专场', venue: '海口湾演艺中心' },
+    'show_004': { name: '周杰伦巡回演唱会·海口站', venue: '五源河体育场' }
+  };
 
-  // ========== Balance State ==========
-  const AVAILABLE_BALANCE = 1280.00;
-  let balanceEnabled = false;
-  let balanceUsed = 0;
+  // 当前演出ID，用于匹配套票
+  const CURRENT_SHOW_ID = 'show_001';
+
+  // ========== Package (套票) Data ==========
+  // 观演券限制条件：指定演出 + 指定票档
+  const PACKAGES = [
+    {
+      id: 'pkg001',
+      name: '海南演艺畅享套票',
+      desc: '含4张观演券，可兑换任意演出',
+      expire: '2026-12-31',
+      vouchers: [
+        { id: 'v001', showId: 'show_001', tier: 'a', tierName: 'A区', seatLabel: 'A区座位×1', amount: 580, used: false },
+        { id: 'v002', showId: 'show_001', tier: 'b', tierName: 'B区', seatLabel: 'B区座位×1', amount: 380, used: false },
+        { id: 'v003', showId: 'show_002', tier: 'c', tierName: 'C区', seatLabel: 'C区座位×1', amount: 180, used: false },
+        { id: 'v004', showId: 'show_003', tier: 'b', tierName: 'B区', seatLabel: 'B区座位×1', amount: 380, used: false }
+      ]
+    },
+    {
+      id: 'pkg002',
+      name: '家庭欢乐套票',
+      desc: '含3张观演券，限指定演出',
+      expire: '2026-08-31',
+      vouchers: [
+        { id: 'v005', showId: 'show_001', tier: 'b', tierName: 'B区', seatLabel: 'B区座位×1', amount: 380, used: false },
+        { id: 'v006', showId: 'show_001', tier: 'c', tierName: 'C区', seatLabel: 'C区座位×1', amount: 180, used: false },
+        { id: 'v007', showId: 'show_004', tier: 'a', tierName: 'A区', seatLabel: 'A区座位×1', amount: 580, used: false }
+      ]
+    },
+    {
+      id: 'pkg003',
+      name: 'VIP尊享套票',
+      desc: '含2张VIP观演券',
+      expire: '2026-10-01',
+      vouchers: [
+        { id: 'v008', showId: 'show_001', tier: 'vip', tierName: 'VIP区', seatLabel: 'VIP区座位×1', amount: 880, used: false },
+        { id: 'v009', showId: 'show_002', tier: 'vip', tierName: 'VIP区', seatLabel: 'VIP区座位×1', amount: 880, used: false }
+      ]
+    },
+    {
+      id: 'pkg004',
+      name: '周年庆特惠套票',
+      desc: '含2张观演券，限本场演出',
+      expire: '2026-07-31',
+      vouchers: [
+        { id: 'v010', showId: 'show_001', tier: 'c', tierName: 'C区', seatLabel: 'C区座位×1', amount: 180, used: false },
+        { id: 'v011', showId: 'show_001', tier: 'c', tierName: 'C区', seatLabel: 'C区座位×1', amount: 180, used: false }
+      ]
+    }
+  ];
+
+  // 已选中的观演券列表（支持多张）
+  let selectedVouchers = [];
+  // 每个观演券对应的减免座位索引 { voucherId: seatIndex }
+  let voucherSeatMap = {};
 
   // ========== Early Bird & Priority Purchase ==========
   // 模拟从后台获取的早鸟票和优先购配置
@@ -2234,14 +2217,19 @@
       seatEl.classList.add('selected');
       const originalPrice = PRICES[tier];
       const discountedPrice = getDiscountedPrice(originalPrice);
+      const tierNameMap = { vip: 'VIP区', a: 'A区', b: 'B区', c: 'C区' };
       selectedSeats.push({
         id: seatId,
         row: seatEl.getAttribute('data-row'),
         col: seatEl.getAttribute('data-col'),
         tier: tier,
+        tierName: tierNameMap[tier] || tier,
         price: discountedPrice,
         originalPrice: originalPrice
       });
+
+      // 自动匹配观演券
+      autoMatchVouchers();
     }
 
     updatePanel();
@@ -2307,6 +2295,9 @@
 
   // ========== Remove Seat ==========
   function removeSeat(index) {
+    // 先移除关联的观演券
+    unmatchVoucherForSeat(index);
+
     const seat = selectedSeats[index];
     const seatEl = document.querySelector(`.seat[data-id="${seat.id}"]`);
     if (seatEl) {
@@ -2405,6 +2396,16 @@
     params.set('date', showDate);
     params.set('venue', showVenue);
     params.set('seats', encodeURIComponent(JSON.stringify(seatsData)));
+    // 传递观演券信息
+    if (selectedVouchers.length > 0) {
+      const voucherData = selectedVouchers.map(v => ({
+        id: v.id,
+        name: v.packageName + ' - ' + v.tierName + '观演券',
+        amount: v.amount,
+        seatIndex: voucherSeatMap[v.id]
+      }));
+      params.set('vouchers', encodeURIComponent(JSON.stringify(voucherData)));
+    }
     window.location.href = 'order-confirm.html?' + params.toString();
   }
 
@@ -2423,6 +2424,9 @@
     const overlay = document.getElementById('couponOverlay');
     const sheet = document.getElementById('couponSheet');
     const list = document.getElementById('couponList');
+
+    // 恢复sheet标题
+    document.querySelector('.coupon-sheet-title').textContent = '选择优惠券';
 
     const originalTotal = getOriginalTotal();
     if (originalTotal === 0) {
@@ -2509,245 +2513,219 @@
     }
   }
 
-  // ========== Points Logic ==========
-  function togglePointsPanel() {
-    const panel = document.getElementById('pointsPanel');
-    const arrow = document.getElementById('pointsEntryArrow');
-    panel.classList.toggle('open');
-    arrow.classList.toggle('open');
+  // ========== Package (套票) Logic ==========
+  // 获取匹配当前演出的可用观演券
+  function getCurrentShowVouchers() {
+    const vouchers = [];
+    PACKAGES.forEach(pkg => {
+      pkg.vouchers.forEach(v => {
+        if (v.showId === CURRENT_SHOW_ID && !v.used && !selectedVouchers.some(sv => sv.id === v.id)) {
+          vouchers.push({
+            ...v,
+            packageId: pkg.id,
+            packageName: pkg.name,
+            packageExpire: pkg.expire
+          });
+        }
+      });
+    });
+    return vouchers;
   }
 
-  function togglePointsSwitch() {
-    const toggle = document.getElementById('pointsToggle');
-    const sliderArea = document.getElementById('pointsSliderArea');
+  // 获取有匹配观演券的票档集合（用于显示套票标签）
+  function getPackageTiers() {
+    const tiers = new Set();
+    PACKAGES.forEach(pkg => {
+      pkg.vouchers.forEach(v => {
+        if (v.showId === CURRENT_SHOW_ID && !v.used) {
+          tiers.add(v.tier);
+        }
+      });
+    });
+    return tiers;
+  }
+
+  // 更新票档标签上的套票徽章
+  function updateTierBadges() {
+    const packageTiers = getPackageTiers();
+    document.getElementById('badgeA').style.display = packageTiers.has('a') ? 'inline-block' : 'none';
+    document.getElementById('badgeB').style.display = packageTiers.has('b') ? 'inline-block' : 'none';
+    document.getElementById('badgeC').style.display = packageTiers.has('c') ? 'inline-block' : 'none';
+  }
+
+  // 自动匹配观演券到已选座位（选择座位时调用）
+  function autoMatchVouchers() {
+    const availableVouchers = getCurrentShowVouchers();
+    const newlyMatched = [];
+
+    // 遍历每个已选座位，尝试匹配观演券
+    selectedSeats.forEach((seat, seatIndex) => {
+      // 检查该座位是否已被某个观演券减免
+      const alreadyCovered = Object.values(voucherSeatMap).includes(seatIndex);
+      if (alreadyCovered) return;
+
+      // 查找匹配该座位票档的可用观演券
+      const matchIndex = availableVouchers.findIndex(v => v.tier === seat.tier);
+      if (matchIndex >= 0) {
+        const voucher = availableVouchers.splice(matchIndex, 1)[0];
+        selectedVouchers.push(voucher);
+        voucherSeatMap[voucher.id] = seatIndex;
+        newlyMatched.push(voucher);
+      }
+    });
+
+    if (newlyMatched.length > 0) {
+      updatePackageEntry();
+    }
+  }
+
+  // 取消座位时，同步移除关联的观演券
+  function unmatchVoucherForSeat(seatIndex) {
+    const voucherId = Object.keys(voucherSeatMap).find(id => voucherSeatMap[id] === seatIndex);
+    if (voucherId) {
+      selectedVouchers = selectedVouchers.filter(v => v.id !== voucherId);
+      delete voucherSeatMap[voucherId];
+    }
+    // 重新调整 seatIndex（因为座位列表变了）
+    const newMap = {};
+    selectedVouchers.forEach(v => {
+      const oldSeatIndex = voucherSeatMap[v.id];
+      if (oldSeatIndex !== undefined && oldSeatIndex < seatIndex) {
+        newMap[v.id] = oldSeatIndex;
+      } else if (oldSeatIndex !== undefined && oldSeatIndex > seatIndex) {
+        newMap[v.id] = oldSeatIndex - 1;
+      }
+    });
+    Object.assign(voucherSeatMap, newMap);
+  }
+
+  function openPackageSheet() {
+    const overlay = document.getElementById('couponOverlay');
+    const sheet = document.getElementById('couponSheet');
+    const list = document.getElementById('couponList');
 
     if (selectedSeats.length === 0) {
       showToast('请先选择座位');
       return;
     }
 
-    pointsEnabled = !pointsEnabled;
-    toggle.classList.toggle('on', pointsEnabled);
+    // 更新sheet标题
+    document.querySelector('.coupon-sheet-title').textContent = '选择套票观演券';
 
-    if (pointsEnabled) {
-      sliderArea.style.display = 'block';
-      updatePointsSlider();
+    list.innerHTML = '';
+
+    // 获取所有观演券（包括非本场演出的，用于展示但禁用）
+    const allVouchers = [];
+    PACKAGES.forEach(pkg => {
+      pkg.vouchers.forEach(v => {
+        if (!v.used) {
+          allVouchers.push({
+            ...v,
+            packageId: pkg.id,
+            packageName: pkg.name,
+            packageExpire: pkg.expire,
+            isCurrentShow: v.showId === CURRENT_SHOW_ID,
+            showName: SHOWS[v.showId] ? SHOWS[v.showId].name : '未知演出'
+          });
+        }
+      });
+    });
+
+    if (allVouchers.length === 0) {
+      list.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:32px 16px;font-size:13px;">暂无可用的套票观演券</div>';
     } else {
-      sliderArea.style.display = 'none';
-      pointsUsed = 0;
-      document.getElementById('pointsSlider').value = 0;
-      document.getElementById('pointsSliderValue').textContent = '0积分';
-    }
+      allVouchers.forEach(v => {
+        let isDisabled = false;
+        let reason = '';
+        const isSelected = selectedVouchers.some(sv => sv.id === v.id);
 
-    updatePointsEntry();
-    recalcPrice();
-  }
+        // 非本场演出的观演券不可选
+        if (!v.isCurrentShow) {
+          isDisabled = true;
+          reason = `限「${v.showName}」使用`;
+        } else {
+          // 本场演出：检查是否选了对应票档的座位
+          const hasMatchingSeat = selectedSeats.some(s => s.tier === v.tier);
+          if (!hasMatchingSeat) {
+            isDisabled = true;
+            reason = `需选择${v.tierName}座位才可使用`;
+          }
+          // 检查是否已被选中
+          if (isSelected) {
+            isDisabled = true;
+            reason = '已使用';
+          }
+        }
 
-  function updatePointsSlider() {
-    const slider = document.getElementById('pointsSlider');
-    const originalTotal = getOriginalTotal();
-    const couponDeduct = selectedCoupon ? selectedCoupon.amount : 0;
-    const balanceDeduct = balanceEnabled ? balanceUsed : 0;
-    const currentPayable = Math.max(0, originalTotal - couponDeduct - balanceDeduct);
-    const maxPointsDeduct = Math.floor(currentPayable * POINTS_MAX_PERCENT / POINTS_RATE);
-    const maxUsable = Math.min(AVAILABLE_POINTS, maxPointsDeduct);
+        const card = document.createElement('div');
+        card.className = 'coupon-card';
+        if (isDisabled) card.classList.add('disabled');
+        if (isSelected) card.classList.add('selected');
 
-    slider.max = maxUsable;
-    if (pointsUsed > maxUsable) {
-      pointsUsed = maxUsable;
-    }
-    slider.value = pointsUsed;
-
-    const deductValue = (pointsUsed * POINTS_RATE).toFixed(2);
-    document.getElementById('pointsSliderValue').textContent = `${pointsUsed}积分`;
-    document.getElementById('pointsDeductDisplay').textContent = `¥${deductValue}`;
-  }
-
-  function onPointsSliderChange() {
-    const slider = document.getElementById('pointsSlider');
-    pointsUsed = parseInt(slider.value);
-    const deductValue = (pointsUsed * POINTS_RATE).toFixed(2);
-    document.getElementById('pointsSliderValue').textContent = `${pointsUsed}积分`;
-    document.getElementById('pointsDeductDisplay').textContent = `¥${deductValue}`;
-    recalcPrice();
-  }
-
-  function updatePointsEntry() {
-    const text = document.getElementById('pointsEntryText');
-    if (pointsEnabled && pointsUsed > 0) {
-      text.textContent = `积分抵扣（已用${pointsUsed}积分）`;
-      text.style.color = 'var(--gold)';
-    } else if (pointsEnabled) {
-      text.textContent = '积分抵扣（已启用）';
-      text.style.color = 'var(--gold)';
-    } else {
-      text.textContent = '积分抵扣（可用1,280积分）';
-      text.style.color = '';
-    }
-  }
-
-  // ========== Balance Logic ==========
-  function toggleBalancePanel() {
-    const panel = document.getElementById('balancePanel');
-    const arrow = document.getElementById('balanceEntryArrow');
-    panel.classList.toggle('open');
-    arrow.classList.toggle('open');
-  }
-
-  function toggleBalanceSwitch() {
-    const toggle = document.getElementById('balanceToggle');
-    const inputArea = document.getElementById('balanceInputArea');
-
-    if (selectedSeats.length === 0) {
-      showToast('请先选择座位');
-      return;
-    }
-
-    balanceEnabled = !balanceEnabled;
-    toggle.classList.toggle('on', balanceEnabled);
-
-    if (balanceEnabled) {
-      inputArea.style.display = 'block';
-    } else {
-      inputArea.style.display = 'none';
-      balanceUsed = 0;
-      document.getElementById('balanceInput').value = '';
-      document.getElementById('balanceDeductDisplay').textContent = '¥0.00';
-    }
-
-    updateBalanceEntry();
-    recalcPrice();
-  }
-
-  function onBalanceInput() {
-    const input = document.getElementById('balanceInput');
-    let val = parseFloat(input.value) || 0;
-    const originalTotal = getOriginalTotal();
-    const couponDeduct = selectedCoupon ? selectedCoupon.amount : 0;
-    const pointsDeduct = pointsEnabled ? pointsUsed * POINTS_RATE : 0;
-    const currentPayable = Math.max(0, originalTotal - couponDeduct - pointsDeduct);
-    const maxUsable = Math.min(AVAILABLE_BALANCE, currentPayable);
-
-    if (val > maxUsable) {
-      val = maxUsable;
-      input.value = val.toFixed(2);
-    }
-    if (val < 0) {
-      val = 0;
-      input.value = '';
-    }
-
-    balanceUsed = val;
-    document.getElementById('balanceDeductDisplay').textContent = `¥${balanceUsed.toFixed(2)}`;
-    recalcPrice();
-  }
-
-  function useAllBalance() {
-    const originalTotal = getOriginalTotal();
-    const couponDeduct = selectedCoupon ? selectedCoupon.amount : 0;
-    const pointsDeduct = pointsEnabled ? pointsUsed * POINTS_RATE : 0;
-    const currentPayable = Math.max(0, originalTotal - couponDeduct - pointsDeduct);
-    const maxUsable = Math.min(AVAILABLE_BALANCE, currentPayable);
-
-    balanceUsed = maxUsable;
-    document.getElementById('balanceInput').value = balanceUsed.toFixed(2);
-    document.getElementById('balanceDeductDisplay').textContent = `¥${balanceUsed.toFixed(2)}`;
-    recalcPrice();
-  }
-
-  function updateBalanceEntry() {
-    const text = document.getElementById('balanceEntryText');
-    if (balanceEnabled && balanceUsed > 0) {
-      text.textContent = `余额支付（已用¥${balanceUsed.toFixed(2)}）`;
-      text.style.color = 'var(--emerald)';
-    } else if (balanceEnabled) {
-      text.textContent = '余额支付（已启用）';
-      text.style.color = 'var(--emerald)';
-    } else {
-      text.textContent = '余额支付（可用¥1,280.00）';
-      text.style.color = '';
-    }
-  }
-
-  // ========== Recharge Card Logic ==========
-  const RECHARGE_CARDS = [
-    { id: 'rc001', name: 'VIP充值卡', balance: 500, cardNo: '8888****1234' },
-    { id: 'rc002', name: '礼品卡', balance: 200, cardNo: '8888****5678' },
-    { id: 'rc003', name: '会员储值卡', balance: 1000, cardNo: '8888****9012' }
-  ];
-  const TOTAL_RECHARGE_BALANCE = RECHARGE_CARDS.reduce((sum, c) => sum + c.balance, 0);
-  let selectedRechargeCards = new Set();
-
-  function renderRechargeCards() {
-    const container = document.getElementById('rechargeCardList');
-    if (RECHARGE_CARDS.length === 0) {
-      container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:12px;font-size:11px;">暂无绑定的充值卡</div>';
-      return;
-    }
-    container.innerHTML = RECHARGE_CARDS.map(card => {
-      const isSelected = selectedRechargeCards.has(card.id);
-      return `
-        <div class="recharge-card-item ${isSelected ? 'selected' : ''}" onclick="event.stopPropagation(); toggleRechargeCard('${card.id}')">
-          <div class="recharge-card-checkbox"><i class="fas fa-check"></i></div>
-          <div class="recharge-card-info">
-            <div class="recharge-card-name">${card.name}</div>
-            <div class="recharge-card-no">${card.cardNo}</div>
+        card.innerHTML = `
+          <div class="coupon-amount">
+            <span class="amount-value">${v.tierName}观演券</span>
+            <span class="amount-unit">${v.seatLabel}</span>
           </div>
-          <div class="recharge-card-balance">¥${card.balance}</div>
-        </div>
-      `;
-    }).join('');
-  }
+          <div class="coupon-info">
+            <div class="coupon-name">${v.packageName}</div>
+            <div class="coupon-condition">${v.isCurrentShow ? '价值¥' + v.amount + ' · 有效期至' + v.packageExpire : '限「' + v.showName + '」使用'}</div>
+            ${isDisabled && reason ? `<div class="coupon-disabled-reason">${reason}</div>` : ''}
+          </div>
+        `;
 
-  function toggleRechargeCardPanel() {
-    const panel = document.getElementById('rechargeCardPanel');
-    const arrow = document.getElementById('rechargeCardEntryArrow');
-    panel.classList.toggle('open');
-    arrow.classList.toggle('open');
-  }
+        if (!isDisabled) {
+          card.addEventListener('click', () => selectVoucher(v));
+        }
 
-  function toggleRechargeCard(cardId) {
-    if (selectedRechargeCards.has(cardId)) {
-      selectedRechargeCards.delete(cardId);
-    } else {
-      selectedRechargeCards.add(cardId);
+        list.appendChild(card);
+      });
     }
-    renderRechargeCards();
-    updateRechargeCardEntry();
+
+    const noneBtn = document.createElement('div');
+    noneBtn.className = 'coupon-none-btn';
+    noneBtn.textContent = '不使用套票';
+    noneBtn.addEventListener('click', () => {
+      selectedVouchers = [];
+      voucherSeatMap = {};
+      closeCouponSheet();
+      updatePackageEntry();
+      recalcPrice();
+    });
+    list.appendChild(noneBtn);
+
+    overlay.classList.add('show');
+    sheet.classList.add('show');
+  }
+
+  function selectVoucher(voucher) {
+    // 找到对应票档的第一个未被减免的座位索引
+    const seatIndex = selectedSeats.findIndex((s, idx) => {
+      return s.tier === voucher.tier && !Object.values(voucherSeatMap).includes(idx);
+    });
+
+    if (seatIndex >= 0) {
+      selectedVouchers.push(voucher);
+      voucherSeatMap[voucher.id] = seatIndex;
+    }
+
+    closeCouponSheet();
+    updatePackageEntry();
     recalcPrice();
   }
 
-  function getRechargeCardDeduct() {
-    const totalCardBalance = RECHARGE_CARDS
-      .filter(c => selectedRechargeCards.has(c.id))
-      .reduce((sum, c) => sum + c.balance, 0);
-    const originalTotal = getOriginalTotal();
-    const couponDeduct = selectedCoupon ? selectedCoupon.amount : 0;
-    const pointsDeduct = pointsEnabled ? pointsUsed * POINTS_RATE : 0;
-    const balanceDeduct = balanceEnabled ? balanceUsed : 0;
-    const currentPayable = Math.max(0, originalTotal - couponDeduct - pointsDeduct - balanceDeduct);
-    return Math.min(totalCardBalance, currentPayable);
-  }
-
-  function updateRechargeCardEntry() {
-    const text = document.getElementById('rechargeCardEntryText');
-    const deduct = getRechargeCardDeduct();
-    const summary = document.getElementById('rechargeCardSummary');
-    const deductDisplay = document.getElementById('rechargeCardDeductDisplay');
-
-    if (selectedRechargeCards.size > 0 && deduct > 0) {
-      text.textContent = `充值卡支付（已选${selectedRechargeCards.size}张，抵扣¥${deduct.toFixed(2)}）`;
-      text.style.color = 'var(--gold)';
-      summary.style.display = 'flex';
-      deductDisplay.textContent = `¥${deduct.toFixed(2)}`;
-    } else if (selectedRechargeCards.size > 0) {
-      text.textContent = `充值卡支付（已选${selectedRechargeCards.size}张）`;
-      text.style.color = 'var(--gold)';
-      summary.style.display = 'none';
+  function updatePackageEntry() {
+    const text = document.getElementById('packageEntryText');
+    const arrow = document.getElementById('packageEntryArrow');
+    if (selectedVouchers.length > 0) {
+      const totalDeduct = selectedVouchers.reduce((sum, v) => sum + v.amount, 0);
+      text.textContent = `已选${selectedVouchers.length}张观演券 -¥${totalDeduct}`;
+      text.style.color = 'var(--coral-orange)';
+      arrow.textContent = '›';
     } else {
-      text.textContent = `充值卡支付（可用¥${TOTAL_RECHARGE_BALANCE.toFixed(2)}）`;
+      text.textContent = '使用套票';
       text.style.color = '';
-      summary.style.display = 'none';
+      arrow.textContent = '›';
     }
   }
 
@@ -2755,16 +2733,20 @@
   function recalcPrice() {
     const originalTotal = getOriginalTotal();
     const couponDeduct = selectedCoupon ? selectedCoupon.amount : 0;
-    const pointsDeduct = pointsEnabled ? pointsUsed * POINTS_RATE : 0;
-    const balanceDeduct = balanceEnabled ? balanceUsed : 0;
-    const rechargeCardDeduct = getRechargeCardDeduct();
-    const finalTotal = Math.max(0, originalTotal - couponDeduct - pointsDeduct - balanceDeduct - rechargeCardDeduct);
+    // 套票观演券减免：多张观演券分别减免对应座位
+    let packageDeduct = 0;
+    selectedVouchers.forEach(v => {
+      const seatIndex = voucherSeatMap[v.id];
+      if (seatIndex !== undefined && seatIndex >= 0 && seatIndex < selectedSeats.length) {
+        packageDeduct += selectedSeats[seatIndex].price;
+      }
+    });
+    const finalTotal = Math.max(0, originalTotal - couponDeduct - packageDeduct);
 
     // Update discount rows visibility
     const earlyBirdRow = document.getElementById('earlyBirdDiscountRow');
     const couponRow = document.getElementById('couponDiscountRow');
-    const pointsRow = document.getElementById('pointsDiscountRow');
-    const balanceRow = document.getElementById('balanceDiscountRow');
+    const packageRow = document.getElementById('packageDiscountRow');
 
     // 计算早鸟票折扣金额
     let earlyBirdDeduct = 0;
@@ -2788,57 +2770,37 @@
       couponRow.style.display = 'none';
     }
 
-    if (pointsEnabled && pointsDeduct > 0) {
-      pointsRow.style.display = 'flex';
-      document.getElementById('pricePointsDiscount').textContent = `-¥${pointsDeduct.toFixed(2)}`;
+    if (selectedVouchers.length > 0 && packageDeduct > 0) {
+      packageRow.style.display = 'flex';
+      const seatLabels = selectedVouchers.map(v => {
+        const idx = voucherSeatMap[v.id];
+        if (idx !== undefined && idx >= 0 && idx < selectedSeats.length) {
+          const s = selectedSeats[idx];
+          return `${s.tierName || s.zone} ${s.row}排${s.col}座`;
+        }
+        return '';
+      }).filter(Boolean);
+      document.getElementById('pricePackageDiscount').textContent = `-¥${packageDeduct}（${seatLabels.join('、')}）`;
     } else {
-      pointsRow.style.display = 'none';
-    }
-
-    if (balanceEnabled && balanceDeduct > 0) {
-      balanceRow.style.display = 'flex';
-      document.getElementById('priceBalanceDiscount').textContent = `-¥${balanceDeduct.toFixed(2)}`;
-    } else {
-      balanceRow.style.display = 'none';
-    }
-
-    // Recharge card discount row
-    const rechargeCardRow = document.getElementById('rechargeCardDiscountRow');
-    if (selectedRechargeCards.size > 0 && rechargeCardDeduct > 0) {
-      rechargeCardRow.style.display = 'flex';
-      document.getElementById('priceRechargeCardDiscount').textContent = `-¥${rechargeCardDeduct.toFixed(2)}`;
-    } else {
-      rechargeCardRow.style.display = 'none';
+      packageRow.style.display = 'none';
     }
 
     // Update total
     const totalEl = document.getElementById('totalAmount');
     totalEl.textContent = finalTotal.toFixed(2);
-
-    // Update points slider max when balance changes
-    if (pointsEnabled) {
-      updatePointsSlider();
-    }
-
-    // Clamp balance input if points or recharge card changed
-    if (balanceEnabled) {
-      const currentPayable = Math.max(0, originalTotal - couponDeduct - pointsDeduct - rechargeCardDeduct);
-      const maxUsable = Math.min(AVAILABLE_BALANCE, currentPayable);
-      if (balanceUsed > maxUsable) {
-        balanceUsed = maxUsable;
-        document.getElementById('balanceInput').value = balanceUsed.toFixed(2);
-        document.getElementById('balanceDeductDisplay').textContent = `¥${balanceUsed.toFixed(2)}`;
-      }
-    }
   }
 
   function getFinalTotal() {
     const originalTotal = getOriginalTotal();
     const couponDeduct = selectedCoupon ? selectedCoupon.amount : 0;
-    const pointsDeduct = pointsEnabled ? pointsUsed * POINTS_RATE : 0;
-    const balanceDeduct = balanceEnabled ? balanceUsed : 0;
-    const rechargeCardDeduct = getRechargeCardDeduct();
-    return Math.max(0, originalTotal - couponDeduct - pointsDeduct - balanceDeduct - rechargeCardDeduct);
+    let packageDeduct = 0;
+    selectedVouchers.forEach(v => {
+      const seatIndex = voucherSeatMap[v.id];
+      if (seatIndex !== undefined && seatIndex >= 0 && seatIndex < selectedSeats.length) {
+        packageDeduct += selectedSeats[seatIndex].price;
+      }
+    });
+    return Math.max(0, originalTotal - couponDeduct - packageDeduct);
   }
 
   // ========== Shake Animation (injected) ==========
@@ -2858,8 +2820,8 @@
   renderTicketPolicyBanner();
   updateTierPrices();
   updatePurchaseLimit();
+  updateTierBadges();
   generateSeats();
-  renderRechargeCards();
 </script>
 
 </body>

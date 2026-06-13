@@ -1308,6 +1308,218 @@ ul { list-style: none; }
   color: #94A3B8;
 }
 
+/* ========== 订单确认弹窗 ========== */
+.st-order-confirm-body {
+  text-align: center;
+  padding: 8px 0;
+}
+.st-order-confirm-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,107,74,0.1), rgba(255,107,74,0.05));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 24px;
+  color: var(--coral, #FF6B4A);
+}
+.st-order-confirm-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1A202C;
+  margin-bottom: 8px;
+}
+.st-order-confirm-desc {
+  font-size: 13px;
+  color: #64748B;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.st-order-confirm-summary {
+  background: #F8FAFC;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: left;
+  margin-bottom: 8px;
+}
+.st-order-confirm-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 13px;
+  color: #64748B;
+}
+.st-order-confirm-row.total {
+  border-top: 1px dashed #E2E8F0;
+  margin-top: 8px;
+  padding-top: 10px;
+  font-weight: 700;
+  color: #1A202C;
+}
+.st-order-confirm-row.total .amount {
+  color: var(--coral, #FF6B4A);
+  font-size: 16px;
+}
+
+/* ========== 待支付订单弹窗 ========== */
+.st-pending-order-body {
+  padding: 0;
+}
+.st-pending-order-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, #FFF7ED, #FEF3C7);
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+.st-pending-order-header-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.st-pending-order-header-text h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #92400E;
+  margin-bottom: 2px;
+}
+.st-pending-order-header-text p {
+  font-size: 12px;
+  color: #B45309;
+}
+.st-pending-order-info {
+  background: #F8FAFC;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.st-pending-order-info-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+.st-pending-order-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+  font-size: 13px;
+  color: #64748B;
+}
+.st-pending-order-row .label {
+  color: #94A3B8;
+}
+.st-pending-order-row .value {
+  font-weight: 500;
+  color: #1A202C;
+}
+.st-pending-order-row.total {
+  border-top: 1px dashed #E2E8F0;
+  margin-top: 8px;
+  padding-top: 10px;
+}
+.st-pending-order-row.total .value {
+  font-weight: 700;
+  color: var(--coral, #FF6B4A);
+  font-size: 15px;
+}
+.st-pending-order-seats {
+  margin-bottom: 16px;
+}
+.st-pending-order-seats-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94A3B8;
+  margin-bottom: 8px;
+}
+.st-pending-order-seat-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.st-pending-order-seat-tag {
+  padding: 4px 10px;
+  background: #F1F5F9;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #475569;
+  font-weight: 500;
+}
+.st-pending-order-actions {
+  display: flex;
+  gap: 10px;
+}
+.st-pending-order-actions .st-modal-btn {
+  flex: 1;
+  padding: 10px 16px;
+  font-size: 13px;
+}
+.st-pending-order-actions .st-modal-btn.cancel-order {
+  background: #FEF2F2;
+  color: #EF4444;
+  border: 1px solid #FECACA;
+}
+.st-pending-order-actions .st-modal-btn.cancel-order:hover {
+  background: #FEE2E2;
+}
+.st-pending-order-actions .st-modal-btn.continue-pay {
+  background: linear-gradient(135deg, #FF6B4A, #FF8A65);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(255,107,74,0.3);
+}
+.st-pending-order-actions .st-modal-btn.continue-pay:hover {
+  box-shadow: 0 4px 14px rgba(255,107,74,0.4);
+}
+.st-pending-countdown {
+  font-size: 12px;
+  color: #F59E0B;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 12px;
+}
+
+/* 待支付弹窗 - header/footer 固定，body 可滚动 */
+#stPendingOrderModal .st-modal {
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+#stPendingOrderModal .st-modal-header {
+  flex-shrink: 0;
+}
+#stPendingOrderModal .st-modal-footer {
+  flex-shrink: 0;
+}
+#stPendingOrderModal .st-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+#stPendingOrderModal .st-modal-body::-webkit-scrollbar {
+  width: 5px;
+}
+#stPendingOrderModal .st-modal-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+#stPendingOrderModal .st-modal-body::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+
 /* 渠道售票座位样式 */
 .ch-seat-svg-area {
   width: 100%;
@@ -2711,6 +2923,72 @@ select.form-select-sm,
   </div>
 </div>
 
+<!-- ===== 生成订单确认弹窗 ===== -->
+<div class="st-modal-overlay" id="stOrderConfirmModal" style="display:none;">
+  <div class="st-modal" style="width:440px;">
+    <div class="st-modal-header">
+      <span>生成订单</span>
+      <button class="st-modal-close" onclick="stCloseOrderConfirm()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="st-modal-body">
+      <div class="st-order-confirm-body">
+        <div class="st-order-confirm-icon"><i class="fas fa-file-invoice"></i></div>
+        <div class="st-order-confirm-title">即将生成售票订单</div>
+        <div class="st-order-confirm-desc">确认后将生成待支付订单，请核实以下信息</div>
+        <div class="st-order-confirm-summary" id="stOrderConfirmSummary">
+          <!-- 由JS动态填充 -->
+        </div>
+      </div>
+    </div>
+    <div class="st-modal-footer">
+      <button class="st-modal-btn cancel" onclick="stCloseOrderConfirm()">取消</button>
+      <button class="st-modal-btn confirm" onclick="stConfirmCreateOrder()"><i class="fas fa-check"></i> 确认生成订单</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 待支付订单弹窗 ===== -->
+<div class="st-modal-overlay" id="stPendingOrderModal" style="display:none;">
+  <div class="st-modal" style="width:480px;">
+    <div class="st-modal-header">
+      <span>待支付订单</span>
+      <button class="st-modal-close" onclick="stClosePendingOrder(true)"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="st-modal-body">
+      <div class="st-pending-order-body">
+        <div class="st-pending-order-header">
+          <div class="st-pending-order-header-icon"><i class="fas fa-clock"></i></div>
+          <div class="st-pending-order-header-text">
+            <h4>订单待支付</h4>
+            <p id="stPendingOrderTime">创建时间：--</p>
+          </div>
+        </div>
+        <div class="st-pending-order-info">
+          <div class="st-pending-order-info-title">订单信息</div>
+          <div class="st-pending-order-row"><span class="label">订单编号</span><span class="value" id="stPendingOrderNo">--</span></div>
+          <div class="st-pending-order-row"><span class="label">演出名称</span><span class="value" id="stPendingShowName">--</span></div>
+          <div class="st-pending-order-row"><span class="label">场次时间</span><span class="value" id="stPendingSessionTime">--</span></div>
+          <div class="st-pending-order-row"><span class="label">座位数量</span><span class="value" id="stPendingSeatCount">--</span></div>
+          <div class="st-pending-order-row total"><span class="label">应付金额</span><span class="value" id="stPendingTotalAmount">--</span></div>
+        </div>
+        <div class="st-pending-order-seats">
+          <div class="st-pending-order-seats-title">已选座位</div>
+          <div class="st-pending-order-seat-list" id="stPendingSeatList">
+            <!-- 由JS动态填充 -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="st-modal-footer" style="flex-direction:column;gap:8px;">
+      <div class="st-pending-order-actions">
+        <button class="st-modal-btn cancel-order" onclick="stCancelPendingOrder()"><i class="fas fa-times-circle"></i> 取消订单</button>
+        <button class="st-modal-btn continue-pay" onclick="stContinuePay()"><i class="fas fa-credit-card"></i> 继续支付</button>
+      </div>
+      <div class="st-pending-countdown" id="stPendingCountdown"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ===== 确认售票流程弹窗 ===== -->
 <div class="st-modal-overlay" id="stSellFlowModal" style="display:none;">
   <div class="st-modal" style="width:520px;">
@@ -3715,25 +3993,87 @@ function stReadMemberCard() {
 
 // ==================== 窗口售票 - 售票流程弹窗 ====================
 var stSellFlowState = { step: 1, payMethod: '', ticketType: 'paper' };
+var stCurrentOrder = null; // 当前订单信息
+var stPendingCountdownTimer = null; // 待支付倒计时
 
 function stOpenSellFlow() {
   if (stState.selectedSeats.length === 0) { showToast('warning', '请先选择座位'); return; }
+
+  // 计算总金额
   var total = stState.selectedSeats.reduce(function(sum, sid) {
     return sum + (stState.seatData[sid] ? stState.seatData[sid].price : 0);
   }, 0);
-  document.getElementById('stFlowAmount').textContent = '¥' + total;
+
+  // 生成订单确认摘要
+  var summaryHtml = '';
+  summaryHtml += '<div class="st-order-confirm-row"><span>座位数量</span><span>' + stState.selectedSeats.length + ' 张</span></div>';
+  summaryHtml += '<div class="st-order-confirm-row"><span>原价总计</span><span>¥' + total + '</span></div>';
+  // 早鸟优惠
+  var earlyBirdRow = document.getElementById('stEarlyBirdRow');
+  if (earlyBirdRow && earlyBirdRow.style.display !== 'none') {
+    summaryHtml += '<div class="st-order-confirm-row"><span>早鸟票优惠</span><span style="color:#D97706;">' + document.getElementById('stEarlyBirdAmount').textContent + '</span></div>';
+  }
+  // 会员折扣
+  var memberRow = document.getElementById('stMemberDiscountRow');
+  if (memberRow && memberRow.style.display !== 'none') {
+    summaryHtml += '<div class="st-order-confirm-row"><span>会员折扣</span><span style="color:#D4A853;">' + document.getElementById('stMemberDiscountAmount').textContent + '</span></div>';
+  }
+  var finalTotal = document.getElementById('stOrderTotal').textContent;
+  summaryHtml += '<div class="st-order-confirm-row total"><span>应付金额</span><span class="amount">' + finalTotal + '</span></div>';
+  document.getElementById('stOrderConfirmSummary').innerHTML = summaryHtml;
+
+  // 打开订单确认弹窗
+  document.getElementById('stOrderConfirmModal').style.display = 'flex';
+}
+
+// 关闭订单确认弹窗 → 不生成订单，直接返回
+function stCloseOrderConfirm() {
+  document.getElementById('stOrderConfirmModal').style.display = 'none';
+}
+
+// 确认生成订单 → 进入支付流程
+function stConfirmCreateOrder() {
+  // 生成订单号
+  var orderNo = 'ORD' + Date.now();
+  var total = stState.selectedSeats.reduce(function(sum, sid) {
+    return sum + (stState.seatData[sid] ? stState.seatData[sid].price : 0);
+  }, 0);
+
+  // 保存当前订单信息
+  stCurrentOrder = {
+    orderNo: orderNo,
+    showName: stState.currentShow || '当前演出',
+    sessionTime: stState.currentSession || '--',
+    seats: stState.selectedSeats.slice(),
+    seatCount: stState.selectedSeats.length,
+    total: total,
+    finalTotal: document.getElementById('stOrderTotal').textContent,
+    createdAt: new Date()
+  };
+
+  // 关闭订单确认弹窗
+  document.getElementById('stOrderConfirmModal').style.display = 'none';
+
   // 重置支付方式
   stSelectedPayMethod = '';
   document.querySelectorAll('.st-pay-method').forEach(function(e) { e.classList.remove('active'); });
   document.getElementById('stPayBalanceInfo').style.display = 'none';
+
   // 重置流程
   stSellFlowState = { step: 1, payMethod: '', ticketType: 'paper' };
+  document.getElementById('stFlowAmount').textContent = '¥' + total;
   stUpdateFlowSteps();
   document.getElementById('stSellFlowModal').style.display = 'flex';
+
+  showToast('success', '订单已生成：' + orderNo);
 }
 
 function stCloseSellFlow() {
   document.getElementById('stSellFlowModal').style.display = 'none';
+  // 如果已有订单，关闭后进入待支付页面
+  if (stCurrentOrder) {
+    stOpenPendingOrder();
+  }
 }
 
 // ==================== 预约售票 ====================
@@ -3831,6 +4171,8 @@ function stFlowNext() {
     var count = stState.selectedSeats.length;
     document.getElementById('stFlowSuccessInfo').textContent = '已成功售出 ' + count + ' 张门票';
     stUpdateFlowSteps();
+    // 售票完成，清除订单
+    stCurrentOrder = null;
   }
 }
 
@@ -3888,7 +4230,10 @@ function stOpenPayModal() {
       '</div>' +
       '<div class="st-form-group">' +
       '<label class="st-form-label">实收金额</label>' +
-      '<input type="number" class="st-form-input" id="stCashAmount" placeholder="请输入实收金额" style="font-size:18px;">' +
+      '<div style="display:flex;gap:8px;align-items:center;">' +
+      '<input type="number" class="st-form-input" id="stCashAmount" placeholder="请输入实收金额" style="font-size:18px;flex:1;">' +
+      '<button class="st-modal-btn confirm" onclick="stFillFullAmount()" style="padding:8px 14px;font-size:12px;white-space:nowrap;flex-shrink:0;">全额支付</button>' +
+      '</div>' +
       '</div>' +
       '<div class="st-form-group">' +
       '<label class="st-form-label">找零</label>' +
@@ -3989,6 +4334,19 @@ function stOpenPayModal() {
 
 function stClosePayModal() {
   document.getElementById('stPayModal').style.display = 'none';
+}
+
+// 现金支付 - 全额支付按钮
+function stFillFullAmount() {
+  var total = stPayState.remainAmount > 0 ? stPayState.remainAmount : stState.selectedSeats.reduce(function(sum, sid) {
+    return sum + (stState.seatData[sid] ? stState.seatData[sid].price : 0);
+  }, 0);
+  var cashInput = document.getElementById('stCashAmount');
+  if (cashInput) {
+    cashInput.value = total.toFixed(2);
+    // 触发 input 事件以更新找零
+    cashInput.dispatchEvent(new Event('input'));
+  }
 }
 
 function stSimulateScan(type) {
@@ -4105,6 +4463,115 @@ function stRenderRemainPayInfo() {
 function stFlowPrev() {
   if (stSellFlowState.step === 2) stSellFlowState.step = 1;
   stUpdateFlowSteps();
+}
+
+// ==================== 待支付订单 ====================
+function stOpenPendingOrder() {
+  if (!stCurrentOrder) return;
+  var order = stCurrentOrder;
+
+  // 填充订单信息
+  document.getElementById('stPendingOrderNo').textContent = order.orderNo;
+  document.getElementById('stPendingShowName').textContent = order.showName;
+  document.getElementById('stPendingSessionTime').textContent = order.sessionTime;
+  document.getElementById('stPendingSeatCount').textContent = order.seatCount + ' 张';
+  document.getElementById('stPendingTotalAmount').textContent = order.finalTotal;
+
+  // 创建时间
+  var now = order.createdAt;
+  var timeStr = now.getFullYear() + '-' +
+    String(now.getMonth() + 1).padStart(2, '0') + '-' +
+    String(now.getDate()).padStart(2, '0') + ' ' +
+    String(now.getHours()).padStart(2, '0') + ':' +
+    String(now.getMinutes()).padStart(2, '0') + ':' +
+    String(now.getSeconds()).padStart(2, '0');
+  document.getElementById('stPendingOrderTime').textContent = '创建时间：' + timeStr;
+
+  // 座位列表
+  var seatListHtml = '';
+  order.seats.forEach(function(sid) {
+    var seat = stState.seatData[sid];
+    if (seat) {
+      seatListHtml += '<span class="st-pending-order-seat-tag">' + seat.zone + ' ' + seat.row + '排' + seat.col + '座 ¥' + seat.price + '</span>';
+    }
+  });
+  document.getElementById('stPendingSeatList').innerHTML = seatListHtml;
+
+  // 启动倒计时（15分钟）
+  stStartPendingCountdown();
+
+  // 打开弹窗
+  document.getElementById('stPendingOrderModal').style.display = 'flex';
+}
+
+function stStartPendingCountdown() {
+  if (stPendingCountdownTimer) clearInterval(stPendingCountdownTimer);
+  var expireTime = stCurrentOrder.createdAt.getTime() + 15 * 60 * 1000; // 15分钟
+  var countdownEl = document.getElementById('stPendingCountdown');
+
+  stPendingCountdownTimer = setInterval(function() {
+    var remain = expireTime - Date.now();
+    if (remain <= 0) {
+      clearInterval(stPendingCountdownTimer);
+      countdownEl.textContent = '订单已超时，请重新下单';
+      countdownEl.style.color = '#EF4444';
+      return;
+    }
+    var min = Math.floor(remain / 60000);
+    var sec = Math.floor((remain % 60000) / 1000);
+    countdownEl.textContent = '支付剩余时间：' + min + '分' + String(sec).padStart(2, '0') + '秒';
+    countdownEl.style.color = remain < 120000 ? '#EF4444' : '#F59E0B';
+  }, 1000);
+}
+
+function stClosePendingOrder(keepOrder) {
+  document.getElementById('stPendingOrderModal').style.display = 'none';
+  if (stPendingCountdownTimer) {
+    clearInterval(stPendingCountdownTimer);
+    stPendingCountdownTimer = null;
+  }
+  // 如果不保留订单，清空状态
+  if (!keepOrder) {
+    stCurrentOrder = null;
+    stState.selectedSeats = [];
+    stGenerateSeatMap();
+    stRenderSeatMap();
+    stUpdateUI();
+  }
+}
+
+// 取消订单
+function stCancelPendingOrder() {
+  if (!stCurrentOrder) return;
+  var orderNo = stCurrentOrder.orderNo;
+  stClosePendingOrder(false);
+  showToast('info', '订单 ' + orderNo + ' 已取消');
+}
+
+// 继续支付 → 重新打开售票流程弹窗（从Step 1开始）
+function stContinuePay() {
+  if (!stCurrentOrder) return;
+
+  // 关闭待支付弹窗（保留订单）
+  document.getElementById('stPendingOrderModal').style.display = 'none';
+  if (stPendingCountdownTimer) {
+    clearInterval(stPendingCountdownTimer);
+    stPendingCountdownTimer = null;
+  }
+
+  // 重置支付方式
+  stSelectedPayMethod = '';
+  document.querySelectorAll('.st-pay-method').forEach(function(e) { e.classList.remove('active'); });
+  document.getElementById('stPayBalanceInfo').style.display = 'none';
+
+  // 重置支付状态
+  stPayState = { remainAmount: 0, deductedFromCard: 0, isSecondPay: false };
+
+  // 重置流程到Step 1
+  stSellFlowState = { step: 1, payMethod: '', ticketType: 'paper' };
+  document.getElementById('stFlowAmount').textContent = stCurrentOrder.finalTotal;
+  stUpdateFlowSteps();
+  document.getElementById('stSellFlowModal').style.display = 'flex';
 }
 
 function stChangeVenue(venueId) {

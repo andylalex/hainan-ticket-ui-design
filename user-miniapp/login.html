@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>海南演艺票务系统 - 登录</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ========== Reset & Base ========== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #1a1a2e;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ========== Phone Frame ========== */
+    .phone-frame {
+      width: 100%;
+      max-width: 375px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: linear-gradient(180deg, #0A1628 0%, #132744 40%, #1a3a5c 100%);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(0,0,0,0.4), 0 0 120px rgba(10,22,40,0.3);
+      border-radius: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ========== Status Bar ========== */
+    .status-bar {
+      height: 44px;
+      padding: 10px 24px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 500;
+      position: relative;
+      z-index: 10;
+      flex-shrink: 0;
+    }
+
+    .status-bar .time {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .status-bar .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .status-bar .status-icons i { font-size: 13px; }
+
+    .status-bar .battery {
+      width: 22px;
+      height: 10px;
+      border: 1.5px solid #fff;
+      border-radius: 2px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .status-bar .battery::after {
+      content: '';
+      position: absolute;
+      right: -4px;
+      top: 2px;
+      width: 2px;
+      height: 5px;
+      background: #fff;
+      border-radius: 0 1px 1px 0;
+    }
+
+    .status-bar .battery-fill {
+      width: 75%;
+      height: 100%;
+      background: #00C9A7;
+      border-radius: 1px;
+    }
+
+    /* ========== Particle Background ========== */
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      animation: particleFloat linear infinite;
+    }
+
+    @keyframes particleFloat {
+      0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-20px) translateX(30px); opacity: 0; }
+    }
+
+    /* ========== Light Orbs ========== */
+    .light-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .light-orb-1 {
+      width: 200px;
+      height: 200px;
+      background: rgba(255, 107, 74, 0.12);
+      top: -40px;
+      right: -60px;
+      animation: orbDrift1 8s ease-in-out infinite;
+    }
+
+    .light-orb-2 {
+      width: 160px;
+      height: 160px;
+      background: rgba(0, 201, 167, 0.08);
+      bottom: 120px;
+      left: -50px;
+      animation: orbDrift2 10s ease-in-out infinite;
+    }
+
+    .light-orb-3 {
+      width: 100px;
+      height: 100px;
+      background: rgba(255, 215, 0, 0.06);
+      top: 40%;
+      right: 10%;
+      animation: orbDrift3 12s ease-in-out infinite;
+    }
+
+    @keyframes orbDrift1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-20px, 30px) scale(1.1); }
+    }
+
+    @keyframes orbDrift2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(25px, -20px) scale(1.15); }
+    }
+
+    @keyframes orbDrift3 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-15px, 15px) scale(0.9); }
+    }
+
+    /* ========== Login Content ========== */
+    .login-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 32px 40px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ========== Brand ========== */
+    .login-brand {
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .login-logo {
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 20px;
+      position: relative;
+      animation: logoFloat 4s ease-in-out infinite;
+    }
+
+    .login-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 24px rgba(255,107,74,0.3));
+    }
+
+    /* ========== Agreement ========== */
+
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .login-brand h1 {
+      color: #fff;
+      letter-spacing: 3px;
+      margin-bottom: 8px;
+    }
+
+    .login-brand p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 2px;
+    }
+
+    /* ========== Login Card ========== */
+    .login-card {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-radius: 20px;
+      padding: 28px 24px 24px;
+      border: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
+
+    /* Card shimmer effect */
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+      animation: cardShimmer 6s ease-in-out infinite;
+      border-radius: 20px;
+    }
+
+    @keyframes cardShimmer {
+      0%, 100% { left: -100%; }
+      50% { left: 140%; }
+    }
+
+    .login-card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .login-card-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    /* ========== WeChat Login Button ========== */
+    .wechat-login-btn {
+      width: 100%;
+      height: 50px;
+      background: linear-gradient(135deg, #07C160, #06AD56);
+      border: none;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(7,193,96,0.35);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 1px;
+    }
+
+    .wechat-login-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .wechat-login-btn:hover::before { left: 100%; }
+
+    .wechat-login-btn:active {
+      transform: scale(0.97);
+      box-shadow: 0 3px 12px rgba(7,193,96,0.3);
+    }
+
+    .wechat-login-btn i { font-size: 22px; }
+
+    /* ========== Agreement ========== */
+    .login-agreement {
+      margin-top: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .login-agreement .custom-checkbox {
+      width: 18px;
+      height: 18px;
+      border-radius: 5px;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.06);
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .login-agreement .custom-checkbox.checked {
+      background: linear-gradient(135deg, #FF6B4A, #FF8A65);
+      border-color: #FF6B4A;
+    }
+
+    .login-agreement .custom-checkbox.checked::after {
+      content: '';
+      width: 5px;
+      height: 9px;
+      border: 2px solid #fff;
+      border-top: none;
+      border-left: none;
+      transform: rotate(45deg);
+      margin-top: -2px;
+    }
+
+    .login-agreement .custom-checkbox input {
+      display: none;
+    }
+
+    .login-agreement label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.6;
+      cursor: pointer;
+    }
+
+    .login-agreement a {
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .login-agreement a:hover { color: #FF6B4A; }
+
+    /* ========== Bottom Hint ========== */
+    .login-hint {
+      margin-top: auto;
+      padding-top: 28px;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 0.8s ease-out 0.6s both;
+    }
+
+    /* ========== Phone Auth Modal ========== */
+    .auth-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 1000;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .auth-modal-overlay.show {
+      display: flex;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .auth-modal {
+      width: 100%;
+      max-width: 375px;
+      background: #fff;
+      border-radius: 24px 24px 0 0;
+      padding: 20px 24px 32px;
+      animation: slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .auth-modal-handle {
+      width: 40px;
+      height: 4px;
+      background: #E2E8F0;
+      border-radius: 2px;
+      margin: 0 auto 20px;
+    }
+
+    .auth-modal-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .auth-modal-header .wechat-icon {
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #07C160, #06AD56);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      box-shadow: 0 6px 20px rgba(7,193,96,0.25);
+    }
+
+    .auth-modal-header .wechat-icon i {
+      font-size: 28px;
+      color: #fff;
+    }
+
+    .auth-modal-header h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1A202C;
+      margin-bottom: 4px;
+    }
+
+    .auth-modal-header p {
+      font-size: 13px;
+      color: #94A3B8;
+    }
+
+    .auth-modal-info {
+      background: #F8FAFC;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .auth-modal-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      font-size: 14px;
+    }
+
+    .auth-modal-info-row .label { color: #64748B; }
+
+    .auth-modal-info-row .value {
+      color: #1A202C;
+      font-weight: 500;
+    }
+
+    .auth-modal-info-row .value.phone {
+      color: #07C160;
+      font-weight: 600;
+    }
+
+    .auth-modal-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .auth-modal-btn {
+      width: 100%;
+      height: 48px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .auth-modal-btn.confirm {
+      background: linear-gradient(135deg, #07C160, #06AD56);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(7,193,96,0.3);
+    }
+
+    .auth-modal-btn.confirm:hover {
+      box-shadow: 0 6px 20px rgba(7,193,96,0.4);
+    }
+
+    .auth-modal-btn.confirm:active { transform: scale(0.98); }
+
+    .auth-modal-btn.cancel {
+      background: #F1F5F9;
+      color: #64748B;
+    }
+
+    .auth-modal-btn.cancel:hover { background: #E2E8F0; }
+
+    /* ========== Loading Overlay ========== */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 22, 40, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .loading-overlay.show {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .loading-spinner {
+      width: 44px;
+      height: 44px;
+      border: 3px solid rgba(255,255,255,0.15);
+      border-top-color: #FF6B4A;
+      border-right-color: #FF6B4A;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: rgba(255,255,255,0.8);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+
+    /* ========== Responsive ========== */
+    @media (max-width: 340px) {
+      .login-content { padding: 0 20px 32px; }
+      .login-brand h1 { font-size: 22px; letter-spacing: 2px; }
+      .login-card { padding: 24px 20px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span class="time" id="statusTime">09:41</span>
+      <div class="status-icons">
+        <i class="fas fa-signal"></i>
+        <i class="fas fa-wifi"></i>
+        <span class="battery"><span class="battery-fill"></span></span>
+      </div>
+    </div>
+
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Light Orbs -->
+    <div class="light-orb light-orb-1"></div>
+    <div class="light-orb light-orb-2"></div>
+    <div class="light-orb light-orb-3"></div>
+
+    <!-- Login Content -->
+    <div class="login-content">
+      <!-- Brand -->
+      <div class="login-brand">
+        <div class="login-logo">
+          <img src="assets/logo.png" alt="海南演艺">
+        </div>
+        <h1>海南演艺</h1>
+        <p>精彩演出 一触即达</p>
+      </div>
+
+      <!-- Login Card -->
+      <div class="login-card">
+        <h2 class="login-card-title">欢迎登录</h2>
+        <p class="login-card-desc">登录后即可购票、查看订单<br>享受会员专属优惠</p>
+
+        <button class="wechat-login-btn" onclick="openPhoneAuth()">
+          <i class="fab fa-weixin"></i>
+          <span>微信一键登录</span>
+        </button>
+
+        <div class="login-agreement">
+          <div class="custom-checkbox checked" id="agreementCheckbox" onclick="toggleAgreement()">
+            <input type="checkbox" id="agreementCheck" checked>
+          </div>
+          <label onclick="toggleAgreement()" style="cursor:pointer;">
+            我已阅读并同意<a href="#" onclick="event.stopPropagation()">《用户服务协议》</a>和<a href="#" onclick="event.stopPropagation()">《隐私政策》</a>
+          </label>
+        </div>
+      </div>
+
+      <!-- Bottom Hint -->
+      <div class="login-hint">
+        未注册手机号验证后将自动创建账号
+      </div>
+    </div>
+  </div>
+
+  <!-- Phone Auth Modal -->
+  <div class="auth-modal-overlay" id="authModal">
+    <div class="auth-modal">
+      <div class="auth-modal-handle"></div>
+      <div class="auth-modal-header">
+        <div class="wechat-icon">
+          <i class="fab fa-weixin"></i>
+        </div>
+        <h3>微信手机号授权</h3>
+        <p>授权后使用微信手机号快捷登录</p>
+      </div>
+      <div class="auth-modal-info">
+        <div class="auth-modal-info-row">
+          <span class="label">应用名称</span>
+          <span class="value">海南演艺票务</span>
+        </div>
+        <div class="auth-modal-info-row">
+          <span class="label">授权手机号</span>
+          <span class="value phone">138****8888</span>
+        </div>
+      </div>
+      <div class="auth-modal-actions">
+        <button class="auth-modal-btn confirm" onclick="confirmAuth()">
+          <i class="fas fa-check-circle"></i>
+          <span>确认授权并登录</span>
+        </button>
+        <button class="auth-modal-btn cancel" onclick="closePhoneAuth()">
+          <span>取消</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">登录中...</div>
+  </div>
+
+  <script>
+    // Status bar time
+    function updateTime() {
+      var now = new Date();
+      document.getElementById('statusTime').textContent =
+        String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+    }
+    updateTime();
+    setInterval(updateTime, 60000);
+
+    // Generate particles
+    (function() {
+      var container = document.getElementById('particles');
+      for (var i = 0; i < 20; i++) {
+        var p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (6 + Math.random() * 8) + 's';
+        p.style.animationDelay = Math.random() * 10 + 's';
+        p.style.width = p.style.height = (2 + Math.random() * 2) + 'px';
+        container.appendChild(p);
+      }
+    })();
+
+    // Toggle agreement checkbox
+    function toggleAgreement() {
+      var cb = document.getElementById('agreementCheck');
+      var box = document.getElementById('agreementCheckbox');
+      cb.checked = !cb.checked;
+      box.classList.toggle('checked', cb.checked);
+    }
+
+    // Open phone auth modal
+    function openPhoneAuth() {
+      if (!document.getElementById('agreementCheck').checked) {
+        alert('请先同意用户服务协议和隐私政策');
+        return;
+      }
+      document.getElementById('authModal').classList.add('show');
+    }
+
+    // Close phone auth modal
+    function closePhoneAuth() {
+      document.getElementById('authModal').classList.remove('show');
+    }
+
+    // Confirm authorization
+    function confirmAuth() {
+      document.getElementById('authModal').classList.remove('show');
+      document.getElementById('loadingOverlay').classList.add('show');
+      setTimeout(function() {
+        document.getElementById('loadingOverlay').classList.remove('show');
+        // Check if there's a redirect target
+        var redirect = sessionStorage.getItem('loginRedirect');
+        if (redirect) {
+          sessionStorage.removeItem('loginRedirect');
+          window.location.href = redirect;
+        } else {
+          window.location.href = 'home.html';
+        }
+      }, 1500);
+    }
+
+    // Close modal on overlay click
+    document.getElementById('authModal').addEventListener('click', function(e) {
+      if (e.target === this) closePhoneAuth();
+    });
+  </script>
+</body>
+</html>
