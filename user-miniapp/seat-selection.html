@@ -1810,7 +1810,7 @@
           <span class="price-value discount" id="pricePackageDiscount" style="color:var(--coral-orange);">-¥0</span>
         </div>
         <div class="price-row" id="couponHintRow" style="display:none;">
-          <span class="price-label" style="color:var(--text-secondary);font-size:11px;"><i class="fas fa-info-circle" style="margin-right:4px;"></i>优惠券可在确认订单页使用</span>
+          <span class="price-label" style="color:var(--text-secondary);font-size:11px;"><i class="fas fa-info-circle" style="margin-right:4px;"></i>优惠券</span>
           <span class="price-value" id="couponHintText" style="color:var(--coral-orange);font-size:11px;font-weight:600;">最高可减¥0</span>
         </div>
       </div>
@@ -2510,11 +2510,11 @@
 
     list.innerHTML = '';
 
-    // 获取所有观演券（包括非本场演出的，用于展示但禁用）
+    // 获取所有观演券（过滤掉VIP区，VIP区没有套票）
     const allVouchers = [];
     PACKAGES.forEach(pkg => {
       pkg.vouchers.forEach(v => {
-        if (!v.used) {
+        if (!v.used && v.tier !== 'vip') {
           allVouchers.push({
             ...v,
             packageId: pkg.id,
@@ -2608,6 +2608,11 @@
     closeCouponSheet();
     updatePackageEntry();
     recalcPrice();
+  }
+
+  function closeCouponSheet() {
+    document.getElementById('couponOverlay').classList.remove('show');
+    document.getElementById('couponSheet').classList.remove('show');
   }
 
   function updatePackageEntry() {
