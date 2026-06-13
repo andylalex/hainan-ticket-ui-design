@@ -934,12 +934,6 @@
     flex: 1;
   }
 
-  .total-label {
-    font-size: 11px;
-    color: var(--text-secondary);
-    margin-bottom: 2px;
-  }
-
   .total-price {
     font-family: 'Noto Sans SC', sans-serif;
     font-size: 26px;
@@ -957,6 +951,20 @@
 
   .total-price .amount {
     color: var(--coral-orange);
+  }
+
+  .bottom-original-price {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: line-through;
+    margin-top: 2px;
+  }
+
+  .bottom-deduct-amount {
+    font-size: 11px;
+    color: var(--coral-orange);
+    font-weight: 600;
+    margin-top: 1px;
   }
 
   .confirm-btn {
@@ -1810,8 +1818,12 @@
           <span class="price-value" id="priceSubtotal">¥0</span>
         </div>
         <div class="price-row" id="earlyBirdDiscountRow" style="display:none;">
-          <span class="price-label">早鸟优惠</span>
+          <span class="price-label">票品折扣（早鸟票）</span>
           <span class="price-value discount" id="priceEarlyBirdDiscount" style="color:var(--coral-orange);">-¥0</span>
+        </div>
+        <div class="price-row" id="memberDiscountRow" style="display:none;">
+          <span class="price-label">会员折扣（白金会员9折）</span>
+          <span class="price-value discount" id="priceMemberDiscount" style="color:var(--coral-orange);">-¥0</span>
         </div>
         <div class="price-row" id="packageDiscountRow" style="display:none;">
           <span class="price-label">套票抵扣</span>
@@ -1832,11 +1844,11 @@
   <!-- Bottom Action Bar -->
   <div class="bottom-bar">
     <div class="total-section">
-      <div class="total-label">合计</div>
       <div class="total-price">
-        <span class="currency">¥</span><span class="amount" id="totalAmount">0</span>
+        <span class="currency">¥</span><span class="amount" id="bottomTotalAmount">0</span>
       </div>
-      <div class="total-discount" id="totalDiscount" style="display:none;color:var(--coral-orange);font-size:11px;font-weight:600;">已减¥0</div>
+      <div class="bottom-original-price" id="bottomOriginalPrice" style="display:none;">¥0</div>
+      <div class="bottom-deduct-amount" id="bottomDeductAmount" style="display:none;">已减免¥0</div>
     </div>
     <button class="confirm-btn" id="confirmBtn" disabled onclick="confirmSeats()">确认选座</button>
   </div>
@@ -2231,7 +2243,7 @@
     const breakdown = document.getElementById('priceBreakdown');
     const subtotalEl = document.getElementById('priceSubtotal');
     const unitLabel = document.getElementById('priceUnitLabel');
-    const totalEl = document.getElementById('totalAmount');
+    const totalEl = document.getElementById('bottomTotalAmount');
     const confirmBtn = document.getElementById('confirmBtn');
 
     const maxSelect = getPurchaseLimit();
@@ -2630,6 +2642,47 @@
 
   // ========== Price Calculation ==========
   function recalcPrice() {
+    // 无座位时重置所有价格行并返回
+    if (selectedSeats.length === 0) {
+      const earlyBirdRow = document.getElementById('earlyBirdDiscountRow');
+      const packageRow = document.getElementById('packageDiscountRow');
+      const couponHintRow = document.getElementById('couponHintRow');
+      const memberDiscountRow = document.getElementById('memberDiscountRow');
+      if (earlyBirdRow) earlyBirdRow.style.display = 'none';
+      if (packageRow) packageRow.style.display = 'none';
+      if (couponHintRow) couponHintRow.style.display = 'none';
+      if (memberDiscountRow) memberDiscountRow.style.display = 'none';
+
+      const totalEl = document.getElementById('bottomTotalAmount');
+      totalEl.textContent = '0';
+
+      const bottomOriginalEl = document.getElementById('bottomOriginalPrice');
+      if (bottomOriginalEl) {
+        bottomOriginalEl.textContent = '';
+        bottomOriginalEl.style.display = 'none';
+      }
+
+      const bottomDeductEl = document.getElementById('bottomDeductAmount');
+      if (bottomDeductEl) {
+        bottomDeductEl.style.display = 'none';
+        bottomDeductEl.textContent = '';
+      }
+
+      const bottomTotalEl = document.getElementById('bottomTotalAmount');
+      if (bottomTotalEl) bottomTotalEl.textContent = '0';
+      const bottomOriginalEl = document.getElementById('bottomOriginalPrice');
+      if (bottomOriginalEl) {
+        bottomOriginalEl.textContent = '';
+        bottomOriginalEl.style.display = 'none';
+      }
+      const bottomDeductEl = document.getElementById('bottomDeductAmount');
+      if (bottomDeductEl) {
+        bottomDeductEl.textContent = '';
+        bottomDeductEl.style.display = 'none';
+      }
+      return;
+    }
+
     // 先自动匹配观演券（确保新选座位被匹配）
     autoMatchVouchers();
 
@@ -2648,20 +2701,34 @@
     const earlyBirdRow = document.getElementById('earlyBirdDiscountRow');
     const packageRow = document.getElementById('packageDiscountRow');
     const couponHintRow = document.getElementById('couponHintRow');
+    const memberDiscountRow = document.getElementById('memberDiscountRow');
 
     // 计算早鸟票折扣金额
     let earlyBirdDeduct = 0;
     if (isEarlyBirdPeriod()) {
-      const originalTotal = selectedSeats.reduce((sum, s) => sum + (s.originalPrice || s.price), 0);
-      const discountedTotal = selectedSeats.reduce((sum, s) => sum + s.price, 0);
-      earlyBirdDeduct = originalTotal - discountedTotal;
+      const origSum = selectedSeats.reduce((sum, s) => sum + (s.originalPrice || s.price), 0);
+      const discSum = selectedSeats.reduce((sum, s) => sum + s.price, 0);
+      earlyBirdDeduct = origSum - discSum;
     }
 
-    if (earlyBirdDeduct > 0) {
+    // 计算会员折扣（白金会员9折，减免10%）
+    const discSumForMember = selectedSeats.reduce((sum, s) => sum + s.price, 0);
+    let memberDiscount = Math.floor(discSumForMember * 0.1);
+
+    // 票品折扣行：只在无套票时显示
+    if (selectedVouchers.length === 0 && earlyBirdDeduct > 0) {
       earlyBirdRow.style.display = 'flex';
       document.getElementById('priceEarlyBirdDiscount').textContent = `-¥${earlyBirdDeduct}`;
     } else {
       earlyBirdRow.style.display = 'none';
+    }
+
+    // 会员折扣行：只在无套票时显示
+    if (selectedVouchers.length === 0 && memberDiscount > 0) {
+      memberDiscountRow.style.display = 'flex';
+      document.getElementById('priceMemberDiscount').textContent = `-¥${memberDiscount}`;
+    } else {
+      memberDiscountRow.style.display = 'none';
     }
 
     // 套票抵扣
@@ -2689,18 +2756,32 @@
       couponHintRow.style.display = 'none';
     }
 
-    // Update total
-    const totalEl = document.getElementById('totalAmount');
-    totalEl.textContent = finalTotal.toFixed(2);
+    // Update total (底栏实付金额)
+    const bottomTotalEl = document.getElementById('bottomTotalAmount');
+    bottomTotalEl.textContent = finalTotal.toFixed(2);
 
-    // Update total discount display
-    const totalDiscountEl = document.getElementById('totalDiscount');
-    const totalDeduct = earlyBirdDeduct + packageDeduct;
-    if (totalDeduct > 0) {
-      totalDiscountEl.style.display = 'block';
-      totalDiscountEl.textContent = `已减¥${totalDeduct}`;
+    // Update total discount display (价格明细面板)
+    const totalDeduct = earlyBirdDeduct + packageDeduct + (selectedVouchers.length === 0 ? memberDiscount : 0);
+
+    // ========== 更新底栏三行信息 ==========
+    const bottomOriginalEl = document.getElementById('bottomOriginalPrice');
+    const bottomDeductEl = document.getElementById('bottomDeductAmount');
+
+    // 优惠前原价（原价之和）
+    const origPriceSum = selectedSeats.reduce((sum, s) => sum + (s.originalPrice || s.price), 0);
+    if (origPriceSum > finalTotal) {
+      bottomOriginalEl.textContent = `¥${origPriceSum}`;
+      bottomOriginalEl.style.display = 'inline';
     } else {
-      totalDiscountEl.style.display = 'none';
+      bottomOriginalEl.style.display = 'none';
+    }
+
+    // 已减免金额
+    if (totalDeduct > 0) {
+      bottomDeductEl.textContent = `已减免¥${totalDeduct}`;
+      bottomDeductEl.style.display = 'block';
+    } else {
+      bottomDeductEl.style.display = 'none';
     }
   }
 

@@ -677,10 +677,10 @@
         <span class="label">商品总价</span>
         <span class="value" id="subtotalPrice">¥0</span>
       </div>
-      <!-- 套票抵扣行 -->
-      <div class="discount-row" id="packageDiscountRow" style="display:none;">
-        <span class="label" id="packageDiscountLabel">套票抵扣</span>
-        <span class="value minus" id="packageDiscountValue">-¥0</span>
+      <!-- 票品折扣明细行 -->
+      <div class="discount-row" id="ticketDiscountDetailRow" style="display:none;">
+        <span class="label" id="ticketDiscountDetailLabel">票品折扣（早鸟票）</span>
+        <span class="value minus" id="ticketDiscountDetailValue">-¥0</span>
       </div>
       <!-- 票品折扣行 -->
       <div class="discount-row" id="ticketDiscountRow" style="display:none;">
@@ -912,7 +912,8 @@
     { id: 2, amount: 30, minAmount: 200, name: '满200减30', scope: '仅限演出票', expire: '2026-05-31', disabled: false, reason: '' },
     { id: 3, amount: 100, minAmount: 800, name: '满800减100', scope: 'VIP专享', expire: '2026-07-31', disabled: false, reason: '' },
     { id: 4, amount: 20, minAmount: 100, name: '满100减20', scope: '全场通用', expire: '2025-12-31', disabled: true, reason: '已过期' },
-    { id: 5, amount: 80, minAmount: 500, name: '满500减80', scope: '全场通用', expire: '2026-08-31', disabled: true, reason: '不满足金额条件' }
+    { id: 5, amount: 80, minAmount: 500, name: '满500减80', scope: '全场通用', expire: '2026-08-31', disabled: true, reason: '不满足金额条件' },
+    { id: 6, amount: 10, minAmount: 0, name: '新人无门槛券', scope: '全场通用', expire: '2026-12-31', disabled: false, reason: '' }
   ];
   let selectedCoupon = null;
 
@@ -966,12 +967,13 @@
   function renderDiscountList() {
     document.getElementById('subtotalPrice').textContent = '¥' + subtotal.toLocaleString();
 
-    // 套票抵扣
-    const pkgRow = document.getElementById('packageDiscountRow');
-    if (packageDeduction > 0) {
+    // 票品折扣明细
+    const pkgRow = document.getElementById('ticketDiscountDetailRow');
+    if (ticketDiscount > 0) {
       pkgRow.style.display = 'flex';
-      document.getElementById('packageDiscountLabel').textContent = '套票抵扣（' + appliedVouchers.length + '张观演券）';
-      document.getElementById('packageDiscountValue').textContent = '-¥' + packageDeduction.toLocaleString();
+      const ticketLabel = ticketDiscountDetails.length > 0 ? '票品折扣（' + ticketDiscountDetails.join('、') + '）' : '票品折扣（早鸟优惠）';
+      document.getElementById('ticketDiscountDetailLabel').textContent = ticketLabel;
+      document.getElementById('ticketDiscountDetailValue').textContent = '-¥' + ticketDiscount.toLocaleString();
     } else {
       pkgRow.style.display = 'none';
     }
@@ -1063,7 +1065,7 @@
         ' style="display:flex;border-radius:12px;margin-bottom:10px;overflow:hidden;border:1.5px solid ' + (isSelected ? '#FF6B4A' : (isDisabled ? '#f0f0f0' : '#F2F3F7')) + ';cursor:pointer;background:#fff;' + (isDisabled ? 'opacity:0.55;' : '') + '">' +
         '<div style="width:80px;min-width:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(255,107,74,0.08),rgba(255,143,107,0.03));padding:14px 8px;position:relative;">' +
         '<span style="font-size:22px;font-weight:700;color:' + (isDisabled ? '#ccc' : '#FF6B4A') + ';letter-spacing:-0.5px;">¥' + coupon.amount + '</span>' +
-        '<span style="font-size:9px;color:#9AA3B4;margin-top:3px;font-weight:500;">满' + coupon.minAmount + '可用</span>' +
+        '<span style="font-size:9px;color:#9AA3B4;margin-top:3px;font-weight:500;">' + (coupon.minAmount > 0 ? '满' + coupon.minAmount + '可用' : '无门槛') + '</span>' +
         '</div>' +
         '<div style="flex:1;padding:14px 14px;display:flex;flex-direction:column;justify-content:center;gap:3px;">' +
         '<div style="font-size:14px;font-weight:600;color:' + (isDisabled ? '#bbb' : '#0A1628') + ';">' + coupon.name + '</div>' +
@@ -1157,8 +1159,7 @@
     { id: 'v1', name: '海南大剧院套票A', type: 'A区座位×1', amount: 580, expire: '2026.12.31', showName: '世界名曲钢琴独奏音乐会', tierName: 'A档', valid: true, disabled: false, reason: '' },
     { id: 'v2', name: '海南大剧院套票A', type: 'A区座位×1', amount: 580, expire: '2026.12.31', showName: '世界名曲钢琴独奏音乐会', tierName: 'A档', valid: true, disabled: false, reason: '' },
     { id: 'v3', name: '海南大剧院套票B', type: 'B区座位×1', amount: 380, expire: '2026.10.31', showName: '芭蕾舞剧《天鹅湖》', tierName: 'B档', valid: false, disabled: true, reason: '演出不匹配' },
-    { id: 'v4', name: '海南大剧院套票C', type: 'C区座位×1', amount: 280, expire: '2026.11.30', showName: '世界名曲钢琴独奏音乐会', tierName: 'C档', valid: false, disabled: true, reason: '票档不匹配' },
-    { id: 'v5', name: '周年庆观演券', type: '全场通用×1', amount: 200, expire: '2026.06.30', showName: '全场通用', tierName: '不限', valid: true, disabled: false, reason: '' }
+    { id: 'v4', name: '海南大剧院套票C', type: 'C区座位×1', amount: 280, expire: '2026.11.30', showName: '世界名曲钢琴独奏音乐会', tierName: 'C档', valid: false, disabled: true, reason: '票档不匹配' }
   ];
 
   // 当前选中的观演券（从选座页带入的 + 本页选择的）
@@ -1209,8 +1210,9 @@
         '</div>';
     });
 
-    html += '<div class="sheet-empty" onclick="clearAllVouchers();closeCouponSheet();">不使用观演券</div>';
+    html += '<div class="sheet-empty" onclick="clearAllVouchers();">不使用观演券</div>';
     html += '</div>';
+    html += '<div style="padding:14px 16px 0;"><button onclick="confirmVoucherSelection()" style="width:100%;height:46px;border-radius:24px;background:linear-gradient(135deg,#D4A853,#E8C878);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(212,168,83,0.3);letter-spacing:0.5px;">确定</button></div>';
 
     sheet.innerHTML = html;
     document.body.appendChild(overlay);
@@ -1237,13 +1239,50 @@
     // 重新计算套票抵扣
     packageDeduction = selectedVouchers.reduce((sum, v) => sum + v.amount, 0);
     appliedVouchers = selectedVouchers;
-    // 刷新弹窗
-    closeCouponSheet();
-    openPackageSheet();
+    // 更新弹窗中观演券的选中状态（不关闭弹窗）
+    updateVoucherSheetUI();
     // 更新页面
     updatePackageEntry();
     renderDiscountList();
     recalcTotal();
+  };
+
+  // 更新弹窗中观演券的勾选状态
+  function updateVoucherSheetUI() {
+    const cards = document.querySelectorAll('.voucher-card');
+    cards.forEach(card => {
+      const onclickAttr = card.getAttribute('onclick');
+      if (!onclickAttr) return;
+      const match = onclickAttr.match(/toggleVoucherSelection\('([^']+)'\)/);
+      if (!match) return;
+      const vid = match[1];
+      const isSelected = selectedVouchers.some(sv => sv.id === vid);
+      const v = ALL_VOUCHERS.find(av => av.id === vid);
+      // 更新边框
+      card.style.borderColor = isSelected ? '#D4A853' : (v && v.disabled ? '#f0f0f0' : '#F2F3F7');
+      // 更新勾选框
+      const checkDiv = card.querySelector('div[style*="border-radius:50%"]');
+      if (checkDiv) {
+        checkDiv.style.borderColor = isSelected ? '#D4A853' : (v && v.disabled ? '#e0e0e0' : '#C4CAD6');
+        checkDiv.style.background = isSelected ? '#D4A853' : 'transparent';
+        if (isSelected) {
+          if (!checkDiv.querySelector('i')) {
+            const icon = document.createElement('i');
+            icon.className = 'fas fa-check';
+            icon.style.cssText = 'color:#fff;font-size:10px;';
+            checkDiv.appendChild(icon);
+          }
+        } else {
+          const icon = checkDiv.querySelector('i');
+          if (icon) icon.remove();
+        }
+      }
+    });
+  }
+
+  // 确定按钮：关闭弹窗
+  window.confirmVoucherSelection = function() {
+    closeCouponSheet();
   };
 
   window.clearAllVouchers = function() {
@@ -1533,10 +1572,21 @@
   }
 
   function submitOrder() {
-    showToast('订单提交成功！');
-    setTimeout(function() {
-      window.location.href = 'order-list.html';
-    }, 1500);
+    // 模拟生成订单号
+    const orderNo = 'HN' + Date.now().toString().slice(-10) + Math.floor(Math.random() * 100).toString().padStart(2, '0');
+    // 计算最终支付金额
+    const finalTotal = Math.max(0, currentPayable - couponDeduction - pointsDeduction - walletUsed - getRechargeCardDeduct());
+    // 跳转到订单成功页面
+    const seatInfo = seatsData.map(s => s.row + '排' + s.col + '座').join('、');
+    const params = new URLSearchParams({
+      orderNo: orderNo,
+      show: showName,
+      date: showDate,
+      venue: showVenue,
+      seats: seatInfo,
+      amount: finalTotal.toFixed(2)
+    });
+    window.location.href = 'order-success.html?' + params.toString();
   }
 
   // Init

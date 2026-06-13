@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>订单提交成功 - 海南演艺</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --coral: #FF6B4A;
+      --coral-light: #FF8F6B;
+      --coral-bg: rgba(255,107,74,0.08);
+      --dark: #0A1628;
+      --dark-soft: #1a2a42;
+      --text-primary: #0A1628;
+      --text-secondary: #5A6478;
+      --text-muted: #9AA3B4;
+      --bg-page: #F2F3F7;
+      --bg-card: #FFFFFF;
+      --border-light: rgba(10,22,40,0.06);
+      --shadow-card: 0 1px 3px rgba(10,22,40,0.04), 0 4px 16px rgba(10,22,40,0.03);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #E8EAF0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .page-container {
+      width: 100%;
+      max-width: 375px;
+      min-height: 100vh;
+      background: var(--bg-page);
+      position: relative;
+      overflow-x: hidden;
+      padding-bottom: 40px;
+    }
+
+    /* ===== Nav Bar ===== */
+    .nav-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 52px;
+      background: var(--dark);
+      padding: 0 16px;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset;
+    }
+    .nav-back {
+      position: absolute;
+      left: 12px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.7);
+      font-size: 15px;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .nav-back:active { background: rgba(255,255,255,0.08); color: #fff; }
+    .nav-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.3px;
+    }
+
+    /* ===== Success Header ===== */
+    .success-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 30px;
+    }
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #22C55E, #16A34A);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 20px rgba(34,197,94,0.3);
+    }
+    .success-icon i {
+      font-size: 32px;
+      color: #fff;
+    }
+    .success-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .success-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* ===== Order Info Card ===== */
+    .order-card {
+      background: var(--bg-card);
+      margin: 0 12px;
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-card);
+      border: 1px solid var(--border-light);
+    }
+    .order-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .order-card-title i {
+      font-size: 13px;
+      color: var(--coral);
+    }
+    .order-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-light);
+      font-size: 13px;
+    }
+    .order-row:last-child {
+      border-bottom: none;
+    }
+    .order-row .label {
+      color: var(--text-muted);
+      font-weight: 400;
+      flex-shrink: 0;
+      margin-right: 16px;
+    }
+    .order-row .value {
+      color: var(--text-primary);
+      font-weight: 500;
+      text-align: right;
+      word-break: break-all;
+    }
+    .order-row .value.amount {
+      color: var(--coral);
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    /* ===== Buttons ===== */
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      padding: 24px 12px 0;
+    }
+    .btn {
+      flex: 1;
+      height: 46px;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--coral), var(--coral-light));
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(255,107,74,0.3);
+    }
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1.5px solid var(--border-light);
+      box-shadow: var(--shadow-card);
+    }
+  </style>
+</head>
+<body>
+<div class="page-container">
+  <!-- Nav -->
+  <div class="nav-bar">
+    <a class="nav-back" href="javascript:history.back()">
+      <i class="fas fa-chevron-left"></i>
+    </a>
+    <span class="nav-title">订单结果</span>
+  </div>
+
+  <!-- Success Header -->
+  <div class="success-header">
+    <div class="success-icon">
+      <i class="fas fa-check"></i>
+    </div>
+    <div class="success-title">订单提交成功</div>
+    <div class="success-desc">您的订单已成功提交，请准时观演</div>
+  </div>
+
+  <!-- Order Info Card -->
+  <div class="order-card">
+    <div class="order-card-title"><i class="fas fa-receipt"></i> 订单信息</div>
+    <div class="order-row">
+      <span class="label">订单号</span>
+      <span class="value" id="orderNo">--</span>
+    </div>
+    <div class="order-row">
+      <span class="label">演出名称</span>
+      <span class="value" id="showName">--</span>
+    </div>
+    <div class="order-row">
+      <span class="label">演出时间</span>
+      <span class="value" id="showDate">--</span>
+    </div>
+    <div class="order-row">
+      <span class="label">座位信息</span>
+      <span class="value" id="seatInfo">--</span>
+    </div>
+    <div class="order-row">
+      <span class="label">支付金额</span>
+      <span class="value amount" id="payAmount">--</span>
+    </div>
+  </div>
+
+  <!-- Buttons -->
+  <div class="btn-group">
+    <a class="btn btn-secondary" href="order-list.html">
+      <i class="fas fa-list-ul"></i> 查看订单
+    </a>
+    <a class="btn btn-primary" href="index.html">
+      <i class="fas fa-home"></i> 返回首页
+    </a>
+  </div>
+</div>
+
+<script>
+  // 从 URL 参数获取订单信息
+  const urlParams = new URLSearchParams(window.location.search);
+
+  // 默认模拟数据
+  const defaultData = {
+    orderNo: 'HN20250115001',
+    showName: '世界名曲钢琴独奏音乐会',
+    showDate: '2025.01.15 周三 20:00',
+    seats: '3排5座、3排6座',
+    amount: '1034.00'
+  };
+
+  // 读取 URL 参数，无参数则使用默认数据
+  const orderNo = urlParams.get('orderNo') || defaultData.orderNo;
+  const showName = urlParams.get('show') || defaultData.showName;
+  const showDate = urlParams.get('date') || defaultData.showDate;
+  const seats = urlParams.get('seats') || defaultData.seats;
+  const amount = urlParams.get('amount') || defaultData.amount;
+
+  document.getElementById('orderNo').textContent = orderNo;
+  document.getElementById('showName').textContent = showName;
+  document.getElementById('showDate').textContent = showDate;
+  document.getElementById('seatInfo').textContent = seats;
+  document.getElementById('payAmount').textContent = '\u00A5' + amount;
+</script>
+</body>
+</html>
