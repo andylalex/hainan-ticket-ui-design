@@ -1977,7 +1977,7 @@
       advanceDays: 7,
       discountPercent: 85, // 85折
       limitPerUser: 4,
-      endDate: '2026-05-20' // 早鸟票结束日期
+      endDate: '2026-07-31' // 早鸟票结束日期
     },
     memberPriority: {
       enabled: true,
@@ -2025,7 +2025,8 @@
   }
 
   // 计算折扣后价格
-  function getDiscountedPrice(originalPrice) {
+  function getDiscountedPrice(originalPrice, tier) {
+    if (tier === 'vip') return originalPrice; // VIP区不参与折扣
     const discount = getCurrentDiscount();
     return Math.round(originalPrice * discount / 100);
   }
@@ -2090,8 +2091,9 @@
 
     priceElements.forEach(el => {
       const originalPrice = parseInt(el.getAttribute('data-original'));
-      if (originalPrice && discount < 100) {
-        const discountedPrice = getDiscountedPrice(originalPrice);
+      const seatTier = el.getAttribute('data-tier');
+      if (originalPrice && discount < 100 && seatTier !== 'vip') {
+        const discountedPrice = getDiscountedPrice(originalPrice, seatTier);
         el.innerHTML = `¥${discountedPrice}<span class="original-price">¥${originalPrice}</span>`;
       }
     });
@@ -2215,7 +2217,7 @@
 
       seatEl.classList.add('selected');
       const originalPrice = PRICES[tier];
-      const discountedPrice = getDiscountedPrice(originalPrice);
+      const discountedPrice = getDiscountedPrice(originalPrice, tier);
       const tierNameMap = { vip: 'VIP区', a: 'A区', b: 'B区', c: 'C区' };
       selectedSeats.push({
         id: seatId,
@@ -2668,18 +2670,6 @@
         bottomDeductEl.textContent = '';
       }
 
-      const bottomTotalEl = document.getElementById('bottomTotalAmount');
-      if (bottomTotalEl) bottomTotalEl.textContent = '0';
-      const bottomOriginalEl = document.getElementById('bottomOriginalPrice');
-      if (bottomOriginalEl) {
-        bottomOriginalEl.textContent = '';
-        bottomOriginalEl.style.display = 'none';
-      }
-      const bottomDeductEl = document.getElementById('bottomDeductAmount');
-      if (bottomDeductEl) {
-        bottomDeductEl.textContent = '';
-        bottomDeductEl.style.display = 'none';
-      }
       return;
     }
 
