@@ -391,6 +391,28 @@
       padding-top: 8px;
     }
 
+    /* ===== Points Entry in Discount Section ===== */
+    #pointsEntry .payment-check {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--text-placeholder);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s;
+      flex-shrink: 0;
+    }
+    #pointsEntry .payment-check.checked {
+      background: #8B5CF6;
+      border-color: #8B5CF6;
+      color: #fff;
+      font-size: 11px;
+      box-shadow: 0 2px 8px rgba(139,92,246,0.3);
+    }
+    #pointsEntry .payment-check i { display: none; }
+    #pointsEntry .payment-check.checked i { display: block; }
+
     /* ===== Recharge Card List ===== */
     .recharge-card-list { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; }
     .recharge-card-item {
@@ -561,6 +583,8 @@
       transform: translateY(100%);
       transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
       max-height: 78vh;
+      max-width: 375px;
+      margin: 0 auto;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       padding-bottom: calc(24px + env(safe-area-inset-bottom));
@@ -675,7 +699,7 @@
       </div>
       <!-- 积分抵扣行 -->
       <div class="discount-row" id="pointsDiscountRow" style="display:none;">
-        <span class="label">积分抵扣</span>
+        <span class="label" id="pointsDiscountLabel">积分抵扣</span>
         <span class="value minus" id="pointsDiscountValue">-¥0</span>
       </div>
       <div class="discount-divider"></div>
@@ -701,6 +725,25 @@
         <span class="entry-text" id="couponEntryText" style="font-size:13px;color:#0A1628;">使用优惠券</span>
       </div>
       <span class="entry-arrow">›</span>
+    </div>
+
+    <!-- 积分抵扣入口（从支付方式区域移过来） -->
+    <div class="entry-row" id="pointsEntry" onclick="togglePointsEntry()" style="padding-top:4px;">
+      <div class="entry-left">
+        <div class="entry-icon" style="background:linear-gradient(135deg, rgba(139,92,246,0.12), rgba(167,139,250,0.08));color:#8B5CF6;"><i class="fas fa-star"></i></div>
+        <span class="entry-text" id="pointsEntryText" style="font-size:13px;color:#0A1628;">积分抵扣</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="entry-text" id="pointsEntryDesc" style="font-size:12px;color:var(--text-muted);font-weight:400;">可用1280积分</span>
+        <div class="payment-check" id="checkPointsEntry"><i class="fas fa-check"></i></div>
+      </div>
+    </div>
+    <div id="pointsInputAreaEntry" style="display:none;">
+      <div class="points-input-row">
+        <input type="number" class="points-input" id="pointsInputEntry" placeholder="输入使用积分" min="0" step="1" oninput="onPointsInputEntry()">
+        <button class="points-use-all-btn" onclick="event.stopPropagation(); useAllPointsEntry()">全部使用</button>
+      </div>
+      <div class="points-deduct-display" id="pointsDeductDisplayEntry">抵扣 ¥0.00</div>
     </div>
   </div>
 
@@ -776,24 +819,7 @@
         <div class="wallet-deduct-display" id="rechargeCardDeductDisplay" style="color:var(--gold);padding-top:8px;">抵扣 ¥0.00</div>
       </div>
 
-      <!-- Points -->
-      <div class="payment-option" onclick="togglePoints()">
-        <div class="payment-option-left">
-          <div class="payment-icon points"><i class="fas fa-star"></i></div>
-          <div class="payment-info">
-            <span class="payment-name">积分抵扣</span>
-            <span class="payment-desc" id="pointsDesc">可用 1,280 积分</span>
-          </div>
-        </div>
-        <div class="payment-check" id="checkPoints"><i class="fas fa-check"></i></div>
-      </div>
-      <div id="pointsInputArea" style="display:none;">
-        <div class="points-input-row">
-          <input type="number" class="points-input" id="pointsInput" placeholder="输入使用积分" min="0" step="1" oninput="onPointsInput()">
-          <button class="points-use-all-btn" onclick="event.stopPropagation(); useAllPoints()">全部使用</button>
-        </div>
-        <div class="points-deduct-display" id="pointsDeductDisplay">抵扣 ¥0.00</div>
-      </div>
+
     </div>
   </div>
 </div>
@@ -855,6 +881,21 @@
   const discountedTotal = seatsData.reduce((sum, s) => sum + s.price, 0);
   ticketDiscount = Math.max(0, subtotal - discountedTotal);
 
+  // 模拟会员折扣（白金会员9折）
+  const memberLevel = '白金会员';
+  const memberDiscountRate = 0.9;
+  memberDiscount = Math.round(discountedTotal * (1 - memberDiscountRate));
+
+  // 模拟票品折扣明细（每个座位的折扣）
+  const ticketDiscountDetails = seatsData.map(function(s, i) {
+    const original = s.originalPrice || s.price;
+    const discount = Math.max(0, original - s.price);
+    if (discount > 0) {
+      return (s.tierName || s.tier || 'A档') + '早鸟优惠 -¥' + discount;
+    }
+    return null;
+  }).filter(Boolean);
+
   // 应用套票观演券抵扣（从选座页带入）
   let appliedVouchers = [];
   if (voucherData.length > 0) {
@@ -862,8 +903,8 @@
     packageDeduction = voucherData.reduce((sum, v) => sum + v.amount, 0);
   }
 
-  // 当前应付金额（扣除套票后）
-  let currentPayable = Math.max(0, discountedTotal - packageDeduction);
+  // 当前应付金额（扣除套票、票品折扣、会员折扣后）
+  let currentPayable = Math.max(0, discountedTotal - packageDeduction - memberDiscount);
 
   // ========== Coupon Data ==========
   const COUPONS = [
@@ -939,7 +980,8 @@
     const ticketRow = document.getElementById('ticketDiscountRow');
     if (ticketDiscount > 0) {
       ticketRow.style.display = 'flex';
-      document.getElementById('ticketDiscountLabel').textContent = '票品折扣（早鸟优惠）';
+      const ticketLabel = ticketDiscountDetails.length > 0 ? '票品折扣（' + ticketDiscountDetails.join('、') + '）' : '票品折扣（早鸟优惠）';
+      document.getElementById('ticketDiscountLabel').textContent = ticketLabel;
       document.getElementById('ticketDiscountValue').textContent = '-¥' + ticketDiscount.toLocaleString();
     } else {
       ticketRow.style.display = 'none';
@@ -949,6 +991,7 @@
     const memberRow = document.getElementById('memberDiscountRow');
     if (memberDiscount > 0) {
       memberRow.style.display = 'flex';
+      document.getElementById('memberDiscountLabel').textContent = memberLevel + (memberDiscountRate * 10) + '折 -¥' + memberDiscount.toLocaleString();
       document.getElementById('memberDiscountValue').textContent = '-¥' + memberDiscount.toLocaleString();
     } else {
       memberRow.style.display = 'none';
@@ -968,6 +1011,7 @@
     const pointsRow = document.getElementById('pointsDiscountRow');
     if (pointsEnabled && pointsDeduction > 0) {
       pointsRow.style.display = 'flex';
+      document.getElementById('pointsDiscountLabel').textContent = '积分抵扣（' + pointsUsed + '积分）';
       document.getElementById('pointsDiscountValue').textContent = '-¥' + pointsDeduction.toFixed(2);
     } else {
       pointsRow.style.display = 'none';
@@ -1108,42 +1152,66 @@
     }
   }
 
-  // ========== Package Sheet (view only from seat-selection) ==========
+  // ========== Voucher Mock Data ==========
+  const ALL_VOUCHERS = [
+    { id: 'v1', name: '海南大剧院套票A', type: 'A区座位×1', amount: 580, expire: '2026.12.31', showName: '世界名曲钢琴独奏音乐会', tierName: 'A档', valid: true, disabled: false, reason: '' },
+    { id: 'v2', name: '海南大剧院套票A', type: 'A区座位×1', amount: 580, expire: '2026.12.31', showName: '世界名曲钢琴独奏音乐会', tierName: 'A档', valid: true, disabled: false, reason: '' },
+    { id: 'v3', name: '海南大剧院套票B', type: 'B区座位×1', amount: 380, expire: '2026.10.31', showName: '芭蕾舞剧《天鹅湖》', tierName: 'B档', valid: false, disabled: true, reason: '演出不匹配' },
+    { id: 'v4', name: '海南大剧院套票C', type: 'C区座位×1', amount: 280, expire: '2026.11.30', showName: '世界名曲钢琴独奏音乐会', tierName: 'C档', valid: false, disabled: true, reason: '票档不匹配' },
+    { id: 'v5', name: '周年庆观演券', type: '全场通用×1', amount: 200, expire: '2026.06.30', showName: '全场通用', tierName: '不限', valid: true, disabled: false, reason: '' }
+  ];
+
+  // 当前选中的观演券（从选座页带入的 + 本页选择的）
+  let selectedVouchers = [];
+  if (voucherData.length > 0) {
+    selectedVouchers = voucherData.map((v, i) => ({
+      ...v,
+      id: v.id || ('imported_' + i)
+    }));
+  }
+
+  // ========== Package Sheet (view + select vouchers) ==========
   function openPackageSheet() {
-    if (appliedVouchers.length === 0) {
-      showToast('暂无可用套票观演券');
-      return;
-    }
     const overlay = document.createElement('div');
     overlay.className = 'coupon-overlay';
     overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,22,40,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:200;opacity:0;transition:opacity 0.3s ease;';
 
     const sheet = document.createElement('div');
     sheet.className = 'coupon-sheet';
-    sheet.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;z-index:201;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);max-height:78vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(24px + env(safe-area-inset-bottom));box-shadow:0 -8px 40px rgba(10,22,40,0.12);';
+    sheet.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;z-index:201;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);max-height:78vh;max-width:375px;margin:0 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(24px + env(safe-area-inset-bottom));box-shadow:0 -8px 40px rgba(10,22,40,0.12);';
 
     let html = '<div class="sheet-header">' +
-      '<span class="sheet-title">已使用观演券</span>' +
+      '<span class="sheet-title">选择观演券</span>' +
       '<span class="sheet-close" onclick="closeCouponSheet()"><i class="fas fa-xmark"></i></span>' +
       '</div>';
     html += '<div class="sheet-body">';
 
-    appliedVouchers.forEach(v => {
-      const seat = seatsData[v.seatIndex];
-      html += '<div style="display:flex;border-radius:12px;margin-bottom:10px;overflow:hidden;border:1.5px solid #D4A853;background:#fff;">' +
-        '<div style="width:80px;min-width:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(212,168,83,0.08),rgba(232,200,120,0.03));padding:14px 8px;">' +
-        '<span style="font-size:13px;font-weight:700;color:#D4A853;letter-spacing:0.2px;">' + v.name.split(' - ')[1] + '</span>' +
-        '<span style="font-size:9px;color:#9AA3B4;margin-top:3px;font-weight:500;">价值¥' + v.amount + '</span>' +
+    ALL_VOUCHERS.forEach(v => {
+      const isSelected = selectedVouchers.some(sv => sv.id === v.id);
+      html += '<div class="voucher-card' + (v.disabled ? ' disabled' : '') + (isSelected ? ' selected' : '') + '" ' +
+        (v.disabled ? '' : 'onclick="toggleVoucherSelection(\'' + v.id + '\')"') +
+        ' style="display:flex;border-radius:12px;margin-bottom:10px;overflow:hidden;border:1.5px solid ' + (isSelected ? '#D4A853' : (v.disabled ? '#f0f0f0' : '#F2F3F7')) + ';cursor:' + (v.disabled ? 'not-allowed' : 'pointer') + ';background:#fff;' + (v.disabled ? 'opacity:0.55;' : '') + '">' +
+        '<div style="width:80px;min-width:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(212,168,83,0.08),rgba(232,200,120,0.03));padding:14px 8px;position:relative;">' +
+        '<span style="font-size:20px;font-weight:700;color:' + (v.disabled ? '#ccc' : '#D4A853') + ';letter-spacing:-0.5px;">¥' + v.amount + '</span>' +
+        '<span style="font-size:9px;color:#9AA3B4;margin-top:3px;font-weight:500;">' + v.type + '</span>' +
         '</div>' +
         '<div style="flex:1;padding:14px 14px;display:flex;flex-direction:column;justify-content:center;gap:3px;">' +
-        '<div style="font-size:14px;font-weight:600;color:#0A1628;">' + v.name.split(' - ')[0] + '</div>' +
-        '<div style="font-size:11px;color:#9AA3B4;">抵扣座位：' + (seat ? seat.tierName + ' ' + seat.row + '排' + seat.col + '座' : '未知座位') + '</div>' +
-        '<div style="font-size:10px;color:#C4CAD6;margin-top:1px;">有效期至 2026.12.31</div>' +
+        '<div style="font-size:14px;font-weight:600;color:' + (v.disabled ? '#bbb' : '#0A1628') + ';">' + v.name + '</div>' +
+        '<div style="font-size:11px;color:#9AA3B4;">使用条件：' + v.showName + ' · ' + v.tierName + '</div>' +
+        '<div style="font-size:10px;color:#C4CAD6;margin-top:1px;">有效期至 ' + v.expire + '</div>' +
+        (v.disabled && v.reason ? '<div style="font-size:10px;color:#FF6B4A;margin-top:2px;font-weight:500;">' + v.reason + '</div>' : '') +
+        '</div>' +
+        '<div style="width:40px;display:flex;align-items:center;justify-content:center;">' +
+        '<div style="width:20px;height:20px;border-radius:50%;border:2px solid ' + (isSelected ? '#D4A853' : (v.disabled ? '#e0e0e0' : '#C4CAD6')) + ';display:flex;align-items:center;justify-content:center;background:' + (isSelected ? '#D4A853' : 'transparent') + ';">' +
+        (isSelected ? '<i class="fas fa-check" style="color:#fff;font-size:10px;"></i>' : '') +
+        '</div>' +
         '</div>' +
         '</div>';
     });
 
+    html += '<div class="sheet-empty" onclick="clearAllVouchers();closeCouponSheet();">不使用观演券</div>';
     html += '</div>';
+
     sheet.innerHTML = html;
     document.body.appendChild(overlay);
     document.body.appendChild(sheet);
@@ -1155,6 +1223,37 @@
 
     overlay.onclick = closeCouponSheet;
   }
+
+  window.toggleVoucherSelection = function(voucherId) {
+    const idx = selectedVouchers.findIndex(sv => sv.id === voucherId);
+    if (idx >= 0) {
+      selectedVouchers.splice(idx, 1);
+    } else {
+      const v = ALL_VOUCHERS.find(v => v.id === voucherId);
+      if (v && !v.disabled) {
+        selectedVouchers.push(v);
+      }
+    }
+    // 重新计算套票抵扣
+    packageDeduction = selectedVouchers.reduce((sum, v) => sum + v.amount, 0);
+    appliedVouchers = selectedVouchers;
+    // 刷新弹窗
+    closeCouponSheet();
+    openPackageSheet();
+    // 更新页面
+    updatePackageEntry();
+    renderDiscountList();
+    recalcTotal();
+  };
+
+  window.clearAllVouchers = function() {
+    selectedVouchers = [];
+    packageDeduction = 0;
+    appliedVouchers = [];
+    updatePackageEntry();
+    renderDiscountList();
+    recalcTotal();
+  };
 
   // ========== Toggle Functions ==========
   function toggleWallet() {
@@ -1182,15 +1281,49 @@
     recalcTotal();
   }
 
-  function togglePoints() {
+  // 积分抵扣入口（费用明细区域）
+  function togglePointsEntry() {
     pointsEnabled = !pointsEnabled;
-    document.getElementById('checkPoints').classList.toggle('checked', pointsEnabled);
-    document.getElementById('pointsInputArea').style.display = pointsEnabled ? 'block' : 'none';
+    document.getElementById('checkPointsEntry').classList.toggle('checked', pointsEnabled);
+    document.getElementById('pointsInputAreaEntry').style.display = pointsEnabled ? 'block' : 'none';
     if (!pointsEnabled) {
       pointsUsed = 0;
-      document.getElementById('pointsInput').value = '';
-      document.getElementById('pointsDeductDisplay').textContent = '抵扣 ¥0.00';
+      document.getElementById('pointsInputEntry').value = '';
+      document.getElementById('pointsDeductDisplayEntry').textContent = '抵扣 ¥0.00';
     }
+    recalcTotal();
+  }
+
+  function onPointsInputEntry() {
+    const input = document.getElementById('pointsInputEntry');
+    let val = parseInt(input.value) || 0;
+    const remaining = getRemainingPayable();
+    const maxPointsDeduct = Math.floor(remaining * POINTS_MAX_PERCENT / POINTS_RATE);
+    const maxUsable = Math.min(AVAILABLE_POINTS, maxPointsDeduct);
+
+    if (val > maxUsable) {
+      val = maxUsable;
+      input.value = val;
+    }
+    if (val < 0) {
+      val = 0;
+      input.value = '';
+    }
+
+    pointsUsed = val;
+    const deductValue = (pointsUsed * POINTS_RATE).toFixed(2);
+    document.getElementById('pointsDeductDisplayEntry').textContent = `抵扣 ¥${deductValue}`;
+    recalcTotal();
+  }
+
+  function useAllPointsEntry() {
+    const remaining = getRemainingPayable();
+    const maxPointsDeduct = Math.floor(remaining * POINTS_MAX_PERCENT / POINTS_RATE);
+    const maxUsable = Math.min(AVAILABLE_POINTS, maxPointsDeduct);
+    pointsUsed = maxUsable;
+    document.getElementById('pointsInputEntry').value = pointsUsed;
+    const deductValue = (pointsUsed * POINTS_RATE).toFixed(2);
+    document.getElementById('pointsDeductDisplayEntry').textContent = `抵扣 ¥${deductValue}`;
     recalcTotal();
   }
 
@@ -1322,11 +1455,13 @@
   }
 
   function updatePointsDesc() {
-    const desc = document.getElementById('pointsDesc');
+    const desc = document.getElementById('pointsEntryDesc');
     if (pointsEnabled && pointsUsed > 0) {
       desc.textContent = `已用 ${pointsUsed} 积分`;
+      desc.style.color = '#8B5CF6';
     } else {
-      desc.textContent = `可用 ${AVAILABLE_POINTS} 积分`;
+      desc.textContent = `可用${AVAILABLE_POINTS}积分`;
+      desc.style.color = 'var(--text-muted)';
     }
   }
 

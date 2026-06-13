@@ -1749,8 +1749,20 @@
     <!-- Legend -->
     <div class="legend">
       <div class="legend-item">
-        <div class="legend-dot available"></div>
-        <span class="legend-text">可选</span>
+        <div class="legend-dot available" style="border-color:#D4A853;"></div>
+        <span class="legend-text">VIP区</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot available" style="border-color:#FF6B4A;"></div>
+        <span class="legend-text">A区</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot available" style="border-color:#3B82F6;"></div>
+        <span class="legend-text">B区</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot available" style="border-color:#10B981;"></div>
+        <span class="legend-text">C区</span>
       </div>
       <div class="legend-item">
         <div class="legend-dot sold"></div>
@@ -1759,10 +1771,6 @@
       <div class="legend-item">
         <div class="legend-dot selected"></div>
         <span class="legend-text">已选</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-dot vip"></div>
-        <span class="legend-text">VIP</span>
       </div>
     </div>
 
@@ -1828,6 +1836,7 @@
       <div class="total-price">
         <span class="currency">¥</span><span class="amount" id="totalAmount">0</span>
       </div>
+      <div class="total-discount" id="totalDiscount" style="display:none;color:var(--coral-orange);font-size:11px;font-weight:600;">已减¥0</div>
     </div>
     <button class="confirm-btn" id="confirmBtn" disabled onclick="confirmSeats()">确认选座</button>
   </div>
@@ -2129,6 +2138,15 @@
         seat.setAttribute('data-row', rowLabel);
         seat.setAttribute('data-col', actualCol);
         seat.setAttribute('data-tier', tier);
+
+        // 根据票档设置边框颜色
+        const tierBorderColors = {
+          vip: '#D4A853',
+          a: '#FF6B4A',
+          b: '#3B82F6',
+          c: '#10B981'
+        };
+        seat.style.borderColor = tierBorderColors[tier] || 'rgba(255,255,255,0.2)';
 
         if (SOLD_SEATS.has(seatId)) {
           seat.classList.add('sold');
@@ -2612,6 +2630,9 @@
 
   // ========== Price Calculation ==========
   function recalcPrice() {
+    // 先自动匹配观演券（确保新选座位被匹配）
+    autoMatchVouchers();
+
     const originalTotal = getOriginalTotal();
     // 套票观演券减免：多张观演券分别减免对应座位
     let packageDeduct = 0;
@@ -2671,6 +2692,16 @@
     // Update total
     const totalEl = document.getElementById('totalAmount');
     totalEl.textContent = finalTotal.toFixed(2);
+
+    // Update total discount display
+    const totalDiscountEl = document.getElementById('totalDiscount');
+    const totalDeduct = earlyBirdDeduct + packageDeduct;
+    if (totalDeduct > 0) {
+      totalDiscountEl.style.display = 'block';
+      totalDiscountEl.textContent = `已减¥${totalDeduct}`;
+    } else {
+      totalDiscountEl.style.display = 'none';
+    }
   }
 
   // 计算当前可用优惠券的最大减免金额
