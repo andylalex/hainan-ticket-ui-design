@@ -2177,24 +2177,27 @@ const devDocs = {
 
     'user-miniapp/seat-selection.html': {
         title: '选座购票页',
-        subtitle: '座位矩阵 + 缩放 + 票档筛选 + 混合支付',
+        subtitle: '座位矩阵 + 缩放 + 票档筛选 + 优惠券/套票 + 早鸟票',
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>可视化座位选择，支持多票档切换、缩放控制、混合支付（早鸟优惠/优惠券/积分抵扣/余额/充值卡），选座后跳转确认订单页面。</p>
+                content: `<p><strong>核心功能：</strong>可视化座位选择，支持多票档切换、缩放控制、早鸟票优惠、优惠券和套票观演券抵扣，选座后跳转确认订单页面。选择座位时自动匹配对应票档的可用观演券，支持多张观演券同时使用。</p>
                 <p><strong>业务说明：</strong></p>
                 <ul>
                     <li><strong>前置条件：</strong>用户已登录，从演出详情页点击"立即购买"进入，携带session_id参数</li>
                     <li><strong>功能实现逻辑：</strong>
                         <ul>
                             <li>座位图：根据场次ID获取座位布局数据，渲染矩阵式座位图，4种状态（可选/已售/已选/VIP）</li>
-                            <li>票档筛选：按区域分区展示，点击切换后座位图自动定位到对应区域</li>
-                            <li>价格计算：最终金额 = 原价总额 - 早鸟优惠 - 优惠券抵扣 - 积分抵扣(100积分=1元) - 充值卡抵扣 - 余额支付</li>
+                            <li>票档筛选：按区域分区展示（VIP区/A区/B区/C区），有可用观演券的票档显示"套票"徽章，点击切换后座位图自动定位到对应区域</li>
+                            <li>早鸟票优惠：前7天购票享8.5折优惠，每人限购5张，在票价中直接体现折扣价</li>
+                            <li>优惠券：底部弹窗选择优惠券，需满足最低消费金额，选中后全额抵扣</li>
+                            <li>套票观演券：底部弹窗选择观演券，观演券绑定指定演出+指定票档双重条件，匹配对应票档座位全额减免；选择座位时自动匹配可用观演券，取消座位时自动解绑</li>
+                            <li>价格计算：最终金额 = 原价总额 - 早鸟优惠 - 优惠券抵扣 - 套票观演券抵扣（多张可叠加）</li>
                             <li>座位锁定：选座后自动锁定15分钟，超时释放并提示重新选座</li>
                         </ul>
                     </li>
-                    <li><strong>数据约束：</strong>最多选择4个座位；积分抵扣需满足最低使用门槛；优惠券需满足使用条件</li>
-                    <li><strong>能力边界：</strong>不支持跨场次选座；不支持选座后修改场次</li>
+                    <li><strong>数据约束：</strong>最多选择4个座位；优惠券需满足使用条件（最低消费金额）；观演券需匹配当前演出和对应票档</li>
+                    <li><strong>能力边界：</strong>不支持跨场次选座；不支持选座后修改场次；观演券仅减免对应票档的一张座位</li>
                 </ul>`
             },
             {
@@ -2202,14 +2205,15 @@ const devDocs = {
                 content: `<p><strong>点击座位</strong></p>
                 <ul>
                     <li><strong>触发：</strong>点击可选座位（白色）</li>
-                    <li><strong>执行中：</strong>座位变为已选状态（主题色），已选座位面板更新</li>
-                    <li><strong>成功：</strong>价格实时重新计算</li>
+                    <li><strong>执行中：</strong>座位变为已选状态（主题色），已选座位面板更新，自动匹配对应票档的可用观演券</li>
+                    <li><strong>成功：</strong>价格实时重新计算，套票入口显示已匹配观演券数量</li>
                     <li><strong>边界条件：</strong>最多选4个，超过提示"最多选择4个座位"；已售座位不可点击</li>
                 </ul>
                 <p><strong>取消选座</strong></p>
                 <ul>
                     <li><strong>触发：</strong>点击已选座位或已选座位面板中的"x"按钮</li>
-                    <li><strong>成功：</strong>座位恢复可选状态，价格重新计算</li>
+                    <li><strong>执行中：</strong>座位恢复可选状态，自动解绑关联的观演券</li>
+                    <li><strong>成功：</strong>价格重新计算，套票入口状态更新</li>
                 </ul>
                 <p><strong>切换票档</strong></p>
                 <ul>
@@ -2218,15 +2222,23 @@ const devDocs = {
                 </ul>
                 <p><strong>使用优惠券</strong></p>
                 <ul>
-                    <li><strong>触发：</strong>点击已选座位面板中的"使用优惠券"</li>
-                    <li><strong>执行中：</strong>弹出优惠券选择弹窗</li>
-                    <li><strong>成功：</strong>选中优惠券后价格重新计算</li>
+                    <li><strong>触发：</strong>点击"使用优惠券"入口</li>
+                    <li><strong>执行中：</strong>底部滑出优惠券选择弹窗，显示可用/不可用优惠券列表</li>
+                    <li><strong>成功：</strong>选中优惠券后价格重新计算，显示优惠减免金额</li>
+                    <li><strong>边界条件：</strong>未选座位时提示"请先选择座位"；订单金额不满足最低消费时优惠券显示为禁用</li>
+                </ul>
+                <p><strong>使用套票</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击"使用套票"入口</li>
+                    <li><strong>执行中：</strong>底部滑出观演券选择弹窗，显示所有观演券（本场演出可用/非本场演出禁用/已使用禁用），每张显示票档、演出名称、价值、有效期</li>
+                    <li><strong>成功：</strong>选中观演券后匹配对应票档座位全额减免，价格重新计算</li>
+                    <li><strong>边界条件：</strong>未选座位时提示"请先选择座位"；非本场演出观演券标注"限「演出名」使用"；未选对应票档座位时标注"需选择X区座位才可使用"</li>
                 </ul>
                 <p><strong>确认选座</strong></p>
                 <ul>
                     <li><strong>触发：</strong>点击底部"确认选座"按钮</li>
                     <li><strong>执行中：</strong>校验选座数量，锁定座位</li>
-                    <li><strong>成功：</strong>携带演出名称/时间/场馆/座位数据跳转 order-confirm.html</li>
+                    <li><strong>成功：</strong>携带演出名称/时间/场馆/座位数据/观演券信息跳转 order-confirm.html</li>
                     <li><strong>边界条件：</strong>未选座位时按钮禁用</li>
                 </ul>`
             },
@@ -2242,9 +2254,10 @@ const devDocs = {
                             ['row', 'number', '是', '行号'],
                             ['col', 'number', '是', '列号'],
                             ['status', 'enum', '是', '状态：0-可选 1-已售 2-已选 3-VIP'],
-                            ['zone_id', 'number', '是', '票档区域ID'],
-                            ['zone_name', 'string', '是', '票档区域名称，如"VIP区""A区"'],
-                            ['price', 'number', '是', '座位票价（元）']
+                            ['tier', 'string', '是', '票档标识：vip/a/b/c'],
+                            ['tier_name', 'string', '是', '票档名称，如"VIP区""A区"'],
+                            ['price', 'number', '是', '座位票价（元）'],
+                            ['original_price', 'number', '否', '座位原价（元），早鸟票折扣前价格']
                         ]
                     },
                     {
@@ -2255,10 +2268,23 @@ const devDocs = {
                             ['original_amount', 'number', '是', '原价总额（元）'],
                             ['early_bird_discount', 'number', '否', '早鸟优惠金额（元）'],
                             ['coupon_discount', 'number', '否', '优惠券抵扣金额（元）'],
-                            ['points_deduction', 'number', '否', '积分抵扣金额（100积分=1元）'],
-                            ['balance_pay', 'number', '否', '余额支付金额（元）'],
-                            ['card_deduction', 'number', '否', '充值卡抵扣金额（元）'],
+                            ['package_deduction', 'number', '否', '套票观演券抵扣金额（元），多张可叠加'],
                             ['final_amount', 'number', '是', '最终支付金额（元）']
+                        ]
+                    },
+                    {
+                        title: '观演券字段',
+                        headers: ['字段名', '类型', '必填', '说明'],
+                        rows: [
+                            ['voucher_id', 'string', '是', '观演券唯一标识'],
+                            ['package_id', 'string', '是', '所属套票ID'],
+                            ['package_name', 'string', '是', '套票名称'],
+                            ['show_id', 'string', '是', '绑定演出ID'],
+                            ['tier', 'string', '是', '绑定票档：vip/a/b/c'],
+                            ['tier_name', 'string', '是', '票档名称'],
+                            ['amount', 'number', '是', '观演券价值（元）'],
+                            ['expire', 'string', '是', '有效期，格式YYYY-MM-DD'],
+                            ['used', 'boolean', '是', '是否已使用']
                         ]
                     }
                 ]
@@ -2340,38 +2366,67 @@ const devDocs = {
 
     'user-miniapp/order-confirm.html': {
         title: '确认订单页',
-        subtitle: '演出信息 + 已选座位 + 费用明细 + 支付',
+        subtitle: '演出信息 + 已选座位 + 费用明细 + 混合支付',
         sections: [
             {
                 title: '功能描述',
-                content: `<p><strong>核心功能：</strong>展示选座后的订单确认信息，包含演出详情、已选座位、费用明细、取票人信息和支付方式，支持确认支付。</p>
+                content: `<p><strong>核心功能：</strong>展示选座后的订单确认信息，包含演出详情、已选座位、费用明细、取票人信息和多种支付方式（微信支付/钱包/充值卡/积分），支持混合支付模式，各抵扣方式可同时启用，剩余不足部分自动用微信支付补足。</p>
                 <p><strong>业务说明：</strong></p>
                 <ul>
-                    <li><strong>前置条件：</strong>从选座页面跳转进入，携带演出信息和座位数据</li>
+                    <li><strong>前置条件：</strong>从选座页面跳转进入，携带演出信息、座位数据和观演券信息</li>
                     <li><strong>功能实现逻辑：</strong>
                         <ul>
                             <li>演出信息：展示演出封面、名称、时间、场馆、时长</li>
-                            <li>已选座位：列出每个座位的分区、排号、座号、单价</li>
-                            <li>费用明细：商品总价 - 票品折扣 - 会员折扣 = 应付金额</li>
-                            <li>取票人信息：姓名和手机号，电子票通过短信发送至该手机号</li>
-                            <li>支付方式：微信支付或支付宝单选，默认微信支付</li>
+                            <li>已选座位：列出每个座位的分区、排号、座号、单价，显示票档名称（tier字段）</li>
+                            <li>费用明细：商品总价 - 票品折扣 - 会员折扣 - 观演券抵扣 = 应付金额</li>
+                            <li>取票人信息：姓名、手机号、身份证号，电子票通过短信发送至该手机号</li>
+                            <li>支付方式：支持4种支付方式混合使用
+                                <ul>
+                                    <li>微信支付：始终显示，自动计算并补足其他方式抵扣后的剩余金额</li>
+                                    <li>钱包支付：可输入使用金额，支持"全部使用"按钮，可用余额不足时显示实际可用金额</li>
+                                    <li>充值卡支付：支持多选充值卡组合支付，显示每张卡的余额和卡号</li>
+                                    <li>积分抵扣：可输入使用积分，支持"全部使用"按钮，最多抵扣订单金额的10%（1积分=0.01元）</li>
+                                </ul>
+                            </li>
+                            <li>混合支付计算：应付金额依次扣除积分抵扣、充值卡抵扣、钱包支付，剩余金额由微信支付补足；若全部抵扣后金额为0，显示"已全额抵扣，无需微信支付"</li>
                         </ul>
                     </li>
-                    <li><strong>数据约束：</strong>取票人姓名不能为空；手机号需符合11位手机号格式；至少选择1个座位</li>
-                    <li><strong>能力边界：</strong>不支持修改已选座位（需返回选座页修改）；不支持部分退款</li>
+                    <li><strong>数据约束：</strong>取票人姓名不能为空；手机号需符合11位手机号格式；身份证号需符合18位格式；至少选择1个座位；积分抵扣上限为订单金额的10%</li>
+                    <li><strong>能力边界：</strong>不支持修改已选座位（需返回选座页修改）；不支持部分退款；充值卡不可充值</li>
                 </ul>`
             },
             {
                 title: '交互说明',
                 content: `<p><strong>切换支付方式</strong></p>
                 <ul>
-                    <li><strong>触发：</strong>点击微信支付或支付宝选项</li>
-                    <li><strong>成功：</strong>选中项显示勾选图标，未选中项显示空心圆</li>
+                    <li><strong>触发：</strong>点击钱包支付/充值卡支付/积分抵扣选项</li>
+                    <li><strong>执行中：</strong>选中项显示勾选图标，展开对应输入区域（钱包输入金额/充值卡列表/积分输入框）</li>
+                    <li><strong>成功：</strong>支付方式状态切换，应付金额实时重新计算</li>
+                    <li><strong>边界条件：</strong>微信支付始终选中不可取消，作为兜底支付方式</li>
+                </ul>
+                <p><strong>钱包支付输入</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>在钱包输入框输入金额，或点击"全部使用"按钮</li>
+                    <li><strong>执行中：</strong>输入金额自动限制不超过可用余额和剩余应付金额；点击"全部使用"自动填入最大可用金额</li>
+                    <li><strong>成功：</strong>显示抵扣金额，应付金额重新计算</li>
+                </ul>
+                <p><strong>充值卡选择</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>点击充值卡列表中的卡片</li>
+                    <li><strong>执行中：</strong>卡片切换选中/未选中状态，显示勾选标记</li>
+                    <li><strong>成功：</strong>显示充值卡合计抵扣金额，应付金额重新计算</li>
+                    <li><strong>边界条件：</strong>支持多张充值卡同时选中，抵扣金额不超过应付金额</li>
+                </ul>
+                <p><strong>积分抵扣输入</strong></p>
+                <ul>
+                    <li><strong>触发：</strong>在积分输入框输入积分数量，或点击"全部使用"按钮</li>
+                    <li><strong>执行中：</strong>输入积分自动限制不超过可用积分和订单金额10%上限；点击"全部使用"自动填入最大可用积分</li>
+                    <li><strong>成功：</strong>显示积分抵扣金额（积分×0.01），应付金额重新计算</li>
                 </ul>
                 <p><strong>确认支付</strong></p>
                 <ul>
                     <li><strong>触发：</strong>点击底部"确认支付"按钮</li>
-                    <li><strong>执行中：</strong>校验取票人姓名和手机号格式</li>
+                    <li><strong>执行中：</strong>校验取票人姓名、手机号、身份证号格式</li>
                     <li><strong>成功：</strong>提交订单，跳转订单列表页</li>
                     <li><strong>失败：</strong>校验失败时提示"请填写正确的取票人信息"</li>
                     <li><strong>边界条件：</strong>未选座位时按钮禁用；网络异常时提示"网络错误，请重试"</li>
@@ -2401,10 +2456,26 @@ const devDocs = {
                             ['original_amount', 'number', '是', '原价总额（元）'],
                             ['ticket_discount', 'number', '否', '票品折扣金额（元）'],
                             ['member_discount', 'number', '否', '会员折扣金额（元）'],
+                            ['voucher_deduction', 'number', '否', '观演券抵扣金额（元）'],
                             ['final_amount', 'number', '是', '最终支付金额（元）'],
                             ['contact_name', 'string', '是', '取票人姓名'],
                             ['contact_phone', 'string', '是', '取票人手机号'],
-                            ['payment_method', 'enum', '是', '支付方式：1-微信支付 2-支付宝']
+                            ['contact_idcard', 'string', '是', '取票人身份证号'],
+                            ['payment_methods', 'array', '是', '支付方式列表，包含type和amount']
+                        ]
+                    },
+                    {
+                        title: '支付方式字段',
+                        headers: ['字段名', '类型', '必填', '说明'],
+                        rows: [
+                            ['wechat_pay', 'number', '否', '微信支付金额（元），自动计算剩余金额'],
+                            ['wallet_pay', 'number', '否', '钱包支付金额（元），用户输入'],
+                            ['wallet_balance', 'number', '是', '钱包可用余额（元）'],
+                            ['recharge_cards', 'array', '否', '选中的充值卡列表'],
+                            ['card_deduction', 'number', '否', '充值卡合计抵扣金额（元）'],
+                            ['points_used', 'number', '否', '使用积分数量'],
+                            ['points_deduction', 'number', '否', '积分抵扣金额（元），积分×0.01'],
+                            ['points_max_percent', 'number', '是', '积分抵扣上限比例，默认0.10（10%）']
                         ]
                     }
                 ]
