@@ -715,6 +715,9 @@ body {
 </style>
 </head>
 <body>
+<script>
+function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location.href=decodeURIComponent(m[1]);else location.href=f}
+</script>
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
@@ -724,7 +727,7 @@ body {
 
   <!-- Top Navigation -->
   <div class="search-nav">
-    <div class="back-btn" onclick="window.location.href='home.html'">
+    <a class="back-btn" href="javascript:void(0)" onclick="goBack('home.html')">
       <i class="fas fa-chevron-left"></i>
     </div>
     <div class="search-input-wrap" id="searchWrap">

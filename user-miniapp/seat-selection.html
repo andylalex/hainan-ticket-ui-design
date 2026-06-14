@@ -1680,6 +1680,9 @@
 </style>
 </head>
 <body>
+<script>
+function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location.href=decodeURIComponent(m[1]);else location.href=f}
+</script>
 
 <div class="phone-frame" id="phoneFrame">
   <!-- Background glows -->

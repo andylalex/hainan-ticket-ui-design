@@ -223,10 +223,10 @@
 
 ## 步骤2：更新 changelogData
 
-打开 `index.html`，找到 `const changelogData = [` 数据数组。
+打开 `data.js`，找到 `const changelogData = [` 数据数组。
 
 **插入规则：**
-1. 获取今天的日期（格式 `YYYY-MM-DD`）
+1. 获取今天的日期（格式 `YYYY-MM-DD`），**使用北京时间（Asia/Shanghai）**，注意 sandbox 环境系统时区为 UTC，需手动换算或使用 `new Date().toLocaleString('zh-CN', {timeZone: 'Asia/Shanghai'})` 获取正确日期
 2. 检查数组中是否已有今天的日期条目
 3. 如果已有今天的条目，在其中追加 entries
 4. 如果没有，在数组最前面创建新条目
@@ -300,7 +300,7 @@
 
 ### 3.1 分析当前页面的 devDocs
 
-在 `index.html` 中找到对应页面的 `devDocs` 数据，检查：
+在 `data.js` 中找到对应页面的 `devDocs` 数据，检查：
 1. **一级标签**是否符合规范（PC管理后台按页面主Tab划分，小程序按功能模块划分，见第一部分第五章）
 2. **二级标签**是否为：功能描述、交互说明、核心字段（以及保留的"更新日志"）
 
@@ -410,6 +410,8 @@
 | user-miniapp/product-order.html | 商品订单 |
 | user-miniapp/shop.html | 商城 |
 | user-miniapp/theater-list.html | 剧院列表 |
+| user-miniapp/theater-detail.html | 剧院详情 |
+| user-miniapp/order-confirm.html | 确认订单 |
 | user-miniapp/my-packages.html | 我的券包 |
 | user-miniapp/physical-card-apply.html | 实体卡申请 |
 | user-miniapp/recharge-topup.html | 充值 |

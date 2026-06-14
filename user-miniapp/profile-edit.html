@@ -395,6 +395,9 @@
   </style>
 </head>
 <body>
+<script>
+function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location.href=decodeURIComponent(m[1]);else location.href=f}
+</script>
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
@@ -414,10 +417,8 @@
 
     <!-- Navigation Bar -->
     <div class="nav-bar">
-        <a class="back-btn" href="profile.html">
-            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-        </a>
-        <span class="title">个人资料</span>
+        <a class="back-btn" href="javascript:void(0)" onclick="goBack('profile.html')"><i class="fas fa-chevron-left"></i></a>
+        <span class="title">编辑资料</span>
         <button class="save-btn" onclick="saveProfile()">保存</button>
     </div>
 

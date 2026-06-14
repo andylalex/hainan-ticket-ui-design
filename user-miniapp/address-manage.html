@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>地址管理</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+a { text-decoration: none; color: inherit; }
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #05070A;
+  color: #1A1A2E;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+}
+.phone-frame {
+  width: 100%;
+  max-width: 375px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #F5F6FA;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* 状态栏 */
+.status-bar {
+  width: 100%;
+  height: 44px;
+  background: #F5F6FA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1A1A2E;
+}
+.status-bar::after {
+  content: '9:41';
+}
+
+/* 导航栏 */
+.nav-bar {
+  width: 100%;
+  height: 52px;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  position: sticky;
+  top: 44px;
+  z-index: 100;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.nav-bar .back-btn {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 50%;
+}
+.nav-bar .back-btn:active {
+  transform: translateY(-50%) scale(0.96);
+  background: rgba(0,0,0,0.04);
+}
+.nav-bar .back-btn svg {
+  width: 22px;
+  height: 22px;
+  color: #1A1A2E;
+}
+.nav-bar .title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1A1A2E;
+}
+
+/* 页面内容 */
+.page-content {
+  padding: 16px 16px 100px;
+}
+
+/* 地址卡片 */
+.address-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  padding: 18px 16px 14px;
+  margin-bottom: 12px;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: cardSlideIn 0.4s ease forwards;
+}
+.address-card:nth-child(1) { animation-delay: 0ms; }
+.address-card:nth-child(2) { animation-delay: 80ms; }
+.address-card:nth-child(3) { animation-delay: 160ms; }
+
+@keyframes cardSlideIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.card-header .name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1A1A2E;
+}
+.card-header .phone {
+  font-size: 14px;
+  color: #8E95A9;
+  font-weight: 400;
+}
+.default-tag {
+  display: inline-block;
+  background: #D4A853;
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.card-address {
+  font-size: 14px;
+  color: #1A1A2E;
+  line-height: 1.6;
+  margin-bottom: 14px;
+  word-break: break-all;
+}
+.card-address .addr-line1 {
+  display: block;
+}
+.card-address .addr-line2 {
+  display: block;
+  color: #8E95A9;
+  font-size: 13px;
+}
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+  border-top: 1px solid rgba(0,0,0,0.04);
+  padding-top: 12px;
+}
+.card-footer .action-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: #8E95A9;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+}
+.card-footer .action-btn:active {
+  transform: scale(0.96);
+}
+.card-footer .action-btn svg {
+  width: 16px;
+  height: 16px;
+  color: #8E95A9;
+}
+
+/* 空状态 */
+.empty-state {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 100px;
+}
+.empty-state svg {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 20px;
+}
+.empty-state .empty-title {
+  font-size: 16px;
+  color: #1A1A2E;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+.empty-state .empty-desc {
+  font-size: 14px;
+  color: #8E95A9;
+  margin-bottom: 28px;
+}
+.empty-state .add-btn-empty {
+  width: 160px;
+  height: 44px;
+  border-radius: 22px;
+  border: none;
+  background: linear-gradient(135deg, #FF6B4A, #FF8F6A);
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+}
+.empty-state .add-btn-empty:active {
+  transform: scale(0.96);
+}
+
+/* 底部固定按钮 */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 16px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  background: #FFFFFF;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.04);
+  z-index: 90;
+}
+.bottom-bar .add-btn {
+  width: 100%;
+  height: 50px;
+  border-radius: 25px;
+  border: none;
+  background: linear-gradient(135deg, #FF6B4A, #FF8F6A);
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.bottom-bar .add-btn:active {
+  transform: scale(0.96);
+}
+
+/* 弹窗遮罩 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 200;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 弹窗 */
+.modal-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border-radius: 20px 20px 0 0;
+  z-index: 201;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  max-height: 85vh;
+  overflow-y: auto;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.modal-sheet.active {
+  transform: translateY(0);
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 16px 12px;
+  position: sticky;
+  top: 0;
+  background: #FFFFFF;
+  z-index: 10;
+}
+.modal-header .modal-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1A1A2E;
+}
+.modal-header .close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #F5F6FA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.modal-header .close-btn:active {
+  transform: scale(0.96);
+}
+.modal-header .close-btn svg {
+  width: 18px;
+  height: 18px;
+  color: #8E95A9;
+}
+
+/* 表单 */
+.modal-body {
+  padding: 0 16px 20px;
+}
+.form-group {
+  margin-bottom: 16px;
+}
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1A1A2E;
+  margin-bottom: 8px;
+}
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  height: 48px;
+  border: 1.5px solid #E8E9EF;
+  border-radius: 12px;
+  padding: 0 14px;
+  font-size: 15px;
+  color: #1A1A2E;
+  background: #F9F9FB;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-group textarea {
+  height: 88px;
+  padding: 12px 14px;
+  resize: none;
+  line-height: 1.5;
+}
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #FF6B4A;
+  background: #FFFFFF;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #B8BCC8;
+}
+
+/* 地区选择器 */
+.region-selector {
+  width: 100%;
+  height: 48px;
+  border: 1.5px solid #E8E9EF;
+  border-radius: 12px;
+  padding: 0 14px;
+  font-size: 15px;
+  color: #1A1A2E;
+  background: #F9F9FB;
+  font-family: inherit;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238E95A9' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.region-selector:focus {
+  border-color: #FF6B4A;
+  background-color: #FFFFFF;
+}
+
+/* 默认地址开关 */
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+}
+.switch-row .switch-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1A1A2E;
+}
+.switch {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  cursor: pointer;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.switch .slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #E0E1E6;
+  border-radius: 14px;
+  transition: background 0.3s;
+}
+.switch .slider::before {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  left: 3px;
+  bottom: 3px;
+  background: #FFFFFF;
+  border-radius: 50%;
+  transition: transform 0.3s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.switch input:checked + .slider {
+  background: #FF6B4A;
+}
+.switch input:checked + .slider::before {
+  transform: translateX(20px);
+}
+
+/* 保存按钮 */
+.save-btn {
+  width: 100%;
+  height: 50px;
+  border-radius: 25px;
+  border: none;
+  background: linear-gradient(135deg, #FF6B4A, #FF8F6A);
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: 8px;
+}
+.save-btn:active {
+  transform: scale(0.96);
+}
+
+/* 删除确认弹窗 */
+.confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+.confirm-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+.confirm-dialog {
+  width: 280px;
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 28px 24px 20px;
+  text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.25s ease;
+}
+.confirm-overlay.active .confirm-dialog {
+  transform: scale(1);
+}
+.confirm-dialog .confirm-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1A1A2E;
+  margin-bottom: 10px;
+}
+.confirm-dialog .confirm-msg {
+  font-size: 14px;
+  color: #8E95A9;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+.confirm-dialog .confirm-actions {
+  display: flex;
+  gap: 12px;
+}
+.confirm-dialog .confirm-actions button {
+  flex: 1;
+  height: 42px;
+  border-radius: 21px;
+  border: none;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+}
+.confirm-dialog .cancel-btn {
+  background: #F5F6FA;
+  color: #1A1A2E;
+}
+.confirm-dialog .cancel-btn:active {
+  transform: scale(0.96);
+}
+.confirm-dialog .delete-confirm-btn {
+  background: linear-gradient(135deg, #FF6B4A, #FF8F6A);
+  color: #FFFFFF;
+}
+.confirm-dialog .delete-confirm-btn:active {
+  transform: scale(0.96);
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: rgba(0,0,0,0.75);
+  color: #FFFFFF;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 14px;
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s, transform 0.25s, visibility 0.25s;
+  pointer-events: none;
+}
+.toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+</style>
+</head>
+<body>
+<div class="phone-frame">
+
+<!-- 状态栏 -->
+<div class="status-bar"></div>
+
+<!-- 导航栏 -->
+<div class="nav-bar">
+  <button class="back-btn" onclick="goBack('profile.html')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+  </button>
+  <span class="title">地址管理</span>
+</div>
+
+<!-- 页面内容 -->
+<div class="page-content" id="pageContent">
+  <!-- 地址列表 -->
+  <div id="addressList">
+    <!-- 地址卡片1 -->
+    <div class="address-card" data-id="1">
+      <div class="card-header">
+        <div style="display:flex;align-items:center;">
+          <span class="name">张小雅</span>
+          <span class="default-tag">默认</span>
+        </div>
+        <span class="phone">138****6688</span>
+      </div>
+      <div class="card-address">
+        <span class="addr-line1">海南省海口市龙华区国贸路68号</span>
+        <span class="addr-line2">海南国际会展中心旁</span>
+      </div>
+      <div class="card-footer">
+        <button class="action-btn" onclick="openEditModal(1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+          编辑
+        </button>
+        <button class="action-btn" onclick="showDeleteConfirm(1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+          删除
+        </button>
+      </div>
+    </div>
+
+    <!-- 地址卡片2 -->
+    <div class="address-card" data-id="2">
+      <div class="card-header">
+        <div style="display:flex;align-items:center;">
+          <span class="name">陈明</span>
+        </div>
+        <span class="phone">139****8899</span>
+      </div>
+      <div class="card-address">
+        <span class="addr-line1">海南省三亚市天涯区三亚湾路158号</span>
+        <span class="addr-line2">三亚千古情景区旁</span>
+      </div>
+      <div class="card-footer">
+        <button class="action-btn" onclick="openEditModal(2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+          编辑
+        </button>
+        <button class="action-btn" onclick="showDeleteConfirm(2)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+          删除
+        </button>
+      </div>
+    </div>
+
+    <!-- 地址卡片3 -->
+    <div class="address-card" data-id="3">
+      <div class="card-header">
+        <div style="display:flex;align-items:center;">
+          <span class="name">王海</span>
+        </div>
+        <span class="phone">137****5566</span>
+      </div>
+      <div class="card-address">
+        <span class="addr-line1">海南省海口市美兰区海府路18号</span>
+        <span class="addr-line2">海南省歌舞剧院对面</span>
+      </div>
+      <div class="card-footer">
+        <button class="action-btn" onclick="openEditModal(3)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+          编辑
+        </button>
+        <button class="action-btn" onclick="showDeleteConfirm(3)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            <line x1="10" y1="11" x2="10" y2="17"></line>
+            <line x1="14" y1="11" x2="14" y2="17"></line>
+          </svg>
+          删除
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 空状态 -->
+  <div class="empty-state" id="emptyState">
+    <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="60" r="50" fill="#F0F1F5"/>
+      <rect x="32" y="42" width="56" height="40" rx="6" fill="#FFFFFF" stroke="#D4D6DE" stroke-width="1.5"/>
+      <path d="M40 58h40M40 66h28M40 74h16" stroke="#D4D6DE" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M60 28v14M52 34l8-6 8 6" stroke="#FF6B4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="88" cy="32" r="12" fill="#FF6B4A" opacity="0.12"/>
+      <path d="M84 32h8M88 28v8" stroke="#FF6B4A" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <div class="empty-title">暂无收货地址</div>
+    <div class="empty-desc">快去添加一个收货地址吧</div>
+    <button class="add-btn-empty" onclick="openAddModal()">添加地址</button>
+  </div>
+</div>
+
+<!-- 底部固定按钮 -->
+<div class="bottom-bar" id="bottomBar">
+  <button class="add-btn" onclick="openAddModal()">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+      <line x1="12" y1="5" x2="12" y2="19"></line>
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+    </svg>
+    新增地址
+  </button>
+</div>
+
+<!-- 弹窗遮罩 -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+
+<!-- 新增/编辑地址弹窗 -->
+<div class="modal-sheet" id="modalSheet">
+  <div class="modal-header">
+    <span class="modal-title" id="modalTitle">新增地址</span>
+    <button class="close-btn" onclick="closeModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label>收货人</label>
+      <input type="text" id="inputName" placeholder="请输入收货人姓名" maxlength="20">
+    </div>
+    <div class="form-group">
+      <label>手机号码</label>
+      <input type="tel" id="inputPhone" placeholder="请输入手机号码" maxlength="11">
+    </div>
+    <div class="form-group">
+      <label>所在地区</label>
+      <select class="region-selector" id="inputRegion">
+        <option value="海南省 海口市 龙华区">海南省 海口市 龙华区</option>
+        <option value="海南省 海口市 美兰区">海南省 海口市 美兰区</option>
+        <option value="海南省 海口市 琼山区">海南省 海口市 琼山区</option>
+        <option value="海南省 海口市 秀英区">海南省 海口市 秀英区</option>
+        <option value="海南省 三亚市 天涯区">海南省 三亚市 天涯区</option>
+        <option value="海南省 三亚市 吉阳区">海南省 三亚市 吉阳区</option>
+        <option value="海南省 三亚市 海棠区">海南省 三亚市 海棠区</option>
+        <option value="海南省 三亚市 崖州区">海南省 三亚市 崖州区</option>
+        <option value="海南省 儋州市">海南省 儋州市</option>
+        <option value="海南省 琼海市">海南省 琼海市</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>详细地址</label>
+      <textarea id="inputAddress" placeholder="请输入详细地址，如街道、门牌号、小区、楼栋/单元/房号等" maxlength="200"></textarea>
+    </div>
+    <div class="switch-row">
+      <span class="switch-label">设为默认地址</span>
+      <label class="switch">
+        <input type="checkbox" id="inputDefault">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <button class="save-btn" onclick="saveAddress()">保存地址</button>
+  </div>
+</div>
+
+<!-- 删除确认弹窗 -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-dialog">
+    <div class="confirm-title">确认删除</div>
+    <div class="confirm-msg">删除后无法恢复，确定要删除这个地址吗？</div>
+    <div class="confirm-actions">
+      <button class="cancel-btn" onclick="hideDeleteConfirm()">取消</button>
+      <button class="delete-confirm-btn" onclick="confirmDelete()">删除</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location.href=decodeURIComponent(m[1]);else location.href=f}
+
+// 地址数据
+var addresses = [
+  { id: 1, name: '张小雅', phone: '138****6688', region: '海南省 海口市 龙华区', address1: '国贸路68号', address2: '海南国际会展中心旁', isDefault: true },
+  { id: 2, name: '陈明', phone: '139****8899', region: '海南省 三亚市 天涯区', address1: '三亚湾路158号', address2: '三亚千古情景区旁', isDefault: false },
+  { id: 3, name: '王海', phone: '137****5566', region: '海南省 海口市 美兰区', address1: '海府路18号', address2: '海南省歌舞剧院对面', isDefault: false }
+];
+
+var editingId = null;
+var deletingId = null;
+
+// 渲染地址列表
+function renderAddresses() {
+  var listEl = document.getElementById('addressList');
+  var emptyEl = document.getElementById('emptyState');
+  var bottomBar = document.getElementById('bottomBar');
+
+  if (addresses.length === 0) {
+    listEl.style.display = 'none';
+    emptyEl.style.display = 'flex';
+    bottomBar.style.display = 'none';
+    return;
+  }
+
+  listEl.style.display = 'block';
+  emptyEl.style.display = 'none';
+  bottomBar.style.display = 'block';
+
+  var html = '';
+  for (var i = 0; i < addresses.length; i++) {
+    var addr = addresses[i];
+    html += '<div class="address-card" data-id="' + addr.id + '" style="animation-delay:' + (i * 80) + 'ms">';
+    html += '  <div class="card-header">';
+    html += '    <div style="display:flex;align-items:center;">';
+    html += '      <span class="name">' + addr.name + '</span>';
+    if (addr.isDefault) {
+      html += '      <span class="default-tag">默认</span>';
+    }
+    html += '    </div>';
+    html += '    <span class="phone">' + addr.phone + '</span>';
+    html += '  </div>';
+    html += '  <div class="card-address">';
+    html += '    <span class="addr-line1">' + addr.region + addr.address1 + '</span>';
+    html += '    <span class="addr-line2">' + addr.address2 + '</span>';
+    html += '  </div>';
+    html += '  <div class="card-footer">';
+    html += '    <button class="action-btn" onclick="openEditModal(' + addr.id + ')">';
+    html += '      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>';
+    html += '      编辑';
+    html += '    </button>';
+    html += '    <button class="action-btn" onclick="showDeleteConfirm(' + addr.id + ')">';
+    html += '      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>';
+    html += '      删除';
+    html += '    </button>';
+    html += '  </div>';
+    html += '</div>';
+  }
+  listEl.innerHTML = html;
+}
+
+// 打开新增弹窗
+function openAddModal() {
+  editingId = null;
+  document.getElementById('modalTitle').textContent = '新增地址';
+  document.getElementById('inputName').value = '';
+  document.getElementById('inputPhone').value = '';
+  document.getElementById('inputRegion').selectedIndex = 0;
+  document.getElementById('inputAddress').value = '';
+  document.getElementById('inputDefault').checked = false;
+  showModal();
+}
+
+// 打开编辑弹窗
+function openEditModal(id) {
+  var addr = null;
+  for (var i = 0; i < addresses.length; i++) {
+    if (addresses[i].id === id) {
+      addr = addresses[i];
+      break;
+    }
+  }
+  if (!addr) return;
+
+  editingId = id;
+  document.getElementById('modalTitle').textContent = '编辑地址';
+  document.getElementById('inputName').value = addr.name;
+  document.getElementById('inputPhone').value = addr.phone;
+  document.getElementById('inputAddress').value = addr.address1 + ' ' + addr.address2;
+
+  // 设置地区选择器
+  var regionSelect = document.getElementById('inputRegion');
+  for (var j = 0; j < regionSelect.options.length; j++) {
+    if (regionSelect.options[j].value === addr.region) {
+      regionSelect.selectedIndex = j;
+      break;
+    }
+  }
+
+  document.getElementById('inputDefault').checked = addr.isDefault;
+  showModal();
+}
+
+// 显示弹窗
+function showModal() {
+  document.getElementById('modalOverlay').classList.add('active');
+  document.getElementById('modalSheet').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+// 关闭弹窗
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('active');
+  document.getElementById('modalSheet').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// 保存地址
+function saveAddress() {
+  var name = document.getElementById('inputName').value.trim();
+  var phone = document.getElementById('inputPhone').value.trim();
+  var region = document.getElementById('inputRegion').value;
+  var address = document.getElementById('inputAddress').value.trim();
+  var isDefault = document.getElementById('inputDefault').checked;
+
+  if (!name) {
+    showToast('请输入收货人姓名');
+    return;
+  }
+  if (!phone || phone.length < 11) {
+    showToast('请输入正确的手机号码');
+    return;
+  }
+  if (!address) {
+    showToast('请输入详细地址');
+    return;
+  }
+
+  if (isDefault) {
+    for (var i = 0; i < addresses.length; i++) {
+      addresses[i].isDefault = false;
+    }
+  }
+
+  if (editingId !== null) {
+    // 编辑模式
+    for (var i = 0; i < addresses.length; i++) {
+      if (addresses[i].id === editingId) {
+        addresses[i].name = name;
+        addresses[i].phone = phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2');
+        addresses[i].region = region;
+        addresses[i].address1 = address;
+        addresses[i].address2 = '';
+        addresses[i].isDefault = isDefault;
+        break;
+      }
+    }
+    showToast('地址已更新');
+  } else {
+    // 新增模式
+    var newId = addresses.length > 0 ? Math.max.apply(null, addresses.map(function(a){ return a.id; })) + 1 : 1;
+    addresses.push({
+      id: newId,
+      name: name,
+      phone: phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2'),
+      region: region,
+      address1: address,
+      address2: '',
+      isDefault: isDefault || addresses.length === 0
+    });
+    showToast('地址已添加');
+  }
+
+  closeModal();
+  renderAddresses();
+}
+
+// 显示删除确认
+function showDeleteConfirm(id) {
+  deletingId = id;
+  document.getElementById('confirmOverlay').classList.add('active');
+}
+
+// 隐藏删除确认
+function hideDeleteConfirm() {
+  document.getElementById('confirmOverlay').classList.remove('active');
+  deletingId = null;
+}
+
+// 确认删除
+function confirmDelete() {
+  if (deletingId === null) return;
+
+  var wasDefault = false;
+  var newAddresses = [];
+  for (var i = 0; i < addresses.length; i++) {
+    if (addresses[i].id !== deletingId) {
+      newAddresses.push(addresses[i]);
+    } else {
+      wasDefault = addresses[i].isDefault;
+    }
+  }
+
+  // 如果删除的是默认地址，将第一个设为默认
+  if (wasDefault && newAddresses.length > 0) {
+    newAddresses[0].isDefault = true;
+  }
+
+  addresses = newAddresses;
+  hideDeleteConfirm();
+  renderAddresses();
+  showToast('地址已删除');
+}
+
+// Toast 提示
+function showToast(msg) {
+  var toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(function() {
+    toast.classList.remove('show');
+  }, 1800);
+}
+</script>
+</div>
+</body>
+</html>

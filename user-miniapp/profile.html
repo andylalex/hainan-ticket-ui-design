@@ -13,6 +13,7 @@
       padding: 0;
       box-sizing: border-box;
     }
+    a { text-decoration: none; color: inherit; }
 
     body {
       background: #F5F6FA;
@@ -462,7 +463,7 @@
 
     .order-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(4, 1fr);
     }
 
     .order-item {
@@ -815,13 +816,13 @@
   <div class="user-card">
     <div class="user-card-top">
       <span class="page-title">个人中心</span>
-      <div class="settings-btn" style="position:relative;cursor:pointer;" onclick="location.href='message-service.html'">
+      <div class="settings-btn" style="position:relative;cursor:pointer;" onclick="location.href='message-service.html?from=profile.html'">
         <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
         <span class="notification-dot"></span>
       </div>
     </div>
 
-    <a href="profile-edit.html" style="text-decoration:none;color:inherit;">
+    <a href="profile-edit.html?from=profile.html" style="text-decoration:none;color:inherit;">
     <div class="user-info">
       <div class="avatar-wrapper">
         <div class="avatar-ring">
@@ -842,7 +843,7 @@
           <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
           编辑资料
         </div>
-        <div class="edit-btn agent-entry" onclick="location.href='agent-miniapp.html'" style="background:rgba(255,107,74,0.2);border-color:rgba(255,107,74,0.4);color:#FF6B4A;">
+        <div class="edit-btn agent-entry" onclick="location.href='agent-miniapp.html?from=profile.html'" style="background:rgba(255,107,74,0.2);border-color:rgba(255,107,74,0.4);color:#FF6B4A;">
           <svg viewBox="0 0 24 24" style="fill:#FF6B4A;"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
           代理中心
         </div>
@@ -861,33 +862,33 @@
   <!-- Asset Overview -->
   <div class="asset-section">
     <div class="asset-card">
-      <a class="asset-item" href="wallet.html" style="text-decoration:none;color:inherit;">
+      <a class="asset-item" href="wallet.html?from=profile.html" style="text-decoration:none;color:inherit;">
         <div class="asset-icon wallet">
           <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
         </div>
         <div class="asset-value"><span class="unit">&yen;</span>368</div>
         <div class="asset-label">钱包余额</div>
       </a>
-      <a class="asset-item" href="points.html" style="text-decoration:none;color:inherit;">
+      <a class="asset-item" href="points.html?from=profile.html" style="text-decoration:none;color:inherit;">
         <div class="asset-icon points">
           <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
         </div>
         <div class="asset-value">2,680</div>
         <div class="asset-label">积分</div>
       </a>
-      <a class="asset-item" href="coupons.html" style="text-decoration:none;color:inherit;">
+      <a class="asset-item" href="coupons.html?from=profile.html" style="text-decoration:none;color:inherit;">
         <div class="asset-icon coupon">
           <svg viewBox="0 0 24 24"><path d="M20 12c0-1.1.9-2 2-2V6c0-1.1-.9-2-2-2H4c-1.1 0-1.99.9-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c-1.1 0-2-.9-2-2zm-4.42 4.8L12 14.5l-3.58 2.3 1.08-4.12-3.29-2.69 4.24-.25L12 5.8l1.54 3.95 4.24.25-3.29 2.69 1.09 4.11z"/></svg>
         </div>
         <div class="asset-value">3<span class="unit">张</span></div>
         <div class="asset-label">优惠券</div>
       </a>
-      <a class="asset-item" href="my-packages.html" style="text-decoration:none;color:inherit;">
+      <a class="asset-item" href="my-packages.html?from=profile.html" style="text-decoration:none;color:inherit;">
         <div class="asset-icon ticket">
           <svg viewBox="0 0 24 24"><path d="M22 10V6c0-1.11-.9-2-2-2H4c-1.1 0-1.99.89-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c-1.1 0-2-.9-2-2s.9-2 2-2zm-2-1.46c-1.19.69-2 1.99-2 3.46s.81 2.77 2 3.46V18H4v-2.54c1.19-.69 2-1.99 2-3.46s-.81-2.77-2-3.46V6h16v2.54zM11 15h2v2h-2zm0-4h2v2h-2zm0-4h2v2h-2z"/></svg>
         </div>
         <div class="asset-value">2<span class="unit">张</span></div>
-        <div class="asset-label">演出券</div>
+        <div class="asset-label">套票</div>
       </a>
     </div>
   </div>
@@ -896,40 +897,34 @@
   <div class="order-section">
     <div class="section-header">
       <span class="title">我的订单</span>
-      <a class="more" href="order-ticket.html" style="text-decoration:none;color:inherit;">
+      <a class="more" href="order-ticket.html?from=profile.html" style="text-decoration:none;color:inherit;">
         全部订单
         <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
       </a>
     </div>
     <div class="order-card">
       <div class="order-grid">
-        <a class="order-item" href="order-ticket.html" style="text-decoration:none;color:inherit;">
+        <a class="order-item" href="order-ticket.html?from=profile.html" style="text-decoration:none;color:inherit;">
           <div class="order-icon">
             <svg viewBox="0 0 24 24"><path d="M18 17H6v-2h12v2zm0-4H6v-2h12v2zm0-4H6V7h12v2zM3 22l1.5-1.5L6 22l1.5-1.5L9 22l1.5-1.5L12 22l1.5-1.5L15 22l1.5-1.5L18 22l1.5-1.5L21 22V2l-1.5 1.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2 7.5 3.5 6 2 4.5 3.5 3 2v20z"/></svg>
             <span class="badge">2</span>
           </div>
           <span class="order-label">待支付</span>
         </a>
-        <a class="order-item" href="order-ticket.html" style="text-decoration:none;color:inherit;">
+        <a class="order-item" href="order-ticket.html?from=profile.html" style="text-decoration:none;color:inherit;">
           <div class="order-icon">
             <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
             <span class="badge">1</span>
           </div>
           <span class="order-label">待核销</span>
         </a>
-        <div class="order-item" onclick="location.href='order-ticket.html'" style="cursor:pointer;">
+        <div class="order-item" onclick="location.href='order-ticket.html?from=profile.html'" style="cursor:pointer;">
           <div class="order-icon">
             <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
           </div>
           <span class="order-label">已完成</span>
         </div>
-        <div class="order-item" onclick="location.href='order-ticket.html'" style="cursor:pointer;">
-          <div class="order-icon">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-          </div>
-          <span class="order-label">已退款</span>
-        </div>
-        <a class="order-item" href="product-order.html" style="text-decoration:none;color:inherit;">
+        <a class="order-item" href="product-order.html?from=profile.html" style="text-decoration:none;color:inherit;">
           <div class="order-icon" style="background: linear-gradient(135deg, #00C9A7, #00B894);">
             <svg viewBox="0 0 24 24" fill="white"><path d="M18 6h-2c0-2.21-1.79-4-4-4S8 3.79 8 6H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm6 16H6V8h2v2c0 .55.45 1 1 1s1-.45 1-1V8h4v2c0 .55.45 1 1 1s1-.45 1-1V8h2v12z"/></svg>
           </div>
@@ -946,7 +941,7 @@
     </div>
     <div class="tools-card">
       <!-- 电子票夹 -->
-      <a class="tool-item" href="order-ticket.html" style="text-decoration:none;color:inherit;">
+      <a class="tool-item" href="order-ticket.html?from=profile.html&view=ticket" style="text-decoration:none;color:inherit;">
         <div class="tool-icon orange">
           <svg viewBox="0 0 24 24"><path d="M22 10V6c0-1.11-.9-2-2-2H4c-1.1 0-1.99.89-1.99 2v4c1.1 0 1.99.9 1.99 2s-.89 2-2 2v4c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-4c-1.1 0-2-.9-2-2s.9-2 2-2zm-2-1.46c-1.19.69-2 1.99-2 3.46s.81 2.77 2 3.46V18H4v-2.54c1.19-.69 2-1.99 2-3.46s-.81-2.77-2-3.46V6h16v2.54zM11 15h2v2h-2zm0-4h2v2h-2zm0-4h2v2h-2z"/></svg>
         </div>
@@ -959,7 +954,7 @@
       </a>
 
       <!-- 实名认证 -->
-      <a class="tool-item" href="real-name-auth.html" style="text-decoration:none;color:inherit;">
+      <a class="tool-item" href="real-name-auth.html?from=profile.html" style="text-decoration:none;color:inherit;">
         <div class="tool-icon green">
           <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
         </div>
@@ -972,7 +967,7 @@
       </a>
 
       <!-- 充值卡绑定 -->
-      <a class="tool-item" href="recharge-card-bind.html" style="text-decoration:none;color:inherit;">
+      <a class="tool-item" href="recharge-card-bind.html?from=profile.html" style="text-decoration:none;color:inherit;">
         <div class="tool-icon blue">
           <svg viewBox="0 0 24 24"><path d="M2.5 4v3h5v12h3V7h12V4h-20zm5.5 5h12v3H8V9zm0 4h12v3H8v-3z"/></svg>
         </div>
@@ -984,7 +979,7 @@
       </a>
 
       <!-- 隐私设置 -->
-      <a class="tool-item" href="privacy-settings.html" style="text-decoration:none;color:inherit;">
+      <a class="tool-item" href="privacy-settings.html?from=profile.html" style="text-decoration:none;color:inherit;">
         <div class="tool-icon pink">
           <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
         </div>
@@ -996,7 +991,7 @@
       </a>
 
       <!-- 偏好设置 -->
-      <a class="tool-item" href="preference-settings.html" style="text-decoration:none;color:inherit;">
+      <a class="tool-item" href="preference-settings.html?from=profile.html" style="text-decoration:none;color:inherit;">
         <div class="tool-icon purple">
           <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
         </div>
@@ -1008,7 +1003,7 @@
       </a>
 
       <!-- 地址管理 -->
-      <a class="tool-item" href="address-manage.html" style="text-decoration:none;color:inherit;">
+      <a class="tool-item" href="address-manage.html?from=profile.html" style="text-decoration:none;color:inherit;">
         <div class="tool-icon teal">
           <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
         </div>
@@ -1055,23 +1050,23 @@
 
   <!-- Bottom TabBar -->
   <div class="tab-bar">
-    <a class="tab-item" href="home.html">
+    <a class="tab-item" href="home.html?from=profile.html">
       <i class="fas fa-home"></i>
       <span>首页</span>
     </a>
-    <a class="tab-item" href="show-list-detail.html">
+    <a class="tab-item" href="show-list-detail.html?from=profile.html">
       <i class="fas fa-theater-masks"></i>
       <span>演出</span>
     </a>
-    <a class="tab-item" href="shop.html">
+    <a class="tab-item" href="shop.html?from=profile.html">
       <i class="fas fa-shopping-bag"></i>
       <span>商城</span>
     </a>
-    <a class="tab-item" href="member-center.html">
+    <a class="tab-item" href="member-center.html?from=profile.html">
       <i class="fas fa-crown"></i>
       <span>会员</span>
     </a>
-    <a class="tab-item active" href="profile.html">
+    <a class="tab-item active" href="profile.html?from=profile.html">
       <i class="fas fa-user"></i>
       <span>我的</span>
     </a>

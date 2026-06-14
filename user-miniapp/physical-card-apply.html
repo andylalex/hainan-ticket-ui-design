@@ -623,12 +623,15 @@
   </style>
 </head>
 <body>
+<script>
+function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location.href=decodeURIComponent(m[1]);else location.href=f}
+</script>
 
 <div class="page">
   <!-- Top Nav -->
   <div class="top-nav">
-    <a class="back-btn" href="member-center.html"><i class="fas fa-chevron-left"></i></a>
-    <span class="nav-title">申请实体卡</span>
+    <a class="back-btn" href="javascript:void(0)" onclick="goBack('member-center.html')"><i class="fas fa-chevron-left"></i></a>
+    >申请实体卡</span>
   </div>
 
   <!-- Current Level Banner -->

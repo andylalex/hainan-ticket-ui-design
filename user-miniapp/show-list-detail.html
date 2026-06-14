@@ -1293,6 +1293,9 @@ body {
 </style>
 </head>
 <body>
+<script>
+function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location.href=decodeURIComponent(m[1]);else location.href=f}
+</script>
 
   <!-- Toast -->
   <div class="toast" id="toast"></div>
@@ -1304,6 +1307,7 @@ body {
     <div class="page list-page active" id="listPage">
       <!-- Top Navigation -->
       <div class="top-nav">
+        <a class="back-btn" href="javascript:void(0)" onclick="goBack('home.html')"><i class="fas fa-chevron-left"></i></a>
         <div class="title">演出</div>
         <div class="search-btn" onclick="showToast('搜索演出')">
           <i class="fas fa-search"></i>

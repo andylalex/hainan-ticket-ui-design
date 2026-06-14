@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>海南演艺票务系统 - 交易记录</title>
+  <title>海南演艺票务系统 - 钱包交易记录</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
@@ -30,12 +30,13 @@
     /* ========== Top Nav ========== */
     .top-nav {
       height: 44px;
-      background: linear-gradient(135deg, #0A1628 0%, #132240 100%);
+      background: #FFFFFF;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       padding: 0 16px;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
     }
 
     .top-nav .back-btn {
@@ -43,7 +44,7 @@
       left: 16px;
       top: 50%;
       transform: translateY(-50%);
-      color: #fff;
+      color: #1A1A2E;
       font-size: 18px;
       cursor: pointer;
       width: 32px;
@@ -52,12 +53,11 @@
       align-items: center;
       justify-content: center;
       border-radius: 50%;
-      transition: background 0.2s;
       text-decoration: none;
     }
 
-    .top-nav .back-btn:hover { background: rgba(255,255,255,0.1); }
-    .top-nav .nav-title { color: #fff; font-size: 17px; font-weight: 500; }
+    .top-nav .back-btn:active { background: rgba(0,0,0,0.06); }
+    .top-nav .nav-title { color: #1A1A2E; font-size: 17px; font-weight: 500; }
 
     /* ========== Filter Tabs ========== */
     .filter-tabs {
@@ -215,41 +215,42 @@
   </style>
 </head>
 <body>
+<script>
+function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location.href=decodeURIComponent(m[1]);else location.href=f}
+</script>
 
 <div class="page">
 
   <!-- Top Nav -->
   <div class="top-nav">
-    <a class="back-btn" href="wallet.html"><i class="fas fa-chevron-left"></i></a>
-    <span class="nav-title">交易记录</span>
+    <a class="back-btn" href="javascript:void(0)" onclick="goBack('wallet.html')"><i class="fas fa-chevron-left"></i></a>
+    <span class="nav-title">钱包交易记录</span>
   </div>
 
   <!-- Filter Tabs -->
   <div class="filter-tabs">
-    <button class="filter-tab active" onclick="switchTab(this)">全部</button>
-    <button class="filter-tab" onclick="switchTab(this)">本月</button>
-    <button class="filter-tab" onclick="switchTab(this)">近三月</button>
-    <button class="filter-tab" onclick="switchTab(this)">近半年</button>
+    <button class="filter-tab active" onclick="switchTab(this, 'account')">账户记录</button>
+    <button class="filter-tab" onclick="switchTab(this, 'card')">充值卡记录</button>
   </div>
 
   <!-- Summary -->
   <div class="summary-bar">
     <div class="summary-item">
       <div class="label">累计收入</div>
-      <div class="value income">+3,500.00</div>
+      <div class="value income">+1,880.00</div>
     </div>
     <div class="summary-item">
       <div class="label">累计支出</div>
-      <div class="value expense">-2,220.00</div>
+      <div class="value expense">-920.00</div>
     </div>
     <div class="summary-item">
       <div class="label">当前余额</div>
-      <div class="value" style="color:#0A1628;">1,280.00</div>
+      <div class="value" style="color:#0A1628;">2,000.00</div>
     </div>
   </div>
 
   <!-- Transaction List -->
-  <div class="tx-list">
+  <div class="tx-list" id="accountList">
 
     <!-- 2026年4月 -->
     <div class="tx-date-group">
@@ -263,7 +264,7 @@
         </div>
         <div class="tx-right">
           <div class="tx-amount positive">+200.00</div>
-          <div class="tx-balance">余额 1,280.00</div>
+          <div class="tx-balance">余额 2,000.00</div>
         </div>
       </div>
 
@@ -275,7 +276,7 @@
         </div>
         <div class="tx-right">
           <div class="tx-amount negative">-380.00</div>
-          <div class="tx-balance">余额 1,080.00</div>
+          <div class="tx-balance">余额 1,800.00</div>
         </div>
       </div>
 
@@ -287,67 +288,7 @@
         </div>
         <div class="tx-right">
           <div class="tx-amount positive">+280.00</div>
-          <div class="tx-balance">余额 1,460.00</div>
-        </div>
-      </div>
-
-      <div class="tx-item">
-        <div class="tx-icon income"><i class="fas fa-plus"></i></div>
-        <div class="tx-info">
-          <div class="tx-title">账户充值</div>
-          <div class="tx-time">2026-04-20 09:15</div>
-        </div>
-        <div class="tx-right">
-          <div class="tx-amount positive">+500.00</div>
-          <div class="tx-balance">余额 1,180.00</div>
-        </div>
-      </div>
-
-      <div class="tx-item">
-        <div class="tx-icon expense"><i class="fas fa-shopping-cart"></i></div>
-        <div class="tx-info">
-          <div class="tx-title">购买《椰风海韵》演出票</div>
-          <div class="tx-time">2026-04-18 20:45</div>
-        </div>
-        <div class="tx-right">
-          <div class="tx-amount negative">-180.00</div>
-          <div class="tx-balance">余额 680.00</div>
-        </div>
-      </div>
-
-      <div class="tx-item">
-        <div class="tx-icon withdraw"><i class="fas fa-arrow-up"></i></div>
-        <div class="tx-info">
-          <div class="tx-title">提现到银行卡</div>
-          <div class="tx-time">2026-04-15 14:30</div>
-        </div>
-        <div class="tx-right">
-          <div class="tx-amount negative">-500.00</div>
-          <div class="tx-balance">余额 860.00</div>
-        </div>
-      </div>
-
-      <div class="tx-item">
-        <div class="tx-icon expense"><i class="fas fa-shopping-cart"></i></div>
-        <div class="tx-info">
-          <div class="tx-title">购买《海南印象》演出票</div>
-          <div class="tx-time">2026-04-12 16:12</div>
-        </div>
-        <div class="tx-right">
-          <div class="tx-amount negative">-220.00</div>
-          <div class="tx-balance">余额 1,360.00</div>
-        </div>
-      </div>
-
-      <div class="tx-item">
-        <div class="tx-icon income"><i class="fas fa-plus"></i></div>
-        <div class="tx-info">
-          <div class="tx-title">账户充值</div>
-          <div class="tx-time">2026-04-10 11:00</div>
-        </div>
-        <div class="tx-right">
-          <div class="tx-amount positive">+100.00</div>
-          <div class="tx-balance">余额 1,580.00</div>
+          <div class="tx-balance">余额 2,460.00</div>
         </div>
       </div>
 
@@ -359,19 +300,7 @@
         </div>
         <div class="tx-right">
           <div class="tx-amount positive">+50.00</div>
-          <div class="tx-balance">余额 1,480.00</div>
-        </div>
-      </div>
-
-      <div class="tx-item">
-        <div class="tx-icon expense"><i class="fas fa-shopping-cart"></i></div>
-        <div class="tx-info">
-          <div class="tx-title">购买《南海奇缘》演出票</div>
-          <div class="tx-time">2026-04-05 18:33</div>
-        </div>
-        <div class="tx-right">
-          <div class="tx-amount negative">-150.00</div>
-          <div class="tx-balance">余额 1,430.00</div>
+          <div class="tx-balance">余额 1,780.00</div>
         </div>
       </div>
     </div>
@@ -388,7 +317,7 @@
         </div>
         <div class="tx-right">
           <div class="tx-amount positive">+500.00</div>
-          <div class="tx-balance">余额 1,580.00</div>
+          <div class="tx-balance">余额 1,730.00</div>
         </div>
       </div>
 
@@ -400,43 +329,7 @@
         </div>
         <div class="tx-right">
           <div class="tx-amount negative">-280.00</div>
-          <div class="tx-balance">余额 1,080.00</div>
-        </div>
-      </div>
-
-      <div class="tx-item">
-        <div class="tx-icon refund"><i class="fas fa-undo"></i></div>
-        <div class="tx-info">
-          <div class="tx-title">订单退款 - 《椰风海韵》</div>
-          <div class="tx-time">2026-03-18 11:20</div>
-        </div>
-        <div class="tx-right">
-          <div class="tx-amount positive">+180.00</div>
-          <div class="tx-balance">余额 1,360.00</div>
-        </div>
-      </div>
-
-      <div class="tx-item">
-        <div class="tx-icon withdraw"><i class="fas fa-arrow-up"></i></div>
-        <div class="tx-info">
-          <div class="tx-title">提现到银行卡</div>
-          <div class="tx-time">2026-03-12 15:00</div>
-        </div>
-        <div class="tx-right">
-          <div class="tx-amount negative">-300.00</div>
-          <div class="tx-balance">余额 1,180.00</div>
-        </div>
-      </div>
-
-      <div class="tx-item">
-        <div class="tx-icon income"><i class="fas fa-plus"></i></div>
-        <div class="tx-info">
-          <div class="tx-title">账户充值</div>
-          <div class="tx-time">2026-03-05 09:30</div>
-        </div>
-        <div class="tx-right">
-          <div class="tx-amount positive">+200.00</div>
-          <div class="tx-balance">余额 1,480.00</div>
+          <div class="tx-balance">余额 1,230.00</div>
         </div>
       </div>
     </div>
@@ -453,7 +346,7 @@
         </div>
         <div class="tx-right">
           <div class="tx-amount positive">+500.00</div>
-          <div class="tx-balance">余额 1,280.00</div>
+          <div class="tx-balance">余额 1,510.00</div>
         </div>
       </div>
 
@@ -465,7 +358,7 @@
         </div>
         <div class="tx-right">
           <div class="tx-amount negative">-260.00</div>
-          <div class="tx-balance">余额 780.00</div>
+          <div class="tx-balance">余额 1,010.00</div>
         </div>
       </div>
 
@@ -477,19 +370,41 @@
         </div>
         <div class="tx-right">
           <div class="tx-amount positive">+100.00</div>
-          <div class="tx-balance">余额 1,040.00</div>
+          <div class="tx-balance">余额 1,270.00</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Card Transaction List -->
+  <div class="tx-list" id="cardList" style="display:none;">
+
+    <!-- 2026年4月 -->
+    <div class="tx-date-group">
+      <div class="tx-date-label">2026年4月</div>
+
+      <div class="tx-item">
+        <div class="tx-icon expense" style="background:#FFF8E7;color:#D4A853;"><i class="fas fa-credit-card"></i></div>
+        <div class="tx-info">
+          <div class="tx-title">充值卡消费 - ****9912</div>
+          <div class="tx-time">2026-04-24 16:45</div>
+        </div>
+        <div class="tx-right">
+          <div class="tx-amount negative">-280.00</div>
+          <div class="tx-balance">余额 2,180.00</div>
         </div>
       </div>
 
       <div class="tx-item">
-        <div class="tx-icon expense"><i class="fas fa-shopping-cart"></i></div>
+        <div class="tx-icon income" style="background:#FFF8E7;color:#D4A853;"><i class="fas fa-credit-card"></i></div>
         <div class="tx-info">
-          <div class="tx-title">购买《天涯明月刀》演出票</div>
-          <div class="tx-time">2026-02-05 19:50</div>
+          <div class="tx-title">充值卡充值 - ****6688</div>
+          <div class="tx-time">2026-04-22 14:20</div>
         </div>
         <div class="tx-right">
-          <div class="tx-amount negative">-280.00</div>
-          <div class="tx-balance">余额 940.00</div>
+          <div class="tx-amount positive">+200.00</div>
+          <div class="tx-balance">余额 2,180.00</div>
         </div>
       </div>
     </div>
@@ -499,9 +414,11 @@
 </div>
 
 <script>
-  function switchTab(el) {
+  function switchTab(el, type) {
     document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
     el.classList.add('active');
+    document.getElementById('accountList').style.display = type === 'account' ? 'block' : 'none';
+    document.getElementById('cardList').style.display = type === 'card' ? 'block' : 'none';
   }
 </script>
 

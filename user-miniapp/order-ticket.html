@@ -3,758 +3,1016 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>海南演艺票务系统 - 订单 & 电子票</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>我的订单 · 电子票夹</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  /* ==================== Reset & Base ==================== */
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #E8ECF1;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding: 20px 0;
-  }
+/* ========== Reset & Base ========== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+a { text-decoration: none; color: inherit; }
+body {
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #F5F6FA;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  color: #1A1A2E;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
 
-  /* ==================== Phone Frame ==================== */
+/* ========== Phone Frame ========== */
+.phone-frame {
+  width: 100%;
+  max-width: 375px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #F5F6FA;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20px;
+}
+
+/* ========== Status Bar ========== */
+.status-bar {
+  height: 44px;
+  background: #F5F6FA;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  color: #1A1A2E;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.status-bar .time { font-size: 14px; font-weight: 700; }
+.status-bar .icons { display: flex; gap: 6px; align-items: center; }
+.status-bar .icons svg { width: 16px; height: 16px; fill: #1A1A2E; }
+
+/* ========== Navigation Bar ========== */
+.nav-bar {
+  height: 52px;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  position: relative;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.nav-bar .back-btn {
+  position: absolute;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #1A1A2E;
+  font-size: 14px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: inherit;
+  padding: 8px 4px;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-bar .back-btn:active { opacity: 0.5; }
+.nav-bar .back-btn svg { width: 22px; height: 22px; fill: none; stroke: #1A1A2E; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.nav-bar .title {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #1A1A2E;
+}
+
+/* ========== View Switcher ========== */
+.view-switcher {
+  display: flex;
+  position: relative;
+  background: #FFFFFF;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.view-switcher .switch-track {
+  display: flex;
+  position: relative;
+  width: 100%;
+}
+.view-switcher .switch-btn {
+  flex: 1;
+  padding: 14px 0 12px;
+  border: none;
+  background: transparent;
+  color: #8E95A9;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+  transition: color 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.view-switcher .switch-btn:active { opacity: 0.7; }
+.view-switcher .switch-btn.active { color: #FF6B4A; font-weight: 600; }
+.view-switcher .switch-indicator {
+  position: absolute;
+  bottom: 0;
+  height: 3px;
+  width: calc(50% - 0px);
+  border-radius: 3px 3px 0 0;
+  background: #FF6B4A;
+  z-index: 1;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: translateX(0);
+}
+.view-switcher .switch-indicator.right {
+  transform: translateX(100%);
+}
+
+/* ========== Page Container ========== */
+.page {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+}
+.page.active { display: flex; }
+
+/* ========== Order Tabs ========== */
+.order-tabs-wrap {
+  position: relative;
+  flex-shrink: 0;
+  background: #FFFFFF;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.order-tabs {
+  display: flex;
+  padding: 0 12px;
+  position: relative;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.order-tabs::-webkit-scrollbar { display: none; }
+.order-tabs .tab {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 14px 12px;
+  font-size: 13px;
+  color: #5A607A;
+  cursor: pointer;
+  position: relative;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-weight: 500;
+  transition: color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.order-tabs .tab:active { opacity: 0.7; }
+.order-tabs .tab.active { color: #FF6B4A; font-weight: 600; }
+.order-tabs .tab .badge {
+  min-width: 18px;
+  height: 18px;
+  background: #D4A853;
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  line-height: 1;
+}
+.order-tabs .tab-indicator {
+  position: absolute;
+  bottom: 0;
+  height: 3px;
+  border-radius: 2px 2px 0 0;
+  background: #FF6B4A;
+  transition: left 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ========== Order List ========== */
+.order-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  -webkit-overflow-scrolling: touch;
+}
+.order-scroll::-webkit-scrollbar { width: 0; }
+.order-list {
+  padding: 12px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ========== Order Card ========== */
+.order-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  overflow: hidden;
+  cursor: pointer;
+  padding: 16px;
+  /* Stagger animation initial state */
+  opacity: 0;
+  transform: translateY(20px);
+}
+.order-card.animate-in {
+  animation: slideUp 0.45s ease forwards;
+}
+.order-card:active {
+  transform: scale(0.98);
+  transition: 0.15s;
+}
+
+/* Row 1: Title + Status */
+.order-card .card-row1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.order-card .card-row1 .show-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1A1A2E;
+  line-height: 1.35;
+  letter-spacing: 0.3px;
+  flex: 1;
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.order-card .card-row1 .status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 12px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.order-card .card-row1 .status-tag.pending-pay {
+  background: rgba(255,107,74,0.12);
+  color: #FF6B4A;
+}
+.order-card .card-row1 .status-tag.pending-verify {
+  background: rgba(79,195,247,0.1);
+  color: #4FC3F7;
+}
+.order-card .card-row1 .status-tag.pending-verify .pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4FC3F7;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+.order-card .card-row1 .status-tag.completed {
+  background: rgba(0,201,167,0.1);
+  color: #00C9A7;
+}
+.order-card .card-row1 .status-tag.refunded {
+  background: rgba(142,149,169,0.1);
+  color: #8E95A9;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(79,195,247,0.6); }
+  50% { opacity: 0.7; transform: scale(1.3); box-shadow: 0 0 0 6px rgba(79,195,247,0); }
+}
+
+/* Row 2: Info */
+.order-card .card-row2 {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #8E95A9;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Row 3: Order No + Price */
+.order-card .card-row3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+.order-card .card-row3 .order-no {
+  font-size: 11px;
+  color: #8E95A9;
+}
+.order-card .card-row3 .price {
+  font-size: 18px;
+  font-weight: 700;
+  color: #FF6B4A;
+  font-family: 'Noto Sans SC', sans-serif;
+  letter-spacing: -0.5px;
+}
+.order-card .card-row3 .price .yen {
+  font-size: 13px;
+  font-weight: 600;
+}
+.order-card .card-row3 .price.refunded {
+  color: #8E95A9;
+  text-decoration: line-through;
+}
+
+/* Row 4: Actions */
+.order-card .card-row4 {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(0,0,0,0.04);
+}
+.order-card .card-row4 .btn {
+  padding: 9px 22px;
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: transform 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  overflow: hidden;
+}
+.order-card .card-row4 .btn:active {
+  transform: scale(0.96);
+  transition: 0.15s;
+}
+.order-card .card-row4 .btn-cancel {
+  background: transparent;
+  color: #8E95A9;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+.order-card .card-row4 .btn-cancel:active {
+  border-color: rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.03);
+}
+.order-card .card-row4 .btn-primary {
+  background: linear-gradient(135deg, #FF6B4A, #FF8A6E);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(255,107,74,0.25);
+}
+.order-card .card-row4 .btn-primary:active {
+  box-shadow: 0 2px 8px rgba(255,107,74,0.15);
+}
+.order-card .card-row4 .btn-primary .shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+  animation: shimmer 2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.order-card .card-row4 .btn-green {
+  background: linear-gradient(135deg, #00C9A7, #00E4BE);
+  color: #FFFFFF;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(0,201,167,0.2);
+}
+.order-card .card-row4 .btn-green:active {
+  box-shadow: 0 2px 8px rgba(0,201,167,0.1);
+}
+
+/* ========== Stagger Animation ========== */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== Empty State ========== */
+.empty-state {
+  flex: 1;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+}
+.empty-state.show { display: flex; }
+.empty-state .empty-icon {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 16px;
+}
+.empty-state .empty-text {
+  font-size: 15px;
+  color: #5A607A;
+  margin-bottom: 24px;
+}
+.empty-state .empty-btn {
+  padding: 12px 36px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #D4A853, #F0C75E);
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 4px 20px rgba(212,168,83,0.25);
+  transition: transform 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.empty-state .empty-btn:active {
+  transform: scale(0.96);
+  transition: 0.15s;
+}
+
+/* ========== Ticket Tabs ========== */
+.ticket-tabs {
+  display: flex;
+  position: relative;
+  background: #FFFFFF;
+  padding: 0 16px;
+  flex-shrink: 0;
+}
+.ticket-tabs .tab-btn {
+  flex: 1;
+  padding: 12px 0;
+  border: none;
+  background: transparent;
+  color: #8E95A9;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+.ticket-tabs .tab-btn.active {
+  color: #FF6B4A;
+  font-weight: 600;
+}
+.ticket-tabs .tab-indicator {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  background: #FF6B4A;
+  border-radius: 1px;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ========== Ticket Page ========== */
+.ticket-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 16px 24px;
+  -webkit-overflow-scrolling: touch;
+}
+.ticket-scroll::-webkit-scrollbar { width: 0; }
+.ticket-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.ticket-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ========== E-Ticket Card ========== */
+.ticket-card {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  position: relative;
+  background: #FFFFFF;
+  opacity: 0;
+  transform: translateY(20px);
+  margin-bottom: 16px;
+}
+.ticket-card.animate-in {
+  animation: slideUp 0.5s ease forwards;
+}
+.ticket-card:active {
+  transform: scale(0.98);
+  transition: transform 0.15s;
+}
+
+/* Poster Cover */
+.ticket-poster {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+}
+.ticket-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.ticket-poster::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10,22,40,0.88) 0%, rgba(10,22,40,0.35) 45%, transparent 100%);
+  pointer-events: none;
+}
+.ticket-poster .poster-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  z-index: 2;
+}
+.ticket-poster .viewer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(212,168,83,0.25);
+  color: #F0D48A;
+  margin-bottom: 8px;
+  letter-spacing: 0.3px;
+}
+.ticket-poster .viewer-badge svg {
+  width: 12px;
+  height: 12px;
+  fill: #F0D48A;
+}
+.ticket-poster .show-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.3;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.ticket-poster .show-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ticket-poster .show-meta .meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.75);
+}
+.ticket-poster .show-meta .meta-row svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: rgba(255,255,255,0.7);
+  stroke-width: 2;
+  flex-shrink: 0;
+}
+
+/* Status Badge */
+.ticket-status-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+}
+.ticket-status-badge.verify-pending {
+  background: rgba(212,168,83,0.2);
+  color: #F0D48A;
+}
+.ticket-status-badge.verify-pending .pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #D4A853;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+.ticket-status-badge.verified {
+  background: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.7);
+}
+.ticket-status-badge.verified svg {
+  width: 12px;
+  height: 12px;
+  fill: none;
+  stroke: rgba(255,255,255,0.7);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Seat Info Section */
+.ticket-seats {
+  padding: 16px 20px;
+}
+.ticket-seats .seats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.ticket-seats .seats-title {
+  font-size: 11px;
+  color: #8E95A9;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+.ticket-seats .seats-count {
+  font-size: 12px;
+  color: #D4A853;
+  font-weight: 600;
+}
+
+/* Seat Tags - horizontal layout */
+.ticket-seats .seat-tags {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.ticket-seats .seat-tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 8px;
+  background: #F5F6FA;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1A1A2E;
+  border: 1px solid rgba(0,0,0,0.04);
+  text-align: center;
+  box-sizing: border-box;
+}
+.ticket-seats .seat-tag .seat-area {
+  color: #FF6B4A;
+  margin-right: 4px;
+}
+.ticket-seats .seat-tag .seat-num {
+  color: #1A1A2E;
+}
+
+/* Expand button */
+.ticket-seats .seat-expand-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 8px;
+  background: transparent;
+  border: 1px dashed #D0D3DC;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #8E95A9;
+  font-weight: 500;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+.ticket-seats .seat-expand-btn:active {
+  background: #F5F6FA;
+  transform: scale(0.96);
+}
+.ticket-seats .seat-expand-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Seat Detail Modal */
+.seat-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 300;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+.seat-modal-overlay.active { opacity: 1; visibility: visible; }
+.seat-modal {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  width: 100%;
+  max-width: 375px;
+  background: #FFFFFF;
+  border-radius: 20px 20px 0 0;
+  z-index: 301;
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+.seat-modal.active { transform: translateX(-50%) translateY(0); }
+.seat-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.seat-modal-header .seat-modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1A1A2E;
+}
+.seat-modal-header .seat-modal-close {
+  width: 32px; height: 32px; border-radius: 50%; border: none;
+  background: #F5F6FA; display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.seat-modal-header .seat-modal-close:active { transform: scale(0.96); }
+.seat-modal-header .seat-modal-close svg { width: 18px; height: 18px; color: #8E95A9; }
+.seat-modal-body {
+  padding: 16px 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+.seat-modal-body .seat-modal-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.seat-modal-body .seat-modal-item:last-child { border-bottom: none; }
+.seat-modal-body .seat-modal-item .seat-modal-no {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1A1A2E;
+}
+.seat-modal-body .seat-modal-item .seat-modal-index {
+  font-size: 12px;
+  color: #8E95A9;
+  background: #F5F6FA;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+/* Tear Line */
+.ticket-tear {
+  position: relative;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  background: #F5F6FA;
+}
+.ticket-tear::before,
+.ticket-tear::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #F5F6FA;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+.ticket-tear::before { left: -10px; }
+.ticket-tear::after { right: -10px; }
+.ticket-tear .tear-line {
+  width: 100%;
+  border-top: 2px dashed rgba(0,0,0,0.06);
+  position: relative;
+  z-index: 1;
+}
+
+/* QR Section */
+.ticket-qr {
+  padding: 16px 20px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  background: #FFFFFF;
+}
+.ticket-qr .qr-info {
+  flex: 1;
+  min-width: 0;
+}
+.ticket-qr .qr-info .order-no {
+  font-size: 12px;
+  color: #5A607A;
+  margin-bottom: 4px;
+}
+.ticket-qr .qr-info .order-no span {
+  color: #1A1A2E;
+  font-weight: 500;
+}
+.ticket-qr .qr-info .qr-hint {
+  font-size: 11px;
+  color: #8E95A9;
+}
+.ticket-qr .qr-box {
+  width: 80px;
+  height: 80px;
+  background: #fff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  flex-shrink: 0;
+  position: relative;
+}
+.ticket-qr .qr-box svg {
+  width: 100%;
+  height: 100%;
+}
+.ticket-qr .qr-box.verified svg rect:not([fill="#fff"]) {
+  fill: #ccc;
+}
+.ticket-qr .qr-box.verified::after {
+  content: '已核销';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.7);
+  color: #8E95A9;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+/* Entry Hint */
+.ticket-entry-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(0,201,167,0.06);
+  font-size: 12px;
+  color: #00C9A7;
+  font-weight: 500;
+}
+.ticket-entry-hint svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: #00C9A7;
+  stroke-width: 2;
+  flex-shrink: 0;
+}
+
+/* ========== Ticket Comment Button ========== */
+.ticket-comment-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px;
+  background: #F5F6FA;
+  color: #FF6B4A;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ticket-comment-btn:active { background: #E8E9EF; }
+.ticket-comment-btn svg { width: 16px; height: 16px; }
+
+/* ========== Modal Overlay ========== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 200;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+}
+.modal-overlay.active { opacity: 1; visibility: visible; }
+
+/* ========== Comment Modal ========== */
+.comment-modal {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  width: 100%;
+  max-width: 375px;
+  background: #FFFFFF;
+  border-radius: 20px 20px 0 0;
+  z-index: 201;
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+.comment-modal.active { transform: translateX(-50%) translateY(0); }
+.comment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.comment-header .close-btn {
+  width: 32px; height: 32px; border-radius: 50%; border: none;
+  background: #F5F6FA; display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.comment-header .close-btn:active { transform: scale(0.96); }
+.comment-header .close-btn svg { width: 18px; height: 18px; color: #8E95A9; }
+.comment-header .comment-title { font-size: 16px; font-weight: 600; color: #1A1A2E; }
+.comment-header .submit-btn {
+  padding: 6px 16px; border-radius: 16px; border: none;
+  background: linear-gradient(135deg, #FF6B4A, #FF8F6A);
+  color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.comment-header .submit-btn:active { transform: scale(0.96); }
+.comment-body { padding: 16px; flex: 1; overflow-y: auto; }
+.comment-show-name { font-size: 15px; font-weight: 600; color: #1A1A2E; margin-bottom: 12px; }
+.comment-textarea {
+  width: 100%; height: 120px; border: 1.5px solid #E8E9EF;
+  border-radius: 12px; padding: 12px; font-size: 15px; color: #1A1A2E;
+  background: #F9F9FB; font-family: inherit; resize: none; outline: none;
+}
+.comment-textarea:focus { border-color: #FF6B4A; background: #FFFFFF; }
+.comment-images { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.image-upload-btn {
+  width: 80px; height: 80px; border: 2px dashed #D0D3DC;
+  border-radius: 10px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 4px;
+  color: #8E95A9; font-size: 12px; cursor: pointer;
+}
+.image-upload-btn:active { background: #F5F6FA; }
+.image-upload-btn svg { width: 20px; height: 20px; }
+.comment-image-preview {
+  width: 80px; height: 80px; border-radius: 10px; object-fit: cover;
+}
+
+/* ========== Toast ========== */
+.toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  backdrop-filter: blur(12px);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 400px) {
+  body { padding: 0; }
   .phone-frame {
     width: 100%;
-    max-width: 375px;
     min-height: 100vh;
     min-height: 100dvh;
-    background: #F5F6FA;
-    border-radius: 40px;
-    overflow: hidden;
-    box-shadow:
-      0 0 0 2px #1a1a2e,
-      0 0 0 4px #333,
-      0 20px 60px rgba(0,0,0,0.3),
-      0 0 80px rgba(10,22,40,0.15);
-    position: relative;
   }
-
-  /* ==================== Status Bar ==================== */
-  .status-bar {
-    height: 44px;
-    background: #0A1628;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 24px;
-    color: #fff;
-    font-size: 12px;
-    font-weight: 600;
-  }
-  .status-bar .time { font-size: 14px; font-weight: 700; }
-  .status-bar .icons { display: flex; gap: 6px; align-items: center; }
-  .status-bar .icons svg { width: 16px; height: 16px; fill: #fff; }
-
-  /* ==================== Navigation Bar ==================== */
-  .nav-bar {
-    height: 48px;
-    background: #0A1628;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 16px;
-    position: relative;
-    color: #fff;
-  }
-  .nav-bar .back-btn {
-    position: absolute;
-    left: 16px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    color: #fff;
-    font-size: 14px;
-    cursor: pointer;
-    background: none;
-    border: none;
-    font-family: inherit;
-    transition: opacity 0.2s;
-  }
-  .nav-bar .back-btn:hover { opacity: 0.8; }
-  .nav-bar .back-btn svg { width: 20px; height: 20px; }
-  .nav-bar .title {
-    font-size: 17px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-  }
-  .nav-bar .right-action {
-    position: absolute;
-    right: 16px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    color: #D4A853;
-    font-size: 13px;
-    cursor: pointer;
-    background: none;
-    border: none;
-    font-family: inherit;
-    font-weight: 500;
-    transition: opacity 0.2s;
-  }
-  .nav-bar .right-action:hover { opacity: 0.8; }
-  .nav-bar .right-action svg { width: 16px; height: 16px; }
-
-  /* ==================== Page Container ==================== */
-  .page { display: none; flex-direction: column; min-height: calc(100vh - 92px); min-height: calc(100dvh - 92px); }
-  .page.active { display: flex; }
-
-  /* ==================== View Switcher ==================== */
-  .view-switcher {
-    display: flex;
-    gap: 0;
-    background: #0A1628;
-    padding: 0 16px 12px;
-  }
-  .view-switcher .switch-btn {
-    flex: 1;
-    padding: 8px 0;
-    border: none;
-    background: rgba(255,255,255,0.08);
-    color: rgba(255,255,255,0.6);
-    font-size: 13px;
-    font-weight: 500;
-    font-family: inherit;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: all 0.3s;
-    position: relative;
-  }
-  .view-switcher .switch-btn.active {
-    background: linear-gradient(135deg, #FF6B4A, #FF8A6E);
-    color: #fff;
-    box-shadow: 0 4px 12px rgba(255,107,74,0.4);
-  }
-  .view-switcher .switch-btn:first-child { border-radius: 8px 0 0 8px; }
-  .view-switcher .switch-btn:last-child { border-radius: 0 8px 8px 0; }
-
-  /* ==================== Order Tabs ==================== */
-  .order-tabs {
-    display: flex;
-    background: #fff;
-    padding: 0 8px;
-    border-bottom: 1px solid #F0F1F5;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-  .order-tabs .tab {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 12px 0;
-    font-size: 13px;
-    color: #8E95A9;
-    cursor: pointer;
-    position: relative;
-    transition: color 0.3s;
-    background: none;
-    border: none;
-    font-family: inherit;
-  }
-  .order-tabs .tab.active {
-    color: #0A1628;
-    font-weight: 600;
-  }
-  .order-tabs .tab.active::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 24px;
-    height: 3px;
-    background: linear-gradient(90deg, #FF6B4A, #FF8A6E);
-    border-radius: 2px;
-  }
-  .order-tabs .tab .badge {
-    position: absolute;
-    top: 6px;
-    right: calc(50% - 24px);
-    min-width: 16px;
-    height: 16px;
-    background: #FF6B4A;
-    color: #fff;
-    font-size: 10px;
-    font-weight: 600;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 4px;
-  }
-
-  /* ==================== Order List ==================== */
-  .order-list {
-    flex: 1;
-    padding: 12px 16px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  /* ==================== Order Card ==================== */
-  .order-card {
-    background: #fff;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(10,22,40,0.06);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .order-card:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(10,22,40,0.1);
-  }
-  .order-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 16px 10px;
-    border-bottom: 1px solid #F5F6FA;
-  }
-  .order-header .order-no {
-    font-size: 12px;
-    color: #8E95A9;
-    font-weight: 400;
-  }
-  .order-header .order-no span {
-    color: #0A1628;
-    font-weight: 500;
-  }
-  .order-status {
-    font-size: 12px;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 10px;
-  }
-  .order-status.pending-pay {
-    background: rgba(255,107,74,0.1);
-    color: #FF6B4A;
-  }
-  .order-status.pending-verify {
-    background: rgba(10,22,40,0.08);
-    color: #0A1628;
-  }
-  .order-status.completed {
-    background: rgba(0,201,167,0.1);
-    color: #00C9A7;
-  }
-  .order-status.refunded {
-    background: rgba(142,149,169,0.1);
-    color: #8E95A9;
-  }
-
-  .order-body {
-    display: flex;
-    padding: 12px 16px;
-    gap: 12px;
-  }
-  .order-thumb {
-    width: 80px;
-    height: 108px;
-    border-radius: 8px;
-    overflow: hidden;
-    flex-shrink: 0;
-    position: relative;
-  }
-  .order-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .order-thumb .show-type {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(transparent, rgba(0,0,0,0.7));
-    color: #fff;
-    font-size: 10px;
-    padding: 2px 6px 4px;
-    text-align: center;
-  }
-  .order-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-width: 0;
-  }
-  .order-info .show-name {
-    font-size: 15px;
-    font-weight: 600;
-    color: #0A1628;
-    line-height: 1.3;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .order-info .show-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .order-info .show-meta .meta-item {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    color: #8E95A9;
-  }
-  .order-info .show-meta .meta-item svg {
-    width: 14px;
-    height: 14px;
-    flex-shrink: 0;
-    opacity: 0.6;
-  }
-  .order-info .price-row {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-  }
-  .order-info .price-row .ticket-info {
-    font-size: 12px;
-    color: #8E95A9;
-  }
-  .order-info .price-row .price {
-    font-size: 16px;
-    font-weight: 700;
-    color: #FF6B4A;
-    font-family: 'Noto Sans SC', sans-serif;
-  }
-  .order-info .price-row .price .yen {
-    font-size: 12px;
-    font-weight: 600;
-  }
-
-  .order-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 10px 16px 14px;
-    border-top: 1px solid #F5F6FA;
-  }
-  .order-footer .btn {
-    padding: 7px 20px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: none;
-    font-family: inherit;
-  }
-  .order-footer .btn-secondary {
-    background: #F5F6FA;
-    color: #5A607A;
-  }
-  .order-footer .btn-secondary:hover { background: #ECEEF3; }
-  .order-footer .btn-primary {
-    background: linear-gradient(135deg, #FF6B4A, #FF8A6E);
-    color: #fff;
-    box-shadow: 0 2px 8px rgba(255,107,74,0.3);
-  }
-  .order-footer .btn-primary:hover {
-    box-shadow: 0 4px 12px rgba(255,107,74,0.4);
-    transform: translateY(-1px);
-  }
-  .order-footer .btn-outline {
-    background: transparent;
-    color: #0A1628;
-    border: 1px solid #D0D3DC;
-  }
-  .order-footer .btn-outline:hover {
-    border-color: #0A1628;
-  }
-  .order-footer .btn-green {
-    background: linear-gradient(135deg, #00C9A7, #00E4BE);
-    color: #fff;
-    box-shadow: 0 2px 8px rgba(0,201,167,0.3);
-  }
-
-  /* ==================== Empty State ==================== */
-  .empty-state {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 40px;
-    display: none;
-  }
-  .empty-state.show { display: flex; }
-  .empty-state .empty-icon {
-    width: 120px;
-    height: 120px;
-    margin-bottom: 20px;
-    opacity: 0.6;
-  }
-  .empty-state .empty-text {
-    font-size: 15px;
-    color: #8E95A9;
-    margin-bottom: 24px;
-  }
-  .empty-state .empty-btn {
-    padding: 10px 32px;
-    border-radius: 24px;
-    background: linear-gradient(135deg, #FF6B4A, #FF8A6E);
-    color: #fff;
-    font-size: 14px;
-    font-weight: 500;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    box-shadow: 0 4px 12px rgba(255,107,74,0.3);
-  }
-
-  /* ==================== Ticket Page ==================== */
-  .ticket-list {
-    flex: 1;
-    padding: 12px 16px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  /* ==================== Offline Hint ==================== */
-  .offline-hint {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 8px 16px 0;
-    padding: 10px 14px;
-    background: rgba(0,201,167,0.08);
-    border-radius: 10px;
-    border: 1px solid rgba(0,201,167,0.15);
-  }
-  .offline-hint svg { width: 16px; height: 16px; flex-shrink: 0; }
-  .offline-hint span {
-    font-size: 12px;
-    color: #00C9A7;
-    font-weight: 500;
-  }
-
-  /* ==================== E-Ticket Card ==================== */
-  .ticket-card {
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 20px rgba(10,22,40,0.12);
-    position: relative;
-    background: #fff;
-  }
-
-  /* Ticket Top Section */
-  .ticket-top {
-    position: relative;
-    padding: 20px 20px 24px;
-    color: #fff;
-    overflow: hidden;
-  }
-  .ticket-top .bg-gradient {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-  }
-  .ticket-top .bg-pattern {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    opacity: 0.1;
-    background-image:
-      radial-gradient(circle at 20% 50%, rgba(255,255,255,0.3) 1px, transparent 1px),
-      radial-gradient(circle at 80% 20%, rgba(255,255,255,0.2) 1px, transparent 1px),
-      radial-gradient(circle at 60% 80%, rgba(255,255,255,0.25) 1px, transparent 1px);
-    background-size: 60px 60px, 40px 40px, 50px 50px;
-  }
-  .ticket-top .bg-decoration {
-    position: absolute;
-    z-index: 1;
-  }
-  .ticket-top .bg-decoration.circle1 {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.15);
-    top: -40px;
-    right: -30px;
-  }
-  .ticket-top .bg-decoration.circle2 {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.1);
-    bottom: -20px;
-    left: -20px;
-  }
-  .ticket-top .bg-decoration.line1 {
-    width: 80px;
-    height: 1px;
-    background: rgba(255,255,255,0.2);
-    top: 30px;
-    right: 20px;
-    transform: rotate(-30deg);
-  }
-  .ticket-top .content {
-    position: relative;
-    z-index: 2;
-  }
-  .ticket-top .show-category {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.2);
-    backdrop-filter: blur(4px);
-    margin-bottom: 10px;
-    letter-spacing: 1px;
-  }
-  .ticket-top .show-title {
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 1.3;
-    margin-bottom: 14px;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  }
-  .ticket-top .show-details {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .ticket-top .show-details .detail-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    opacity: 0.9;
-  }
-  .ticket-top .show-details .detail-row svg {
-    width: 14px;
-    height: 14px;
-    opacity: 0.8;
-  }
-
-  /* Ticket Status Badge */
-  .ticket-status-badge {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    z-index: 3;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 4px 12px;
-    border-radius: 12px;
-  }
-  .ticket-status-badge.verify-pending {
-    background: rgba(255,255,255,0.25);
-    backdrop-filter: blur(4px);
-  }
-  .ticket-status-badge.verify-pending .pulse-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #4FC3F7;
-    animation: pulse 1.5s ease-in-out infinite;
-  }
-  .ticket-status-badge.verified {
-    background: rgba(255,255,255,0.2);
-    color: rgba(255,255,255,0.7);
-  }
-  .ticket-status-badge.verified svg {
-    width: 12px;
-    height: 12px;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(79,195,247,0.6); }
-    50% { opacity: 0.7; transform: scale(1.3); box-shadow: 0 0 0 6px rgba(79,195,247,0); }
-  }
-
-  /* Ticket Tear Line */
-  .ticket-tear {
-    position: relative;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    background: #fff;
-  }
-  .ticket-tear::before,
-  .ticket-tear::after {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background: #F5F6FA;
-    border-radius: 50%;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 2;
-  }
-  .ticket-tear::before { left: -10px; }
-  .ticket-tear::after { right: -10px; }
-  .ticket-tear .tear-line {
-    width: 100%;
-    border-top: 2px dashed #D0D3DC;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* Ticket Bottom Section */
-  .ticket-bottom {
-    padding: 16px 20px 20px;
-    display: flex;
-    gap: 16px;
-    align-items: center;
-  }
-  .ticket-bottom .seat-info {
-    flex: 1;
-  }
-  .ticket-bottom .seat-info .seat-label {
-    font-size: 11px;
-    color: #8E95A9;
-    margin-bottom: 6px;
-    font-weight: 500;
-  }
-  .ticket-bottom .seat-info .seat-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .ticket-bottom .seat-info .seat-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    padding: 4px 10px;
-    background: #F5F6FA;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #0A1628;
-  }
-  .ticket-bottom .seat-info .seat-tag svg {
-    width: 12px;
-    height: 12px;
-    color: #D4A853;
-  }
-  .ticket-bottom .seat-info .order-no-row {
-    margin-top: 10px;
-    font-size: 11px;
-    color: #B0B5C3;
-  }
-  .ticket-bottom .seat-info .order-no-row span {
-    color: #8E95A9;
-    font-weight: 500;
-  }
-
-  /* QR Code Area */
-  .ticket-bottom .qr-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-  }
-  .ticket-bottom .qr-area .qr-box {
-    width: 80px;
-    height: 80px;
-    background: #fff;
-    border: 1px solid #E8ECF1;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6px;
-  }
-  .ticket-bottom .qr-area .qr-box svg {
-    width: 100%;
-    height: 100%;
-  }
-  .ticket-bottom .qr-area .qr-label {
-    font-size: 10px;
-    color: #B0B5C3;
-  }
-
-  /* Verified overlay */
-  .ticket-card.verified .ticket-top {
-    filter: saturate(0.5);
-  }
-  .ticket-card.verified .ticket-bottom .qr-area .qr-box {
-    opacity: 0.4;
-    position: relative;
-  }
-  .ticket-card.verified .ticket-bottom .qr-area .qr-box::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(255,255,255,0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* ==================== Scrollbar ==================== */
-  .order-list::-webkit-scrollbar,
-  .ticket-list::-webkit-scrollbar { width: 0; }
-
-  /* ==================== Page Transition ==================== */
-  .page { animation: fadeIn 0.3s ease; }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ==================== Ticket Gradient Themes ==================== */
-  .ticket-card.theme-ocean .bg-gradient {
-    background: linear-gradient(135deg, #0A1628 0%, #1A2D4A 40%, #2A4066 100%);
-  }
-  .ticket-card.theme-sunset .bg-gradient {
-    background: linear-gradient(135deg, #FF6B4A 0%, #D4A853 50%, #FF8A6E 100%);
-  }
-  .ticket-card.theme-forest .bg-gradient {
-    background: linear-gradient(135deg, #0A1628 0%, #00C9A7 50%, #0A3D3D 100%);
-  }
-  .ticket-card.theme-royal .bg-gradient {
-    background: linear-gradient(135deg, #1A0A28 0%, #4A1A6D 50%, #D4A853 100%);
-  }
-
-  /* ==================== Responsive adjustments ==================== */
-  @media (max-width: 400px) {
-    body { padding: 0; }
-    .phone-frame {
-      border-radius: 0;
-      box-shadow: none;
-      width: 100%;
-      min-height: 100vh;
-    }
-  }
-
-    
-    
-    
-    
-    
-  </style>
+}
+</style>
 </head>
 <body>
 
 <div class="phone-frame">
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
   <!-- Status Bar -->
   <div class="status-bar">
-    
-    <span class="time">9:41</span>
+    <span class="time">09:41</span>
     <div class="icons">
       <svg viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
       <svg viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
@@ -763,745 +1021,573 @@
 
   <!-- Navigation Bar -->
   <div class="nav-bar">
-    <button class="back-btn" onclick="window.location.href='home.html'">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-      <span>返回</span>
+    <button class="back-btn" onclick="goBack('profile.html')">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
     </button>
     <span class="title" id="navTitle">我的订单</span>
-    <button class="right-action" id="navRightBtn" style="display:none;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      离线下载
-    </button>
   </div>
 
   <!-- View Switcher -->
   <div class="view-switcher">
-    <button class="switch-btn active" onclick="switchView('order')">
-      <span>我的订单</span>
-    </button>
-    <button class="switch-btn" onclick="switchView('ticket')">
-      <span>电子票夹</span>
-    </button>
+    <div class="switch-track">
+      <div class="switch-indicator" id="switchIndicator"></div>
+      <button class="switch-btn active" data-view="order" onclick="switchView('order')">我的订单</button>
+      <button class="switch-btn" data-view="ticket" onclick="switchView('ticket')">电子票夹</button>
+    </div>
   </div>
 
-  <!-- ==================== Order List Page ==================== -->
+  <!-- ==================== ORDER PAGE ==================== -->
   <div class="page active" id="orderPage">
     <!-- Tabs -->
-    <div class="order-tabs">
-      <button class="tab active" onclick="switchTab(this, 'all')">
-        全部
-        <span class="badge">6</span>
-      </button>
-      <button class="tab" onclick="switchTab(this, 'pending-pay')">
-        待支付
-        <span class="badge">1</span>
-      </button>
-      <button class="tab" onclick="switchTab(this, 'pending-verify')">
-        待核销
-        <span class="badge">2</span>
-      </button>
-      <button class="tab" onclick="switchTab(this, 'completed')">
-        已完成
-        <span class="badge">2</span>
-      </button>
-      <button class="tab" onclick="switchTab(this, 'refunded')">
-        已退款
-        <span class="badge">1</span>
-      </button>
+    <div class="order-tabs-wrap">
+      <div class="order-tabs" id="orderTabs">
+        <button class="tab active" data-tab="all" onclick="switchTab('all', this)">
+          全部
+          <span class="badge">6</span>
+        </button>
+        <button class="tab" data-tab="pending-pay" onclick="switchTab('pending-pay', this)">
+          待支付
+          <span class="badge">1</span>
+        </button>
+        <button class="tab" data-tab="pending-verify" onclick="switchTab('pending-verify', this)">
+          待核销
+          <span class="badge">2</span>
+        </button>
+        <button class="tab" data-tab="completed" onclick="switchTab('completed', this)">
+          已完成
+          <span class="badge">2</span>
+        </button>
+        <button class="tab" data-tab="refunded" onclick="switchTab('refunded', this)">
+          已退款
+          <span class="badge">1</span>
+        </button>
+        <div class="tab-indicator" id="tabIndicator"></div>
+      </div>
     </div>
 
-    <!-- Order List -->
-    <div class="order-list" id="orderList">
+    <!-- Order Scroll Area -->
+    <div class="order-scroll" id="orderScroll">
+      <div class="order-list" id="orderList">
 
-      <!-- Order 1: 待支付 -->
-      <div class="order-card" data-status="pending-pay">
-        <div class="order-header">
-          <span class="order-no">订单号: <span>HN20260410001</span></span>
-          <span class="order-status pending-pay">待支付</span>
-        </div>
-        <div class="order-body">
-          <div class="order-thumb">
-            <img src="https://picsum.photos/seed/show-concert1/160/216" alt="演出封面">
-            <span class="show-type">演唱会</span>
+        <!-- Order 1: 待支付 -->
+        <div class="order-card" data-status="pending-pay" onclick="location.href='order-detail.html?from=order-ticket.html&status=pending-pay'">
+          <div class="card-row1">
+            <div class="show-name">海南国际音乐节</div>
+            <span class="status-tag pending-pay">待支付</span>
           </div>
-          <div class="order-info">
-            <div class="show-name">2026海南国际音乐节开幕式音乐会</div>
-            <div class="show-meta">
-              <div class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                2026.04.15 周三 19:30
-              </div>
-              <div class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                海口湾演艺中心大剧场
-              </div>
-            </div>
-            <div class="price-row">
-              <span class="ticket-info">VIP区 x 2张</span>
-              <span class="price"><span class="yen">&yen;</span>1,280</span>
-            </div>
+          <div class="card-row2">2026-07-15 19:30 · 海口湾演艺中心 · VIP区x2</div>
+          <div class="card-row3">
+            <span class="order-no">订单编号 HN20260710001</span>
+            <span class="price"><span class="yen">¥</span>1,038</span>
+          </div>
+          <div class="card-row4">
+            <button class="btn btn-cancel" onclick="event.stopPropagation()">取消订单</button>
+            <button class="btn btn-primary" onclick="event.stopPropagation()">
+              去支付
+              <span class="shimmer"></span>
+            </button>
           </div>
         </div>
-        <div class="order-footer">
-          <button class="btn btn-secondary">取消订单</button>
-          <button class="btn btn-primary">去支付</button>
-        </div>
-      </div>
 
-      <!-- Order 2: 待核销 -->
-      <div class="order-card" data-status="pending-verify">
-        <div class="order-header">
-          <span class="order-no">订单号: <span>HN20260408002</span></span>
-          <span class="order-status pending-verify">待核销</span>
-        </div>
-        <div class="order-body">
-          <div class="order-thumb">
-            <img src="https://picsum.photos/seed/show-drama2/160/216" alt="演出封面">
-            <span class="show-type">话剧</span>
-          </div>
-          <div class="order-info">
+        <!-- Order 2: 待核销 -->
+        <div class="order-card" data-status="pending-verify" onclick="location.href='order-detail.html?from=order-ticket.html&status=pending-verify'">
+          <div class="card-row1">
             <div class="show-name">原创话剧《天涯故事》</div>
-            <div class="show-meta">
-              <div class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                2026.04.12 周六 20:00
-              </div>
-              <div class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                三亚千古情大剧院
-              </div>
-            </div>
-            <div class="price-row">
-              <span class="ticket-info">A区 x 2张</span>
-              <span class="price"><span class="yen">&yen;</span>680</span>
-            </div>
+            <span class="status-tag pending-verify">
+              <span class="pulse-dot"></span>
+              待核销
+            </span>
+          </div>
+          <div class="card-row2">2026-06-20 20:00 · 三亚千古情大剧院 · A区x2</div>
+          <div class="card-row3">
+            <span class="order-no">订单编号 HN20260615002</span>
+            <span class="price"><span class="yen">¥</span>680</span>
+          </div>
+          <div class="card-row4">
+            <button class="btn btn-primary" onclick="event.stopPropagation()">
+              查看电子票
+              <span class="shimmer"></span>
+            </button>
           </div>
         </div>
-        <div class="order-footer">
-          <button class="btn btn-primary" onclick="switchView('ticket')">查看电子票</button>
+
+        <!-- Order 3: 待核销 -->
+        <div class="order-card" data-status="pending-verify" onclick="location.href='order-detail.html?from=order-ticket.html&status=pending-verify'">
+          <div class="card-row1">
+            <div class="show-name">芭蕾舞剧《天鹅湖》</div>
+            <span class="status-tag pending-verify">
+              <span class="pulse-dot"></span>
+              待核销
+            </span>
+          </div>
+          <div class="card-row2">2026-06-25 19:30 · 海南省歌舞剧院 · B区x1</div>
+          <div class="card-row3">
+            <span class="order-no">订单编号 HN20260620003</span>
+            <span class="price"><span class="yen">¥</span>380</span>
+          </div>
+          <div class="card-row4">
+            <button class="btn btn-primary" onclick="event.stopPropagation()">
+              查看电子票
+              <span class="shimmer"></span>
+            </button>
+          </div>
         </div>
+
+        <!-- Order 4: 已完成 -->
+        <div class="order-card" data-status="completed" onclick="location.href='order-detail.html?from=order-ticket.html&status=completed'">
+          <div class="card-row1">
+            <div class="show-name">琼剧《红色娘子军》</div>
+            <span class="status-tag completed">已完成</span>
+          </div>
+          <div class="card-row2">2026-05-10 15:00 · 海口人民大会堂 · C区x3</div>
+          <div class="card-row3">
+            <span class="order-no">订单编号 HN20260505004</span>
+            <span class="price"><span class="yen">¥</span>540</span>
+          </div>
+          <div class="card-row4">
+            <button class="btn btn-green" onclick="event.stopPropagation()">再次购买</button>
+          </div>
+        </div>
+
+        <!-- Order 5: 已完成 -->
+        <div class="order-card" data-status="completed" onclick="location.href='order-detail.html?from=order-ticket.html&status=completed'">
+          <div class="card-row1">
+            <div class="show-name">脱口秀春季专场</div>
+            <span class="status-tag completed">已完成</span>
+          </div>
+          <div class="card-row2">2026-05-18 20:30 · 观澜湖演艺空间 · 前排区x2</div>
+          <div class="card-row3">
+            <span class="order-no">订单编号 HN20260513005</span>
+            <span class="price"><span class="yen">¥</span>396</span>
+          </div>
+          <div class="card-row4">
+            <button class="btn btn-green" onclick="event.stopPropagation()">再次购买</button>
+          </div>
+        </div>
+
+        <!-- Order 6: 已退款 -->
+        <div class="order-card" data-status="refunded" onclick="location.href='order-detail.html?from=order-ticket.html&status=refunded'">
+          <div class="card-row1">
+            <div class="show-name">国际魔术邀请赛</div>
+            <span class="status-tag refunded">已退款</span>
+          </div>
+          <div class="card-row2">2026-04-20 19:00 · 海口湾小剧场 · B区x1</div>
+          <div class="card-row3">
+            <span class="order-no">订单编号 HN20260415006</span>
+            <span class="price refunded"><span class="yen">¥</span>280</span>
+          </div>
+        </div>
+
       </div>
 
-      <!-- Order 3: 待核销 -->
-      <div class="order-card" data-status="pending-verify">
-        <div class="order-header">
-          <span class="order-no">订单号: <span>HN20260407003</span></span>
-          <span class="order-status pending-verify">待核销</span>
-        </div>
-        <div class="order-body">
-          <div class="order-thumb">
-            <img src="https://picsum.photos/seed/show-dance3/160/216" alt="演出封面">
-            <span class="show-type">舞蹈</span>
-          </div>
-          <div class="order-info">
-            <div class="show-name">芭蕾舞剧《天鹅湖》经典版</div>
-            <div class="show-meta">
-              <div class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                2026.04.18 周六 19:30
-              </div>
-              <div class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                海南省歌舞剧院
-              </div>
-            </div>
-            <div class="price-row">
-              <span class="ticket-info">B区 x 1张</span>
-              <span class="price"><span class="yen">&yen;</span>380</span>
-            </div>
-          </div>
-        </div>
-        <div class="order-footer">
-          <button class="btn btn-primary" onclick="switchView('ticket')">查看电子票</button>
-        </div>
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState">
+        <svg class="empty-icon" viewBox="0 0 120 120" fill="none">
+          <rect x="20" y="30" width="80" height="60" rx="8" stroke="#E8ECF1" stroke-width="1.5" fill="none"/>
+          <rect x="30" y="42" width="30" height="4" rx="2" fill="#E8ECF1"/>
+          <rect x="30" y="52" width="55" height="3" rx="1.5" fill="#F0F1F5"/>
+          <rect x="30" y="59" width="45" height="3" rx="1.5" fill="#F0F1F5"/>
+          <rect x="30" y="66" width="35" height="3" rx="1.5" fill="#F0F1F5"/>
+          <circle cx="85" cy="75" r="18" stroke="#E8ECF1" stroke-width="1.5" fill="none"/>
+          <path d="M78 75h14M85 68v14" stroke="#E8ECF1" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="empty-text">暂无相关订单</span>
+        <button class="empty-btn">去逛逛</button>
       </div>
-
-      <!-- Order 4: 已完成 -->
-      <div class="order-card" data-status="completed">
-        <div class="order-header">
-          <span class="order-no">订单号: <span>HN20260401004</span></span>
-          <span class="order-status completed">已完成</span>
-        </div>
-        <div class="order-body">
-          <div class="order-thumb">
-            <img src="https://picsum.photos/seed/show-opera4/160/216" alt="演出封面">
-            <span class="show-type">琼剧</span>
-          </div>
-          <div class="order-info">
-            <div class="show-name">经典琼剧《红色娘子军》巡演</div>
-            <div class="show-meta">
-              <div class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                2026.04.05 周日 15:00
-              </div>
-              <div class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                海口人民大会堂
-              </div>
-            </div>
-            <div class="price-row">
-              <span class="ticket-info">C区 x 3张</span>
-              <span class="price"><span class="yen">&yen;</span>540</span>
-            </div>
-          </div>
-        </div>
-        <div class="order-footer">
-          <button class="btn btn-green">再次购买</button>
-        </div>
-      </div>
-
-      <!-- Order 5: 已完成 -->
-      <div class="order-card" data-status="completed">
-        <div class="order-header">
-          <span class="order-no">订单号: <span>HN20260328005</span></span>
-          <span class="order-status completed">已完成</span>
-        </div>
-        <div class="order-body">
-          <div class="order-thumb">
-            <img src="https://picsum.photos/seed/show-comedy5/160/216" alt="演出封面">
-            <span class="show-type">脱口秀</span>
-          </div>
-          <div class="order-info">
-            <div class="show-name">海口脱口秀大会·春季专场</div>
-            <div class="show-meta">
-              <div class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                2026.03.30 周一 20:00
-              </div>
-              <div class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                观澜湖新城演艺空间
-              </div>
-            </div>
-            <div class="price-row">
-              <span class="ticket-info">前排区 x 2张</span>
-              <span class="price"><span class="yen">&yen;</span>396</span>
-            </div>
-          </div>
-        </div>
-        <div class="order-footer">
-          <button class="btn btn-green">再次购买</button>
-        </div>
-      </div>
-
-      <!-- Order 6: 已退款 -->
-      <div class="order-card" data-status="refunded">
-        <div class="order-header">
-          <span class="order-no">订单号: <span>HN20260325006</span></span>
-          <span class="order-status refunded">已退款</span>
-        </div>
-        <div class="order-body">
-          <div class="order-thumb">
-            <img src="https://picsum.photos/seed/show-magic6/160/216" alt="演出封面">
-            <span class="show-type">魔术</span>
-          </div>
-          <div class="order-info">
-            <div class="show-name">国际魔术大师海南邀请赛</div>
-            <div class="show-meta">
-              <div class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                2026.03.28 周六 19:30
-              </div>
-              <div class="meta-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                海口湾演艺中心小剧场
-              </div>
-            </div>
-            <div class="price-row">
-              <span class="ticket-info">B区 x 1张</span>
-              <span class="price" style="color:#8E95A9;"><span class="yen">&yen;</span>280</span>
-            </div>
-          </div>
-        </div>
-        <div class="order-footer">
-          <button class="btn btn-outline">查看详情</button>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Empty State -->
-    <div class="empty-state" id="emptyState">
-      <svg class="empty-icon" viewBox="0 0 120 120" fill="none">
-        <rect x="20" y="30" width="80" height="60" rx="8" stroke="#C8CDD8" stroke-width="2" fill="#F5F6FA"/>
-        <rect x="30" y="40" width="30" height="4" rx="2" fill="#D0D3DC"/>
-        <rect x="30" y="50" width="60" height="3" rx="1.5" fill="#E8ECF1"/>
-        <rect x="30" y="58" width="50" height="3" rx="1.5" fill="#E8ECF1"/>
-        <rect x="30" y="66" width="40" height="3" rx="1.5" fill="#E8ECF1"/>
-        <circle cx="85" cy="75" r="18" stroke="#C8CDD8" stroke-width="2" fill="#F5F6FA"/>
-        <path d="M78 75h14M85 68v14" stroke="#D0D3DC" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-      <span class="empty-text">暂无相关订单</span>
-      <button class="empty-btn">去逛逛</button>
     </div>
   </div>
 
-  <!-- ==================== Ticket Wallet Page ==================== -->
+  <!-- ==================== TICKET PAGE ==================== -->
   <div class="page" id="ticketPage">
-    <!-- Offline Hint -->
-    <div class="offline-hint">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#00C9A7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-      <span>已离线保存，无网络也可查看</span>
+    <!-- Ticket Tabs -->
+    <div class="ticket-tabs">
+      <div class="tab-indicator" id="ticketTabIndicator" style="left:0%;width:50%;"></div>
+      <button class="tab-btn active" onclick="switchTicketTab('pending')">待核销</button>
+      <button class="tab-btn" onclick="switchTicketTab('used')">已使用</button>
     </div>
 
-    <!-- Ticket List -->
-    <div class="ticket-list">
+    <div class="ticket-scroll">
+      <div class="ticket-list">
 
-      <!-- Ticket 1: 待核销 -->
-      <div class="ticket-card theme-ocean">
-        <div class="ticket-top">
-          <div class="bg-gradient"></div>
-          <div class="bg-pattern"></div>
-          <div class="bg-decoration circle1"></div>
-          <div class="bg-decoration circle2"></div>
-          <div class="bg-decoration line1"></div>
-          <div class="ticket-status-badge verify-pending">
-            <span class="pulse-dot"></span>
-            待核销
+        <!-- Entry Hint -->
+        <div class="ticket-entry-hint">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          请提前30分钟到场，携带有效身份证件
+        </div>
+
+        <div id="pendingTickets" class="ticket-group">
+          <!-- Ticket 1: 南海之梦歌舞秀 (2 seats) -->
+          <div class="ticket-card">
+            <div class="ticket-poster">
+              <img src="assets/cover-nanhai.jpg" alt="南海之梦歌舞秀">
+              <div class="ticket-status-badge verify-pending"><span class="pulse-dot"></span> 待核销</div>
+              <div class="poster-content">
+                <div class="viewer-badge"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> 张小雅 / 陈明 / 林小雅 / 王海 / 赵敏</div>
+                <div class="show-title">南海之梦歌舞秀</div>
+                <div class="show-meta">
+                  <div class="meta-row"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 2026年6月15日 周日 20:00</div>
+                  <div class="meta-row"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> 海口湾演艺中心</div>
+                </div>
+              </div>
+            </div>
+            <div class="ticket-seats">
+              <div class="seats-header">
+                <div class="seats-title">座位信息</div>
+                <div class="seats-count">共5座</div>
+              </div>
+              <div class="seat-tags">
+                <div class="seat-tag"><span class="seat-area">A区</span><span class="seat-num">3排5座</span></div>
+                <div class="seat-tag"><span class="seat-area">A区</span><span class="seat-num">3排6座</span></div>
+                <div class="seat-tag"><span class="seat-area">A区</span><span class="seat-num">3排7座</span></div>
+                <div class="seat-expand-btn" onclick="openSeatModal('南海之梦歌舞秀', ['A区 3排5座','A区 3排6座','A区 3排7座','B区 5排10座','B区 5排11座'])">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                  展开更多
+                </div>
+              </div>
+            </div>
+            <div class="ticket-tear"><div class="tear-line"></div></div>
+            <div class="ticket-qr">
+              <div class="qr-info">
+                <div class="order-no">订单号: <span>TK20260615001</span></div>
+                <div class="qr-hint">入场时请出示此二维码</div>
+              </div>
+              <div class="qr-box"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#fff"/><rect x="5" y="5" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="8" y="8" width="19" height="19" rx="1" fill="#fff"/><rect x="11" y="11" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="70" y="5" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="73" y="8" width="19" height="19" rx="1" fill="#fff"/><rect x="76" y="11" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="5" y="70" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="8" y="73" width="19" height="19" rx="1" fill="#fff"/><rect x="11" y="76" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="35" y="35" width="8" height="8" fill="#1A1A2E"/><rect x="50" y="35" width="8" height="8" fill="#1A1A2E"/><rect x="65" y="35" width="8" height="8" fill="#1A1A2E"/><rect x="35" y="50" width="8" height="8" fill="#1A1A2E"/><rect x="50" y="50" width="8" height="8" fill="#1A1A2E"/><rect x="65" y="50" width="8" height="8" fill="#1A1A2E"/><rect x="35" y="65" width="8" height="8" fill="#1A1A2E"/><rect x="50" y="65" width="8" height="8" fill="#1A1A2E"/><rect x="65" y="65" width="8" height="8" fill="#1A1A2E"/><rect x="80" y="70" width="8" height="8" fill="#1A1A2E"/><rect x="80" y="80" width="8" height="8" fill="#1A1A2E"/><rect x="35" y="80" width="8" height="8" fill="#1A1A2E"/><rect x="50" y="80" width="8" height="8" fill="#1A1A2E"/></svg></div>
+            </div>
           </div>
-          <div class="content">
-            <span class="show-category">话剧</span>
-            <div class="show-title">原创话剧《天涯故事》</div>
-            <div class="show-details">
-              <div class="detail-row">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                2026年4月12日 周六 20:00
+
+          <!-- Ticket 2: 猫中文版 (1 seat) -->
+          <div class="ticket-card">
+            <div class="ticket-poster">
+              <img src="assets/cover-cats.jpg" alt="猫中文版">
+              <div class="ticket-status-badge verify-pending"><span class="pulse-dot"></span> 待核销</div>
+              <div class="poster-content">
+                <div class="viewer-badge"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> 陈明</div>
+                <div class="show-title">猫中文版</div>
+                <div class="show-meta">
+                  <div class="meta-row"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 2026年6月20日 周五 19:30</div>
+                  <div class="meta-row"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> 三亚千古情大剧院</div>
+                </div>
               </div>
-              <div class="detail-row">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                三亚千古情大剧院
+            </div>
+            <div class="ticket-seats">
+              <div class="seats-header">
+                <div class="seats-title">座位信息</div>
+                <div class="seats-count">共1座</div>
               </div>
+              <div class="seat-tags">
+                <div class="seat-tag"><span class="seat-area">VIP区</span><span class="seat-num">2排8座</span></div>
+              </div>
+            </div>
+            <div class="ticket-tear"><div class="tear-line"></div></div>
+            <div class="ticket-qr">
+              <div class="qr-info">
+                <div class="order-no">订单号: <span>TK20260620001</span></div>
+                <div class="qr-hint">入场时请出示此二维码</div>
+              </div>
+              <div class="qr-box"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#fff"/><rect x="5" y="5" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="8" y="8" width="19" height="19" rx="1" fill="#fff"/><rect x="11" y="11" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="70" y="5" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="73" y="8" width="19" height="19" rx="1" fill="#fff"/><rect x="76" y="11" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="5" y="70" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="8" y="73" width="19" height="19" rx="1" fill="#fff"/><rect x="11" y="76" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="40" y="35" width="6" height="6" fill="#1A1A2E"/><rect x="55" y="35" width="6" height="6" fill="#1A1A2E"/><rect x="40" y="50" width="6" height="6" fill="#1A1A2E"/><rect x="55" y="50" width="6" height="6" fill="#1A1A2E"/><rect x="40" y="65" width="6" height="6" fill="#1A1A2E"/><rect x="70" y="75" width="6" height="6" fill="#1A1A2E"/><rect x="85" y="75" width="6" height="6" fill="#1A1A2E"/><rect x="40" y="80" width="6" height="6" fill="#1A1A2E"/><rect x="55" y="80" width="6" height="6" fill="#1A1A2E"/></svg></div>
+            </div>
+          </div>
+
+          <!-- Ticket 4: 红色娘子军 (1 seat) -->
+          <div class="ticket-card">
+            <div class="ticket-poster">
+              <img src="assets/cover-redarmy.jpg" alt="红色娘子军">
+              <div class="ticket-status-badge verify-pending"><span class="pulse-dot"></span> 待核销</div>
+              <div class="poster-content">
+                <div class="viewer-badge"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> 王海</div>
+                <div class="show-title">红色娘子军</div>
+                <div class="show-meta">
+                  <div class="meta-row"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 2026年7月8日 周三 20:00</div>
+                  <div class="meta-row"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> 海口人民大会堂</div>
+                </div>
+              </div>
+            </div>
+            <div class="ticket-seats">
+              <div class="seats-header">
+                <div class="seats-title">座位信息</div>
+                <div class="seats-count">共1座</div>
+              </div>
+              <div class="seat-tags">
+                <div class="seat-tag"><span class="seat-area">A区</span><span class="seat-num">1排6座</span></div>
+              </div>
+            </div>
+            <div class="ticket-tear"><div class="tear-line"></div></div>
+            <div class="ticket-qr">
+              <div class="qr-info">
+                <div class="order-no">订单号: <span>TK20260708001</span></div>
+                <div class="qr-hint">入场时请出示此二维码</div>
+              </div>
+              <div class="qr-box"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#fff"/><rect x="5" y="5" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="8" y="8" width="19" height="19" rx="1" fill="#fff"/><rect x="11" y="11" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="70" y="5" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="73" y="8" width="19" height="19" rx="1" fill="#fff"/><rect x="76" y="11" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="5" y="70" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="8" y="73" width="19" height="19" rx="1" fill="#fff"/><rect x="11" y="76" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="40" y="35" width="6" height="6" fill="#1A1A2E"/><rect x="55" y="35" width="6" height="6" fill="#1A1A2E"/><rect x="40" y="50" width="6" height="6" fill="#1A1A2E"/><rect x="55" y="50" width="6" height="6" fill="#1A1A2E"/><rect x="70" y="65" width="6" height="6" fill="#1A1A2E"/><rect x="40" y="65" width="6" height="6" fill="#1A1A2E"/><rect x="85" y="75" width="6" height="6" fill="#1A1A2E"/><rect x="40" y="80" width="6" height="6" fill="#1A1A2E"/><rect x="55" y="80" width="6" height="6" fill="#1A1A2E"/></svg></div>
             </div>
           </div>
         </div>
-        <div class="ticket-tear">
-          <div class="tear-line"></div>
+
+        <div id="usedTickets" class="ticket-group" style="display:none;">
+          <!-- Ticket 3: 交响音乐会椰风海韵 (1 seat, used) -->
+          <div class="ticket-card">
+            <div class="ticket-poster">
+              <img src="assets/cover-symphony.jpg" alt="交响音乐会椰风海韵">
+              <div class="ticket-status-badge verified"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> 已使用</div>
+              <div class="poster-content">
+                <div class="viewer-badge"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> 林小雅</div>
+                <div class="show-title">交响音乐会椰风海韵</div>
+                <div class="show-meta">
+                  <div class="meta-row"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 2026年5月18日 周日 15:00</div>
+                  <div class="meta-row"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> 海南省歌舞剧院</div>
+                </div>
+              </div>
+            </div>
+            <div class="ticket-seats">
+              <div class="seats-header">
+                <div class="seats-title">座位信息</div>
+                <div class="seats-count">共1座</div>
+              </div>
+              <div class="seat-tags">
+                <div class="seat-tag"><span class="seat-area">B区</span><span class="seat-num">5排12座</span></div>
+              </div>
+            </div>
+            <div class="ticket-tear"><div class="tear-line"></div></div>
+            <div class="ticket-qr">
+              <div class="qr-info">
+                <div class="order-no">订单号: <span>TK20260518001</span></div>
+                <div class="qr-hint">入场时请出示此二维码</div>
+              </div>
+              <div class="qr-box verified"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#fff"/><rect x="5" y="5" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="8" y="8" width="19" height="19" rx="1" fill="#fff"/><rect x="11" y="11" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="70" y="5" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="73" y="8" width="19" height="19" rx="1" fill="#fff"/><rect x="76" y="11" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="5" y="70" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="8" y="73" width="19" height="19" rx="1" fill="#fff"/><rect x="11" y="76" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="35" y="35" width="8" height="8" fill="#1A1A2E"/><rect x="50" y="35" width="8" height="8" fill="#1A1A2E"/><rect x="35" y="50" width="8" height="8" fill="#1A1A2E"/><rect x="50" y="50" width="8" height="8" fill="#1A1A2E"/><rect x="65" y="65" width="8" height="8" fill="#1A1A2E"/><rect x="80" y="75" width="8" height="8" fill="#1A1A2E"/><rect x="35" y="80" width="8" height="8" fill="#1A1A2E"/></svg></div>
+            </div>
+            <div class="ticket-comment-btn" onclick="openCommentModal('交响音乐会椰风海韵')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              写评论
+            </div>
+          </div>
         </div>
-        <div class="ticket-bottom">
-          <div class="seat-info">
-            <div class="seat-label">座位信息</div>
-            <div class="seat-list">
-              <span class="seat-tag">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                A排3座
-              </span>
-              <span class="seat-tag">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                A排4座
-              </span>
-            </div>
-            <div class="order-no-row">订单号: <span>HN20260408002</span></div>
-          </div>
-          <div class="qr-area">
-            <div class="qr-box">
-              <!-- QR Code Placeholder SVG -->
-              <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <rect width="100" height="100" fill="#fff"/>
-                <!-- QR code pattern simulation -->
-                <rect x="5" y="5" width="25" height="25" rx="2" fill="#0A1628"/>
-                <rect x="8" y="8" width="19" height="19" rx="1" fill="#fff"/>
-                <rect x="11" y="11" width="13" height="13" rx="1" fill="#0A1628"/>
-                <rect x="70" y="5" width="25" height="25" rx="2" fill="#0A1628"/>
-                <rect x="73" y="8" width="19" height="19" rx="1" fill="#fff"/>
-                <rect x="76" y="11" width="13" height="13" rx="1" fill="#0A1628"/>
-                <rect x="5" y="70" width="25" height="25" rx="2" fill="#0A1628"/>
-                <rect x="8" y="73" width="19" height="19" rx="1" fill="#fff"/>
-                <rect x="11" y="76" width="13" height="13" rx="1" fill="#0A1628"/>
-                <!-- Data modules -->
-                <rect x="35" y="5" width="5" height="5" fill="#0A1628"/>
-                <rect x="45" y="5" width="5" height="5" fill="#0A1628"/>
-                <rect x="55" y="5" width="5" height="5" fill="#0A1628"/>
-                <rect x="35" y="15" width="5" height="5" fill="#0A1628"/>
-                <rect x="50" y="15" width="5" height="5" fill="#0A1628"/>
-                <rect x="60" y="15" width="5" height="5" fill="#0A1628"/>
-                <rect x="35" y="25" width="5" height="5" fill="#0A1628"/>
-                <rect x="45" y="25" width="5" height="5" fill="#0A1628"/>
-                <rect x="55" y="25" width="5" height="5" fill="#0A1628"/>
-                <rect x="5" y="35" width="5" height="5" fill="#0A1628"/>
-                <rect x="15" y="35" width="5" height="5" fill="#0A1628"/>
-                <rect x="25" y="35" width="5" height="5" fill="#0A1628"/>
-                <rect x="40" y="35" width="5" height="5" fill="#0A1628"/>
-                <rect x="55" y="35" width="5" height="5" fill="#0A1628"/>
-                <rect x="70" y="35" width="5" height="5" fill="#0A1628"/>
-                <rect x="85" y="35" width="5" height="5" fill="#0A1628"/>
-                <rect x="5" y="45" width="5" height="5" fill="#0A1628"/>
-                <rect x="20" y="45" width="5" height="5" fill="#0A1628"/>
-                <rect x="35" y="45" width="5" height="5" fill="#0A1628"/>
-                <rect x="50" y="45" width="5" height="5" fill="#0A1628"/>
-                <rect x="65" y="45" width="5" height="5" fill="#0A1628"/>
-                <rect x="80" y="45" width="5" height="5" fill="#0A1628"/>
-                <rect x="90" y="45" width="5" height="5" fill="#0A1628"/>
-                <rect x="10" y="55" width="5" height="5" fill="#0A1628"/>
-                <rect x="25" y="55" width="5" height="5" fill="#0A1628"/>
-                <rect x="40" y="55" width="5" height="5" fill="#0A1628"/>
-                <rect x="60" y="55" width="5" height="5" fill="#0A1628"/>
-                <rect x="75" y="55" width="5" height="5" fill="#0A1628"/>
-                <rect x="90" y="55" width="5" height="5" fill="#0A1628"/>
-                <rect x="5" y="60" width="5" height="5" fill="#0A1628"/>
-                <rect x="35" y="60" width="5" height="5" fill="#0A1628"/>
-                <rect x="50" y="60" width="5" height="5" fill="#0A1628"/>
-                <rect x="65" y="60" width="5" height="5" fill="#0A1628"/>
-                <rect x="80" y="60" width="5" height="5" fill="#0A1628"/>
-                <rect x="35" y="70" width="5" height="5" fill="#0A1628"/>
-                <rect x="50" y="70" width="5" height="5" fill="#0A1628"/>
-                <rect x="60" y="70" width="5" height="5" fill="#0A1628"/>
-                <rect x="75" y="70" width="5" height="5" fill="#0A1628"/>
-                <rect x="90" y="70" width="5" height="5" fill="#0A1628"/>
-                <rect x="40" y="80" width="5" height="5" fill="#0A1628"/>
-                <rect x="55" y="80" width="5" height="5" fill="#0A1628"/>
-                <rect x="70" y="80" width="5" height="5" fill="#0A1628"/>
-                <rect x="85" y="80" width="5" height="5" fill="#0A1628"/>
-                <rect x="35" y="90" width="5" height="5" fill="#0A1628"/>
-                <rect x="50" y="90" width="5" height="5" fill="#0A1628"/>
-                <rect x="65" y="90" width="5" height="5" fill="#0A1628"/>
-                <rect x="80" y="90" width="5" height="5" fill="#0A1628"/>
-              </svg>
-            </div>
-            <span class="qr-label">扫码核销入场</span>
-          </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Seat Detail Modal -->
+  <div class="seat-modal-overlay" id="seatOverlay" onclick="closeSeatModal()"></div>
+  <div class="seat-modal" id="seatModal">
+    <div class="seat-modal-header">
+      <span class="seat-modal-title" id="seatModalTitle">全部座位</span>
+      <button class="seat-modal-close" onclick="closeSeatModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="seat-modal-body" id="seatModalBody">
+      <!-- Dynamic content -->
+    </div>
+  </div>
+
+  <!-- Comment Modal -->
+  <div class="modal-overlay" id="commentOverlay" onclick="closeCommentModal()"></div>
+  <div class="comment-modal" id="commentModal">
+    <div class="comment-header">
+      <button class="close-btn" onclick="closeCommentModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <span class="comment-title">写评论</span>
+      <button class="submit-btn" onclick="submitComment()">发送</button>
+    </div>
+    <div class="comment-body">
+      <div class="comment-show-name" id="commentShowName">演出名称</div>
+      <textarea class="comment-textarea" id="commentText" placeholder="分享您的观演体验..."></textarea>
+      <div class="comment-images" id="commentImages">
+        <div class="image-upload-btn" onclick="addImage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>添加图片</span>
         </div>
       </div>
-
-      <!-- Ticket 2: 待核销 -->
-      <div class="ticket-card theme-sunset">
-        <div class="ticket-top">
-          <div class="bg-gradient"></div>
-          <div class="bg-pattern"></div>
-          <div class="bg-decoration circle1"></div>
-          <div class="bg-decoration circle2"></div>
-          <div class="bg-decoration line1"></div>
-          <div class="ticket-status-badge verify-pending">
-            <span class="pulse-dot"></span>
-            待核销
-          </div>
-          <div class="content">
-            <span class="show-category">舞蹈</span>
-            <div class="show-title">芭蕾舞剧《天鹅湖》经典版</div>
-            <div class="show-details">
-              <div class="detail-row">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                2026年4月18日 周六 19:30
-              </div>
-              <div class="detail-row">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                海南省歌舞剧院
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="ticket-tear">
-          <div class="tear-line"></div>
-        </div>
-        <div class="ticket-bottom">
-          <div class="seat-info">
-            <div class="seat-label">座位信息</div>
-            <div class="seat-list">
-              <span class="seat-tag">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                B排7座
-              </span>
-            </div>
-            <div class="order-no-row">订单号: <span>HN20260407003</span></div>
-          </div>
-          <div class="qr-area">
-            <div class="qr-box">
-              <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <rect width="100" height="100" fill="#fff"/>
-                <rect x="5" y="5" width="25" height="25" rx="2" fill="#0A1628"/>
-                <rect x="8" y="8" width="19" height="19" rx="1" fill="#fff"/>
-                <rect x="11" y="11" width="13" height="13" rx="1" fill="#0A1628"/>
-                <rect x="70" y="5" width="25" height="25" rx="2" fill="#0A1628"/>
-                <rect x="73" y="8" width="19" height="19" rx="1" fill="#fff"/>
-                <rect x="76" y="11" width="13" height="13" rx="1" fill="#0A1628"/>
-                <rect x="5" y="70" width="25" height="25" rx="2" fill="#0A1628"/>
-                <rect x="8" y="73" width="19" height="19" rx="1" fill="#fff"/>
-                <rect x="11" y="76" width="13" height="13" rx="1" fill="#0A1628"/>
-                <rect x="35" y="5" width="5" height="5" fill="#0A1628"/>
-                <rect x="45" y="10" width="5" height="5" fill="#0A1628"/>
-                <rect x="55" y="5" width="5" height="5" fill="#0A1628"/>
-                <rect x="40" y="15" width="5" height="5" fill="#0A1628"/>
-                <rect x="55" y="15" width="5" height="5" fill="#0A1628"/>
-                <rect x="35" y="25" width="5" height="5" fill="#0A1628"/>
-                <rect x="50" y="20" width="5" height="5" fill="#0A1628"/>
-                <rect x="60" y="25" width="5" height="5" fill="#0A1628"/>
-                <rect x="5" y="35" width="5" height="5" fill="#0A1628"/>
-                <rect x="15" y="40" width="5" height="5" fill="#0A1628"/>
-                <rect x="25" y="35" width="5" height="5" fill="#0A1628"/>
-                <rect x="40" y="40" width="5" height="5" fill="#0A1628"/>
-                <rect x="55" y="35" width="5" height="5" fill="#0A1628"/>
-                <rect x="70" y="40" width="5" height="5" fill="#0A1628"/>
-                <rect x="85" y="35" width="5" height="5" fill="#0A1628"/>
-                <rect x="5" y="50" width="5" height="5" fill="#0A1628"/>
-                <rect x="20" y="45" width="5" height="5" fill="#0A1628"/>
-                <rect x="35" y="50" width="5" height="5" fill="#0A1628"/>
-                <rect x="50" y="45" width="5" height="5" fill="#0A1628"/>
-                <rect x="65" y="50" width="5" height="5" fill="#0A1628"/>
-                <rect x="80" y="45" width="5" height="5" fill="#0A1628"/>
-                <rect x="90" y="50" width="5" height="5" fill="#0A1628"/>
-                <rect x="10" y="55" width="5" height="5" fill="#0A1628"/>
-                <rect x="25" y="60" width="5" height="5" fill="#0A1628"/>
-                <rect x="40" y="55" width="5" height="5" fill="#0A1628"/>
-                <rect x="60" y="60" width="5" height="5" fill="#0A1628"/>
-                <rect x="75" y="55" width="5" height="5" fill="#0A1628"/>
-                <rect x="90" y="60" width="5" height="5" fill="#0A1628"/>
-                <rect x="5" y="65" width="5" height="5" fill="#0A1628"/>
-                <rect x="35" y="65" width="5" height="5" fill="#0A1628"/>
-                <rect x="50" y="70" width="5" height="5" fill="#0A1628"/>
-                <rect x="65" y="65" width="5" height="5" fill="#0A1628"/>
-                <rect x="80" y="70" width="5" height="5" fill="#0A1628"/>
-                <rect x="35" y="75" width="5" height="5" fill="#0A1628"/>
-                <rect x="50" y="80" width="5" height="5" fill="#0A1628"/>
-                <rect x="60" y="75" width="5" height="5" fill="#0A1628"/>
-                <rect x="75" y="80" width="5" height="5" fill="#0A1628"/>
-                <rect x="90" y="75" width="5" height="5" fill="#0A1628"/>
-                <rect x="40" y="85" width="5" height="5" fill="#0A1628"/>
-                <rect x="55" y="90" width="5" height="5" fill="#0A1628"/>
-                <rect x="70" y="85" width="5" height="5" fill="#0A1628"/>
-                <rect x="85" y="90" width="5" height="5" fill="#0A1628"/>
-              </svg>
-            </div>
-            <span class="qr-label">扫码核销入场</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Ticket 3: 已核销 -->
-      <div class="ticket-card theme-forest verified">
-        <div class="ticket-top">
-          <div class="bg-gradient"></div>
-          <div class="bg-pattern"></div>
-          <div class="bg-decoration circle1"></div>
-          <div class="bg-decoration circle2"></div>
-          <div class="bg-decoration line1"></div>
-          <div class="ticket-status-badge verified">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            已核销
-          </div>
-          <div class="content">
-            <span class="show-category">琼剧</span>
-            <div class="show-title">经典琼剧《红色娘子军》巡演</div>
-            <div class="show-details">
-              <div class="detail-row">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                2026年4月5日 周日 15:00
-              </div>
-              <div class="detail-row">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                海口人民大会堂
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="ticket-tear">
-          <div class="tear-line"></div>
-        </div>
-        <div class="ticket-bottom">
-          <div class="seat-info">
-            <div class="seat-label">座位信息</div>
-            <div class="seat-list">
-              <span class="seat-tag">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                C排5座
-              </span>
-              <span class="seat-tag">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                C排6座
-              </span>
-              <span class="seat-tag">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                C排7座
-              </span>
-            </div>
-            <div class="order-no-row">订单号: <span>HN20260401004</span></div>
-          </div>
-          <div class="qr-area">
-            <div class="qr-box">
-              <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <rect width="100" height="100" fill="#fff"/>
-                <rect x="5" y="5" width="25" height="25" rx="2" fill="#C8CDD8"/>
-                <rect x="8" y="8" width="19" height="19" rx="1" fill="#fff"/>
-                <rect x="11" y="11" width="13" height="13" rx="1" fill="#C8CDD8"/>
-                <rect x="70" y="5" width="25" height="25" rx="2" fill="#C8CDD8"/>
-                <rect x="73" y="8" width="19" height="19" rx="1" fill="#fff"/>
-                <rect x="76" y="11" width="13" height="13" rx="1" fill="#C8CDD8"/>
-                <rect x="5" y="70" width="25" height="25" rx="2" fill="#C8CDD8"/>
-                <rect x="8" y="73" width="19" height="19" rx="1" fill="#fff"/>
-                <rect x="11" y="76" width="13" height="13" rx="1" fill="#C8CDD8"/>
-                <rect x="35" y="5" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="45" y="10" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="55" y="5" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="40" y="15" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="55" y="15" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="35" y="25" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="50" y="20" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="60" y="25" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="5" y="35" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="15" y="40" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="25" y="35" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="40" y="40" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="55" y="35" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="70" y="40" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="85" y="35" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="5" y="50" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="20" y="45" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="35" y="50" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="50" y="45" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="65" y="50" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="80" y="45" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="90" y="50" width="5" height="5" fill="#C8CDD8"/>
-              </svg>
-            </div>
-            <span class="qr-label" style="color:#B0B5C3;">已使用</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Ticket 4: 已核销 -->
-      <div class="ticket-card theme-royal verified">
-        <div class="ticket-top">
-          <div class="bg-gradient"></div>
-          <div class="bg-pattern"></div>
-          <div class="bg-decoration circle1"></div>
-          <div class="bg-decoration circle2"></div>
-          <div class="bg-decoration line1"></div>
-          <div class="ticket-status-badge verified">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            已核销
-          </div>
-          <div class="content">
-            <span class="show-category">脱口秀</span>
-            <div class="show-title">海口脱口秀大会·春季专场</div>
-            <div class="show-details">
-              <div class="detail-row">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                2026年3月30日 周一 20:00
-              </div>
-              <div class="detail-row">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                观澜湖新城演艺空间
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="ticket-tear">
-          <div class="tear-line"></div>
-        </div>
-        <div class="ticket-bottom">
-          <div class="seat-info">
-            <div class="seat-label">座位信息</div>
-            <div class="seat-list">
-              <span class="seat-tag">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                前排2座
-              </span>
-              <span class="seat-tag">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                前排3座
-              </span>
-            </div>
-            <div class="order-no-row">订单号: <span>HN20260328005</span></div>
-          </div>
-          <div class="qr-area">
-            <div class="qr-box">
-              <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <rect width="100" height="100" fill="#fff"/>
-                <rect x="5" y="5" width="25" height="25" rx="2" fill="#C8CDD8"/>
-                <rect x="8" y="8" width="19" height="19" rx="1" fill="#fff"/>
-                <rect x="11" y="11" width="13" height="13" rx="1" fill="#C8CDD8"/>
-                <rect x="70" y="5" width="25" height="25" rx="2" fill="#C8CDD8"/>
-                <rect x="73" y="8" width="19" height="19" rx="1" fill="#fff"/>
-                <rect x="76" y="11" width="13" height="13" rx="1" fill="#C8CDD8"/>
-                <rect x="5" y="70" width="25" height="25" rx="2" fill="#C8CDD8"/>
-                <rect x="8" y="73" width="19" height="19" rx="1" fill="#fff"/>
-                <rect x="11" y="76" width="13" height="13" rx="1" fill="#C8CDD8"/>
-                <rect x="35" y="10" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="45" y="5" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="55" y="15" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="40" y="20" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="60" y="10" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="35" y="30" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="50" y="25" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="65" y="35" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="5" y="40" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="15" y="45" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="25" y="40" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="40" y="45" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="55" y="40" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="70" y="45" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="85" y="40" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="5" y="55" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="20" y="50" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="35" y="55" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="50" y="50" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="65" y="55" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="80" y="50" width="5" height="5" fill="#C8CDD8"/>
-                <rect x="90" y="55" width="5" height="5" fill="#C8CDD8"/>
-              </svg>
-            </div>
-            <span class="qr-label" style="color:#B0B5C3;">已使用</span>
-          </div>
-        </div>
-      </div>
-
     </div>
   </div>
 
 </div>
 
 <script>
-  // ==================== View Switching ====================
-  function switchView(view) {
-    const orderPage = document.getElementById('orderPage');
-    const ticketPage = document.getElementById('ticketPage');
-    const navTitle = document.getElementById('navTitle');
-    const navRightBtn = document.getElementById('navRightBtn');
-    const switchBtns = document.querySelectorAll('.switch-btn');
+function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location.href=decodeURIComponent(m[1]);else location.href=f}
 
-    switchBtns.forEach(btn => btn.classList.remove('active'));
+// ========== View Switching ==========
+function switchView(view) {
+  var orderPage = document.getElementById('orderPage');
+  var ticketPage = document.getElementById('ticketPage');
+  var navTitle = document.getElementById('navTitle');
+  var switchBtns = document.querySelectorAll('.switch-btn');
+  var indicator = document.getElementById('switchIndicator');
 
-    if (view === 'order') {
-      orderPage.classList.add('active');
-      ticketPage.classList.remove('active');
-      navTitle.textContent = '我的订单';
-      navRightBtn.style.display = 'none';
-      switchBtns[0].classList.add('active');
-    } else {
-      ticketPage.classList.add('active');
-      orderPage.classList.remove('active');
-      navTitle.textContent = '电子票夹';
-      navRightBtn.style.display = 'flex';
-      switchBtns[1].classList.add('active');
-    }
+  switchBtns.forEach(function(btn) { btn.classList.remove('active'); });
+
+  if (view === 'order') {
+    orderPage.classList.add('active');
+    ticketPage.classList.remove('active');
+    navTitle.textContent = '我的订单';
+    switchBtns[0].classList.add('active');
+    indicator.classList.remove('right');
+    animateStagger('.order-card');
+    updateTabIndicator();
+  } else {
+    ticketPage.classList.add('active');
+    orderPage.classList.remove('active');
+    navTitle.textContent = '电子票夹';
+    switchBtns[1].classList.add('active');
+    indicator.classList.add('right');
+    animateStagger('.ticket-card');
   }
+}
 
-  // ==================== Tab Switching ====================
-  function switchTab(tabEl, status) {
-    // Update active tab
-    document.querySelectorAll('.order-tabs .tab').forEach(t => t.classList.remove('active'));
-    tabEl.classList.add('active');
+// ========== Tab Switching ==========
+var currentTab = 'all';
 
-    const orderCards = document.querySelectorAll('.order-card');
-    const emptyState = document.getElementById('emptyState');
-    const orderList = document.getElementById('orderList');
-    let visibleCount = 0;
+function switchTab(status, tabEl) {
+  currentTab = status;
+  document.querySelectorAll('.order-tabs .tab').forEach(function(t) { t.classList.remove('active'); });
+  tabEl.classList.add('active');
+  updateTabIndicator();
 
-    orderCards.forEach(card => {
-      if (status === 'all' || card.dataset.status === status) {
-        card.style.display = 'block';
-        visibleCount++;
-      } else {
-        card.style.display = 'none';
-      }
-    });
+  var orderCards = document.querySelectorAll('.order-card');
+  var emptyState = document.getElementById('emptyState');
+  var orderList = document.getElementById('orderList');
+  var visibleCount = 0;
 
-    if (visibleCount === 0) {
-      emptyState.classList.add('show');
-      orderList.style.display = 'none';
+  orderCards.forEach(function(card) {
+    if (status === 'all' || card.dataset.status === status) {
+      card.style.display = 'block';
+      visibleCount++;
     } else {
-      emptyState.classList.remove('show');
-      orderList.style.display = 'flex';
+      card.style.display = 'none';
     }
+  });
+
+  if (visibleCount === 0) {
+    emptyState.classList.add('show');
+    orderList.style.display = 'none';
+  } else {
+    emptyState.classList.remove('show');
+    orderList.style.display = 'flex';
+    animateStagger('.order-card:not([style*="display: none"])');
   }
+}
+
+function updateTabIndicator() {
+  var activeTab = document.querySelector('.order-tabs .tab.active');
+  var indicator = document.getElementById('tabIndicator');
+  if (activeTab && indicator) {
+    indicator.style.left = activeTab.offsetLeft + 'px';
+    indicator.style.width = activeTab.offsetWidth + 'px';
+  }
+}
+
+// ========== Stagger Animation ==========
+function animateStagger(selector) {
+  var items = document.querySelectorAll(selector);
+  items.forEach(function(el) {
+    el.classList.remove('animate-in');
+  });
+  void document.body.offsetHeight;
+  items.forEach(function(el, i) {
+    setTimeout(function() {
+      el.classList.add('animate-in');
+    }, i * 80);
+  });
+}
+
+// ========== Initialize ==========
+document.addEventListener('DOMContentLoaded', function() {
+  updateTabIndicator();
+  animateStagger('.order-card');
+  
+  // Auto-switch to ticket view if URL has view=ticket
+  var params = new URLSearchParams(location.search);
+  if (params.get('view') === 'ticket') {
+    switchView('ticket');
+  }
+});
+
+window.addEventListener('resize', function() {
+  updateTabIndicator();
+});
+
+// ========== Ticket Tabs ==========
+var currentTicketTab = 'pending';
+
+function switchTicketTab(tab) {
+  currentTicketTab = tab;
+  var btns = document.querySelectorAll('.ticket-tabs .tab-btn');
+  var indicator = document.getElementById('ticketTabIndicator');
+  var pendingList = document.getElementById('pendingTickets');
+  var usedList = document.getElementById('usedTickets');
+
+  btns.forEach(function(btn) { btn.classList.remove('active'); });
+
+  if (tab === 'pending') {
+    btns[0].classList.add('active');
+    indicator.style.left = '0%';
+    indicator.style.width = '50%';
+    pendingList.style.display = 'flex';
+    usedList.style.display = 'none';
+  } else {
+    btns[1].classList.add('active');
+    indicator.style.left = '50%';
+    indicator.style.width = '50%';
+    pendingList.style.display = 'none';
+    usedList.style.display = 'flex';
+  }
+  animateStagger('.ticket-card');
+}
+
+// ========== Seat Modal ==========
+function openSeatModal(showName, seats) {
+  document.getElementById('seatModalTitle').textContent = showName + ' · 全部座位';
+  var body = document.getElementById('seatModalBody');
+  body.innerHTML = '';
+  seats.forEach(function(seat, i) {
+    body.innerHTML += '<div class="seat-modal-item"><span class="seat-modal-no">' + seat + '</span><span class="seat-modal-index">座位' + (i+1) + '</span></div>';
+  });
+  document.getElementById('seatOverlay').classList.add('active');
+  document.getElementById('seatModal').classList.add('active');
+}
+function closeSeatModal() {
+  document.getElementById('seatOverlay').classList.remove('active');
+  document.getElementById('seatModal').classList.remove('active');
+}
+
+// ========== Comment Modal ==========
+function openCommentModal(showName) {
+  document.getElementById('commentShowName').textContent = showName;
+  document.getElementById('commentOverlay').classList.add('active');
+  document.getElementById('commentModal').classList.add('active');
+}
+
+function closeCommentModal() {
+  document.getElementById('commentOverlay').classList.remove('active');
+  document.getElementById('commentModal').classList.remove('active');
+}
+
+function addImage() {
+  // 模拟添加图片
+  var container = document.getElementById('commentImages');
+  var img = document.createElement('img');
+  img.className = 'comment-image-preview';
+  img.src = 'https://picsum.photos/seed/comment' + Date.now() + '/80/80.jpg';
+  container.insertBefore(img, container.lastElementChild);
+}
+
+function submitComment() {
+  var text = document.getElementById('commentText').value.trim();
+  if (!text) {
+    showToast('请输入评论内容');
+    return;
+  }
+  closeCommentModal();
+  // 跳转到演出详情页评论tab
+  location.href = 'show-detail.html?from=order-ticket.html&tab=review';
+}
+
+function showToast(msg) {
+  var toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(function() { toast.classList.remove('show'); }, 2000);
+}
 </script>
 
 </body>

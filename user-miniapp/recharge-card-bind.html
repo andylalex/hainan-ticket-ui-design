@@ -37,12 +37,12 @@
         /* ========== Status Bar ========== */
         .status-bar {
             height: 44px;
-            background: linear-gradient(135deg, #0A1628 0%, #132240 100%);
+            background: #F5F6FA;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 20px;
-            color: #fff;
+            color: #1A1A2E;
             font-size: 12px;
             font-weight: 500;
         }
@@ -60,12 +60,13 @@
         /* ========== Navigation Bar ========== */
         .nav-bar {
             height: 48px;
-            background: linear-gradient(135deg, #0A1628 0%, #132240 100%);
+            background: #FFFFFF;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             padding: 0 16px;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
         }
 
         .nav-bar .back-btn {
@@ -84,12 +85,10 @@
             text-decoration: none;
         }
 
-        .nav-bar .back-btn:hover { background: rgba(255,255,255,0.1); }
-
         .nav-bar .back-btn svg {
             width: 22px;
             height: 22px;
-            stroke: #fff;
+            stroke: #1A1A2E;
             fill: none;
             stroke-width: 2;
             stroke-linecap: round;
@@ -97,7 +96,7 @@
         }
 
         .nav-bar .title {
-            color: #fff;
+            color: #1A1A2E;
             font-size: 17px;
             font-weight: 600;
         }
@@ -177,27 +176,51 @@
             margin-top: 6px;
         }
 
-        /* ========== Bind Button ========== */
-        .bind-btn {
-            width: 100%;
+        /* ========== Bind Buttons Row ========== */
+        .btn-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-row .bind-btn,
+        .btn-row .transfer-btn {
+            flex: 1;
+            min-width: 0;
             height: 46px;
-            background: linear-gradient(135deg, #D4A853, #E8C97A);
             border: none;
             border-radius: 12px;
-            color: #1A1A1A;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             font-family: inherit;
-            box-shadow: 0 4px 16px rgba(212,168,83,0.35);
             transition: all 0.2s;
         }
 
-        .bind-btn:active {
+        .btn-row .bind-btn {
+            background: linear-gradient(135deg, #D4A853, #E8C97A);
+            color: #1A1A1A;
+            box-shadow: 0 4px 16px rgba(212,168,83,0.35);
+        }
+
+        .btn-row .transfer-btn {
+            background: linear-gradient(135deg, #FF6B4A, #FF8A6A);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(255,107,74,0.35);
+        }
+
+        .btn-row .bind-btn:active,
+        .btn-row .transfer-btn:active {
             transform: scale(0.98);
         }
 
-        .bind-btn:disabled {
+        .btn-row .bind-btn:disabled {
+            background: #E0E0E0;
+            color: #999;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .btn-row .transfer-btn:disabled {
             background: #E0E0E0;
             color: #999;
             box-shadow: none;
@@ -215,6 +238,7 @@
             padding: 16px;
             border-bottom: 1px solid #F5F6FA;
             transition: background 0.15s;
+            position: relative;
         }
 
         .card-item:last-child {
@@ -307,6 +331,27 @@
             margin-right: 12px;
         }
 
+        /* ========== Card Transfer Small Button ========== */
+        .card-transfer-btn {
+            flex-shrink: 0;
+            margin-left: 8px;
+            padding: 4px 12px;
+            background: linear-gradient(135deg, #FF6B4A, #FF8A6A);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .card-transfer-btn:active {
+            transform: scale(0.95);
+        }
+
         /* ========== Empty State ========== */
         .empty-state {
             text-align: center;
@@ -347,6 +392,261 @@
             transform: translate(-50%, -50%) scale(1);
         }
 
+        /* ========== Password Modal ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%, 100%);
+            width: 100%;
+            max-width: 375px;
+            background: #fff;
+            border-radius: 20px 20px 0 0;
+            z-index: 2001;
+            transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+
+        .modal-bottom.show {
+            transform: translate(-50%, 0);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 20px 0;
+        }
+
+        .modal-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #0A1628;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #F5F6FA;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: #8E95A9;
+            transition: background 0.2s;
+        }
+
+        .modal-close:active {
+            background: #E8E8E8;
+        }
+
+        .modal-body {
+            padding: 24px 20px 20px;
+        }
+
+        .modal-desc {
+            font-size: 13px;
+            color: #8E95A9;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        /* ========== Password Dots Input ========== */
+        .password-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .password-dot {
+            width: 46px;
+            height: 52px;
+            border: 1.5px solid #E0E0E0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #0A1628;
+            background: #FAFBFD;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .password-dot.filled {
+            border-color: #D4A853;
+            background: #FFFEF8;
+        }
+
+        .password-dot.focused {
+            border-color: #D4A853;
+            box-shadow: 0 0 0 3px rgba(212, 168, 83, 0.15);
+        }
+
+        .password-dot .dot-cursor {
+            width: 2px;
+            height: 24px;
+            background: #D4A853;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .hidden-input {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* ========== Modal Confirm Button ========== */
+        .modal-confirm-btn {
+            width: 100%;
+            height: 48px;
+            background: linear-gradient(135deg, #D4A853, #E8C97A);
+            border: none;
+            border-radius: 12px;
+            color: #1A1A1A;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 4px 16px rgba(212,168,83,0.35);
+            transition: all 0.2s;
+        }
+
+        .modal-confirm-btn:active {
+            transform: scale(0.98);
+        }
+
+        .modal-confirm-btn:disabled {
+            background: #E0E0E0;
+            color: #999;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* ========== Card Select Modal ========== */
+        .card-select-list {
+            max-height: 240px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .card-select-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border: 1.5px solid #E8E8E8;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .card-select-item:active {
+            background: #FAFBFD;
+        }
+
+        .card-select-item.selected {
+            border-color: #D4A853;
+            background: #FFFEF8;
+        }
+
+        .card-select-item .select-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid #D8DAE0;
+            margin-right: 12px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .card-select-item.selected .select-icon {
+            border-color: #D4A853;
+            background: #D4A853;
+        }
+
+        .card-select-item.selected .select-icon::after {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: #fff;
+            border-radius: 50%;
+        }
+
+        .card-select-info {
+            flex: 1;
+        }
+
+        .card-select-number {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0A1628;
+        }
+
+        .card-select-amount {
+            font-size: 13px;
+            color: #D4A853;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* ========== Confirm Modal ========== */
+        .confirm-modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300;
+            opacity: 0; visibility: hidden; transition: all 0.3s;
+        }
+        .confirm-modal-overlay.active { opacity: 1; visibility: visible; }
+        .confirm-modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9);
+            width: 280px; background: #fff; border-radius: 16px; z-index: 301;
+            opacity: 0; visibility: hidden; transition: all 0.25s ease;
+            text-align: center; overflow: hidden;
+        }
+        .confirm-modal.active { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+        .confirm-modal-body { padding: 24px 20px 16px; }
+        .confirm-modal-body .confirm-icon { margin-bottom: 12px; }
+        .confirm-modal-body .confirm-title { font-size: 16px; font-weight: 700; color: #1A1A2E; margin-bottom: 8px; }
+        .confirm-modal-body .confirm-desc { font-size: 13px; color: #8E95A9; line-height: 1.5; }
+        .confirm-modal-actions { display: flex; border-top: 1px solid #F0F1F5; }
+        .confirm-modal-actions button { flex: 1; padding: 14px; border: none; background: none; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
+        .confirm-modal-actions .confirm-btn-cancel { color: #8E95A9; border-right: 1px solid #F0F1F5; }
+        .confirm-modal-actions .confirm-btn-confirm { color: #FF6B4A; }
+        .confirm-modal-actions button:active { background: #F8F9FC; }
+
         /* ========== Animations ========== */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(16px); }
@@ -355,25 +655,64 @@
 
         .section:nth-of-type(1) { animation: fadeInUp 0.4s ease both; }
         .section:nth-of-type(2) { animation: fadeInUp 0.4s ease 0.1s both; }
-    
-    
-    
-    
-    
-    
   </style>
 </head>
 <body>
+<script>
+function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location.href=decodeURIComponent(m[1]);else location.href=f}
+</script>
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
+
+<!-- Password Modal Overlay -->
+<div class="modal-overlay" id="modalOverlay" onclick="closePasswordModal()"></div>
+
+<!-- Password Modal -->
+<div class="modal-bottom" id="passwordModal">
+    <div class="modal-header">
+        <span class="modal-title" id="modalTitle">绑定验证</span>
+        <button class="modal-close" onclick="closePasswordModal()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="modal-desc" id="modalDesc">请输入6位支付密码以完成操作</div>
+        <div class="password-dots" id="passwordDots" onclick="focusPasswordInput()">
+            <div class="password-dot" data-index="0"><div class="dot-cursor"></div></div>
+            <div class="password-dot" data-index="1"></div>
+            <div class="password-dot" data-index="2"></div>
+            <div class="password-dot" data-index="3"></div>
+            <div class="password-dot" data-index="4"></div>
+            <div class="password-dot" data-index="5"></div>
+        </div>
+        <input type="tel" class="hidden-input" id="hiddenPasswordInput" maxlength="6" autocomplete="off" inputmode="numeric">
+        <button class="modal-confirm-btn" id="modalConfirmBtn" disabled onclick="confirmPassword()">确认</button>
+    </div>
+</div>
+
+<!-- Card Select Modal -->
+<div class="modal-bottom" id="cardSelectModal">
+    <div class="modal-header">
+        <span class="modal-title">选择充值卡</span>
+        <button class="modal-close" onclick="closeCardSelectModal()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="modal-desc">请选择要转入钱包的充值卡</div>
+        <div class="card-select-list" id="cardSelectList">
+            <!-- dynamically populated -->
+        </div>
+        <button class="modal-confirm-btn" id="cardSelectConfirmBtn" disabled onclick="confirmTransfer()">确认转入</button>
+    </div>
+</div>
 
 <!-- Phone Frame -->
 <div class="phone-frame">
 
     <!-- Status Bar -->
     <div class="status-bar">
-    
         <span class="time">9:41</span>
         <div class="icons">
             <svg viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
@@ -383,9 +722,7 @@
 
     <!-- Navigation Bar -->
     <div class="nav-bar">
-        <a class="back-btn" href="profile.html">
-            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-        </a>
+        <a class="back-btn" href="javascript:void(0)" onclick="goBack('wallet.html')"><i class="fas fa-chevron-left"></i></a>
         <span class="title">充值卡绑定</span>
     </div>
 
@@ -403,7 +740,10 @@
                 <input type="text" class="form-input" placeholder="请输入充值卡卡号" id="cardNumber" maxlength="20">
                 <div class="form-hint">请刮开充值卡背面的涂层，输入16位卡号</div>
             </div>
-            <button class="bind-btn" onclick="bindCard()">绑定充值卡</button>
+            <div class="btn-row">
+                <button class="bind-btn" id="bindBtn" onclick="onBindBtnClick()">绑定充值卡</button>
+                <button class="transfer-btn" id="transferBtn" onclick="onTransferBtnClick()">转入钱包</button>
+            </div>
         </div>
     </div>
 
@@ -415,9 +755,9 @@
                 已绑定充值卡
             </span>
         </div>
-        <div class="card-list">
-            <!-- Card 1 - Active -->
-            <div class="card-item">
+        <div class="card-list" id="cardList">
+            <!-- Card 1 - Active with balance -->
+            <div class="card-item" data-status="active" data-balance="200">
                 <div class="card-icon active">
                     <i class="fas fa-credit-card"></i>
                 </div>
@@ -429,10 +769,11 @@
                 </div>
                 <div class="card-amount">&yen;200</div>
                 <span class="card-status active">已激活</span>
+                <button class="card-transfer-btn" onclick="onCardTransferClick(this)">转入</button>
             </div>
 
             <!-- Card 2 - Used -->
-            <div class="card-item">
+            <div class="card-item" data-status="used" data-balance="0">
                 <div class="card-icon used">
                     <i class="fas fa-credit-card"></i>
                 </div>
@@ -446,8 +787,8 @@
                 <span class="card-status used">已使用</span>
             </div>
 
-            <!-- Card 3 - Active -->
-            <div class="card-item">
+            <!-- Card 3 - Active with balance -->
+            <div class="card-item" data-status="active" data-balance="500">
                 <div class="card-icon active">
                     <i class="fas fa-credit-card"></i>
                 </div>
@@ -459,10 +800,11 @@
                 </div>
                 <div class="card-amount">&yen;500</div>
                 <span class="card-status active">已激活</span>
+                <button class="card-transfer-btn" onclick="onCardTransferClick(this)">转入</button>
             </div>
 
             <!-- Card 4 - Expired -->
-            <div class="card-item">
+            <div class="card-item" data-status="expired" data-balance="0">
                 <div class="card-icon expired">
                     <i class="fas fa-credit-card"></i>
                 </div>
@@ -478,16 +820,121 @@
         </div>
     </div>
 
+<!-- Transfer Confirm Modal -->
+<div class="confirm-modal-overlay" id="confirmOverlay" onclick="closeConfirmModal()"></div>
+<div class="confirm-modal" id="confirmModal">
+  <div class="confirm-modal-body">
+    <div class="confirm-icon"><i class="fas fa-wallet" style="font-size:28px;color:#FF6B4A;"></i></div>
+    <div class="confirm-title">确认转入钱包？</div>
+    <div class="confirm-desc">充值卡 <span id="confirmCardNo"></span> 的余额 <span id="confirmAmount" style="color:#FF6B4A;font-weight:700;"></span> 将转入您的钱包</div>
+  </div>
+  <div class="confirm-modal-actions">
+    <button class="confirm-btn-cancel" onclick="closeConfirmModal()">取消</button>
+    <button class="confirm-btn-confirm" onclick="executeConfirmTransfer()">确认转入</button>
+  </div>
 </div>
 
 <script>
+    // ========== State ==========
+    let pendingAction = null; // 'bind' | 'transfer' | 'card-transfer'
+    let pendingCardItem = null; // for card-transfer action
+    let passwordValue = '';
+    let selectedCardForTransfer = null;
+    let pendingTransferCard = null;
+
     // ========== Card Number Format ==========
     document.getElementById('cardNumber').addEventListener('input', function(e) {
         this.value = this.value.replace(/[^0-9A-Za-z]/g, '').toUpperCase();
     });
 
-    // ========== Bind Card ==========
-    function bindCard() {
+    // ========== Hidden Password Input ==========
+    const hiddenInput = document.getElementById('hiddenPasswordInput');
+    const passwordDots = document.querySelectorAll('#passwordDots .password-dot');
+    const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+
+    hiddenInput.addEventListener('input', function() {
+        // Only allow digits
+        this.value = this.value.replace(/[^0-9]/g, '');
+        passwordValue = this.value;
+        updatePasswordDots();
+        modalConfirmBtn.disabled = passwordValue.length < 6;
+    });
+
+    function focusPasswordInput() {
+        hiddenInput.focus();
+    }
+
+    function updatePasswordDots() {
+        passwordDots.forEach((dot, i) => {
+            dot.innerHTML = '';
+            dot.classList.remove('filled', 'focused');
+            if (i < passwordValue.length) {
+                dot.classList.add('filled');
+                // Show a filled circle instead of the actual digit
+                const circle = document.createElement('div');
+                circle.style.cssText = 'width: 12px; height: 12px; background: #0A1628; border-radius: 50%;';
+                dot.appendChild(circle);
+            } else if (i === passwordValue.length) {
+                dot.classList.add('focused');
+                const cursor = document.createElement('div');
+                cursor.className = 'dot-cursor';
+                dot.appendChild(cursor);
+            }
+        });
+    }
+
+    // ========== Password Modal ==========
+    function openPasswordModal(title, action, cardItem) {
+        pendingAction = action;
+        pendingCardItem = cardItem || null;
+        passwordValue = '';
+        hiddenInput.value = '';
+        modalConfirmBtn.disabled = true;
+
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalDesc').textContent = '请输入充值卡上的6位密码';
+
+        updatePasswordDots();
+
+        document.getElementById('modalOverlay').classList.add('show');
+        document.getElementById('passwordModal').classList.add('show');
+
+        setTimeout(() => hiddenInput.focus(), 400);
+    }
+
+    function closePasswordModal() {
+        document.getElementById('modalOverlay').classList.remove('show');
+        document.getElementById('passwordModal').classList.remove('show');
+        passwordValue = '';
+        hiddenInput.value = '';
+        updatePasswordDots();
+        pendingAction = null;
+        pendingCardItem = null;
+    }
+
+    function confirmPassword() {
+        if (passwordValue.length < 6) return;
+
+        const btn = modalConfirmBtn;
+        btn.disabled = true;
+        btn.textContent = '验证中...';
+
+        setTimeout(() => {
+            closePasswordModal();
+            btn.textContent = '确认';
+
+            if (pendingAction === 'bind') {
+                executeBindCard();
+            } else if (pendingAction === 'transfer') {
+                openCardSelectModal();
+            } else if (pendingAction === 'card-transfer') {
+                executeCardTransfer(pendingCardItem);
+            }
+        }, 800);
+    }
+
+    // ========== Bind Button Click ==========
+    function onBindBtnClick() {
         const cardNumber = document.getElementById('cardNumber').value.trim();
         if (!cardNumber) {
             showToast('请输入充值卡号');
@@ -497,20 +944,62 @@
             showToast('请输入完整的充值卡号');
             return;
         }
+        openPasswordModal('绑定验证', 'bind');
+    }
 
-        const btn = document.querySelector('.bind-btn');
+    // ========== Transfer Button Click (top area) ==========
+    function onTransferBtnClick() {
+        // Check if there are active cards with balance
+        const activeCards = getActiveCardsWithBalance();
+        if (activeCards.length === 0) {
+            showToast('没有可转入的充值卡');
+            return;
+        }
+        openPasswordModal('转入验证', 'transfer');
+    }
+
+    // ========== Card Transfer Click (from card list) ==========
+    function onCardTransferClick(btn) {
+        const cardItem = btn.closest('.card-item');
+        const cardNo = cardItem.querySelector('.card-number').textContent;
+        const balance = cardItem.getAttribute('data-balance');
+        pendingTransferCard = cardItem;
+        document.getElementById('confirmCardNo').textContent = cardNo;
+        document.getElementById('confirmAmount').textContent = '¥' + balance;
+        document.getElementById('confirmOverlay').classList.add('active');
+        document.getElementById('confirmModal').classList.add('active');
+    }
+
+    function closeConfirmModal() {
+        document.getElementById('confirmOverlay').classList.remove('active');
+        document.getElementById('confirmModal').classList.remove('active');
+        pendingTransferCard = null;
+    }
+
+    function executeConfirmTransfer() {
+        if (pendingTransferCard) {
+            executeCardTransfer(pendingTransferCard);
+        }
+        closeConfirmModal();
+    }
+
+    // ========== Execute Bind Card ==========
+    function executeBindCard() {
+        const cardNumber = document.getElementById('cardNumber').value.trim();
+        const btn = document.getElementById('bindBtn');
         btn.disabled = true;
         btn.textContent = '绑定中...';
 
         setTimeout(() => {
-            // Add new card to list
-            const list = document.querySelector('.card-list');
+            const list = document.getElementById('cardList');
             const lastFour = cardNumber.slice(-4);
             const masked = '**** **** **** ' + lastFour;
             const today = new Date().toISOString().split('T')[0];
 
             const newItem = document.createElement('div');
             newItem.className = 'card-item';
+            newItem.setAttribute('data-status', 'active');
+            newItem.setAttribute('data-balance', '0');
             newItem.style.animation = 'fadeInUp 0.3s ease both';
             newItem.innerHTML = `
                 <div class="card-icon active">
@@ -532,6 +1021,136 @@
             btn.textContent = '绑定充值卡';
             showToast('充值卡绑定成功');
         }, 1200);
+    }
+
+    // ========== Get Active Cards With Balance ==========
+    function getActiveCardsWithBalance() {
+        const items = document.querySelectorAll('#cardList .card-item');
+        const cards = [];
+        items.forEach(item => {
+            const status = item.getAttribute('data-status');
+            const balance = parseFloat(item.getAttribute('data-balance')) || 0;
+            if (status === 'active' && balance > 0) {
+                const number = item.querySelector('.card-number').textContent;
+                const amount = item.querySelector('.card-amount').textContent;
+                cards.push({ element: item, number, amount, balance });
+            }
+        });
+        return cards;
+    }
+
+    // ========== Card Select Modal ==========
+    function openCardSelectModal() {
+        selectedCardForTransfer = null;
+        const cards = getActiveCardsWithBalance();
+        const listEl = document.getElementById('cardSelectList');
+        const confirmBtn = document.getElementById('cardSelectConfirmBtn');
+        confirmBtn.disabled = true;
+
+        if (cards.length === 0) {
+            listEl.innerHTML = '<div class="empty-state"><div class="empty-text">没有可转入的充值卡</div></div>';
+        } else {
+            listEl.innerHTML = cards.map((card, i) => `
+                <div class="card-select-item" data-index="${i}" onclick="selectCard(this, ${i})">
+                    <div class="select-icon"></div>
+                    <div class="card-select-info">
+                        <div class="card-select-number">${card.number}</div>
+                        <div class="card-select-amount">${card.amount}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('modalOverlay').classList.add('show');
+        document.getElementById('cardSelectModal').classList.add('show');
+    }
+
+    function closeCardSelectModal() {
+        document.getElementById('modalOverlay').classList.remove('show');
+        document.getElementById('cardSelectModal').classList.remove('show');
+        selectedCardForTransfer = null;
+    }
+
+    function selectCard(el, index) {
+        // Deselect all
+        document.querySelectorAll('#cardSelectList .card-select-item').forEach(item => {
+            item.classList.remove('selected');
+        });
+        el.classList.add('selected');
+        selectedCardForTransfer = index;
+        document.getElementById('cardSelectConfirmBtn').disabled = false;
+    }
+
+    function confirmTransfer() {
+        if (selectedCardForTransfer === null) return;
+
+        const cards = getActiveCardsWithBalance();
+        const card = cards[selectedCardForTransfer];
+        if (!card) return;
+
+        const btn = document.getElementById('cardSelectConfirmBtn');
+        btn.disabled = true;
+        btn.textContent = '转入中...';
+
+        setTimeout(() => {
+            // Mark card as used
+            const item = card.element;
+            item.setAttribute('data-status', 'used');
+            item.setAttribute('data-balance', '0');
+
+            // Update visual
+            const icon = item.querySelector('.card-icon');
+            icon.className = 'card-icon used';
+
+            const statusEl = item.querySelector('.card-status');
+            statusEl.className = 'card-status used';
+            statusEl.textContent = '已使用';
+
+            const amountEl = item.querySelector('.card-amount');
+            amountEl.style.color = '#8E95A9';
+
+            // Remove transfer button
+            const transferBtn = item.querySelector('.card-transfer-btn');
+            if (transferBtn) transferBtn.remove();
+
+            closeCardSelectModal();
+            btn.textContent = '确认转入';
+            showToast('充值卡金额已转入钱包');
+        }, 1200);
+    }
+
+    // ========== Execute Card Transfer (from card list button) ==========
+    function executeCardTransfer(cardItem) {
+        const status = cardItem.getAttribute('data-status');
+        const balance = parseFloat(cardItem.getAttribute('data-balance')) || 0;
+
+        if (status !== 'active' || balance <= 0) {
+            showToast('该卡无法转入');
+            return;
+        }
+
+        // Directly transfer (already verified password)
+        const amountEl = cardItem.querySelector('.card-amount');
+        const originalAmount = amountEl.textContent;
+
+        // Mark card as used
+        cardItem.setAttribute('data-status', 'used');
+        cardItem.setAttribute('data-balance', '0');
+
+        const icon = cardItem.querySelector('.card-icon');
+        icon.className = 'card-icon used';
+
+        const statusEl = cardItem.querySelector('.card-status');
+        statusEl.className = 'card-status used';
+        statusEl.textContent = '已使用';
+
+        amountEl.style.color = '#8E95A9';
+
+        // Remove transfer button
+        const transferBtn = cardItem.querySelector('.card-transfer-btn');
+        if (transferBtn) transferBtn.remove();
+
+        showToast('充值卡金额已转入钱包');
     }
 
     // ========== Toast ==========

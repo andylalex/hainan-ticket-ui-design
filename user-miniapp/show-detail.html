@@ -706,6 +706,24 @@ body {
 
 .review-item:last-child { border-bottom: none; }
 
+.review-item.pending-review {
+  background: linear-gradient(135deg, rgba(255,107,74,0.04), rgba(212,168,83,0.04));
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border-bottom: none;
+}
+.review-item.pending-review .pending-badge {
+  display: inline-block;
+  background: #FF6B4A;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-right: 6px;
+}
+
 .review-item .review-header {
   display: flex;
   align-items: center;
@@ -1218,6 +1236,9 @@ body {
 </style>
 </head>
 <body>
+<script>
+function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location.href=decodeURIComponent(m[1]);else location.href=f}
+</script>
 
   <!-- Toast -->
   <div class="toast" id="toast"></div>
@@ -1388,6 +1409,25 @@ body {
 
         <!-- Tab: Review -->
         <div class="tab-content" id="tabReview">
+
+          <!-- 待审核评论 -->
+          <div class="review-item pending-review">
+            <div class="review-header">
+              <div class="avatar"><img src="https://picsum.photos/seed/avatar-pending/72/72" alt="用户头像"></div>
+              <div class="reviewer-info">
+                <div class="reviewer-name">林小雅</div>
+              </div>
+              <div class="review-time">
+                <span class="pending-badge">待审核</span>
+                刚刚
+              </div>
+            </div>
+            <div class="review-text">交响乐团的演奏太精彩了，椰风海韵的主题非常契合海南的氛围，整场演出让人陶醉其中。</div>
+            <div class="review-images">
+              <img src="https://picsum.photos/seed/pending-img1/144/144" alt="评论图片">
+              <img src="https://picsum.photos/seed/pending-img2/144/144" alt="评论图片">
+            </div>
+          </div>
 
           <div class="review-item">
             <div class="review-header">
@@ -1578,9 +1618,19 @@ function selectSession(el) {
 function switchTab(btn, tabId) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
   document.getElementById(tabId).classList.add('active');
 }
+
+// Auto-switch tab from URL parameter
+(function() {
+  var params = new URLSearchParams(location.search);
+  var tab = params.get('tab');
+  if (tab === 'review') {
+    var reviewBtn = document.querySelector('.tab-btn[onclick*="tabReview"]');
+    switchTab(reviewBtn, 'tabReview');
+  }
+})();
 
 // ========== Wishlist Toggle ==========
 function toggleWishlist(el) {

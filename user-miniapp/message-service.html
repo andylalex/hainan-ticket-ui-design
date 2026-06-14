@@ -597,6 +597,9 @@
   </style>
 </head>
 <body>
+<script>
+function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location.href=decodeURIComponent(m[1]);else location.href=f}
+</script>
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
@@ -621,7 +624,7 @@
         <div class="view active" id="messageListView">
             <!-- Nav Bar -->
             <div class="nav-bar">
-                <div class="back-btn" onclick="window.location.href='profile.html'">
+                <a class="back-btn" href="javascript:void(0)" onclick="goBack('profile.html')">
                     <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
                 </div>
                 <span class="title">消息中心</span>
@@ -854,7 +857,7 @@
         <div class="view hidden-right" id="messageDetailView">
             <!-- Nav Bar -->
             <div class="nav-bar">
-                <div class="back-btn" onclick="closeMessageDetail()">
+                <a class="back-btn" href="javascript:void(0)" onclick="goBack('profile.html')">
                     <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
                 </div>
                 <span class="title">消息详情</span>

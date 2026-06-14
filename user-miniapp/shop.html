@@ -812,6 +812,9 @@
   </style>
 </head>
 <body>
+<script>
+function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location.href=decodeURIComponent(m[1]);else location.href=f}
+</script>
 
 <div class="phone-frame">
   <!-- Status Bar -->
@@ -869,7 +872,7 @@
   <!-- ==================== VIEW 2: PRODUCT DETAIL ==================== -->
   <div class="view" id="viewDetail">
     <div class="detail-header">
-      <div class="back-btn" onclick="switchView('viewShop')">
+      <a class="back-btn" href="javascript:void(0)" onclick="goBack('home.html')">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </div>
       <span class="header-title">商品详情</span>
@@ -943,7 +946,7 @@
   <!-- ==================== VIEW 3: CART ==================== -->
   <div class="view" id="viewCart">
     <div class="cart-header">
-      <div class="back-btn" onclick="switchView('viewShop')">
+      <a class="back-btn" href="javascript:void(0)" onclick="goBack('home.html')">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
       </div>
       <span class="header-title">购物车</span>
