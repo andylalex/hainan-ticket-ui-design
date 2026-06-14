@@ -7739,96 +7739,101 @@ const changelogData = [
                 module: '演出详情',
                 time: '16:00',
                 content: `评论列表第一条新增待审核评论数据（含"待审核"角标和淡橙金背景高亮）；新增URL参数tab=review自动切换到评论tab功能`
-            },
-            {
-                page: 'user-miniapp/wallet.html',
-                pageName: '钱包',
-                module: '钱包',
-                time: '17:30',
-                content: `重构钱包页面：去掉冻结金额和限时活动Banner；充值区域直接展示在页面中（不做弹窗），含金额网格（50/100/200/500/1000/自定义）和确认充值按钮（带光泽扫过动画）；新增夏日充值季活动横幅（橙红到金色渐变背景，活动时间2026.06.01-06.30，全部x2倍成长值标签白底橙字18px超粗字体突出）；充值升级按钮链接改为钱包页面`
-            },
-            {
-                page: 'user-miniapp/password-settings.html',
-                pageName: '支付安全',
-                module: '支付安全',
-                time: '17:30',
-                content: `新增支付安全页面：浅色主题；支付密码状态卡片（已设置/未设置两种状态）；6位数字密码设置/修改弹窗（底部滑入，两行输入新密码+确认密码）；实体卡管理开关（开启/关闭实体会员卡）；安全提示区域`
-            },
-            {
-                page: 'user-miniapp/recharge-card-bind.html',
-                pageName: '充值卡绑定',
-                module: '充值卡绑定',
-                time: '17:30',
-                content: `顶栏改为浅色配色方案（白色背景+深色文字+底部分割线）；转入确认弹窗重设计为自定义弹窗（居中显示卡片信息和确认/取消按钮，替代系统confirm）`
-            },
-            {
-                page: 'user-miniapp/transaction-record.html',
-                pageName: '交易记录',
-                module: '交易记录',
-                time: '17:30',
-                content: `顶栏改为浅色配色方案；交易记录按类型分为"账户记录"和"充值卡记录"两个tab；切换到充值卡记录时隐藏累计统计`
-            },
-            {
-                page: 'user-miniapp/show-detail.html',
-                pageName: '演出详情',
-                module: '演出详情',
-                time: '18:00',
-                content: `移除hero区域右上角分享和更多按钮；立即购票按钮添加循环光泽扫过动画（shine keyframes）；新增底部分享弹窗（微信好友/朋友圈/复制链接/生成海报，底部滑入）`
-            },
-            {
-                page: 'user-miniapp/message-service.html',
-                pageName: '消息中心',
-                module: '消息通知',
-                time: '18:00',
-                content: `完全重构消息通知页面：浅色主题；3个分类tab（全部/系统/活动）带滑动指示条；消息列表含未读红点脉冲动画；点击消息标记已读；AI客服悬浮按钮和聊天弹窗（底部滑入，含示例对话）`
-            },
-            {
-                page: 'user-miniapp/order-ticket.html',
-                pageName: '电子票夹',
-                module: '电子票夹',
-                time: '18:00',
-                content: `座位信息改为横向标签布局（一行2个铺满容器）；超过3个座位时显示"展开更多"按钮，点击弹窗展示全部座位；每张票新增下载电子门票按钮`
-            },
-            {
-                page: 'user-miniapp/show-list-detail.html',
-                pageName: '演出列表',
-                module: '演出列表',
-                time: '18:00',
-                content: `顶栏移除返回按钮，标题左对齐`
-            },
-            {
-                page: 'user-miniapp/points.html',
-                pageName: '积分中心',
-                module: '积分体系',
-                time: '18:00',
-                content: `发布评论任务描述改为"每月限5次，本月已完成 2/5"；分享演出任务描述改为"每日限3次，今日已完成 3/3"`
-            },
+            }
+        ]
+    },
+    {
+        date: '2026-06-15',
+        entries: [
             {
                 page: 'user-miniapp/coupons.html',
                 pageName: '优惠券',
                 module: '优惠券',
-                time: '17:00',
+                time: '14:00',
                 content: `顶栏改为浅色配色方案（白色背景+深色文字+底部分割线）；修复标题无效字符`
             },
             {
                 page: 'user-miniapp/points-flow.html',
                 pageName: '积分明细',
                 module: '积分明细',
-                time: '17:00',
+                time: '14:00',
                 content: `顶栏改为浅色配色方案（白色背景+深色文字+底部分割线）；修复标题无效字符`
+            },
+            {
+                page: 'user-miniapp/wallet.html',
+                pageName: '钱包',
+                module: '钱包',
+                time: '14:30',
+                content: `重构钱包页面：去掉冻结金额和限时活动Banner；充值区域直接展示在页面中（不做弹窗），含金额网格和确认充值按钮（带光泽扫过动画）；新增夏日充值季活动横幅（橙红到金色渐变背景，全部x2倍成长值标签白底橙字18px超粗字体突出）；充值升级按钮链接改为钱包页面`
+            },
+            {
+                page: 'user-miniapp/password-settings.html',
+                pageName: '支付安全',
+                module: '支付安全',
+                time: '14:30',
+                content: `新增支付安全页面：浅色主题；支付密码状态卡片（已设置/未设置两种状态）；6位数字密码设置/修改弹窗（底部滑入，两行输入新密码+确认密码）；实体卡管理开关（开启/关闭实体会员卡）；安全提示区域`
+            },
+            {
+                page: 'user-miniapp/recharge-card-bind.html',
+                pageName: '充值卡绑定',
+                module: '充值卡绑定',
+                time: '14:30',
+                content: `顶栏改为浅色配色方案（白色背景+深色文字+底部分割线）；转入确认弹窗重设计为自定义弹窗（居中显示卡片信息和确认/取消按钮，替代系统confirm）`
+            },
+            {
+                page: 'user-miniapp/transaction-record.html',
+                pageName: '交易记录',
+                module: '交易记录',
+                time: '14:30',
+                content: `顶栏改为浅色配色方案；交易记录按类型分为"账户记录"和"充值卡记录"两个tab；切换到充值卡记录时隐藏累计统计`
+            },
+            {
+                page: 'user-miniapp/show-detail.html',
+                pageName: '演出详情',
+                module: '演出详情',
+                time: '15:00',
+                content: `移除hero区域右上角分享和更多按钮；立即购票按钮添加循环光泽扫过动画（shine keyframes）；新增底部分享弹窗（微信好友/朋友圈/复制链接/生成海报，底部滑入）`
+            },
+            {
+                page: 'user-miniapp/message-service.html',
+                pageName: '消息中心',
+                module: '消息通知',
+                time: '15:00',
+                content: `完全重构消息通知页面：浅色主题；3个分类tab（全部/系统/活动）带滑动指示条；消息列表含未读红点脉冲动画；点击消息标记已读；AI客服悬浮按钮和聊天弹窗（底部滑入，含示例对话）`
+            },
+            {
+                page: 'user-miniapp/order-ticket.html',
+                pageName: '电子票夹',
+                module: '电子票夹',
+                time: '15:00',
+                content: `每张票新增下载电子门票按钮`
+            },
+            {
+                page: 'user-miniapp/show-list-detail.html',
+                pageName: '演出列表',
+                module: '演出列表',
+                time: '15:00',
+                content: `顶栏移除返回按钮，标题左对齐`
+            },
+            {
+                page: 'user-miniapp/points.html',
+                pageName: '积分中心',
+                module: '积分体系',
+                time: '15:00',
+                content: `发布评论任务描述改为"每月限5次，本月已完成 2/5"；分享演出任务描述改为"每日限3次，今日已完成 3/3"`
             },
             {
                 page: 'admin-miniapp/admin-home-verify.html',
                 pageName: '管理员首页',
                 module: '管理员首页',
-                time: '19:00',
-                content: `移除"今日场次"旁"查看全部"链接和整个快捷操作区域；验票弹窗改为满屏宽度底部滑入式（max-height 85vh）；新增多座位核销弹窗（演出信息+订单信息+5个座位checkbox列表+全选+确认核销按钮）；自定义勾选框设计（22px圆角方形，选中橙红背景+白色对勾）；核销成功后显示结果弹窗并重置状态`
+                time: '16:00',
+                content: `移除"今日场次"旁"查看全部"链接和整个快捷操作区域；验票弹窗改为满屏宽度底部滑入式（max-height 85vh）；新增多座位核销弹窗（演出信息+订单信息+5个座位列表+全选+确认核销按钮）；自定义勾选框设计（22px圆角方形，选中橙红背景+白色对勾）；核销成功后显示结果弹窗并重置状态`
             },
             {
                 page: 'admin-miniapp/scan-verify.html',
                 pageName: '扫码验票',
                 module: '扫码验票',
-                time: '18:30',
+                time: '15:30',
                 content: `新增独立扫码验票页面：深色扫码界面（扫码框+四角呼吸动画+扫描线动画+模拟扫码按钮）；验票详情页（深蓝渐变演出信息卡片+5个座位核销列表+全选+确认核销按钮）；核销成功弹窗（绿色勾+缩放弹入动画）`
             }
         ]

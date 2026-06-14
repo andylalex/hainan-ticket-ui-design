@@ -414,9 +414,9 @@
 | user-miniapp/order-confirm.html | 确认订单 |
 | user-miniapp/my-packages.html | 我的券包 |
 | user-miniapp/physical-card-apply.html | 实体卡申请 |
-| user-miniapp/recharge-topup.html | 充值 |
 | user-miniapp/recharge-card-bind.html | 充值卡绑定 |
 | user-miniapp/transaction-record.html | 交易记录 |
+| user-miniapp/password-settings.html | 支付安全 |
 | user-miniapp/agent-miniapp.html | 代理中心 |
 | user-miniapp/agent-miniapp-commission.html | 佣金管理 |
 | user-miniapp/agent-miniapp-poster.html | 海报生成 |
@@ -446,4 +446,5 @@
 | pc-admin/agent-miniapp-stats.html | 代理统计 |
 | pc-admin/agent-miniapp-withdraw.html | 代理提现 |
 | admin-miniapp/admin-home-verify.html | 核验首页 |
+| admin-miniapp/scan-verify.html | 扫码验票 |
 | index.html | 设计总览 |
