@@ -954,7 +954,6 @@ body {
   transition: transform 0.2s;
 }
 
-.bottom-action .action-icon:hover { transform: scale(1.1); }
 .bottom-action .action-icon:active { transform: scale(0.95); }
 
 .bottom-action .action-icon i {
@@ -994,15 +993,14 @@ body {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: left 0.5s;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  animation: shine 2.5s infinite;
 }
 
-.bottom-action .buy-btn:hover::before { left: 100%; }
-
-.bottom-action .buy-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(255, 107, 74, 0.5);
+@keyframes shine {
+  0% { left: -100%; }
+  40% { left: 100%; }
+  100% { left: 100%; }
 }
 
 .bottom-action .buy-btn:active {
@@ -1123,6 +1121,39 @@ body {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+
+/* ========== Share Modal ========== */
+.share-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300;
+  opacity: 0; visibility: hidden; transition: all 0.3s;
+}
+.share-overlay.active { opacity: 1; visibility: visible; }
+.share-modal {
+  position: fixed; bottom: 0; left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  width: 100%; max-width: 375px; background: #fff;
+  border-radius: 20px 20px 0 0; z-index: 301;
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+}
+.share-modal.active { transform: translateX(-50%) translateY(0); }
+.share-modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.share-modal-header .title { font-size: 16px; font-weight: 700; color: #1A1A2E; }
+.share-modal-header .close { width: 28px; height: 28px; border-radius: 50%; background: #F5F6FA; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; color: #8E95A9; font-size: 14px; }
+.share-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+.share-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.share-item:active { transform: scale(0.95); }
+.share-item .icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.share-item .icon.wechat { background: #E8F9F5; color: #00C9A7; }
+.share-item .icon.moments { background: #E8F9F5; color: #07C160; }
+.share-item .icon.copy { background: #EBF0FF; color: #4A7AFF; }
+.share-item .icon.poster { background: #FFF0EB; color: #FF6B4A; }
+.share-item .label { font-size: 12px; color: #5A6178; }
+.share-cancel { width: 100%; height: 46px; border: none; background: #F5F6FA; border-radius: 12px; font-size: 15px; font-weight: 600; color: #1A1A2E; cursor: pointer; font-family: inherit; }
+.share-cancel:active { background: #E8E9ED; }
 
 /* ========== Scrollbar ========== */
 ::-webkit-scrollbar { width: 0; height: 0; }
@@ -1256,14 +1287,6 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
         <div class="hero-actions">
           <div class="hero-btn" onclick="window.location.href='show-list-detail.html'">
             <i class="fas fa-chevron-left"></i>
-          </div>
-          <div style="display:flex;gap:10px;">
-            <div class="hero-btn" onclick="showToast('已分享到朋友圈')">
-              <i class="fas fa-share-alt"></i>
-            </div>
-            <div class="hero-btn" onclick="showToast('更多操作')">
-              <i class="fas fa-ellipsis-v"></i>
-            </div>
           </div>
         </div>
         <div class="hero-bottom">
@@ -1572,7 +1595,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
         <i class="far fa-heart"></i>
         <span>心愿单</span>
       </div>
-      <div class="action-icon" onclick="showToast('已复制链接')">
+      <div class="action-icon" onclick="openShareModal()">
         <i class="fas fa-link"></i>
         <span>分享</span>
       </div>
@@ -1665,7 +1688,45 @@ function showToast(msg) {
     toast.classList.remove('show');
   }, 2000);
 }
+
+function openShareModal() {
+  document.getElementById('shareOverlay').classList.add('active');
+  document.getElementById('shareModal').classList.add('active');
+}
+
+function closeShareModal() {
+  document.getElementById('shareOverlay').classList.remove('active');
+  document.getElementById('shareModal').classList.remove('active');
+}
 </script>
+
+<!-- Share Modal -->
+<div class="share-overlay" id="shareOverlay" onclick="closeShareModal()"></div>
+<div class="share-modal" id="shareModal">
+  <div class="share-modal-header">
+    <span class="title">分享给好友</span>
+    <button class="close" onclick="closeShareModal()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="share-grid">
+    <div class="share-item" onclick="showToast('已唤起微信');closeShareModal();">
+      <div class="icon wechat"><i class="fab fa-weixin"></i></div>
+      <span class="label">微信好友</span>
+    </div>
+    <div class="share-item" onclick="showToast('已分享到朋友圈');closeShareModal();">
+      <div class="icon moments"><i class="fas fa-camera"></i></div>
+      <span class="label">朋友圈</span>
+    </div>
+    <div class="share-item" onclick="showToast('链接已复制');closeShareModal();">
+      <div class="icon copy"><i class="fas fa-link"></i></div>
+      <span class="label">复制链接</span>
+    </div>
+    <div class="share-item" onclick="showToast('海报生成中...');closeShareModal();">
+      <div class="icon poster"><i class="fas fa-image"></i></div>
+      <span class="label">生成海报</span>
+    </div>
+  </div>
+  <button class="share-cancel" onclick="closeShareModal()">取消</button>
+</div>
 
 </body>
 </html>

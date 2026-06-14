@@ -419,6 +419,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
     el.classList.add('active');
     document.getElementById('accountList').style.display = type === 'account' ? 'block' : 'none';
     document.getElementById('cardList').style.display = type === 'card' ? 'block' : 'none';
+    document.querySelector('.summary-bar').style.display = type === 'account' ? 'flex' : 'none';
   }
 </script>
 

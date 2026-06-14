@@ -662,6 +662,221 @@
     color: #0A1628;
   }
 
+  /* ===== Multi-Seat Verify Modal ===== */
+  .verify-modal-card {
+    background: #fff;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 340px;
+    max-height: 80vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    animation: modalIn 0.3s ease;
+  }
+
+  /* 覆盖 verifyModal 的 modal-overlay 样式 */
+  #verifyModal {
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0;
+  }
+  #verifyModal .verify-modal-card {
+    max-width: 100%;
+    width: 100%;
+    max-height: 85vh;
+    border-radius: 20px 20px 0 0;
+    animation: slideUp 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  /* 隐藏系统 checkbox */
+  .verify-seat-item .seat-check,
+  .verify-all-check input {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #D0D3DC;
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .verify-seat-item .seat-check:checked,
+  .verify-all-check input:checked {
+    background: #FF6B4A;
+    border-color: #FF6B4A;
+  }
+  .verify-seat-item .seat-check:checked::after,
+  .verify-all-check input:checked::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 6px;
+    height: 11px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  .verify-seat-item .seat-check:active,
+  .verify-all-check input:active {
+    transform: scale(0.9);
+  }
+  .verify-seat-item.verified .seat-check {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .verify-modal-header {
+    padding: 20px 20px 12px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .verify-show-info { flex: 1; min-width: 0; }
+  .verify-show-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0A1628;
+    margin-bottom: 4px;
+  }
+  .verify-show-meta {
+    font-size: 11px;
+    color: #8e95a9;
+    line-height: 1.4;
+  }
+  .verify-close-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: #F5F6FA;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .verify-close-btn svg { width: 16px; height: 16px; stroke: #8e95a9; fill: none; }
+  .verify-close-btn:active { background: #E8E9ED; }
+
+  .verify-order-info {
+    padding: 0 20px 12px;
+    display: flex;
+    gap: 16px;
+  }
+  .verify-order-row { display: flex; align-items: center; gap: 6px; }
+  .verify-order-row .lbl { font-size: 11px; color: #8e95a9; }
+  .verify-order-row .val { font-size: 12px; color: #0A1628; font-weight: 500; }
+
+  .verify-seat-section {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 20px;
+    min-height: 0;
+  }
+  .verify-seat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f1f5;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 2;
+  }
+  .verify-seat-title { font-size: 13px; font-weight: 600; color: #0A1628; }
+  .verify-all-check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #FF6B4A;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .verify-all-check input { width: 16px; height: 16px; accent-color: #FF6B4A; }
+
+  .verify-seat-list { padding: 4px 0; }
+  .verify-seat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f5f6fa;
+  }
+  .verify-seat-item:last-child { border-bottom: none; }
+  .verify-seat-item .seat-check {
+    width: 20px; height: 20px;
+    accent-color: #FF6B4A;
+    flex-shrink: 0;
+  }
+  .verify-seat-item .seat-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .verify-seat-item .seat-name { font-size: 14px; font-weight: 500; color: #0A1628; }
+  .verify-seat-item .seat-status {
+    font-size: 11px;
+    color: #8e95a9;
+    background: #F5F6FA;
+    padding: 2px 8px;
+    border-radius: 6px;
+  }
+  .verify-seat-item.verified .seat-name { color: #8e95a9; text-decoration: line-through; }
+  .verify-seat-item.verified .seat-status {
+    background: rgba(0,201,167,0.1);
+    color: #00C9A7;
+  }
+  .verify-seat-item.verified .seat-check { display: none; }
+
+  .verify-modal-footer {
+    padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+    border-top: 1px solid #f0f1f5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #fff;
+  }
+  .verify-selected-count {
+    font-size: 13px;
+    color: #8e95a9;
+  }
+  .verify-selected-count span {
+    color: #FF6B4A;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .verify-submit-btn {
+    height: 40px;
+    padding: 0 24px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #FF6B4A, #ff8a6e);
+    color: #fff;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Noto Sans SC', sans-serif;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(255,107,74,0.3);
+  }
+  .verify-submit-btn:active { transform: scale(0.97); }
+  .verify-submit-btn:disabled {
+    background: #d0d3dc;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
   /* ===== Manual Input Modal ===== */
   .input-modal-overlay {
     position: absolute;
@@ -787,7 +1002,6 @@
     <!-- Today Sessions -->
     <div class="section-title">
       <h3>今日场次</h3>
-      <span class="more">查看全部 &gt;</span>
     </div>
     <div class="session-list">
       <!-- Session 1 -->
@@ -842,52 +1056,6 @@
         </div>
         <button class="session-detail-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="section-title">
-      <h3>快捷操作</h3>
-    </div>
-    <div class="quick-actions">
-      <div class="action-grid">
-        <button class="action-btn primary" onclick="switchView('scan')">
-          <div class="action-icon">
-            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 7V5a2 2 0 012-2h2"/><path d="M17 3h2a2 2 0 012 2v2"/>
-              <path d="M21 17v2a2 2 0 01-2 2h-2"/><path d="M7 21H5a2 2 0 01-2-2v-2"/>
-              <line x1="7" y1="12" x2="17" y2="12"/>
-            </svg>
-          </div>
-          <div class="action-text">
-            <div class="title">扫码验票</div>
-            <div class="desc">扫描二维码快速核验门票</div>
-          </div>
-        </button>
-        <button class="action-btn secondary">
-          <div class="action-icon">
-            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/>
-            </svg>
-          </div>
-          <div class="action-text">
-            <div class="title">销售数据</div>
-            <div class="desc">查看销售统计</div>
-          </div>
-        </button>
-        <button class="action-btn secondary">
-          <div class="action-icon">
-            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-              <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
-              <line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-          </div>
-          <div class="action-text">
-            <div class="title">场次管理</div>
-            <div class="desc">管理演出场次</div>
-          </div>
         </button>
       </div>
     </div>
@@ -969,39 +1137,93 @@
       </div>
     </div>
 
-    <!-- Success Modal -->
-    <div class="modal-overlay" id="successModal">
+    <!-- Multi-Seat Verify Modal -->
+    <div class="modal-overlay" id="verifyModal">
+      <div class="verify-modal-card">
+        <div class="verify-modal-header">
+          <div class="verify-show-info">
+            <div class="verify-show-name">南海之梦歌舞秀</div>
+            <div class="verify-show-meta">2026年6月15日 周日 20:00 · 海口湾演艺中心</div>
+          </div>
+          <button class="verify-close-btn" onclick="closeModal('verifyModal')">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="verify-order-info">
+          <div class="verify-order-row">
+            <span class="lbl">订单号</span>
+            <span class="val">TK20260615001</span>
+          </div>
+          <div class="verify-order-row">
+            <span class="lbl">取票人</span>
+            <span class="val">张小雅 138****5678</span>
+          </div>
+        </div>
+        <div class="verify-seat-section">
+          <div class="verify-seat-header">
+            <span class="verify-seat-title">选择核销座位</span>
+            <label class="verify-all-check">
+              <input type="checkbox" id="selectAllSeats" checked onchange="toggleAllSeats()">
+              <span>全选</span>
+            </label>
+          </div>
+          <div class="verify-seat-list" id="verifySeatList">
+            <div class="verify-seat-item" data-seat="A区3排5座">
+              <input type="checkbox" class="seat-check" checked onchange="updateSelectedCount()">
+              <div class="seat-info">
+                <span class="seat-name">A区 3排5座</span>
+                <span class="seat-status">未核销</span>
+              </div>
+            </div>
+            <div class="verify-seat-item" data-seat="A区3排6座">
+              <input type="checkbox" class="seat-check" checked onchange="updateSelectedCount()">
+              <div class="seat-info">
+                <span class="seat-name">A区 3排6座</span>
+                <span class="seat-status">未核销</span>
+              </div>
+            </div>
+            <div class="verify-seat-item" data-seat="A区3排7座">
+              <input type="checkbox" class="seat-check" checked onchange="updateSelectedCount()">
+              <div class="seat-info">
+                <span class="seat-name">A区 3排7座</span>
+                <span class="seat-status">未核销</span>
+              </div>
+            </div>
+            <div class="verify-seat-item" data-seat="B区5排10座">
+              <input type="checkbox" class="seat-check" checked onchange="updateSelectedCount()">
+              <div class="seat-info">
+                <span class="seat-name">B区 5排10座</span>
+                <span class="seat-status">未核销</span>
+              </div>
+            </div>
+            <div class="verify-seat-item" data-seat="B区5排11座">
+              <input type="checkbox" class="seat-check" checked onchange="updateSelectedCount()">
+              <div class="seat-info">
+                <span class="seat-name">B区 5排11座</span>
+                <span class="seat-status">未核销</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="verify-modal-footer">
+          <div class="verify-selected-count">已选 <span id="selectedCount">5</span> 个座位</div>
+          <button class="verify-submit-btn" onclick="submitVerify()">确认核销</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Verify Result Modal -->
+    <div class="modal-overlay" id="resultModal">
       <div class="modal-card">
         <div class="modal-header">
           <div class="modal-icon success">
-            <svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="20 6 9 17 4 12"/>
-            </svg>
+            <svg viewBox="0 0 24 24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
           </div>
-          <div class="modal-title">验票成功</div>
-          <div class="modal-subtitle">门票已核销，请引导观众入场</div>
-        </div>
-        <div class="modal-body">
-          <div class="modal-info-row">
-            <span class="lbl">演出名称</span>
-            <span class="val">《天涯故事》大型原创舞剧</span>
-          </div>
-          <div class="modal-info-row">
-            <span class="lbl">座位信息</span>
-            <span class="val">A区 3排 12座</span>
-          </div>
-          <div class="modal-info-row">
-            <span class="lbl">演出时间</span>
-            <span class="val">14:30 - 16:00</span>
-          </div>
-          <div class="modal-info-row">
-            <span class="lbl">票号</span>
-            <span class="val">HN2026041000328</span>
-          </div>
+          <div class="modal-title">核销成功</div>
+          <div class="modal-subtitle">已核销 <span id="verifiedCount">5</span> 个座位</div>
         </div>
         <div class="modal-footer">
-          <button class="modal-btn secondary" onclick="closeModal('successModal')">关闭</button>
-          <button class="modal-btn primary" onclick="closeModal('successModal')">继续验票</button>
+          <button class="modal-btn primary" onclick="closeResultAndContinue()">继续验票</button>
         </div>
       </div>
     </div>
@@ -1094,32 +1316,71 @@
   function manualVerify() {
     const input = document.getElementById('ticketInput').value.trim();
     document.getElementById('inputModal').classList.remove('show');
-
     if (!input) return;
-
-    // Simulate: ticket ending in 156 shows fail, others show success
     setTimeout(() => {
       if (input.endsWith('156')) {
         document.getElementById('failModal').classList.add('show');
       } else {
-        document.getElementById('successModal').classList.add('show');
+        openVerifyModal();
       }
       document.getElementById('ticketInput').value = '';
     }, 500);
   }
 
-  // ===== Auto-scan simulation (click scan area to demo) =====
+  // ===== Auto-scan simulation =====
   document.querySelector('.scan-area').addEventListener('click', function() {
-    // Randomly show success or fail
-    const isFail = Math.random() < 0.15;
     setTimeout(() => {
-      if (isFail) {
-        document.getElementById('failModal').classList.add('show');
-      } else {
-        document.getElementById('successModal').classList.add('show');
-      }
+      openVerifyModal();
     }, 800);
   });
+
+  function openVerifyModal() {
+    document.getElementById('verifyModal').classList.add('show');
+    updateSelectedCount();
+  }
+
+  function toggleAllSeats() {
+    const allChecked = document.getElementById('selectAllSeats').checked;
+    document.querySelectorAll('#verifySeatList .seat-check:not([disabled])').forEach(cb => {
+      cb.checked = allChecked;
+    });
+    updateSelectedCount();
+  }
+
+  function updateSelectedCount() {
+    const checked = document.querySelectorAll('#verifySeatList .seat-check:checked').length;
+    const total = document.querySelectorAll('#verifySeatList .seat-check:not([disabled])').length;
+    document.getElementById('selectedCount').textContent = checked;
+    document.getElementById('selectAllSeats').checked = checked === total && total > 0;
+    document.querySelector('.verify-submit-btn').disabled = checked === 0;
+  }
+
+  function submitVerify() {
+    const checkedItems = document.querySelectorAll('#verifySeatList .seat-check:checked');
+    const count = checkedItems.length;
+    checkedItems.forEach(cb => {
+      const item = cb.closest('.verify-seat-item');
+      item.classList.add('verified');
+      cb.disabled = true;
+      item.querySelector('.seat-status').textContent = '已核销';
+    });
+    closeModal('verifyModal');
+    document.getElementById('verifiedCount').textContent = count;
+    document.getElementById('resultModal').classList.add('show');
+  }
+
+  function closeResultAndContinue() {
+    closeModal('resultModal');
+    // Reset for next scan
+    document.querySelectorAll('.verify-seat-item').forEach(item => {
+      item.classList.remove('verified');
+      const cb = item.querySelector('.seat-check');
+      cb.disabled = false;
+      cb.checked = true;
+      item.querySelector('.seat-status').textContent = '未核销';
+    });
+    document.getElementById('selectAllSeats').checked = true;
+  }
 
   // ===== Close modals on overlay click =====
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
