@@ -8019,6 +8019,32 @@ const changelogData = [
         ]
     },
     {
+        date: '2026-06-17',
+        entries: [
+            {
+                page: 'pc-admin/show-management.html',
+                pageName: '演出管理',
+                module: '演出项目',
+                time: '01:00',
+                content: `新建/编辑步骤2移除可用库存列，提示票价不可修改，限购数量编辑可修改；新建/编辑步骤3开票时间卡片改为上架与开票，合并上下架开关；列表状态更新为未开票/售票/已下架/已结束四种，7行数据覆盖全部状态；上下架按钮每次操作弹确认提示，图标统一为toggle-on/toggle-off`
+            },
+            {
+                page: 'user-miniapp/show-detail.html',
+                pageName: '演出详情',
+                module: '场次选择',
+                time: '01:00',
+                content: `场次状态按库存比例定义（>80%充足/>50%热卖中/>20%余票紧张/<=19%即将售罄/0已售罄），卡片未选中灰色背景，已售罄场次不可选`
+            },
+            {
+                page: 'pc-admin/marketing-center.html',
+                pageName: '营销中心',
+                module: '票品折扣',
+                time: '01:00',
+                content: `数据弹窗转化率改为受益用户，使用记录增加用户昵称和手机号（不脱敏），移除用户和实付字段，增加翻页；数据卡片增加带动订单金额展示`
+            }
+        ]
+    },
+    {
         date: '2026-06-11',
         entries: [
             {
