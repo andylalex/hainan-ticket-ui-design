@@ -3938,6 +3938,8 @@ table { border-collapse: collapse; width: 100%; }
 .status-tag.sold-out .dot { background: #EF4444; }
 .status-tag.ended { background: rgba(107,114,128,0.1); color: #6B7280; }
 .status-tag.ended .dot { background: #9CA3AF; }
+.status-tag.off-shelf { background: rgba(107,114,128,0.1); color: #6B7280; }
+.status-tag.off-shelf .dot { background: #9CA3AF; }
 
 /* Session data modal - chart */
 .session-chart-container {
@@ -6871,7 +6873,7 @@ select.form-select-sm,
                     <button class="action-btn view" onclick="switchToSessions('《天涯故事》大型歌舞秀')"><i class="fas fa-calendar-days"></i> 场次</button>
                     <button class="action-btn discount" onclick="goToShowDiscount('《天涯故事》大型歌舞秀')"><i class="fas fa-percent"></i> 票品折扣</button>
                     <button class="action-btn tag has-tag" style="--tag-color:#FF6B4A;--tag-bg:rgba(255,107,74,0.1);" onclick="openTagModal(this)"><i class="fas fa-tag"></i> 热门</button>
-                    <button class="action-btn offline" data-sold="180" onclick="toggleShowStatus(this)"><i class="fas fa-toggle-off"></i> 下架</button>
+                    <button class="action-btn on-shelf" data-sold="180" onclick="toggleShowStatus(this)"><i class="fas fa-toggle-on"></i> 下架</button>
                     <button class="action-btn delete"><i class="fas fa-trash"></i> 删除</button>
                   </div>
                 </td>
@@ -6913,14 +6915,14 @@ select.form-select-sm,
                   <div class="revenue-section-label">最近场次 05-03</div>
                   <div class="revenue-sub">¥288,000 / 已售 360</div>
                 </td>
-                <td><span class="status-tag selling"><span class="dot"></span>售票中</span></td>
+                <td><span class="status-tag ended"><span class="dot"></span>已结束</span></td>
                 <td>
                   <div class="action-btns">
                     <button class="action-btn edit" onclick="openEditShow(this)"><i class="fas fa-edit"></i> 编辑</button>
                     <button class="action-btn view" onclick="switchToSessions('椰风海韵·交响音乐会')"><i class="fas fa-calendar-days"></i> 场次</button>
                     <button class="action-btn discount" onclick="goToShowDiscount('椰风海韵·交响音乐会')"><i class="fas fa-percent"></i> 票品折扣</button>
                     <button class="action-btn tag has-tag" style="--tag-color:#10B981;--tag-bg:rgba(16,185,129,0.1);" onclick="openTagModal(this)"><i class="fas fa-tag"></i> 推荐</button>
-                    <button class="action-btn offline" data-sold="360" onclick="toggleShowStatus(this)"><i class="fas fa-toggle-off"></i> 下架</button>
+                    <button class="action-btn on-shelf" data-sold="360" onclick="toggleShowStatus(this)" disabled style="opacity:0.4;cursor:not-allowed;"><i class="fas fa-toggle-on"></i> 下架</button>
                     <button class="action-btn delete"><i class="fas fa-trash"></i> 删除</button>
                   </div>
                 </td>
@@ -6969,7 +6971,57 @@ select.form-select-sm,
                     <button class="action-btn view" onclick="switchToSessions('黎苗风情·民族舞蹈专场')"><i class="fas fa-calendar-days"></i> 场次</button>
                     <button class="action-btn discount" onclick="goToShowDiscount('黎苗风情·民族舞蹈专场')"><i class="fas fa-percent"></i> 票品折扣</button>
                     <button class="action-btn tag" onclick="openTagModal(this)"><i class="fas fa-tag"></i> 标签</button>
-                    <button class="action-btn toggle" data-sold="200" onclick="toggleShowStatus(this)"><i class="fas fa-toggle-on"></i> 上架</button>
+                    <button class="action-btn on-shelf" data-sold="0" onclick="toggleShowStatus(this)" disabled style="opacity:0.4;cursor:not-allowed;"><i class="fas fa-toggle-on"></i> 下架</button>
+                    <button class="action-btn delete"><i class="fas fa-trash"></i> 删除</button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Row 4: 未开票 -->
+              <tr>
+                <td>
+                  <div class="show-cell">
+                    <img class="show-thumb" src="https://picsum.photos/seed/show4/112/144" alt="">
+                    <div class="show-info">
+                      <div class="show-name">海南国际杂技艺术节</div>
+                      <span class="type-tag" style="margin-top:4px;">杂技</span>
+                      <div class="show-venue"><i class="fas fa-location-dot"></i>儋州文化广场 · 大剧场</div>
+                      <div class="show-date-range"><i class="fas fa-calendar"></i>2026-07-15 至 2026-07-20</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="zone-prices">
+                    <div class="zone-price-item"><span class="zone-label">VIP</span>¥580</div>
+                    <div class="zone-price-item"><span class="zone-label">A区</span>¥380</div>
+                    <div class="zone-price-item"><span class="zone-label">B区</span>¥180</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="revenue-section-label">累计</div>
+                  <div class="revenue-main">¥0</div>
+                  <div class="ticket-detail">
+                    <span class="ticket-sold">已售 0</span>
+                    <span class="ticket-total">/ 1,000</span>
+                    <span class="ticket-pct">0%</span>
+                  </div>
+                  <div class="progress-bar-inline-wrap" style="margin-top:4px;">
+                    <div class="progress-bar-inline">
+                      <div class="progress-bar-fill" style="width:0%;height:6px;"></div>
+                    </div>
+                  </div>
+                  <hr class="revenue-divider">
+                  <div class="revenue-section-label">开票时间</div>
+                  <div class="revenue-sub">2026-07-01 10:00</div>
+                </td>
+                <td><span class="status-tag not-opened"><span class="dot"></span>未开票</span></td>
+                <td>
+                  <div class="action-btns">
+                    <button class="action-btn edit" onclick="openEditShow(this)"><i class="fas fa-edit"></i> 编辑</button>
+                    <button class="action-btn view" onclick="switchToSessions('海南国际杂技艺术节')"><i class="fas fa-calendar-days"></i> 场次</button>
+                    <button class="action-btn discount" onclick="goToShowDiscount('海南国际杂技艺术节')"><i class="fas fa-percent"></i> 票品折扣</button>
+                    <button class="action-btn tag" onclick="openTagModal(this)"><i class="fas fa-tag"></i> 标签</button>
+                    <button class="action-btn on-shelf" data-sold="0" onclick="toggleShowStatus(this)"><i class="fas fa-toggle-on"></i> 下架</button>
                     <button class="action-btn delete"><i class="fas fa-trash"></i> 删除</button>
                   </div>
                 </td>
@@ -7013,14 +7065,62 @@ select.form-select-sm,
                   <div class="revenue-section-label">最近场次 04-22</div>
                   <div class="revenue-sub">¥412,000 / 已售 480</div>
                 </td>
-                <td><span class="status-tag selling"><span class="dot"></span>售票中</span></td>
+                <td><span class="status-tag ended"><span class="dot"></span>已结束</span></td>
                 <td>
                   <div class="action-btns">
                     <button class="action-btn edit" onclick="openEditShow(this)"><i class="fas fa-edit"></i> 编辑</button>
                     <button class="action-btn view" onclick="switchToSessions('爵士之夜·国际爵士音乐节')"><i class="fas fa-calendar-days"></i> 场次</button>
                     <button class="action-btn discount" onclick="goToShowDiscount('爵士之夜·国际爵士音乐节')"><i class="fas fa-percent"></i> 票品折扣</button>
                     <button class="action-btn tag has-tag" style="--tag-color:#F59E0B;--tag-bg:rgba(245,158,11,0.1);" onclick="openTagModal(this)"><i class="fas fa-tag"></i> 限时</button>
-                    <button class="action-btn offline" data-sold="480" onclick="toggleShowStatus(this)"><i class="fas fa-toggle-off"></i> 下架</button>
+                    <button class="action-btn on-shelf" data-sold="120" onclick="toggleShowStatus(this)" disabled style="opacity:0.4;cursor:not-allowed;"><i class="fas fa-toggle-on"></i> 下架</button>
+                    <button class="action-btn delete"><i class="fas fa-trash"></i> 删除</button>
+                  </div>
+                </td>
+              </tr>
+              <!-- Row 5.5: 已下架 -->
+              <tr>
+                <td>
+                  <div class="show-cell">
+                    <img class="show-thumb" src="https://picsum.photos/seed/show7/112/144" alt="">
+                    <div class="show-info">
+                      <div class="show-name">儿童剧《海底总动员》</div>
+                      <span class="type-tag" style="margin-top:4px;">儿童剧</span>
+                      <div class="show-venue"><i class="fas fa-location-dot"></i>海口湾演艺中心 · 小剧场</div>
+                      <div class="show-date-range"><i class="fas fa-calendar"></i>2026-06-01 至 2026-06-15</div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="zone-prices">
+                    <div class="zone-price-item"><span class="zone-label">A区</span>¥280</div>
+                    <div class="zone-price-item"><span class="zone-label">B区</span>¥180</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="revenue-section-label">累计</div>
+                  <div class="revenue-main">¥86,400</div>
+                  <div class="ticket-detail">
+                    <span class="ticket-sold">已售 360</span>
+                    <span class="ticket-total">/ 600</span>
+                    <span class="ticket-pct">60%</span>
+                  </div>
+                  <div class="progress-bar-inline-wrap" style="margin-top:4px;">
+                    <div class="progress-bar-inline">
+                      <div class="progress-bar-fill" style="width:60%;height:6px;"></div>
+                    </div>
+                  </div>
+                  <hr class="revenue-divider">
+                  <div class="revenue-section-label">最近场次 06-15</div>
+                  <div class="revenue-sub">¥28,800 / 已售 120</div>
+                </td>
+                <td><span class="status-tag off-shelf"><span class="dot"></span>已下架</span></td>
+                <td>
+                  <div class="action-btns">
+                    <button class="action-btn edit" onclick="openEditShow(this)"><i class="fas fa-edit"></i> 编辑</button>
+                    <button class="action-btn view" onclick="switchToSessions('儿童剧《海底总动员》')"><i class="fas fa-calendar-days"></i> 场次</button>
+                    <button class="action-btn discount" onclick="goToShowDiscount('儿童剧《海底总动员》')"><i class="fas fa-percent"></i> 票品折扣</button>
+                    <button class="action-btn tag" onclick="openTagModal(this)"><i class="fas fa-tag"></i> 标签</button>
+                    <button class="action-btn off-shelf" data-sold="0" onclick="toggleShowStatus(this)"><i class="fas fa-toggle-off"></i> 上架</button>
                     <button class="action-btn delete"><i class="fas fa-trash"></i> 删除</button>
                   </div>
                 </td>
@@ -7070,7 +7170,7 @@ select.form-select-sm,
                     <button class="action-btn view" onclick="switchToSessions('《红色娘子军》芭蕾舞剧')"><i class="fas fa-calendar-days"></i> 场次</button>
                     <button class="action-btn discount" onclick="goToShowDiscount('《红色娘子军》芭蕾舞剧')"><i class="fas fa-percent"></i> 票品折扣</button>
                     <button class="action-btn tag" onclick="openTagModal(this)"><i class="fas fa-tag"></i> 标签</button>
-                    <button class="action-btn toggle" data-sold="400" onclick="toggleShowStatus(this)"><i class="fas fa-toggle-on"></i> 上架</button>
+                    <button class="action-btn on-shelf" data-sold="0" onclick="toggleShowStatus(this)" disabled style="opacity:0.4;cursor:not-allowed;"><i class="fas fa-toggle-on"></i> 下架</button>
                     <button class="action-btn delete"><i class="fas fa-trash"></i> 删除</button>
                   </div>
                 </td>
@@ -8206,37 +8306,33 @@ select.form-select-sm,
           <thead>
             <tr>
               <th style="width:25%;">票档名称</th>
-              <th style="width:20%;">票价（元）</th>
-              <th style="width:20%;">可用库存</th>
-              <th style="width:15%;">限购数量</th>
-              <th style="width:20%;">分区座位数</th>
+              <th style="width:25%;">票价（元）</th>
+              <th style="width:25%;">限购数量</th>
+              <th style="width:25%;">分区座位数</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td><div style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:2px;background:#D4A853;"></span>VIP区</div></td>
               <td><input type="number" class="form-input" placeholder="0.00" value="1280"></td>
-              <td style="color:var(--text-muted);font-size:12px;">200 <span style="font-size:11px;">/ 200</span></td>
               <td><input type="number" class="form-input" placeholder="0" value="4"></td>
               <td style="color:var(--text-muted);font-size:12px;">200座</td>
             </tr>
             <tr>
               <td><div style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:2px;background:#3B82F6;"></span>A区</div></td>
               <td><input type="number" class="form-input" placeholder="0.00" value="680"></td>
-              <td style="color:var(--text-muted);font-size:12px;">400 <span style="font-size:11px;">/ 400</span></td>
               <td><input type="number" class="form-input" placeholder="0" value="6"></td>
               <td style="color:var(--text-muted);font-size:12px;">400座</td>
             </tr>
             <tr>
               <td><div style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:2px;background:#6B7280;"></span>B区</div></td>
               <td><input type="number" class="form-input" placeholder="0.00" value="380"></td>
-              <td style="color:var(--text-muted);font-size:12px;">600 <span style="font-size:11px;">/ 600</span></td>
               <td><input type="number" class="form-input" placeholder="0" value="8"></td>
               <td style="color:var(--text-muted);font-size:12px;">600座</td>
             </tr>
           </tbody>
         </table>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:8px;"><i class="fas fa-info-circle" style="margin-right:4px;"></i>票档名称和库存由场馆座位分区决定，仅可设置票价和限购数量</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:8px;"><i class="fas fa-info-circle" style="margin-right:4px;"></i>票档名称和库存由场馆座位分区决定，仅可设置票价和限购数量。演出创建后票价不可修改。</div>
 
         <div class="form-section-title" style="margin-top:24px;"><i class="fas fa-calendar-days"></i>场次配置</div>
         <div class="session-list" id="sessionList">
@@ -8259,12 +8355,12 @@ select.form-select-sm,
       <div class="step-content" id="showStep3">
         <div class="form-section-title"><i class="fas fa-tags"></i>票务策略</div>
 
-        <!-- 开票时间设置 -->
+        <!-- 上架与开票 -->
         <div class="ticket-policy-card">
           <div class="ticket-policy-header">
             <div class="ticket-policy-title">
               <i class="fas fa-clock"></i>
-              <span>开票时间设置</span>
+              <span>上架与开票</span>
               <span class="required" style="margin-left:4px;">*</span>
             </div>
           </div>
@@ -8276,11 +8372,15 @@ select.form-select-sm,
                 <div class="form-hint">所有场次统一在此时间开售票务</div>
               </div>
               <div class="form-group">
-                <label class="form-label">当前状态</label>
-                <div id="ticketOpenStatus" class="status-preview" style="padding:8px 12px;background:#F5F6FA;border-radius:8px;font-size:13px;color:var(--text-secondary);">
-                  <i class="fas fa-circle" style="color:var(--emerald);font-size:8px;margin-right:6px;"></i>待开票
+                <label class="form-label">上下架状态</label>
+                <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#F5F6FA;border-radius:8px;">
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="newShowOnSaleToggle" checked onchange="toggleNewShowOnSale()">
+                    <span class="toggle-slider"></span>
+                  </label>
+                  <span id="newShowOnSaleLabel" style="font-size:13px;color:var(--text-secondary);">上架</span>
                 </div>
-                <div class="form-hint">根据开票时间自动计算</div>
+                <div class="form-hint">上架后用户可在小程序端查看和购买该演出</div>
               </div>
             </div>
           </div>
@@ -8562,32 +8662,28 @@ select.form-select-sm,
           <thead>
             <tr>
               <th style="width:25%;">票档名称</th>
-              <th style="width:20%;">票价（元）</th>
-              <th style="width:20%;">可用库存</th>
-              <th style="width:15%;">限购数量</th>
-              <th style="width:20%;">分区座位数</th>
+              <th style="width:25%;">票价（元）</th>
+              <th style="width:25%;">限购数量</th>
+              <th style="width:25%;">分区座位数</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td><div style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:2px;background:#D4A853;"></span>VIP区</div></td>
               <td style="color:var(--text-primary);font-weight:600;">¥1,280</td>
-              <td style="color:var(--text-muted);font-size:12px;">200 <span style="font-size:11px;">/ 200</span></td>
-              <td style="color:var(--text-muted);font-size:12px;">4</td>
+              <td><input type="number" class="form-input" placeholder="0" value="4"></td>
               <td style="color:var(--text-muted);font-size:12px;">200座</td>
             </tr>
             <tr>
               <td><div style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:2px;background:#3B82F6;"></span>A区</div></td>
               <td style="color:var(--text-primary);font-weight:600;">¥680</td>
-              <td style="color:var(--text-muted);font-size:12px;">400 <span style="font-size:11px;">/ 400</span></td>
-              <td style="color:var(--text-muted);font-size:12px;">6</td>
+              <td><input type="number" class="form-input" placeholder="0" value="6"></td>
               <td style="color:var(--text-muted);font-size:12px;">400座</td>
             </tr>
             <tr>
               <td><div style="display:flex;align-items:center;gap:6px;"><span style="width:8px;height:8px;border-radius:2px;background:#6B7280;"></span>B区</div></td>
               <td style="color:var(--text-primary);font-weight:600;">¥380</td>
-              <td style="color:var(--text-muted);font-size:12px;">600 <span style="font-size:11px;">/ 600</span></td>
-              <td style="color:var(--text-muted);font-size:12px;">8</td>
+              <td><input type="number" class="form-input" placeholder="0" value="8"></td>
               <td style="color:var(--text-muted);font-size:12px;">600座</td>
             </tr>
           </tbody>
@@ -8610,12 +8706,12 @@ select.form-select-sm,
       <div class="step-content" id="editShowStep3">
         <div class="form-section-title"><i class="fas fa-tags"></i>票务策略</div>
 
-        <!-- 开票时间设置 -->
+        <!-- 上架与开票 -->
         <div class="ticket-policy-card">
           <div class="ticket-policy-header">
             <div class="ticket-policy-title">
               <i class="fas fa-clock"></i>
-              <span>开票时间设置</span>
+              <span>上架与开票</span>
               <span class="required" style="margin-left:4px;">*</span>
             </div>
           </div>
@@ -8627,11 +8723,15 @@ select.form-select-sm,
                 <div class="form-hint">所有场次统一在此时间开售票务</div>
               </div>
               <div class="form-group">
-                <label class="form-label">当前状态</label>
-                <div id="editTicketOpenStatus" class="status-preview" style="padding:8px 12px;background:#F5F6FA;border-radius:8px;font-size:13px;color:var(--text-secondary);">
-                  <i class="fas fa-circle" style="color:var(--emerald);font-size:8px;margin-right:6px;"></i>已开票
+                <label class="form-label">上下架状态</label>
+                <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#F5F6FA;border-radius:8px;">
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="editShowOnSaleToggle" checked>
+                    <span class="toggle-slider"></span>
+                  </label>
+                  <span id="editShowOnSaleLabel" style="font-size:13px;color:var(--text-secondary);">上架</span>
                 </div>
-                <div class="form-hint">根据开票时间自动计算</div>
+                <div class="form-hint">上架后用户可在小程序端查看和购买该演出</div>
               </div>
             </div>
           </div>
@@ -9169,6 +9269,14 @@ function toggleMemberPriority() {
   if (toggle && body) {
     body.style.display = toggle.checked ? 'block' : 'none';
   }
+}
+
+function toggleNewShowOnSale() {
+    var cb = document.getElementById('newShowOnSaleToggle');
+    var label = document.getElementById('newShowOnSaleLabel');
+    if (cb && label) {
+        label.textContent = cb.checked ? '上架' : '下架';
+    }
 }
 
 
@@ -10324,33 +10432,28 @@ if (btnSaveSetSeatsEl) btnSaveSetSeatsEl.addEventListener('click', saveSetSeats)
 // Toggle show online/offline status
 function toggleShowStatus(btn) {
   var soldCount = parseInt(btn.getAttribute('data-sold')) || 0;
-  var isOffShelf = btn.querySelector('.fa-eye');
+  var isOnShelf = btn.classList.contains('on-shelf');
   var showName = btn.closest('tr').querySelector('.show-name').textContent;
 
-  if (!isOffShelf && soldCount > 0) {
+  if (isOnShelf) {
+    // 上架 → 下架，需要确认
     openModal('modalConfirmOffShelf');
     document.getElementById('confirmOffShelfShowName').textContent = showName;
     document.getElementById('confirmOffShelfSoldCount').textContent = soldCount;
     window._pendingToggleBtn = btn;
   } else {
+    // 下架 → 上架，需要确认
+    if (!confirm('确认上架「' + showName + '」？上架后用户可在小程序端查看和购买该演出。')) return;
     var icon = btn.querySelector('i');
-    if (isOffShelf) {
-      icon.className = 'fas fa-eye-slash';
-      btn.innerHTML = '';
-      btn.appendChild(icon);
-      btn.append('下架');
-      var statusTag = btn.closest('tr').querySelector('.status-tag');
-      if (statusTag) { statusTag.className = 'status-tag selling'; statusTag.innerHTML = '<span class="dot"></span>售票中'; }
-      showToast('演出已上架');
-    } else {
-      icon.className = 'fas fa-eye';
-      btn.innerHTML = '';
-      btn.appendChild(icon);
-      btn.append('上架');
-      var statusTag = btn.closest('tr').querySelector('.status-tag');
-      if (statusTag) { statusTag.className = 'status-tag off-shelf'; statusTag.innerHTML = '<span class="dot"></span>已下架'; }
-      showToast('演出已下架');
-    }
+    icon.className = 'fas fa-toggle-on';
+    btn.innerHTML = '';
+    btn.appendChild(icon);
+    btn.append('下架');
+    btn.classList.remove('off-shelf');
+    btn.classList.add('on-shelf');
+    var statusTag = btn.closest('tr').querySelector('.status-tag');
+    if (statusTag) { statusTag.className = 'status-tag selling'; statusTag.innerHTML = '<span class="dot"></span>售票中'; }
+    showToast('演出已上架');
   }
 }
 
@@ -10366,10 +10469,12 @@ function confirmForceOffShelf() {
   var btn = window._pendingToggleBtn;
   if (btn) {
     var icon = btn.querySelector('i');
-    icon.className = 'fas fa-eye';
+    icon.className = 'fas fa-toggle-off';
     btn.innerHTML = '';
     btn.appendChild(icon);
     btn.append('上架');
+    btn.classList.remove('on-shelf');
+    btn.classList.add('off-shelf');
     var statusTag = btn.closest('tr').querySelector('.status-tag');
     if (statusTag) { statusTag.className = 'status-tag off-shelf'; statusTag.innerHTML = '<span class="dot"></span>已下架'; }
     btn.setAttribute('data-sold', '0');
