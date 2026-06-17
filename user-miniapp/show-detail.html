@@ -273,7 +273,7 @@ body {
   gap: 10px;
   overflow-x: auto;
   overflow-y: visible;
-  padding: 6px 0 4px;
+  padding: 6px 4px 12px;
   margin: -6px -16px 0;
   padding-left: 16px;
   padding-right: 16px;
@@ -294,10 +294,7 @@ body {
   min-width: 120px;
 }
 
-.session-card:hover {
-  border-color: rgba(255, 107, 74, 0.3);
-  transform: translateY(-2px);
-}
+.session-card:active { transform: scale(0.96); }
 
 .session-card.active {
   background: linear-gradient(135deg, var(--coral-orange), var(--coral-orange-light));
@@ -335,18 +332,28 @@ body {
 .session-card .status {
   font-size: 10px;
   margin-top: 4px;
-  color: var(--text-light);
+  font-weight: 600;
+}
+.session-card .status.sufficient { color: #10B981; }
+.session-card .status.hot { color: #FF6B4A; }
+.session-card .status.limited { color: #F59E0B; }
+.session-card .status.impending { color: #EF4444; }
+.session-card .status.sold-out { color: #9CA3AF; }
+
+.session-card.sold-out {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.session-card.sold-out .date,
+.session-card.sold-out .weekday,
+.session-card.sold-out .time {
+  color: #9CA3AF;
 }
 
-.session-card.active .status { color: rgba(255,255,255,0.85); }
+.session-card.active .status { color: rgba(255,255,255,0.9); }
 
-/* 早鸟票场次样式 */
-.session-card.early-bird-session {
-  background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 100%);
-  border: 2px solid #FFD54F;
-}
-
-.session-card.early-bird-session .early-bird-tag {
+/* 场次标签 */
+.session-card .session-tag {
   display: inline-block;
   background: linear-gradient(135deg, #FF6B4A, #FF8A6E);
   color: white;
@@ -354,20 +361,6 @@ body {
   padding: 2px 6px;
   border-radius: 4px;
   margin-top: 4px;
-}
-
-.session-card .priority-tag {
-  display: none;
-  background: linear-gradient(135deg, #D4A853, #F0D48A);
-  color: #1A1A1A;
-  font-size: 9px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-top: 4px;
-}
-
-.session-card[data-priority="true"] .priority-tag {
-  display: inline-block;
 }
 
 /* 优先购标识 */
@@ -1343,35 +1336,40 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
         <div class="session-scroll">
           <div class="session-card active" onclick="selectSession(this)" data-priority="true">
             <div class="date">12月25日</div>
-            <div class="weekday">周三</div>
+            <div class="weekday">周四</div>
             <div class="time">19:30</div>
-            <div class="status">热卖中</div>
-            <div class="priority-tag" style="display:none;">优先购</div>
+            <div class="status hot">热卖中</div>
+            <div class="session-tag" style="display:none;">优先购</div>
           </div>
           <div class="session-card" onclick="selectSession(this)">
             <div class="date">12月26日</div>
-            <div class="weekday">周四</div>
+            <div class="weekday">周五</div>
             <div class="time">19:30</div>
-            <div class="status">余票紧张</div>
+            <div class="status limited">余票紧张</div>
           </div>
-          <div class="session-card early-bird-session" onclick="selectSession(this)">
+          <div class="session-card" onclick="selectSession(this)">
             <div class="date">12月27日</div>
             <div class="weekday">周五</div>
             <div class="time">20:00</div>
-            <div class="status">早鸟票</div>
-            <div class="early-bird-tag">早鸟8.5折</div>
+            <div class="status sufficient">充足</div>
           </div>
           <div class="session-card" onclick="selectSession(this)">
             <div class="date">12月28日</div>
             <div class="weekday">周六</div>
             <div class="time">20:00</div>
-            <div class="status">充足</div>
+            <div class="status sufficient">充足</div>
           </div>
           <div class="session-card" onclick="selectSession(this)">
             <div class="date">12月31日</div>
             <div class="weekday">周二</div>
             <div class="time">21:00</div>
-            <div class="status">跨年专场</div>
+            <div class="status impending">即将售罄</div>
+          </div>
+          <div class="session-card sold-out">
+            <div class="date">01月01日</div>
+            <div class="weekday">周三</div>
+            <div class="time">19:30</div>
+            <div class="status sold-out">已售罄</div>
           </div>
         </div>
       </div>
@@ -1633,6 +1631,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
 <script>
 // ========== Session Selection ==========
 function selectSession(el) {
+  if (el.classList.contains('sold-out')) return;
   document.querySelectorAll('.session-card').forEach(card => card.classList.remove('active'));
   el.classList.add('active');
 }

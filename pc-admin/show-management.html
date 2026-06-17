@@ -1097,6 +1097,181 @@ table { border-collapse: collapse; width: 100%; }
   white-space: nowrap;
   justify-content: center;
 }
+.venue-admin-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border: 1px solid #D0D3DC;
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text-primary);
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.venue-admin-action:active { opacity: 0.7; }
+
+/* Venue Admin Modal */
+.venue-admin-section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-light);
+}
+.venue-admin-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+.venue-admin-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-light);
+    transition: all 0.2s;
+}
+.venue-admin-item:hover {
+    border-color: rgba(74,122,255,0.3);
+    box-shadow: 0 2px 8px rgba(74,122,255,0.06);
+}
+.venue-admin-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #E8ECF8, #D6E0FF);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.venue-admin-avatar i {
+    font-size: 20px;
+    color: #4A7AFF;
+}
+.venue-admin-info { flex: 1; min-width: 0; }
+.venue-admin-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 3px;
+}
+.venue-admin-role {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(255,107,74,0.08);
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+.venue-admin-contact {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+.venue-admin-search-wrap {
+    position: relative;
+}
+.venue-admin-search {
+    width: 100%;
+    height: 40px;
+    padding: 0 14px 0 38px;
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+.venue-admin-search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,107,74,0.08); }
+.venue-admin-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    font-size: 13px;
+    pointer-events: none;
+}
+.venue-admin-suggest {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(10,22,40,0.12);
+    z-index: 10;
+    max-height: 220px;
+    overflow-y: auto;
+    display: none;
+}
+.venue-admin-suggest.show { display: block; }
+.venue-admin-suggest-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 13px;
+}
+.venue-admin-suggest-item:first-child { border-radius: 10px 10px 0 0; }
+.venue-admin-suggest-item:last-child { border-radius: 0 0 10px 10px; }
+.venue-admin-suggest-item:hover { background: var(--bg-light); }
+.venue-admin-suggest-item .suggest-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #E8ECF8, #D6E0FF);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.venue-admin-suggest-item .suggest-avatar i { font-size: 13px; color: #4A7AFF; }
+.venue-admin-suggest-item .suggest-name { font-weight: 600; color: var(--text-primary); }
+.venue-admin-suggest-item .suggest-info { font-size: 11px; color: var(--text-secondary); }
+.venue-admin-suggest-item .suggest-dept { color: var(--text-secondary); font-size: 12px; margin-left: auto; }
+.venue-admin-suggest-empty {
+    padding: 20px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+.venue-admin-suggest-item.added { opacity: 0.45; pointer-events: none; }
+.venue-admin-suggest-item.added::after {
+    content: '已添加';
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 600;
+}
+}
+.venue-admin-empty {
+    text-align: center;
+    padding: 32px 20px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+.venue-admin-empty i {
+    font-size: 36px;
+    color: #D0D3DC;
+    margin-bottom: 10px;
+    display: block;
+}
 
 .venue-stat {
   display: flex;
@@ -1930,7 +2105,6 @@ table { border-collapse: collapse; width: 100%; }
   right: 0;
   bottom: 0;
   background: rgba(10,22,40,0.5);
-  backdrop-filter: blur(4px);
   z-index: 1000;
   display: none;
   align-items: center;
@@ -7278,6 +7452,7 @@ select.form-select-sm,
               </div>
               <div class="venue-card-actions">
                 <button class="action-btn edit" onclick="editVenue('hainan')"><i class="fas fa-edit"></i> 编辑</button>
+                <button class="action-btn view" onclick="openVenueAdmin('hainan')"><i class="fas fa-user-shield"></i> 管理员</button>
                 <button class="action-btn view" onclick="openHallManage('hainan')"><i class="fas fa-door-open"></i> 演出厅</button>
                 <button class="action-btn view" onclick="switchToVenueSeat('hainan')"><i class="fas fa-chair"></i> 管理座位</button>
               </div>
@@ -7297,6 +7472,7 @@ select.form-select-sm,
               </div>
               <div class="venue-card-actions">
                 <button class="action-btn edit" onclick="editVenue('sanya')"><i class="fas fa-edit"></i> 编辑</button>
+                <button class="action-btn view" onclick="openVenueAdmin('sanya')"><i class="fas fa-user-shield"></i> 管理员</button>
                 <button class="action-btn view" onclick="openHallManage('sanya')"><i class="fas fa-door-open"></i> 演出厅</button>
                 <button class="action-btn view" onclick="switchToVenueSeat('sanya')"><i class="fas fa-chair"></i> 管理座位</button>
               </div>
@@ -7316,6 +7492,7 @@ select.form-select-sm,
               </div>
               <div class="venue-card-actions">
                 <button class="action-btn edit" onclick="editVenue('haikou')"><i class="fas fa-edit"></i> 编辑</button>
+                <button class="action-btn view" onclick="openVenueAdmin('haikou')"><i class="fas fa-user-shield"></i> 管理员</button>
                 <button class="action-btn view" onclick="openHallManage('haikou')"><i class="fas fa-door-open"></i> 演出厅</button>
                 <button class="action-btn view" onclick="switchToVenueSeat('haikou')"><i class="fas fa-chair"></i> 管理座位</button>
               </div>
@@ -7335,6 +7512,7 @@ select.form-select-sm,
               </div>
               <div class="venue-card-actions">
                 <button class="action-btn edit" onclick="editVenue('wanning')"><i class="fas fa-edit"></i> 编辑</button>
+                <button class="action-btn view" onclick="openVenueAdmin('wanning')"><i class="fas fa-user-shield"></i> 管理员</button>
                 <button class="action-btn view" onclick="openHallManage('wanning')"><i class="fas fa-door-open"></i> 演出厅</button>
                 <button class="action-btn view" onclick="switchToVenueSeat('wanning')"><i class="fas fa-chair"></i> 管理座位</button>
               </div>
@@ -7354,6 +7532,7 @@ select.form-select-sm,
               </div>
               <div class="venue-card-actions">
                 <button class="action-btn edit" onclick="editVenue('danzhou')"><i class="fas fa-edit"></i> 编辑</button>
+                <button class="action-btn view" onclick="openVenueAdmin('danzhou')"><i class="fas fa-user-shield"></i> 管理员</button>
                 <button class="action-btn view" onclick="openHallManage('danzhou')"><i class="fas fa-door-open"></i> 演出厅</button>
                 <button class="action-btn view" onclick="switchToVenueSeat('danzhou')"><i class="fas fa-chair"></i> 管理座位</button>
               </div>
@@ -13395,6 +13574,139 @@ document.addEventListener('DOMContentLoaded', function() {
     nameInput.addEventListener('input', updateTagPreview);
   }
 });
+// ========== Venue Admin Modal ==========
+    var systemUsers = [
+        { id:'U001', name:'李经理', phone:'13812345678', dept:'运营部', role:'运营总监' },
+        { id:'U002', name:'小王', phone:'13912349012', dept:'技术部', role:'前端工程师' },
+        { id:'U003', name:'张芳', phone:'13612343344', dept:'市场部', role:'市场经理' },
+        { id:'U004', name:'陈磊', phone:'13712345566', dept:'财务部', role:'财务主管' },
+        { id:'U005', name:'刘洋', phone:'13512347788', dept:'运营部', role:'场馆运营' },
+        { id:'U006', name:'赵婷', phone:'13312341122', dept:'客服部', role:'客服主管' },
+        { id:'U007', name:'孙浩', phone:'13112349900', dept:'技术部', role:'后端工程师' },
+        { id:'U008', name:'周敏', phone:'13212348877', dept:'市场部', role:'活动策划' },
+        { id:'U009', name:'吴强', phone:'13412346655', dept:'运营部', role:'票务主管' },
+        { id:'U010', name:'郑雪', phone:'13012342233', dept:'行政部', role:'行政专员' },
+        { id:'U011', name:'黄伟', phone:'13812347766', dept:'安保部', role:'安保主管' },
+        { id:'U012', name:'林丽', phone:'13912345544', dept:'客服部', role:'客服专员' }
+    ];
+
+    var currentAdminVenue = '';
+
+    function openVenueAdmin(venueId) {
+        currentAdminVenue = venueId;
+        var nameMap = { hainan:'海南大剧院', sanya:'三亚艺术中心', haikou:'海口演艺中心', wanning:'万宁海滨剧场', danzhou:'儋州文化广场' };
+        document.getElementById('venueAdminName').textContent = '· ' + (nameMap[venueId] || '');
+        document.getElementById('adminSearchInput').value = '';
+        document.getElementById('adminSuggestList').classList.remove('show');
+        updateAdminCount();
+        document.getElementById('venueAdminModal').classList.add('show');
+        document.getElementById('venueAdminModal').style.display = 'flex';
+    }
+
+    function closeVenueAdmin() {
+        document.getElementById('venueAdminModal').classList.remove('show');
+        document.getElementById('venueAdminModal').style.display = 'none';
+        document.getElementById('adminSuggestList').classList.remove('show');
+    }
+
+    function getAddedUserIds() {
+        var items = document.querySelectorAll('#venueAdminList .venue-admin-item');
+        var ids = [];
+        items.forEach(function(item) {
+            var uid = item.getAttribute('data-user-id');
+            if (uid) ids.push(uid);
+        });
+        return ids;
+    }
+
+    function updateAdminCount() {
+        var count = document.querySelectorAll('#venueAdminList .venue-admin-item').length;
+        document.getElementById('adminCount').textContent = '共 ' + count + ' 人';
+    }
+
+    function maskPhone(phone) {
+        return phone.length > 7 ? phone.substring(0,3) + '****' + phone.substring(phone.length-4) : phone;
+    }
+
+    function onAdminSearch(keyword) {
+        keyword = keyword.trim().toLowerCase();
+        var suggestEl = document.getElementById('adminSuggestList');
+        var addedIds = getAddedUserIds();
+
+        if (!keyword) {
+            suggestEl.classList.remove('show');
+            return;
+        }
+
+        var results = systemUsers.filter(function(u) {
+            return u.name.toLowerCase().includes(keyword) ||
+                   u.phone.includes(keyword) ||
+                   u.dept.toLowerCase().includes(keyword) ||
+                   u.role.toLowerCase().includes(keyword);
+        });
+
+        if (results.length === 0) {
+            suggestEl.innerHTML = '<div class="venue-admin-suggest-empty"><i class="fas fa-search" style="display:block;margin-bottom:6px;color:#D0D3DC;font-size:20px;"></i>未找到匹配的用户</div>';
+        } else {
+            var html = '';
+            results.forEach(function(u) {
+                var isAdded = addedIds.indexOf(u.id) !== -1;
+                html += '<div class="venue-admin-suggest-item' + (isAdded ? ' added' : '') + '" data-user-id="' + u.id + '" onclick="addAdminById(\'' + u.id + '\')">' +
+                    '<div class="suggest-avatar"><i class="fas fa-user"></i></div>' +
+                    '<div><div class="suggest-name">' + u.name + '</div>' +
+                    '<div class="suggest-info">' + maskPhone(u.phone) + ' · ' + u.role + '</div></div>' +
+                    '<span class="suggest-dept">' + u.dept + '</span></div>';
+            });
+            suggestEl.innerHTML = html;
+        }
+        suggestEl.classList.add('show');
+    }
+
+    function addAdminById(userId) {
+        var addedIds = getAddedUserIds();
+        if (addedIds.indexOf(userId) !== -1) return;
+
+        var user = systemUsers.find(function(u) { return u.id === userId; });
+        if (!user) return;
+
+        var list = document.getElementById('venueAdminList');
+        var item = document.createElement('div');
+        item.className = 'venue-admin-item';
+        item.setAttribute('data-user-id', user.id);
+        item.innerHTML = '<div class="venue-admin-avatar"><i class="fas fa-user"></i></div>' +
+            '<div class="venue-admin-info">' +
+            '<div class="venue-admin-name">' + user.name + '</div>' +
+            '<div class="venue-admin-contact">' + maskPhone(user.phone) + ' · ' + user.dept + '</div></div>' +
+            '<button class="action-btn delete" style="flex-shrink:0;width:32px;height:32px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:8px;" onclick="removeAdmin(this)" title="移除"><i class="fas fa-times"></i></button>';
+        list.appendChild(item);
+        updateAdminCount();
+
+        // Refresh suggest list to mark as added
+        onAdminSearch(document.getElementById('adminSearchInput').value);
+        showToast('success', '已添加管理员「' + user.name + '」');
+    }
+
+    function removeAdmin(btn) {
+        var item = btn.closest('.venue-admin-item');
+        if (item.querySelector('.venue-admin-role')) {
+            if (!confirm('确定移除该超级管理员？')) return;
+        }
+        if (item) {
+            item.remove();
+            updateAdminCount();
+            onAdminSearch(document.getElementById('adminSearchInput').value);
+            showToast('success', '管理员已移除');
+        }
+    }
+
+    // Close suggest when clicking outside
+    document.addEventListener('click', function(e) {
+        var wrap = document.querySelector('.venue-admin-search-wrap');
+        var suggest = document.getElementById('adminSuggestList');
+        if (wrap && suggest && !wrap.contains(e.target)) {
+            suggest.classList.remove('show');
+        }
+    });
 </script>
 
 <!-- ========== 座位销售操作弹窗 ========== -->
@@ -13671,6 +13983,54 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
 </div>
+
+    <!-- Venue Admin Modal -->
+    <div class="modal-overlay" id="venueAdminModal">
+        <div class="modal-container" style="max-width: 560px; max-height: 640px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-shield" style="color:var(--accent);margin-right:8px;"></i>场馆管理员 <span id="venueAdminName" style="font-weight:400;font-size:14px;color:var(--text-secondary);margin-left:4px;"></span></h3>
+                <button class="modal-close" onclick="closeVenueAdmin()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="modal-body" style="padding:24px; overflow-y:auto;">
+                <!-- Search User -->
+                <div class="venue-admin-section">
+                    <div class="venue-admin-section-title">添加管理员</div>
+                    <div class="venue-admin-search-wrap">
+                        <i class="fas fa-search venue-admin-search-icon"></i>
+                        <input type="text" class="venue-admin-search" id="adminSearchInput" placeholder="搜索姓名、手机号或部门" autocomplete="off" oninput="onAdminSearch(this.value)" onfocus="onAdminSearch(this.value)">
+                        <div class="venue-admin-suggest" id="adminSuggestList"></div>
+                    </div>
+                </div>
+                <!-- Current Admins -->
+                <div class="venue-admin-section" style="margin-top:20px;">
+                    <div class="venue-admin-section-title">当前管理员 <span id="adminCount" style="font-weight:400;color:var(--text-secondary);font-size:12px;margin-left:6px;"></span></div>
+                    <div class="venue-admin-list" id="venueAdminList">
+                        <div class="venue-admin-item" data-user-id="U001">
+                            <div class="venue-admin-avatar"><i class="fas fa-user"></i></div>
+                            <div class="venue-admin-info">
+                                <div class="venue-admin-name">李经理 <span class="venue-admin-role">超级管理员</span></div>
+                                <div class="venue-admin-contact">138****5678 · 运营部</div>
+                            </div>
+                            <button class="action-btn delete" style="flex-shrink:0;width:32px;height:32px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:8px;" onclick="removeAdmin(this)" title="移除"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="venue-admin-item" data-user-id="U002">
+                            <div class="venue-admin-avatar"><i class="fas fa-user"></i></div>
+                            <div class="venue-admin-info">
+                                <div class="venue-admin-name">小王</div>
+                                <div class="venue-admin-contact">139****9012 · 技术部</div>
+                            </div>
+                            <button class="action-btn delete" style="flex-shrink:0;width:32px;height:32px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:8px;" onclick="removeAdmin(this)" title="移除"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeVenueAdmin()">完成</button>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>
