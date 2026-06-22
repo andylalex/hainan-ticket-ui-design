@@ -7635,11 +7635,18 @@ const changelogData = [
         date: '2026-06-22',
         entries: [
             {
+                page: 'user-miniapp/coupon-receive.html',
+                pageName: '领取优惠券',
+                module: '优惠券',
+                time: '17:00',
+                content: `新增领取优惠券页面：用户扫描后台生成的优惠券二维码后，可查看优惠券详细信息（金额、使用门槛、有效期、适用范围、叠加规则），点击立即领取按钮完成领取，领取后按钮变为已领取状态`
+            },
+            {
                 page: 'user-miniapp/order-confirm.html',
                 pageName: '确认订单',
                 module: '确认订单',
                 time: '16:00',
-                content: `积分抵扣UI重新设计：改为卡片式三栏布局（当前积分/可用积分/可抵扣），用户只可选择用或不用（开关切换），可用积分基于订单原价计算不受观演券/优惠券变化影响`
+                content: `积分抵扣UI重新设计：改为entry-row样式与套票/优惠券保持一致，显示可用积分和抵扣金额，用户只可选择用或不用（开关切换），可用积分基于订单原价计算不受观演券/优惠券变化影响`
             },
             {
                 page: 'pc-admin/marketing-center.html',
@@ -7661,6 +7668,20 @@ const changelogData = [
                 module: '演出项目',
                 time: '15:30',
                 content: `列表状态列移除"已下架"状态参数值；上架操作改为与下架一致的弹窗确认样式（绿色提示框含取消/确认按钮）`
+            },
+            {
+                page: 'user-miniapp/coupons.html',
+                pageName: '我的优惠券',
+                module: '优惠券',
+                time: '15:00',
+                content: `按第一个优惠券字段模板统一所有优惠券结构；去掉领取后N天有效类型全部改为固定日期；去掉新人专享类型改为现金券+指定演出；指定演出标签可点击查看演出名称和场次详情弹窗`
+            },
+            {
+                page: 'pc-admin/show-management.html',
+                pageName: '演出管理',
+                module: '场次管理',
+                time: '14:30',
+                content: `去掉场次管理tab的"搜索场次"搜索框`
             }
         ]
     },
