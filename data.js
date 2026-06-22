@@ -7632,6 +7632,39 @@ Tab切换交互：
 // entries.page 对应 devDocs 中的页面URL键名
 const changelogData = [
     {
+        date: '2026-06-22',
+        entries: [
+            {
+                page: 'user-miniapp/order-confirm.html',
+                pageName: '确认订单',
+                module: '确认订单',
+                time: '16:00',
+                content: `积分抵扣UI重新设计：改为卡片式三栏布局（当前积分/可用积分/可抵扣），用户只可选择用或不用（开关切换），可用积分基于订单原价计算不受观演券/优惠券变化影响`
+            },
+            {
+                page: 'pc-admin/marketing-center.html',
+                pageName: '营销中心',
+                module: '优惠券',
+                time: '16:00',
+                content: `列表表头"已发放/已使用"改为"总发放/已领取"；数据弹窗卡片标签改为"已领取量"和"已使用"，使用率为领取数量和使用数量的比例`
+            },
+            {
+                page: 'pc-admin/member-management.html',
+                pageName: '会员管理',
+                module: '积分管理',
+                time: '15:30',
+                content: `积分抵扣比例简化为只填写积分数（设置多少积分抵扣1元），去掉最低使用积分设置项`
+            },
+            {
+                page: 'pc-admin/show-management.html',
+                pageName: '演出管理',
+                module: '演出项目',
+                time: '15:30',
+                content: `列表状态列移除"已下架"状态参数值；上架操作改为与下架一致的弹窗确认样式（绿色提示框含取消/确认按钮）`
+            }
+        ]
+    },
+    {
         date: '2026-06-13',
         entries: [
             {

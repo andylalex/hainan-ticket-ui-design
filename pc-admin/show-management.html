@@ -929,6 +929,15 @@ table { border-collapse: collapse; width: 100%; }
   background: #9CA3AF;
 }
 
+.status-tag.not-opened {
+  background: rgba(59,130,246,0.1);
+  color: #2563EB;
+}
+
+.status-tag.not-opened .dot {
+  background: #3B82F6;
+}
+
 /* ========== 开票时间标签 ========== */
 .open-time-tag {
   display: inline-flex;
@@ -3928,8 +3937,8 @@ table { border-collapse: collapse; width: 100%; }
 }
 
 /* Session status tags */
-.status-tag.not-opened { background: rgba(107,114,128,0.1); color: #6B7280; }
-.status-tag.not-opened .dot { background: #9CA3AF; }
+.status-tag.not-opened { background: rgba(59,130,246,0.1); color: #2563EB; }
+.status-tag.not-opened .dot { background: #3B82F6; }
 .status-tag.on-sale { background: rgba(0,201,167,0.1); color: #00A88A; }
 .status-tag.on-sale .dot { background: #00C9A7; }
 .status-tag.paused { background: rgba(212,168,83,0.1); color: #B8922F; }
@@ -6746,6 +6755,7 @@ select.form-select-sm,
         <div class="filter-bar">
           <div class="status-filters">
             <button class="status-filter-btn active">全部</button>
+            <button class="status-filter-btn">未开票</button>
             <button class="status-filter-btn">售票中</button>
             <button class="status-filter-btn">已结束</button>
           </div>
@@ -6802,6 +6812,14 @@ select.form-select-sm,
                   <span>至</span>
                   <input type="date" class="form-input" value="2026-06-30">
                 </div>
+              </div>
+              <div class="filter-dropdown-item">
+                <label>上下架状态</label>
+                <select class="form-select">
+                  <option value="">全部</option>
+                  <option value="on">已上架</option>
+                  <option value="off">已下架</option>
+                </select>
               </div>
               <div class="filter-dropdown-footer">
                 <a href="javascript:void(0)" class="filter-reset">重置筛选</a>
@@ -7077,7 +7095,7 @@ select.form-select-sm,
                   </div>
                 </td>
               </tr>
-              <!-- Row 5.5: 已下架 -->
+              <!-- Row 5.5: 已结束 -->
               <tr>
                 <td>
                   <div class="show-cell">
@@ -7113,14 +7131,13 @@ select.form-select-sm,
                   <div class="revenue-section-label">最近场次 06-15</div>
                   <div class="revenue-sub">¥28,800 / 已售 120</div>
                 </td>
-                <td><span class="status-tag off-shelf"><span class="dot"></span>已下架</span></td>
+                <td><span class="status-tag off-shelf"><span class="dot"></span>已结束</span></td>
                 <td>
                   <div class="action-btns">
                     <button class="action-btn edit" onclick="openEditShow(this)"><i class="fas fa-edit"></i> 编辑</button>
                     <button class="action-btn view" onclick="switchToSessions('儿童剧《海底总动员》')"><i class="fas fa-calendar-days"></i> 场次</button>
                     <button class="action-btn discount" onclick="goToShowDiscount('儿童剧《海底总动员》')"><i class="fas fa-percent"></i> 票品折扣</button>
                     <button class="action-btn tag" onclick="openTagModal(this)"><i class="fas fa-tag"></i> 标签</button>
-                    <button class="action-btn off-shelf" data-sold="0" onclick="toggleShowStatus(this)"><i class="fas fa-toggle-off"></i> 上架</button>
                     <button class="action-btn delete"><i class="fas fa-trash"></i> 删除</button>
                   </div>
                 </td>
@@ -10442,18 +10459,10 @@ function toggleShowStatus(btn) {
     document.getElementById('confirmOffShelfSoldCount').textContent = soldCount;
     window._pendingToggleBtn = btn;
   } else {
-    // 下架 → 上架，需要确认
-    if (!confirm('确认上架「' + showName + '」？上架后用户可在小程序端查看和购买该演出。')) return;
-    var icon = btn.querySelector('i');
-    icon.className = 'fas fa-toggle-on';
-    btn.innerHTML = '';
-    btn.appendChild(icon);
-    btn.append('下架');
-    btn.classList.remove('off-shelf');
-    btn.classList.add('on-shelf');
-    var statusTag = btn.closest('tr').querySelector('.status-tag');
-    if (statusTag) { statusTag.className = 'status-tag selling'; statusTag.innerHTML = '<span class="dot"></span>售票中'; }
-    showToast('演出已上架');
+    // 下架 → 上架，需要确认（使用弹窗样式）
+    openModal('modalConfirmOnShelf');
+    document.getElementById('confirmOnShelfShowName').textContent = showName;
+    window._pendingToggleBtn = btn;
   }
 }
 
@@ -10476,11 +10485,29 @@ function confirmForceOffShelf() {
     btn.classList.remove('on-shelf');
     btn.classList.add('off-shelf');
     var statusTag = btn.closest('tr').querySelector('.status-tag');
-    if (statusTag) { statusTag.className = 'status-tag off-shelf'; statusTag.innerHTML = '<span class="dot"></span>已下架'; }
+    if (statusTag) { statusTag.className = 'status-tag off-shelf'; statusTag.innerHTML = '<span class="dot"></span>已结束'; }
     btn.setAttribute('data-sold', '0');
-    showToast('演出已强制下架');
+    showToast('演出已下架');
   }
   closeModal('modalConfirmOffShelf');
+  window._pendingToggleBtn = null;
+}
+
+function confirmOnShelf() {
+  var btn = window._pendingToggleBtn;
+  if (btn) {
+    var icon = btn.querySelector('i');
+    icon.className = 'fas fa-toggle-on';
+    btn.innerHTML = '';
+    btn.appendChild(icon);
+    btn.append('下架');
+    btn.classList.remove('off-shelf');
+    btn.classList.add('on-shelf');
+    var statusTag = btn.closest('tr').querySelector('.status-tag');
+    if (statusTag) { statusTag.className = 'status-tag selling'; statusTag.innerHTML = '<span class="dot"></span>售票中'; }
+    showToast('演出已上架');
+  }
+  closeModal('modalConfirmOnShelf');
   window._pendingToggleBtn = null;
 }
 
@@ -14031,6 +14058,29 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal('modalConfirmOffShelf')">取消</button>
       <button class="btn-confirm" style="background:#DC2626;" onclick="confirmForceOffShelf()">确认下架</button>
+    </div>
+  </div>
+</div>
+
+<!-- 确认上架弹窗 -->
+<div class="modal-overlay" id="modalConfirmOnShelf">
+  <div class="modal-container modal-sm">
+    <div class="modal-header">
+      <h3>确认上架</h3>
+      <button class="modal-close" onclick="closeModal('modalConfirmOnShelf')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="background:#ECFDF5;border:1px solid #A7F3D0;border-radius:8px;padding:12px 16px;display:flex;align-items:flex-start;gap:8px;">
+        <i class="fas fa-info-circle" style="color:#059669;font-size:16px;margin-top:2px;"></i>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:#065F46;margin-bottom:4px;">即将上架演出</div>
+          <div style="font-size:13px;color:#047857;">"<span id="confirmOnShelfShowName"></span>"上架后用户可在小程序端查看和购买该演出。确认上架？</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modalConfirmOnShelf')">取消</button>
+      <button class="btn-confirm" style="background:#059669;" onclick="confirmOnShelf()">确认上架</button>
     </div>
   </div>
 </div>

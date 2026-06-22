@@ -3750,6 +3750,31 @@ select.form-select-sm,
   box-shadow: 0 4px 12px rgba(255, 107, 74, 0.1);
 }
 
+/* 禁用会员行样式 */
+.member-disabled {
+  opacity: 0.6;
+  background: #f8f9fa;
+}
+.member-disabled .user-name,
+.member-disabled .user-id,
+.member-disabled td {
+  color: #9ca3af;
+}
+.member-disabled .level-tag {
+  opacity: 0.6;
+}
+
+/* 启用按钮样式 */
+.action-btn.toggle {
+  background: #ecfdf5;
+  color: #059669;
+  border-color: #a7f3d0;
+}
+.action-btn.toggle:hover {
+  background: #d1fae5;
+  border-color: #34d399;
+}
+
 </style>
 <link href="admin-components.css" rel="stylesheet">
 </head>
@@ -3982,6 +4007,7 @@ select.form-select-sm,
                                         <div class="action-btns">
                                             <button class="action-btn view" onclick="openModal()"><i class="fas fa-eye"></i> 查看</button>
                                             <button class="action-btn edit" onclick="openEditMemberModal()"><i class="fas fa-pen"></i> 编辑</button>
+                                            <button class="action-btn danger" onclick="toggleMemberStatus(this,'禁用')"><i class="fas fa-ban"></i> 禁用</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -4005,6 +4031,7 @@ select.form-select-sm,
                                         <div class="action-btns">
                                             <button class="action-btn view" onclick="openModal()"><i class="fas fa-eye"></i> 查看</button>
                                             <button class="action-btn edit" onclick="openEditMemberModal()"><i class="fas fa-pen"></i> 编辑</button>
+                                            <button class="action-btn danger" onclick="toggleMemberStatus(this,'禁用')"><i class="fas fa-ban"></i> 禁用</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -4028,6 +4055,7 @@ select.form-select-sm,
                                         <div class="action-btns">
                                             <button class="action-btn view" onclick="openModal()"><i class="fas fa-eye"></i> 查看</button>
                                             <button class="action-btn edit" onclick="openEditMemberModal()"><i class="fas fa-pen"></i> 编辑</button>
+                                            <button class="action-btn danger" onclick="toggleMemberStatus(this,'禁用')"><i class="fas fa-ban"></i> 禁用</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -4051,6 +4079,7 @@ select.form-select-sm,
                                         <div class="action-btns">
                                             <button class="action-btn view" onclick="openModal()"><i class="fas fa-eye"></i> 查看</button>
                                             <button class="action-btn edit" onclick="openEditMemberModal()"><i class="fas fa-pen"></i> 编辑</button>
+                                            <button class="action-btn danger" onclick="toggleMemberStatus(this,'禁用')"><i class="fas fa-ban"></i> 禁用</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -4074,10 +4103,11 @@ select.form-select-sm,
                                         <div class="action-btns">
                                             <button class="action-btn view" onclick="openModal()"><i class="fas fa-eye"></i> 查看</button>
                                             <button class="action-btn edit" onclick="openEditMemberModal()"><i class="fas fa-pen"></i> 编辑</button>
+                                            <button class="action-btn danger" onclick="toggleMemberStatus(this,'禁用')"><i class="fas fa-ban"></i> 禁用</button>
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr class="member-disabled">
                                     <td>
                                         <div class="user-cell">
                                             <div class="avatar-placeholder" style="background:linear-gradient(135deg,#6b7280,#9ca3af);">赵</div>
@@ -4097,6 +4127,7 @@ select.form-select-sm,
                                         <div class="action-btns">
                                             <button class="action-btn view" onclick="openModal()"><i class="fas fa-eye"></i> 查看</button>
                                             <button class="action-btn edit" onclick="openEditMemberModal()"><i class="fas fa-pen"></i> 编辑</button>
+                                            <button class="action-btn toggle" onclick="toggleMemberStatus(this,'启用')"><i class="fas fa-check-circle"></i> 启用</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -4120,6 +4151,7 @@ select.form-select-sm,
                                         <div class="action-btns">
                                             <button class="action-btn view" onclick="openModal()"><i class="fas fa-eye"></i> 查看</button>
                                             <button class="action-btn edit" onclick="openEditMemberModal()"><i class="fas fa-pen"></i> 编辑</button>
+                                            <button class="action-btn danger" onclick="toggleMemberStatus(this,'禁用')"><i class="fas fa-ban"></i> 禁用</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -4143,6 +4175,7 @@ select.form-select-sm,
                                         <div class="action-btns">
                                             <button class="action-btn view" onclick="openModal()"><i class="fas fa-eye"></i> 查看</button>
                                             <button class="action-btn edit" onclick="openEditMemberModal()"><i class="fas fa-pen"></i> 编辑</button>
+                                            <button class="action-btn danger" onclick="toggleMemberStatus(this,'禁用')"><i class="fas fa-ban"></i> 禁用</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -4276,18 +4309,15 @@ select.form-select-sm,
                             <div class="task-list">
                                 <div class="task-item">
                                     <div class="task-info">
-                                        <div class="task-icon" style="background:rgba(212,168,83,0.1);color:var(--gold);"><i class="fas fa-percentage"></i></div>
+                                        <div class="task-icon" style="background:rgba(212,168,83,0.1);color:var(--gold);"><i class="fas fa-coins"></i></div>
                                         <div>
-                                            <div class="task-name">积分抵扣比例</div>
-                                            <div class="task-desc">积分兑换金额比例</div>
+                                            <div class="task-name">积分抵扣设置</div>
+                                            <div class="task-desc">设置多少积分抵扣1元</div>
                                         </div>
                                     </div>
                                     <div class="task-points">
-                                        <span style="font-size:12px;color:var(--text-light);">每</span>
-                                        <input type="number" value="1" readonly style="width:52px;background:var(--bg-secondary);cursor:not-allowed;">
-                                        <span style="font-size:12px;color:var(--text-light);">积分 =</span>
-                                        <input type="number" value="0.01" step="0.01" readonly style="width:60px;background:var(--bg-secondary);cursor:not-allowed;">
-                                        <span>元</span>
+                                        <input type="number" value="100" style="width:60px;">
+                                        <span style="font-size:12px;color:var(--text-light);">积分 = 1元</span>
                                     </div>
                                 </div>
                                 <div class="task-item">
@@ -4302,19 +4332,6 @@ select.form-select-sm,
                                         <span style="font-size:12px;color:var(--text-light);">订单金额的</span>
                                         <input type="number" value="10" style="width:52px;">
                                         <span>%</span>
-                                    </div>
-                                </div>
-                                <div class="task-item">
-                                    <div class="task-info">
-                                        <div class="task-icon" style="background:rgba(0,201,167,0.1);color:var(--emerald);"><i class="fas fa-check-circle"></i></div>
-                                        <div>
-                                            <div class="task-name">最低使用积分</div>
-                                            <div class="task-desc">单笔订单最低使用积分数</div>
-                                        </div>
-                                    </div>
-                                    <div class="task-points">
-                                        <input type="number" value="100" style="width:60px;">
-                                        <span>积分起用</span>
                                     </div>
                                 </div>
                                 <div class="task-item">
@@ -4701,13 +4718,11 @@ select.form-select-sm,
                             <div class="gc-body">
                                 <div class="gc-desc">会员每笔消费可按照比例获得成长值</div>
                                 <div class="gc-setting">
-                                    <span class="gc-label">每消费</span>
-                                    <input type="number" class="gc-input gc-input--sm" value="1">
-                                    <span class="gc-unit">元 =</span>
+                                    <span class="gc-label">1元 =</span>
                                     <input type="number" class="gc-input gc-input--sm" value="1">
                                     <span class="gc-unit">成长值</span>
                                 </div>
-                                <div class="gc-current">当前比例：<strong>1:1</strong></div>
+                                <div class="gc-current">当前比例：<strong>1元=1成长值</strong></div>
                             </div>
                         </div>
                         <div class="growth-config-card">
@@ -6585,6 +6600,38 @@ select.form-select-sm,
             });
         }
     });
+
+    // 会员禁用/启用切换
+    function toggleMemberStatus(btn, action) {
+        var row = btn.closest('tr');
+        var userName = row.querySelector('.user-name').textContent;
+        if (confirm('确定要' + action + '会员「' + userName + '」吗？')) {
+            if (action === '禁用') {
+                row.classList.add('member-disabled');
+                btn.className = 'action-btn toggle';
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> 启用';
+                btn.setAttribute('onclick', "toggleMemberStatus(this,'启用')");
+                showToast('会员「' + userName + '」已禁用', 'success');
+            } else {
+                row.classList.remove('member-disabled');
+                btn.className = 'action-btn danger';
+                btn.innerHTML = '<i class="fas fa-ban"></i> 禁用';
+                btn.setAttribute('onclick', "toggleMemberStatus(this,'禁用')");
+                showToast('会员「' + userName + '」已启用', 'success');
+            }
+        }
+    }
+
+    // Toast提示
+    function showToast(message, type) {
+        var toast = document.createElement('div');
+        toast.style.cssText = 'position:fixed;top:20px;right:20px;padding:12px 24px;border-radius:8px;color:#fff;font-size:14px;z-index:99999;transition:all 0.3s;opacity:0;transform:translateY(-10px);';
+        toast.style.background = type === 'success' ? '#10b981' : '#ef4444';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(function() { toast.style.opacity = '1'; toast.style.transform = 'translateY(0)'; }, 10);
+        setTimeout(function() { toast.style.opacity = '0'; toast.style.transform = 'translateY(-10px)'; setTimeout(function() { toast.remove(); }, 300); }, 2000);
+    }
     </script>
 
     <!-- 自定义确认弹窗 -->
