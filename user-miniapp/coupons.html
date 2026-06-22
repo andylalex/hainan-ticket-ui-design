@@ -405,7 +405,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
       </div>
     </div>
 
-    <!-- Coupon 2: 折扣券 - 固定日期 - 自营演出 - 不可叠加 -->
+    <!-- Coupon 2: 折扣券 - 固定日期 - 全场通用 - 不可叠加 -->
     <div class="coupon-card" data-status="unused">
       <div class="coupon-left">
         <div class="coupon-amount">8<span class="desc">折</span></div>
@@ -416,16 +416,15 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
         <div class="coupon-condition">无消费门槛，最高优惠&yen;50</div>
         <div class="coupon-date">有效期 2026-06-01 至 2026-06-30</div>
         <div class="coupon-tags">
-          <span class="coupon-scope">自营演出</span>
+          <span class="coupon-scope">全场通用</span>
         </div>
-        <div class="coupon-usage-desc">不可与会员折扣叠加使用</div>
         <div class="coupon-action">
           <button class="use-btn active">去使用</button>
         </div>
       </div>
     </div>
 
-    <!-- Coupon 3: 现金券 - 领取后N天 - 指定演出 -->
+    <!-- Coupon 3: 现金券 - 固定日期 - 指定演出 -->
     <div class="coupon-card" data-status="unused">
       <div class="coupon-left">
         <div class="coupon-amount"><span class="unit">&yen;</span>50</div>
@@ -434,10 +433,10 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
       <div class="coupon-right">
         <div class="coupon-name">《南海之梦》专属满200减50</div>
         <div class="coupon-condition">消费门槛 &yen;200</div>
-        <div class="coupon-valid-days">领取后30天内有效</div>
+        <div class="coupon-date">有效期 2026-06-01 至 2026-07-01</div>
         <div class="coupon-tags">
           <span class="coupon-tag stack">可叠加会员折扣</span>
-          <span class="coupon-tag scope-specific">指定演出</span>
+          <span class="coupon-tag scope-specific" onclick="showScopeModal('《南海之梦》')">指定演出</span>
         </div>
         <div class="coupon-action">
           <button class="use-btn active">去使用</button>
@@ -485,21 +484,20 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
       <span class="status-badge expired">已过期</span>
     </div>
 
-    <!-- Coupon 6: 新人券 - 领取后N天 -->
+    <!-- Coupon 6: 现金券 - 固定日期 - 指定演出 -->
     <div class="coupon-card" data-status="unused">
       <div class="coupon-left">
-        <div class="coupon-amount"><span class="unit">&yen;</span>50</div>
-        <div class="coupon-type">新人券</div>
+        <div class="coupon-amount"><span class="unit">&yen;</span>30</div>
+        <div class="coupon-type">现金券</div>
       </div>
       <div class="coupon-right">
-        <div class="coupon-name">新用户专享满300减50</div>
-        <div class="coupon-condition">消费门槛 &yen;300，仅限首次购票</div>
-        <div class="coupon-valid-days">领取后60天内有效</div>
+        <div class="coupon-name">《天鹅湖》专属满150减30</div>
+        <div class="coupon-condition">消费门槛 &yen;150</div>
+        <div class="coupon-date">有效期 2026-06-15 至 2026-07-15</div>
         <div class="coupon-tags">
           <span class="coupon-tag stack">可叠加会员折扣</span>
-          <span class="coupon-scope">新人专享</span>
+          <span class="coupon-tag scope-specific" onclick="showScopeModal('《天鹅湖》')">指定演出</span>
         </div>
-        <div class="coupon-usage-desc">注册后自动发放，每个新用户限领1张</div>
         <div class="coupon-action">
           <button class="use-btn active">去使用</button>
         </div>
@@ -514,6 +512,25 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
     <div class="sub-text">快去参加活动获取优惠券吧</div>
   </div>
 
+</div>
+
+<!-- 指定演出弹窗 -->
+<div class="modal-overlay" id="scopeModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:100;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;width:300px;max-width:90%;padding:20px;position:relative;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h3 style="font-size:16px;font-weight:600;color:#0A1628;">适用演出</h3>
+      <button onclick="closeScopeModal()" style="background:none;border:none;font-size:18px;color:#8E95A9;cursor:pointer;"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div id="scopeModalContent" style="font-size:14px;color:#5A6178;line-height:1.6;">
+      <p>该优惠券仅限以下演出使用：</p>
+      <div style="margin-top:12px;padding:12px;background:#F5F6FA;border-radius:8px;">
+        <div style="font-weight:600;color:#0A1628;" id="scopeShowName"></div>
+        <div style="font-size:12px;color:#8E95A9;margin-top:4px;">海口湾演艺中心 · 大剧场</div>
+        <div style="font-size:12px;color:#8E95A9;margin-top:2px;">2026-06-20 19:30</div>
+      </div>
+    </div>
+    <button onclick="closeScopeModal()" style="width:100%;margin-top:16px;padding:10px;background:linear-gradient(135deg,#FF6B4A,#FF8A6A);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">我知道了</button>
+  </div>
 </div>
 
 <script>
@@ -546,6 +563,16 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
       emptyState.classList.remove('show');
       couponList.style.display = 'block';
     }
+  }
+
+  function showScopeModal(showName) {
+    document.getElementById('scopeShowName').textContent = showName;
+    const modal = document.getElementById('scopeModal');
+    modal.style.display = 'flex';
+  }
+
+  function closeScopeModal() {
+    document.getElementById('scopeModal').style.display = 'none';
   }
 </script>
 
