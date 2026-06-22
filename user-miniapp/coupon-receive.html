@@ -4,396 +4,190 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>领取优惠券</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:#0A0E1A;font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,sans-serif;display:flex;justify-content:center;min-height:100vh}
 
-    body {
-      background: #F5F6FA;
-      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
-      display: flex;
-      justify-content: center;
-      min-height: 100vh;
-    }
+    .page{width:375px;min-height:100vh;background:#0A0E1A;position:relative;overflow-x:hidden}
 
-    .page {
-      width: 375px;
-      min-height: 100vh;
-      background: #F5F6FA;
-      position: relative;
-      overflow-x: hidden;
-    }
+    /* ===== Hero Banner ===== */
+    .hero{width:375px;height:420px;position:relative;overflow:hidden}
+    .hero img{width:375px;height:420px;object-fit:cover;display:block;filter:brightness(0.7) saturate(1.2)}
+    .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,14,26,0.1) 0%,rgba(10,14,26,0) 30%,rgba(10,14,26,0) 50%,rgba(10,14,26,0.95) 100%)}
 
-    /* ========== Banner ========== */
-    .banner-wrap {
-      width: 375px;
-      height: 200px;
-      position: relative;
-      overflow: hidden;
-    }
+    .hero-content{position:absolute;bottom:0;left:0;right:0;padding:0 24px 32px;z-index:2}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;background:rgba(255,107,74,0.15);border:1px solid rgba(255,107,74,0.3);border-radius:20px;margin-bottom:16px;backdrop-filter:blur(8px)}
+    .hero-badge span{font-size:12px;color:#FF8A6A;font-weight:500;letter-spacing:0.5px}
+    .hero-title{font-size:28px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:8px;letter-spacing:-0.5px}
+    .hero-sub{font-size:14px;color:rgba(255,255,255,0.6);font-weight:300}
 
-    .banner-wrap img {
-      width: 375px;
-      height: 200px;
-      object-fit: cover;
-      display: block;
-    }
+    /* ===== Back Button ===== */
+    .back-btn{position:absolute;top:56px;left:16px;width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,0.08);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;cursor:pointer;z-index:10;text-decoration:none;border:1px solid rgba(255,255,255,0.06);transition:background .2s}
+    .back-btn:active{background:rgba(255,255,255,0.16)}
 
-    .banner-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 80px;
-      background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
-    }
+    /* ===== Coupon Card ===== */
+    .coupon-wrap{padding:0 16px;margin-top:-40px;position:relative;z-index:3}
 
-    .banner-title {
-      position: absolute;
-      bottom: 16px;
-      left: 20px;
-      color: #fff;
-      font-size: 20px;
-      font-weight: 700;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
+    .coupon-card{width:343px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.3);position:relative}
 
-    /* ========== Back Button ========== */
-    .back-btn {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.2);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 16px;
-      cursor: pointer;
-      z-index: 10;
-      text-decoration: none;
-      border: 1px solid rgba(255,255,255,0.15);
-    }
+    /* Top amount area */
+    .coupon-hero{width:343px;padding:32px 24px 24px;background:linear-gradient(135deg,#FF6B4A 0%,#FF8A6A 60%,#FFB088 100%);text-align:center;position:relative;overflow:hidden}
+    .coupon-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.08)}
+    .coupon-hero::after{content:'';position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.06)}
 
-    .back-btn:active { background: rgba(255,255,255,0.35); }
+    .coupon-amount-row{display:flex;align-items:baseline;justify-content:center;gap:2px}
+    .coupon-currency{font-size:24px;font-weight:700;color:rgba(255,255,255,0.9)}
+    .coupon-value{font-size:64px;font-weight:900;color:#fff;line-height:1;letter-spacing:-2px}
+    .coupon-type{display:inline-block;margin-top:10px;padding:4px 16px;background:rgba(255,255,255,0.2);color:#fff;font-size:12px;border-radius:20px;font-weight:500;backdrop-filter:blur(4px);letter-spacing:1px}
 
-    /* ========== Coupon Card ========== */
-    .coupon-section {
-      padding: 0 16px;
-      margin-top: -24px;
-      position: relative;
-      z-index: 2;
-    }
+    /* Notch divider */
+    .notch{width:343px;height:1px;background:transparent;position:relative}
+    .notch::before,.notch::after{content:'';position:absolute;top:-14px;width:28px;height:28px;border-radius:50%;background:#0A0E1A;z-index:1}
+    .notch::before{left:-14px}
+    .notch::after{right:-14px}
+    .notch-line{width:343px;height:1px;background:repeating-linear-gradient(90deg,#FF8A6A 0,#FF8A6A 6px,transparent 6px,transparent 12px);margin-top:14px}
 
-    .coupon-card {
-      width: 343px;
-      background: #fff;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    }
+    /* Body */
+    .coupon-body{padding:24px}
+    .coupon-name{font-size:17px;font-weight:700;color:#0A1628;text-align:center;margin-bottom:24px}
 
-    .coupon-top {
-      width: 343px;
-      height: 120px;
-      background: linear-gradient(135deg, #FF6B4A 0%, #FF8A6A 50%, #FFB088 100%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
+    .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .info-cell{padding:14px;background:#FAFBFD;border-radius:12px;border:1px solid #F0F1F5}
+    .info-cell-label{font-size:11px;color:#8E95A9;margin-bottom:6px;font-weight:500;letter-spacing:0.3px}
+    .info-cell-value{font-size:14px;color:#0A1628;font-weight:600;line-height:1.3}
 
-    .coupon-amount {
-      font-size: 56px;
-      font-weight: 800;
-      color: #fff;
-      line-height: 1;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    }
+    /* ===== CTA Button with Glow ===== */
+    .cta-wrap{padding:24px 16px 16px}
 
-    .coupon-amount .unit {
-      font-size: 28px;
-      font-weight: 600;
-    }
+    .cta-btn{width:343px;height:52px;border-radius:14px;background:linear-gradient(135deg,#FF6B4A,#FF8A6A);color:#fff;font-size:16px;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;position:relative;overflow:hidden;transition:transform .15s,box-shadow .3s;box-shadow:0 4px 24px rgba(255,107,74,0.35)}
+    .cta-btn:active{transform:scale(0.97)}
 
-    .coupon-type-tag {
-      margin-top: 8px;
-      padding: 3px 14px;
-      background: rgba(255,255,255,0.25);
-      color: #fff;
-      font-size: 12px;
-      border-radius: 20px;
-      font-weight: 500;
-      backdrop-filter: blur(4px);
-    }
+    /* Glow animation */
+    .cta-btn::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent 0%,rgba(255,255,255,0.15) 10%,transparent 20%);animation:ctaRotate 3s linear infinite}
+    .cta-btn::after{content:'';position:absolute;inset:2px;border-radius:12px;background:linear-gradient(135deg,#FF6B4A,#FF8A6A);z-index:0}
+    .cta-btn span,.cta-btn i{position:relative;z-index:1}
 
-    /* 锯齿分隔 */
-    .coupon-notch-wrap {
-      width: 343px;
-      height: 16px;
-      position: relative;
-      background: linear-gradient(135deg, #FF6B4A 0%, #FF8A6A 50%, #FFB088 100%);
-    }
+    @keyframes ctaRotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
-    .coupon-notch-wrap::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 16px;
-      background: radial-gradient(circle at 8px 0, transparent 8px, #fff 8px);
-      background-size: 20px 16px;
-      background-position: -4px 0;
-    }
+    /* Pulse glow */
+    .cta-glow{position:absolute;inset:-2px;border-radius:16px;background:linear-gradient(135deg,#FF6B4A,#FF8A6A);filter:blur(12px);opacity:0.4;animation:ctaPulse 2s ease-in-out infinite;z-index:-1}
+    @keyframes ctaPulse{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:0.6;transform:scale(1.02)}}
 
-    .coupon-body {
-      padding: 20px 20px 16px;
-    }
+    .cta-btn.received{background:#E8EAF0;box-shadow:none;cursor:not-allowed}
+    .cta-btn.received::before,.cta-btn.received::after,.cta-glow{display:none}
+    .cta-btn.received span,.cta-btn.received i{color:#8E95A9}
 
-    .coupon-name {
-      font-size: 18px;
-      font-weight: 700;
-      color: #0A1628;
-      text-align: center;
-      margin-bottom: 20px;
-    }
+    /* ===== Rules ===== */
+    .rules{padding:0 16px 32px}
+    .rules-toggle{width:343px;padding:14px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:background .2s}
+    .rules-toggle:active{background:rgba(255,255,255,0.08)}
+    .rules-toggle-left{display:flex;align-items:center;gap:8px}
+    .rules-toggle-left i{font-size:14px;color:#FF8A6A}
+    .rules-toggle-left span{font-size:13px;color:rgba(255,255,255,0.5);font-weight:500}
+    .rules-toggle i.fa-chevron-down{font-size:12px;color:rgba(255,255,255,0.3);transition:transform .3s}
+    .rules-toggle.open i.fa-chevron-down{transform:rotate(180deg)}
 
-    .info-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
+    .rules-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+    .rules-body.open{max-height:300px}
+    .rules-inner{padding:12px 16px 4px}
+    .rules-item{font-size:12px;color:rgba(255,255,255,0.35);line-height:1.7;padding-left:12px;position:relative;margin-bottom:8px}
+    .rules-item::before{content:'';position:absolute;left:0;top:8px;width:4px;height:4px;border-radius:50%;background:rgba(255,107,74,0.4)}
 
-    .info-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
+    /* ===== Confetti ===== */
+    .confetti-canvas{position:fixed;top:0;left:50%;transform:translateX(-50%);width:375px;height:100vh;pointer-events:none;z-index:100}
 
-    .info-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: #FFF5F2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
+    /* ===== Toast ===== */
+    .toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.9);background:rgba(0,0,0,0.82);color:#fff;padding:16px 32px;border-radius:14px;font-size:14px;font-weight:500;opacity:0;pointer-events:none;transition:all .3s;z-index:200;white-space:nowrap;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.08)}
+    .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
 
-    .info-icon i {
-      font-size: 14px;
-      color: #FF6B4A;
-    }
-
-    .info-text {
-      flex: 1;
-      padding-top: 2px;
-    }
-
-    .info-label {
-      font-size: 12px;
-      color: #8E95A9;
-      margin-bottom: 3px;
-    }
-
-    .info-value {
-      font-size: 14px;
-      color: #0A1628;
-      font-weight: 500;
-      line-height: 1.4;
-    }
-
-    /* ========== Receive Button ========== */
-    .btn-section {
-      padding: 0 16px 16px;
-    }
-
-    .receive-btn {
-      width: 343px;
-      height: 48px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #FF6B4A, #FF8A6A);
-      color: #fff;
-      font-size: 16px;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 16px rgba(255,107,74,0.3);
-      transition: all 0.2s;
-    }
-
-    .receive-btn:active {
-      transform: scale(0.98);
-      box-shadow: 0 2px 8px rgba(255,107,74,0.2);
-    }
-
-    .receive-btn.received {
-      background: #E8EAF0;
-      color: #8E95A9;
-      box-shadow: none;
-      cursor: not-allowed;
-    }
-
-    /* ========== Rules ========== */
-    .rules-card {
-      width: 343px;
-      margin: 0 16px 20px;
-      background: #fff;
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-    }
-
-    .rules-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: #0A1628;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .rules-title i {
-      color: #FF6B4A;
-      font-size: 14px;
-    }
-
-    .rules-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .rules-item {
-      font-size: 12px;
-      color: #5A6178;
-      line-height: 1.6;
-      padding-left: 14px;
-      position: relative;
-    }
-
-    .rules-item::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 7px;
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: #FFB5A0;
-    }
-
-    /* ========== Toast ========== */
-    .toast {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.9);
-      background: rgba(0,0,0,0.78);
-      color: #fff;
-      padding: 14px 28px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 500;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.3s;
-      z-index: 200;
-      white-space: nowrap;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
+    /* ===== Entrance Animations ===== */
+    .coupon-wrap{animation:slideUp .6s cubic-bezier(0.16,1,0.3,1) .1s both}
+    .cta-wrap{animation:slideUp .6s cubic-bezier(0.16,1,0.3,1) .2s both}
+    .rules{animation:slideUp .6s cubic-bezier(0.16,1,0.3,1) .3s both}
+    @keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
   </style>
 </head>
 <body>
   <div class="page">
-    <!-- Banner -->
-    <div class="banner-wrap">
-      <img src="assets/coupon-banner.jpg" alt="优惠券">
-      <div class="banner-overlay"></div>
-      <div class="banner-title">🎁 专属优惠券</div>
+    <!-- Hero -->
+    <div class="hero">
+      <img src="assets/coupon-banner.jpg" alt="">
       <a href="home.html" class="back-btn"><i class="fas fa-chevron-left"></i></a>
+      <div class="hero-content">
+        <div class="hero-badge"><i class="fas fa-ticket" style="font-size:11px;color:#FF8A6A"></i><span>限时优惠</span></div>
+        <div class="hero-title">专属优惠券</div>
+        <div class="hero-sub">扫码领取，畅享精彩演出</div>
+      </div>
     </div>
 
     <!-- Coupon Card -->
-    <div class="coupon-section">
+    <div class="coupon-wrap">
       <div class="coupon-card">
-        <div class="coupon-top">
-          <div class="coupon-amount"><span class="unit">&yen;</span>20</div>
-          <span class="coupon-type-tag">现金券</span>
+        <div class="coupon-hero">
+          <div class="coupon-amount-row">
+            <span class="coupon-currency">&yen;</span>
+            <span class="coupon-value">20</span>
+          </div>
+          <div class="coupon-type">现金券</div>
         </div>
-        <div class="coupon-notch-wrap"></div>
+        <div class="notch"><div class="notch-line"></div></div>
         <div class="coupon-body">
           <div class="coupon-name">满100减20优惠券</div>
-          <div class="info-list">
-            <div class="info-row">
-              <div class="info-icon"><i class="fas fa-yen-sign"></i></div>
-              <div class="info-text">
-                <div class="info-label">使用门槛</div>
-                <div class="info-value">订单满 &yen;100 可用</div>
-              </div>
+          <div class="info-grid">
+            <div class="info-cell">
+              <div class="info-cell-label">使用门槛</div>
+              <div class="info-cell-value">满 &yen;100 可用</div>
             </div>
-            <div class="info-row">
-              <div class="info-icon"><i class="fas fa-calendar-alt"></i></div>
-              <div class="info-text">
-                <div class="info-label">有效期</div>
-                <div class="info-value">2026-05-01 至 2026-06-30</div>
-              </div>
+            <div class="info-cell">
+              <div class="info-cell-label">有效期至</div>
+              <div class="info-cell-value">2026-06-30</div>
             </div>
-            <div class="info-row">
-              <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
-              <div class="info-text">
-                <div class="info-label">适用范围</div>
-                <div class="info-value">全场通用</div>
-              </div>
+            <div class="info-cell">
+              <div class="info-cell-label">适用范围</div>
+              <div class="info-cell-value">全场通用</div>
             </div>
-            <div class="info-row">
-              <div class="info-icon"><i class="fas fa-layer-group"></i></div>
-              <div class="info-text">
-                <div class="info-label">叠加规则</div>
-                <div class="info-value">可叠加会员折扣使用</div>
-              </div>
+            <div class="info-cell">
+              <div class="info-cell-label">叠加规则</div>
+              <div class="info-cell-value">可叠加会员折扣</div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Receive Button -->
-    <div class="btn-section">
-      <button class="receive-btn" id="receiveBtn" onclick="receiveCoupon()">
+    <!-- CTA -->
+    <div class="cta-wrap">
+      <div class="cta-glow" id="ctaGlow"></div>
+      <button class="cta-btn" id="ctaBtn" onclick="receiveCoupon()">
         <i class="fas fa-gift"></i>
-        <span id="receiveBtnText">立即领取</span>
+        <span id="ctaText">立即领取</span>
       </button>
     </div>
 
     <!-- Rules -->
-    <div class="rules-card">
-      <div class="rules-title"><i class="fas fa-info-circle"></i> 使用规则</div>
-      <div class="rules-list">
-        <div class="rules-item">优惠券仅限在海南演艺票务平台使用</div>
-        <div class="rules-item">每笔订单限用一张优惠券，不可与其他优惠券叠加</div>
-        <div class="rules-item">优惠券过期未使用将自动失效，不予补发</div>
-        <div class="rules-item">如订单发生退款，优惠券将退回账户（需在有效期内）</div>
+    <div class="rules">
+      <div class="rules-toggle" id="rulesToggle" onclick="toggleRules()">
+        <div class="rules-toggle-left">
+          <i class="fas fa-shield-halved"></i>
+          <span>使用规则</span>
+        </div>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <div class="rules-body" id="rulesBody">
+        <div class="rules-inner">
+          <div class="rules-item">优惠券仅限在海南演艺票务平台使用</div>
+          <div class="rules-item">每笔订单限用一张，不可与其他优惠券叠加</div>
+          <div class="rules-item">过期未使用将自动失效，不予补发</div>
+          <div class="rules-item">订单退款后优惠券将退回账户（需在有效期内）</div>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- Confetti Canvas -->
+  <canvas class="confetti-canvas" id="confettiCanvas"></canvas>
 
   <!-- Toast -->
   <div class="toast" id="toast"></div>
@@ -403,25 +197,89 @@
 
     function receiveCoupon() {
       if (isReceived) return;
-
-      const btn = document.getElementById('receiveBtn');
-      const btnText = document.getElementById('receiveBtnText');
+      const btn = document.getElementById('ctaBtn');
+      const glow = document.getElementById('ctaGlow');
 
       btn.style.opacity = '0.7';
+      btn.style.pointerEvents = 'none';
+
       setTimeout(() => {
         isReceived = true;
         btn.classList.add('received');
         btn.innerHTML = '<i class="fas fa-check-circle"></i><span>已领取</span>';
         btn.style.opacity = '1';
+        glow.style.display = 'none';
+        launchConfetti();
         showToast('领取成功！优惠券已放入您的卡包');
-      }, 600);
+      }, 500);
+    }
+
+    function toggleRules() {
+      const toggle = document.getElementById('rulesToggle');
+      const body = document.getElementById('rulesBody');
+      toggle.classList.toggle('open');
+      body.classList.toggle('open');
     }
 
     function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2000);
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    // Confetti
+    function launchConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 375;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#FF6B4A','#FF8A6A','#FFB088','#FFD700','#fff','#FF4757'];
+
+      for (let i = 0; i < 80; i++) {
+        particles.push({
+          x: 187 + (Math.random() - 0.5) * 60,
+          y: canvas.height * 0.55,
+          vx: (Math.random() - 0.5) * 8,
+          vy: -Math.random() * 12 - 4,
+          w: Math.random() * 6 + 3,
+          h: Math.random() * 4 + 2,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rot: Math.random() * 360,
+          rv: (Math.random() - 0.5) * 12,
+          gravity: 0.25,
+          alpha: 1
+        });
+      }
+
+      let frame = 0;
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.vy += p.gravity;
+          p.y += p.vy;
+          p.rot += p.rv;
+          p.vx *= 0.99;
+          if (frame > 40) p.alpha -= 0.02;
+          if (p.alpha <= 0) return;
+          alive = true;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot * Math.PI / 180);
+          ctx.globalAlpha = Math.max(0, p.alpha);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+          ctx.restore();
+        });
+        frame++;
+        if (alive && frame < 120) requestAnimationFrame(draw);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      draw();
     }
   </script>
 </body>
