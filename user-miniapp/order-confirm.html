@@ -743,7 +743,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
         <span class="entry-text" id="pointsEntryDesc" style="font-size:12px;color:var(--text-muted);font-weight:400;">可用100积分，抵扣¥1.00</span>
-        <div class="payment-check" id="checkPointsEntry"><i class="fas fa-check"></i></div>
+        <div class="payment-check checked" id="checkPointsEntry"><i class="fas fa-check"></i></div>
       </div>
     </div>
   </div>
@@ -934,7 +934,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
   let walletEnabled = false;
   let walletUsed = 0;
   let rechargeCardEnabled = false;
-  let pointsEnabled = false;
+  let pointsEnabled = true;
   let pointsUsed = 0;
 
   const RECHARGE_CARDS = [
@@ -1521,16 +1521,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
     recalcTotal();
   }
 
-  function updatePointsDesc() {
-    const desc = document.getElementById('pointsEntryDesc');
-    if (pointsEnabled && pointsUsed > 0) {
-      desc.textContent = `已用 ${pointsUsed} 积分`;
-      desc.style.color = '#8B5CF6';
-    } else {
-      desc.textContent = `可用${AVAILABLE_POINTS}积分`;
-      desc.style.color = 'var(--text-muted)';
-    }
-  }
+
 
   // ========== Remaining Payable (for clamping inputs) ==========
   function getRemainingPayable() {
@@ -1593,7 +1584,6 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
 
     // 更新描述
     updateWalletDesc();
-    updatePointsDesc();
     updateRechargeCardDesc();
   }
 
