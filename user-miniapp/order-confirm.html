@@ -1012,7 +1012,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
     { id: 'rc002', name: '礼品卡', balance: 200, cardNo: '8888****5678' },
     { id: 'rc003', name: '会员储值卡', balance: 1000, cardNo: '8888****9012' }
   ];
-  let selectedRechargeCards = new Set();
+  let selectedRechargeCard = null;
 
   let orderTotal = currentPayable; // 当前应付金额（动态计算）
 
@@ -1405,7 +1405,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
     document.getElementById('checkRechargeCard').classList.toggle('checked', rechargeCardEnabled);
     document.getElementById('rechargeCardListArea').style.display = rechargeCardEnabled ? 'block' : 'none';
     if (!rechargeCardEnabled) {
-      selectedRechargeCards.clear();
+      selectedRechargeCard = null;
       renderRechargeCards();
     } else {
       renderRechargeCards();
@@ -1518,7 +1518,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
       return;
     }
     container.innerHTML = RECHARGE_CARDS.map(card => {
-      const isSelected = selectedRechargeCards.has(card.id);
+      const isSelected = selectedRechargeCard === card.id;
       return `
         <div class="recharge-card-item ${isSelected ? 'selected' : ''}" onclick="event.stopPropagation(); toggleRechargeCardItem('${card.id}')">
           <div class="recharge-card-checkbox"><i class="fas fa-check"></i></div>
@@ -1533,39 +1533,35 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
   }
 
   function toggleRechargeCardItem(cardId) {
-    if (selectedRechargeCards.has(cardId)) {
-      selectedRechargeCards.delete(cardId);
+    if (selectedRechargeCard === cardId) {
+      selectedRechargeCard = null;
     } else {
-      // 检查是否已全额抵扣
-      const currentDeduct = getRechargeCardDeduct();
-      const remaining = Math.max(0, currentPayable - couponDeduction - pointsDeduction - currentDeduct - walletUsed);
-      if (remaining <= 0) {
-        showToast('已全额抵扣，无需继续选择');
-        return;
-      }
-      selectedRechargeCards.add(cardId);
+      selectedRechargeCard = cardId;
     }
     renderRechargeCards();
     recalcTotal();
   }
 
   function getRechargeCardDeduct() {
-    const totalCardBalance = RECHARGE_CARDS
-      .filter(c => selectedRechargeCards.has(c.id))
-      .reduce((sum, c) => sum + c.balance, 0);
-    // 实际抵扣 = min(已选卡总额, 当前应付 - 其他已抵扣)
+    if (!selectedRechargeCard) return 0;
+    const card = RECHARGE_CARDS.find(c => c.id === selectedRechargeCard);
+    if (!card) return 0;
+    // 实际抵扣 = min(卡余额, 当前应付 - 其他已抵扣)
     const otherDeduct = couponDeduction + pointsDeduction + walletUsed;
     const remaining = Math.max(0, currentPayable - otherDeduct);
-    return Math.min(totalCardBalance, remaining);
+    return Math.min(card.balance, remaining);
   }
 
   function updateRechargeCardDesc() {
     const desc = document.getElementById('rechargeCardDesc');
     const deduct = getRechargeCardDeduct();
-    if (selectedRechargeCards.size > 0 && deduct > 0) {
-      desc.textContent = `已选${selectedRechargeCards.size}张，抵扣¥${deduct.toFixed(2)}`;
-    } else if (selectedRechargeCards.size > 0) {
-      desc.textContent = `已选${selectedRechargeCards.size}张`;
+    if (selectedRechargeCard) {
+      const card = RECHARGE_CARDS.find(c => c.id === selectedRechargeCard);
+      if (card && deduct > 0) {
+        desc.textContent = `${card.name}，抵扣¥${deduct.toFixed(2)}`;
+      } else if (card) {
+        desc.textContent = card.name;
+      }
     } else {
       const total = RECHARGE_CARDS.reduce((sum, c) => sum + c.balance, 0);
       desc.textContent = `可用 ¥${total.toFixed(2)}`;
@@ -1617,7 +1613,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
       remaining -= couponDeduction;
     }
     // 扣除已选充值卡
-    if (rechargeCardEnabled && selectedRechargeCards.size > 0) {
+    if (rechargeCardEnabled && selectedRechargeCard) {
       remaining -= getRechargeCardDeduct();
     }
     // 扣除已用积分
@@ -1644,7 +1640,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
       wechatAmount = Math.max(0, wechatAmount - couponDeduction);
     }
     // 扣除充值卡
-    if (rechargeCardEnabled && selectedRechargeCards.size > 0) {
+    if (rechargeCardEnabled && selectedRechargeCard) {
       wechatAmount = Math.max(0, wechatAmount - cardAmount);
     }
     // 扣除钱包
@@ -1701,7 +1697,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
 
     // 更新底部按钮文字：多重支付方式时显示"组合支付"
     const btn = document.querySelector('.bottom-btn');
-    const multiPayment = (wechatEnabled ? 1 : 0) + (walletEnabled && walletUsed > 0 ? 1 : 0) + (rechargeCardEnabled && selectedRechargeCards.size > 0 ? 1 : 0);
+    const multiPayment = (wechatEnabled ? 1 : 0) + (walletEnabled && walletUsed > 0 ? 1 : 0) + (rechargeCardEnabled && selectedRechargeCard ? 1 : 0);
     if (multiPayment >= 2) {
       btn.textContent = '组合支付';
     } else {
@@ -1733,7 +1729,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
     }
 
     // 充值卡抵扣
-    if (rechargeCardEnabled && selectedRechargeCards.size > 0) {
+    if (rechargeCardEnabled && selectedRechargeCard) {
       const cardDeduct = getRechargeCardDeduct();
       finalTotal = Math.max(0, finalTotal - cardDeduct);
     }
@@ -1780,7 +1776,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
     let totalDeduct = 0;
     if (couponDeduction > 0) totalDeduct += couponDeduction;
     if (pointsEnabled && pointsUsed > 0) totalDeduct += pointsUsed * POINTS_RATE;
-    if (rechargeCardEnabled && selectedRechargeCards.size > 0) totalDeduct += getRechargeCardDeduct();
+    if (rechargeCardEnabled && selectedRechargeCard) totalDeduct += getRechargeCardDeduct();
     if (walletEnabled && walletUsed > 0) totalDeduct += walletUsed;
 
     const isFullyDeducted = totalDeduct >= currentPayable;

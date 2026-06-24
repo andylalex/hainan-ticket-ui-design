@@ -388,9 +388,9 @@ body {
 .pay-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(10,22,40,0.5);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: rgba(10,22,40,0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 200;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -403,30 +403,62 @@ body {
   transform: translateX(-50%) translateY(100%);
   width: 100%;
   max-width: 375px;
-  background: #fff;
+  background: rgba(255,255,255,0.96);
   border-radius: 20px 20px 0 0;
   z-index: 201;
   transition: transform 0.35s cubic-bezier(0.32,0.72,0,1);
   max-height: 78vh;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
-  box-shadow: 0 -8px 40px rgba(10,22,40,0.12);
+  padding: 0 0 calc(24px + env(safe-area-inset-bottom));
+  box-shadow: 0 -8px 40px rgba(10,22,40,0.15);
 }
 .pay-modal-sheet.show {
   transform: translateX(-50%) translateY(0);
 }
 .pay-modal-header {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  padding: 24px 20px 16px;
+  overflow: hidden;
+}
+.pay-modal-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #FF6B4A 0%, #FF8A6E 40%, #D4A853 70%, #07C160 100%);
 }
 .pay-modal-title {
   font-size: 17px;
   font-weight: 700;
   color: #1A1A2E;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
+.pay-modal-title-icons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.pay-modal-title-icons .t-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #fff;
+}
+.pay-modal-title-icons .t-icon.wechat { background: linear-gradient(135deg, #07C160, #06AD56); }
+.pay-modal-title-icons .t-icon.wallet { background: linear-gradient(135deg, #FF6B4A, #FF8A6E); }
+.pay-modal-title-icons .t-icon.card { background: linear-gradient(135deg, #D4A853, #E8C878); }
 .pay-modal-close {
   width: 28px;
   height: 28px;
@@ -443,31 +475,50 @@ body {
 }
 .pay-modal-close:active { opacity: 0.7; }
 .pay-modal-price {
+  margin: 0 20px 20px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 0 1px rgba(0,0,0,0.04);
   text-align: center;
-  padding: 8px 0 16px;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
-  margin-bottom: 16px;
 }
 .pay-modal-price-label {
   font-size: 12px;
   color: #8E95A9;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
 }
 .pay-modal-price-value {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 700;
   color: #FF6B4A;
   letter-spacing: -1px;
+  line-height: 1.2;
+}
+.pay-modal-price-order {
+  font-size: 11px;
+  color: #C4CAD6;
+  margin-top: 6px;
+  font-weight: 500;
+}
+.pay-modal-options {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 .pay-modal-option {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 0;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  padding: 14px 16px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04), 0 0 1px rgba(0,0,0,0.04);
   cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.25s;
 }
-.pay-modal-option:last-child { border-bottom: none; }
 .pay-modal-option.disabled {
   opacity: 0.4;
   cursor: not-allowed;
@@ -479,20 +530,20 @@ body {
   gap: 12px;
 }
 .pay-modal-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 18px;
   color: #fff;
   flex-shrink: 0;
 }
 .pay-modal-icon.wechat { background: linear-gradient(135deg, #07C160, #06AD56); }
 .pay-modal-icon.wallet { background: linear-gradient(135deg, #FF6B4A, #FF8A6E); }
 .pay-modal-icon.card { background: linear-gradient(135deg, #D4A853, #E8C878); }
-.pay-modal-info { display: flex; flex-direction: column; gap: 2px; }
+.pay-modal-info { display: flex; flex-direction: column; gap: 3px; }
 .pay-modal-name { font-size: 14px; font-weight: 600; color: #1A1A2E; }
 .pay-modal-desc { font-size: 11px; color: #8E95A9; }
 .pay-modal-check {
@@ -515,26 +566,40 @@ body {
 }
 .pay-modal-check i { display: none; }
 .pay-modal-check.checked i { display: block; }
+.pay-modal-option.selected-border-wechat { border-color: rgba(7,193,96,0.35); }
+.pay-modal-option.selected-border-wallet { border-color: rgba(255,107,74,0.35); }
+.pay-modal-option.selected-border-card { border-color: rgba(212,168,83,0.35); }
+.pay-modal-btn-wrap {
+  position: sticky;
+  bottom: 0;
+  padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, rgba(255,255,255,0.98) 70%, transparent);
+  margin-top: 8px;
+}
 .pay-modal-btn {
   width: 100%;
-  height: 48px;
+  height: 50px;
   background: linear-gradient(135deg, #FF6B4A, #FF8A6A);
   color: #fff;
   border: none;
-  border-radius: 24px;
+  border-radius: 25px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   font-family: inherit;
-  margin-top: 16px;
-  box-shadow: 0 4px 16px rgba(255,107,74,0.3);
+  box-shadow: 0 6px 20px rgba(255,107,74,0.35);
+  transition: transform 0.15s, box-shadow 0.15s;
 }
-.pay-modal-btn:active { opacity: 0.9; }
+.pay-modal-btn:active { transform: scale(0.97); box-shadow: 0 3px 12px rgba(255,107,74,0.25); }
 
 /* Modal wallet input */
 .modal-wallet-input-area {
-  padding: 8px 0 4px 50px;
+  margin: 0 20px 8px;
+  padding: 14px 16px;
+  background: #F8F9FC;
+  border-radius: 0 0 12px 12px;
   display: none;
+  border-top: 1px solid rgba(0,0,0,0.04);
 }
 .modal-wallet-input-area.show { display: block; }
 .modal-wallet-input-row {
@@ -543,28 +608,41 @@ body {
   gap: 8px;
   margin-bottom: 6px;
 }
-.modal-wallet-input {
+.modal-wallet-input-wrap {
   flex: 1;
-  height: 40px;
+  display: flex;
+  align-items: center;
+  height: 42px;
   border: 1.5px solid #E8E9ED;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 0 12px;
-  font-size: 13px;
-  color: #1A1A2E;
-  background: #F6F7FA;
-  font-family: inherit;
+  background: #fff;
   transition: all 0.25s;
 }
-.modal-wallet-input:focus {
-  outline: none;
+.modal-wallet-input-wrap:focus-within {
   border-color: #FF6B4A;
-  background: #fff;
   box-shadow: 0 0 0 3px rgba(255,107,74,0.08);
+}
+.modal-wallet-input-prefix {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1A1A2E;
+  margin-right: 4px;
+}
+.modal-wallet-input {
+  flex: 1;
+  height: 100%;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: #1A1A2E;
+  font-family: inherit;
+  outline: none;
 }
 .modal-wallet-use-all {
   padding: 0 14px;
-  height: 40px;
-  border-radius: 8px;
+  height: 42px;
+  border-radius: 10px;
   background: linear-gradient(135deg, #FF6B4A, #FF8A6E);
   color: #fff;
   font-size: 12px;
@@ -579,14 +657,17 @@ body {
   font-size: 12px;
   color: #FF6B4A;
   font-weight: 600;
-  padding-top: 2px;
   padding-left: 2px;
 }
 
 /* Modal recharge card list */
 .modal-card-list-area {
-  padding: 8px 0 4px 50px;
+  margin: 0 20px 8px;
+  padding: 14px 16px;
+  background: #F8F9FC;
+  border-radius: 0 0 12px 12px;
   display: none;
+  border-top: 1px solid rgba(0,0,0,0.04);
 }
 .modal-card-list-area.show { display: block; }
 .modal-card-list {
@@ -600,14 +681,15 @@ body {
   align-items: center;
   gap: 10px;
   padding: 12px;
-  background: #F6F7FA;
+  background: #fff;
   border-radius: 10px;
   cursor: pointer;
   border: 1.5px solid transparent;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
   transition: all 0.25s;
 }
 .modal-card-item:active { transform: scale(0.98); }
-.modal-card-item.selected { border-color: #D4A853; background: #FFFBF5; }
+.modal-card-item.selected { border-color: #D4A853; background: #FFFBF5; box-shadow: 0 0 0 1px rgba(212,168,83,0.15); }
 .modal-card-checkbox {
   width: 20px;
   height: 20px;
@@ -634,7 +716,6 @@ body {
   font-size: 12px;
   color: #D4A853;
   font-weight: 600;
-  padding-top: 2px;
   padding-left: 2px;
 }
 
@@ -1223,7 +1304,7 @@ var _modalWechat = true;
 var _modalWallet = false;
 var _modalWalletUsed = 0;
 var _modalCard = false;
-var _modalSelectedCards = new Set();
+var _modalSelectedCard = null;
 
 // Constants (same as order-confirm)
 var MODAL_AVAILABLE_BALANCE = 1280.00;
@@ -1253,7 +1334,7 @@ function showPaymentModal() {
   // Build recharge card list HTML
   var cardListHtml = '';
   MODAL_RECHARGE_CARDS.forEach(function(card) {
-    var isSelected = _modalSelectedCards.has(card.id);
+    var isSelected = _modalSelectedCard === card.id;
     cardListHtml +=
       '<div class="modal-card-item ' + (isSelected ? 'selected' : '') + '" onclick="event.stopPropagation(); toggleModalCardItem(\'' + card.id + '\')">' +
         '<div class="modal-card-checkbox"><i class="fas fa-check"></i></div>' +
@@ -1266,13 +1347,22 @@ function showPaymentModal() {
   });
 
   var html = '<div class="pay-modal-header">' +
-    '<span class="pay-modal-title">选择支付方式</span>' +
+    '<span class="pay-modal-title">' +
+    '<span class="pay-modal-title-icons">' +
+    '<span class="t-icon wechat"><i class="fab fa-weixin"></i></span>' +
+    '<span class="t-icon wallet"><i class="fas fa-wallet"></i></span>' +
+    '<span class="t-icon card"><i class="fas fa-credit-card"></i></span>' +
+    '</span>' +
+    '选择支付方式' +
+    '</span>' +
     '<button class="pay-modal-close" onclick="closePaymentModal()"><i class="fas fa-times"></i></button>' +
     '</div>' +
     '<div class="pay-modal-price">' +
     '<div class="pay-modal-price-label">应付金额</div>' +
     '<div class="pay-modal-price-value">¥' + payable.toLocaleString() + '</div>' +
+    '<div class="pay-modal-price-order">订单号：HN20260614001</div>' +
     '</div>' +
+    '<div class="pay-modal-options">' +
     '<div class="pay-modal-option" id="modalOptWechat" onclick="toggleModalWechat()">' +
     '<div class="pay-modal-option-left">' +
     '<div class="pay-modal-icon wechat"><i class="fab fa-weixin"></i></div>' +
@@ -1289,7 +1379,10 @@ function showPaymentModal() {
     '</div>' +
     '<div class="modal-wallet-input-area" id="modalWalletInputArea">' +
     '<div class="modal-wallet-input-row">' +
+    '<div class="modal-wallet-input-wrap">' +
+    '<span class="modal-wallet-input-prefix">¥</span>' +
     '<input type="number" class="modal-wallet-input" id="modalWalletInput" placeholder="输入使用金额" min="0" step="0.01" oninput="onModalWalletInput()">' +
+    '</div>' +
     '<button class="modal-wallet-use-all" onclick="event.stopPropagation(); useModalAllWallet()">全部使用</button>' +
     '</div>' +
     '<div class="modal-wallet-deduct" id="modalWalletDeduct">抵扣 ¥0.00</div>' +
@@ -1305,7 +1398,10 @@ function showPaymentModal() {
     '<div class="modal-card-list">' + cardListHtml + '</div>' +
     '<div class="modal-card-deduct" id="modalCardDeduct">抵扣 ¥0.00</div>' +
     '</div>' +
-    '<button class="pay-modal-btn" id="modalPayBtn" onclick="confirmModalPay()">确认支付</button>';
+    '</div>' +
+    '<div class="pay-modal-btn-wrap">' +
+    '<button class="pay-modal-btn" id="modalPayBtn" onclick="confirmModalPay()">确认支付</button>' +
+    '</div>';
 
   sheet.innerHTML = html;
   document.body.appendChild(overlay);
@@ -1336,6 +1432,8 @@ function toggleModalWechat() {
   _modalWechat = !_modalWechat;
   var check = document.getElementById('modalCheckWechat');
   if (check) check.classList.toggle('checked', _modalWechat);
+  var opt = document.getElementById('modalOptWechat');
+  if (opt) opt.classList.toggle('selected-border-wechat', _modalWechat);
   updateModalPayState();
 }
 
@@ -1344,6 +1442,8 @@ function toggleModalWallet() {
   _modalWallet = !_modalWallet;
   var check = document.getElementById('modalCheckWallet');
   if (check) check.classList.toggle('checked', _modalWallet);
+  var opt = document.getElementById('modalOptWallet');
+  if (opt) opt.classList.toggle('selected-border-wallet', _modalWallet);
   var inputArea = document.getElementById('modalWalletInputArea');
   if (inputArea) inputArea.classList.toggle('show', _modalWallet);
   if (!_modalWallet) {
@@ -1396,10 +1496,12 @@ function toggleModalCard() {
   _modalCard = !_modalCard;
   var check = document.getElementById('modalCheckCard');
   if (check) check.classList.toggle('checked', _modalCard);
+  var opt = document.getElementById('modalOptCard');
+  if (opt) opt.classList.toggle('selected-border-card', _modalCard);
   var listArea = document.getElementById('modalCardListArea');
   if (listArea) listArea.classList.toggle('show', _modalCard);
   if (!_modalCard) {
-    _modalSelectedCards.clear();
+    _modalSelectedCard = null;
     renderModalCardList();
   } else {
     renderModalCardList();
@@ -1412,7 +1514,7 @@ function renderModalCardList() {
   if (!list) return;
   var html = '';
   MODAL_RECHARGE_CARDS.forEach(function(card) {
-    var isSelected = _modalSelectedCards.has(card.id);
+    var isSelected = _modalSelectedCard === card.id;
     html +=
       '<div class="modal-card-item ' + (isSelected ? 'selected' : '') + '" onclick="event.stopPropagation(); toggleModalCardItem(\'' + card.id + '\')">' +
         '<div class="modal-card-checkbox"><i class="fas fa-check"></i></div>' +
@@ -1429,28 +1531,20 @@ function renderModalCardList() {
 }
 
 function toggleModalCardItem(cardId) {
-  if (_modalSelectedCards.has(cardId)) {
-    _modalSelectedCards.delete(cardId);
+  if (_modalSelectedCard === cardId) {
+    _modalSelectedCard = null;
   } else {
-    var payable = getModalPayable();
-    var currentDeduct = getModalCardDeduct();
-    var remaining = Math.max(0, payable - _modalWalletUsed - currentDeduct);
-    if (remaining <= 0) {
-      showToast('已全额抵扣，无需继续选择');
-      return;
-    }
-    _modalSelectedCards.add(cardId);
+    _modalSelectedCard = cardId;
   }
   renderModalCardList();
   updateModalPayState();
 }
 
 function getModalCardDeduct() {
-  var totalCardBalance = MODAL_RECHARGE_CARDS
-    .filter(function(c) { return _modalSelectedCards.has(c.id); })
-    .reduce(function(sum, c) { return sum + c.balance; }, 0);
+  var selectedCard = MODAL_RECHARGE_CARDS.find(function(c) { return c.id === _modalSelectedCard; });
+  if (!selectedCard) return 0;
   var remaining = Math.max(0, getModalPayable() - _modalWalletUsed);
-  return Math.min(totalCardBalance, remaining);
+  return Math.min(selectedCard.balance, remaining);
 }
 
 // ========== Update UI State ==========
@@ -1482,10 +1576,11 @@ function updateModalPayState() {
   // Card desc
   var cardDesc = document.getElementById('modalCardDesc');
   if (cardDesc) {
-    if (_modalSelectedCards.size > 0 && cardDeduct > 0) {
-      cardDesc.textContent = '已选' + _modalSelectedCards.size + '张，抵扣¥' + cardDeduct.toFixed(2);
-    } else if (_modalSelectedCards.size > 0) {
-      cardDesc.textContent = '已选' + _modalSelectedCards.size + '张';
+    var selectedCard = MODAL_RECHARGE_CARDS.find(function(c) { return c.id === _modalSelectedCard; });
+    if (selectedCard && cardDeduct > 0) {
+      cardDesc.textContent = selectedCard.name + '，抵扣¥' + cardDeduct.toFixed(2);
+    } else if (selectedCard) {
+      cardDesc.textContent = selectedCard.name;
     } else {
       var total = MODAL_RECHARGE_CARDS.reduce(function(sum, c) { return sum + c.balance; }, 0);
       cardDesc.textContent = '可用 ¥' + total.toFixed(2);
@@ -1506,7 +1601,7 @@ function updateModalPayState() {
   // Update button text
   var btn = document.getElementById('modalPayBtn');
   if (btn) {
-    var multiCount = (_modalWechat ? 1 : 0) + (_modalWallet && _modalWalletUsed > 0 ? 1 : 0) + (_modalCard && _modalSelectedCards.size > 0 ? 1 : 0);
+    var multiCount = (_modalWechat ? 1 : 0) + (_modalWallet && _modalWalletUsed > 0 ? 1 : 0) + (_modalCard && _modalSelectedCard ? 1 : 0);
     btn.textContent = multiCount >= 2 ? '组合支付' : '确认支付';
   }
 }
@@ -1516,7 +1611,7 @@ function confirmModalPay() {
   var types = [];
   if (_modalWechat) types.push('微信支付');
   if (_modalWallet && _modalWalletUsed > 0) types.push('钱包支付');
-  if (_modalCard && _modalSelectedCards.size > 0) types.push('充值卡支付');
+  if (_modalCard && _modalSelectedCard) types.push('充值卡支付');
   if (types.length === 0) {
     showToast('请至少选择一种支付方式');
     return;
