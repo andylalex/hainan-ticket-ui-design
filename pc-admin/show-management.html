@@ -8196,17 +8196,17 @@ select.form-select-sm,
     <div class="step-indicator">
       <div class="step-item active" data-step="1">
         <div class="step-circle">1</div>
-        <span class="step-label">演出信息</span>
+        <span class="step-label">基础信息</span>
       </div>
       <div class="step-line"></div>
       <div class="step-item" data-step="2">
         <div class="step-circle">2</div>
-        <span class="step-label">演出信息</span>
+        <span class="step-label">票价与场次</span>
       </div>
       <div class="step-line"></div>
       <div class="step-item" data-step="3">
         <div class="step-circle">3</div>
-        <span class="step-label">票务策略</span>
+        <span class="step-label">上架与策略</span>
       </div>
     </div>
     <div class="modal-body">
@@ -8492,7 +8492,7 @@ select.form-select-sm,
         </div>
         <button class="btn-add-tier" onclick="addSessionRow()"><i class="fas fa-plus"></i>添加场次</button>
       </div>
-      <!-- Step 3: 票务策略 -->
+      <!-- Step 3: 上架与策略 -->
       <div class="step-content" id="showStep3">
         <div class="form-section-title"><i class="fas fa-tags"></i>票务策略</div>
 
@@ -8581,17 +8581,17 @@ select.form-select-sm,
     <div class="step-indicator" id="editShowStepIndicator" style="display:none;">
       <div class="step-item active" data-step="1">
         <div class="step-circle">1</div>
-        <span class="step-label">演出信息</span>
+        <span class="step-label">基础信息</span>
       </div>
       <div class="step-line"></div>
       <div class="step-item" data-step="2">
         <div class="step-circle">2</div>
-        <span class="step-label">演出信息</span>
+        <span class="step-label">票价与场次</span>
       </div>
       <div class="step-line"></div>
       <div class="step-item" data-step="3">
         <div class="step-circle">3</div>
-        <span class="step-label">票务策略</span>
+        <span class="step-label">上架与策略</span>
       </div>
     </div>
     <div class="modal-body">
@@ -9455,6 +9455,7 @@ function openEditShow(btn) {
   var statusTag = row.querySelector('.status-tag');
   var statusText = statusTag ? statusTag.textContent.trim() : '';
   var isDraft = statusText.indexOf('待发布') !== -1;
+  var isEnded = statusText.indexOf('已结束') !== -1;
 
   if (showName) document.getElementById('editShowName').value = showName.textContent.trim();
   if (typeTag) document.getElementById('editShowType').value = typeTag.textContent.trim();
@@ -9473,13 +9474,42 @@ function openEditShow(btn) {
     }
   }
 
-  // 非待发布状态下，所有字段不可编辑
-  var allEditInputs = document.querySelectorAll('#modalEditShow input, #modalEditShow select, #modalEditShow textarea');
-  allEditInputs.forEach(function(input) {
-    input.disabled = !isDraft;
-    input.style.opacity = !isDraft ? '0.6' : '';
-    input.style.cursor = !isDraft ? 'not-allowed' : '';
-  });
+  // 已结束状态：所有字段不可编辑
+  if (isEnded) {
+    var allEditInputs = document.querySelectorAll('#modalEditShow input, #modalEditShow select, #modalEditShow textarea');
+    allEditInputs.forEach(function(input) {
+      input.disabled = true;
+      input.style.opacity = '0.6';
+      input.style.cursor = 'not-allowed';
+    });
+  } else if (!isDraft) {
+    // 非待发布（售票中）：仅场馆/演出厅/票价/场次不可编辑
+    var venueSelect = document.getElementById('editShowVenue');
+    var hallSelect = document.getElementById('editShowHall');
+    var tierInputs = document.querySelectorAll('#editTierTable tbody input[type="number"]');
+    var sessionInputs = document.querySelectorAll('#editSessionList input');
+    if (venueSelect) { venueSelect.disabled = true; venueSelect.style.opacity = '0.6'; venueSelect.style.cursor = 'not-allowed'; }
+    if (hallSelect) { hallSelect.disabled = true; hallSelect.style.opacity = '0.6'; hallSelect.style.cursor = 'not-allowed'; }
+    tierInputs.forEach(function(input) { input.disabled = true; input.style.opacity = '0.6'; input.style.cursor = 'not-allowed'; });
+    sessionInputs.forEach(function(input) { input.disabled = true; input.style.opacity = '0.6'; input.style.cursor = 'not-allowed'; });
+    // 其他字段恢复可编辑
+    var otherInputs = document.querySelectorAll('#modalEditShow input:not([id="editShowVenue"]):not([id="editShowHall"]), #modalEditShow select:not([id="editShowVenue"]):not([id="editShowHall"]), #modalEditShow textarea');
+    otherInputs.forEach(function(input) {
+      if (!input.closest('#editTierTable') && !input.closest('#editSessionList')) {
+        input.disabled = false;
+        input.style.opacity = '';
+        input.style.cursor = '';
+      }
+    });
+  } else {
+    // 待发布状态：全部可编辑
+    var allInputs = document.querySelectorAll('#modalEditShow input, #modalEditShow select, #modalEditShow textarea');
+    allInputs.forEach(function(input) {
+      input.disabled = false;
+      input.style.opacity = '';
+      input.style.cursor = '';
+    });
+  }
 
   currentEditShowStep = 1;
   updateEditShowStepUI();
