@@ -901,33 +901,33 @@ table { border-collapse: collapse; width: 100%; }
 }
 
 /* Publish show button */
-.action-btn.publish {
-  background: rgba(255,107,74,0.12);
-  color: #FF6B4A;
-  border: 1px solid rgba(255,107,74,0.25);
+#panel-shows .action-btn.publish {
+  background: rgba(255,107,74,0.12) !important;
+  color: #FF6B4A !important;
+  border-color: rgba(255,107,74,0.25) !important;
 }
-.action-btn.publish:hover {
-  background: rgba(255,107,74,0.2);
+#panel-shows .action-btn.publish:hover {
+  background: rgba(255,107,74,0.2) !important;
   transform: translateY(-1px);
 }
 /* Published state - non-draft shows */
-.action-btn.published {
-  background: rgba(239,68,68,0.08);
-  color: #EF4444;
-  border: 1px solid rgba(239,68,68,0.15);
+#panel-shows .action-btn.published {
+  background: rgba(239,68,68,0.08) !important;
+  color: #EF4444 !important;
+  border-color: rgba(239,68,68,0.15) !important;
   cursor: default;
 }
-.action-btn.published:hover {
+#panel-shows .action-btn.published:hover {
   transform: none;
 }
-.action-btn.published[disabled],
-.action-btn.published.disabled-style {
+#panel-shows .action-btn.published[disabled],
+#panel-shows .action-btn.published.disabled-style {
   opacity: 0.4;
   cursor: not-allowed;
   pointer-events: none;
-  background: rgba(156,163,175,0.1);
-  color: #9CA3AF;
-  border: 1px solid rgba(156,163,175,0.2);
+  background: rgba(156,163,175,0.1) !important;
+  color: #9CA3AF !important;
+  border-color: rgba(156,163,175,0.2) !important;
 }
 
 #panel-shows .data-table td:nth-child(4) .status-tag {
@@ -2065,11 +2065,11 @@ table { border-collapse: collapse; width: 100%; }
 .review-reply-content { color: var(--text-primary); line-height: 1.5; }
 .action-btn.reply { color: #3B82F6; }
 .action-btn.reply:hover { color: #2563EB; }
-.action-btn.tag { color: #8B5CF6; }
-.action-btn.tag:hover { color: #7C3AED; }
-.action-btn.tag.has-tag {
-  background: var(--tag-bg, rgba(139,92,246,0.1));
-  color: var(--tag-color, #8B5CF6);
+#panel-shows .action-btn.tag { color: #8B5CF6 !important; }
+#panel-shows .action-btn.tag:hover { color: #7C3AED !important; }
+#panel-shows .action-btn.tag.has-tag {
+  background: var(--tag-bg, rgba(139,92,246,0.1)) !important;
+  color: var(--tag-color, #8B5CF6) !important;
   padding: 4px 12px;
   border-radius: 6px;
   font-weight: 600;
@@ -6930,7 +6930,7 @@ select.form-select-sm,
                   <div class="show-cell">
                     <img class="show-thumb" src="https://picsum.photos/seed/show1/112/144" alt="">
                     <div class="show-info">
-                      <div class="show-name">《天涯故事》大型歌舞秀</div>
+                      <div class="show-name" title="《天涯故事》大型歌舞秀">《天涯故事》大型歌舞秀</div>
                       <span class="type-tag" style="margin-top:4px;">歌舞秀</span>
                       <div class="show-venue"><i class="fas fa-location-dot"></i>海南大剧院 · 主剧场</div>
                       <div class="show-date-range"><i class="fas fa-calendar"></i>2026-04-15 至 2026-06-30</div>
@@ -6964,7 +6964,7 @@ select.form-select-sm,
                 <td><span class="status-tag selling"><span class="dot"></span>售票中</span></td>
                 <td>
                   <div class="action-btns">
-                    <button class="action-btn edit" onclick="openEditShow(this)"><i class="fas fa-edit"></i> 编辑</button>
+                    <button class="action-btn edit" onclick="openEditShow(this)"><i class="fas fa-eye"></i> 查看</button>
                     <button class="action-btn view" onclick="switchToSessions('《天涯故事》大型歌舞秀')"><i class="fas fa-calendar-days"></i> 场次</button>
                     <button class="action-btn published" disabled title="开票时间：2026-04-10 10:00"><i class="fas fa-ticket"></i> 4-10开票</button>
                     <button class="action-btn tag has-tag" style="--tag-color:#FF6B4A;--tag-bg:rgba(255,107,74,0.1);" onclick="openTagModal(this)"><i class="fas fa-tag"></i> 热门</button>
@@ -6979,7 +6979,7 @@ select.form-select-sm,
                   <div class="show-cell">
                     <img class="show-thumb" src="https://picsum.photos/seed/show2/112/144" alt="">
                     <div class="show-info">
-                      <div class="show-name">椰风海韵·交响音乐会</div>
+                      <div class="show-name" title="椰风海韵·交响音乐会">椰风海韵·交响音乐会</div>
                       <span class="type-tag" style="margin-top:4px;">音乐会</span>
                       <div class="show-venue"><i class="fas fa-location-dot"></i>三亚艺术中心 · 大剧场</div>
                       <div class="show-date-range"><i class="fas fa-calendar"></i>2026-05-01 至 2026-05-03</div>
@@ -7013,7 +7013,7 @@ select.form-select-sm,
                 <td><span class="status-tag ended"><span class="dot"></span>已结束</span></td>
                 <td>
                   <div class="action-btns">
-                    <button class="action-btn edit" onclick="openEditShow(this)"><i class="fas fa-edit"></i> 编辑</button>
+                    <button class="action-btn edit" onclick="openEditShow(this)"><i class="fas fa-eye"></i> 查看</button>
                     <button class="action-btn view" onclick="switchToSessions('椰风海韵·交响音乐会')"><i class="fas fa-calendar-days"></i> 场次</button>
                     <button class="action-btn published" disabled title="开票时间：2026-04-28 10:00"><i class="fas fa-ticket"></i> 4-28开票</button>
                     <button class="action-btn tag has-tag" style="--tag-color:#10B981;--tag-bg:rgba(16,185,129,0.1);" onclick="openTagModal(this)"><i class="fas fa-tag"></i> 推荐</button>
@@ -7028,7 +7028,7 @@ select.form-select-sm,
                   <div class="show-cell">
                     <img class="show-thumb" src="https://picsum.photos/seed/show3/112/144" alt="">
                     <div class="show-info">
-                      <div class="show-name">黎苗风情·民族舞蹈专场</div>
+                      <div class="show-name" title="黎苗风情·民族舞蹈专场">黎苗风情·民族舞蹈专场</div>
                       <span class="type-tag" style="margin-top:4px;">舞蹈</span>
                       <div class="show-venue"><i class="fas fa-location-dot"></i>海口演艺中心 · 主剧场</div>
                       <div class="show-date-range"><i class="fas fa-calendar"></i>2026-03-01 至 2026-03-31</div>
@@ -7062,7 +7062,7 @@ select.form-select-sm,
                 <td><span class="status-tag ended"><span class="dot"></span>已结束</span></td>
                 <td>
                   <div class="action-btns">
-                    <button class="action-btn edit" onclick="openEditShow(this)"><i class="fas fa-edit"></i> 编辑</button>
+                    <button class="action-btn edit" onclick="openEditShow(this)"><i class="fas fa-eye"></i> 查看</button>
                     <button class="action-btn view" onclick="switchToSessions('黎苗风情·民族舞蹈专场')"><i class="fas fa-calendar-days"></i> 场次</button>
                     <button class="action-btn published" disabled title="开票时间：2026-03-15 10:00"><i class="fas fa-ticket"></i> 3-15开票</button>
                     <button class="action-btn tag" onclick="openTagModal(this)"><i class="fas fa-tag"></i> 标签</button>
@@ -7078,7 +7078,7 @@ select.form-select-sm,
                   <div class="show-cell">
                     <img class="show-thumb" src="https://picsum.photos/seed/show8/112/144" alt="">
                     <div class="show-info">
-                      <div class="show-name">《南海奇缘》沉浸式舞台剧</div>
+                      <div class="show-name" title="《南海奇缘》沉浸式舞台剧">《南海奇缘》沉浸式舞台剧</div>
                       <span class="type-tag" style="margin-top:4px;">话剧</span>
                       <div class="show-venue"><i class="fas fa-location-dot"></i>三亚艺术中心 · 多功能厅</div>
                       <div class="show-date-range"><i class="fas fa-calendar"></i>2026-08-01 至 2026-08-15</div>
@@ -7125,7 +7125,7 @@ select.form-select-sm,
                   <div class="show-cell">
                     <img class="show-thumb" src="https://picsum.photos/seed/show4/112/144" alt="">
                     <div class="show-info">
-                      <div class="show-name">海南国际杂技艺术节</div>
+                      <div class="show-name" title="海南国际杂技艺术节">海南国际杂技艺术节</div>
                       <span class="type-tag" style="margin-top:4px;">杂技</span>
                       <div class="show-venue"><i class="fas fa-location-dot"></i>儋州文化广场 · 大剧场</div>
                       <div class="show-date-range"><i class="fas fa-calendar"></i>2026-07-15 至 2026-07-20</div>
@@ -7174,7 +7174,7 @@ select.form-select-sm,
                   <div class="show-cell">
                     <img class="show-thumb" src="https://picsum.photos/seed/show5/112/144" alt="">
                     <div class="show-info">
-                      <div class="show-name">爵士之夜·国际爵士音乐节</div>
+                      <div class="show-name" title="爵士之夜·国际爵士音乐节">爵士之夜·国际爵士音乐节</div>
                       <span class="type-tag" style="margin-top:4px;">音乐节</span>
                       <div class="show-venue"><i class="fas fa-location-dot"></i>万宁海滨剧场 · 主剧场</div>
                       <div class="show-date-range"><i class="fas fa-calendar"></i>2026-04-20 至 2026-04-22</div>
@@ -7209,7 +7209,7 @@ select.form-select-sm,
                 <td><span class="status-tag ended"><span class="dot"></span>已结束</span></td>
                 <td>
                   <div class="action-btns">
-                    <button class="action-btn edit" onclick="openEditShow(this)"><i class="fas fa-edit"></i> 编辑</button>
+                    <button class="action-btn edit" onclick="openEditShow(this)"><i class="fas fa-eye"></i> 查看</button>
                     <button class="action-btn view" onclick="switchToSessions('爵士之夜·国际爵士音乐节')"><i class="fas fa-calendar-days"></i> 场次</button>
                     <button class="action-btn published" disabled title="开票时间：2026-03-01 10:00"><i class="fas fa-ticket"></i> 3-01开票</button>
                     <button class="action-btn tag has-tag" style="--tag-color:#F59E0B;--tag-bg:rgba(245,158,11,0.1);" onclick="openTagModal(this)"><i class="fas fa-tag"></i> 限时</button>
@@ -7224,7 +7224,7 @@ select.form-select-sm,
                   <div class="show-cell">
                     <img class="show-thumb" src="https://picsum.photos/seed/show7/112/144" alt="">
                     <div class="show-info">
-                      <div class="show-name">儿童剧《海底总动员》</div>
+                      <div class="show-name" title="儿童剧《海底总动员》">儿童剧《海底总动员》</div>
                       <span class="type-tag" style="margin-top:4px;">儿童剧</span>
                       <div class="show-venue"><i class="fas fa-location-dot"></i>海口湾演艺中心 · 小剧场</div>
                       <div class="show-date-range"><i class="fas fa-calendar"></i>2026-06-01 至 2026-06-15</div>
@@ -7257,7 +7257,7 @@ select.form-select-sm,
                 <td><span class="status-tag off-shelf"><span class="dot"></span>已结束</span></td>
                 <td>
                   <div class="action-btns">
-                    <button class="action-btn edit" onclick="openEditShow(this)"><i class="fas fa-edit"></i> 编辑</button>
+                    <button class="action-btn edit" onclick="openEditShow(this)"><i class="fas fa-eye"></i> 查看</button>
                     <button class="action-btn view" onclick="switchToSessions('儿童剧《海底总动员》')"><i class="fas fa-calendar-days"></i> 场次</button>
                     <button class="action-btn published" disabled title="开票时间：2026-02-20 10:00"><i class="fas fa-ticket"></i> 2-20开票</button>
                     <button class="action-btn tag" onclick="openTagModal(this)"><i class="fas fa-tag"></i> 标签</button>
@@ -7271,7 +7271,7 @@ select.form-select-sm,
                   <div class="show-cell">
                     <img class="show-thumb" src="https://picsum.photos/seed/show6/112/144" alt="">
                     <div class="show-info">
-                      <div class="show-name">《红色娘子军》芭蕾舞剧</div>
+                      <div class="show-name" title="《红色娘子军》芭蕾舞剧">《红色娘子军》芭蕾舞剧</div>
                       <span class="type-tag" style="margin-top:4px;">芭蕾舞</span>
                       <div class="show-venue"><i class="fas fa-location-dot"></i>海南大剧院</div>
                       <div class="show-date-range"><i class="fas fa-calendar"></i>2026-02-14 至 2026-02-16</div>
@@ -7306,7 +7306,7 @@ select.form-select-sm,
                 <td><span class="status-tag ended"><span class="dot"></span>已结束</span></td>
                 <td>
                   <div class="action-btns">
-                    <button class="action-btn edit" onclick="openEditShow(this)"><i class="fas fa-edit"></i> 编辑</button>
+                    <button class="action-btn edit" onclick="openEditShow(this)"><i class="fas fa-eye"></i> 查看</button>
                     <button class="action-btn view" onclick="switchToSessions('《红色娘子军》芭蕾舞剧')"><i class="fas fa-calendar-days"></i> 场次</button>
                     <button class="action-btn published" disabled title="开票时间：2026-02-10 10:00"><i class="fas fa-ticket"></i> 2-10开票</button>
                     <button class="action-btn tag" onclick="openTagModal(this)"><i class="fas fa-tag"></i> 标签</button>
@@ -8196,17 +8196,17 @@ select.form-select-sm,
     <div class="step-indicator">
       <div class="step-item active" data-step="1">
         <div class="step-circle">1</div>
-        <span class="step-label">基础信息</span>
+        <span class="step-label">演出信息</span>
       </div>
       <div class="step-line"></div>
       <div class="step-item" data-step="2">
         <div class="step-circle">2</div>
-        <span class="step-label">票价与场次</span>
+        <span class="step-label">演出信息</span>
       </div>
       <div class="step-line"></div>
       <div class="step-item" data-step="3">
         <div class="step-circle">3</div>
-        <span class="step-label">上架与策略</span>
+        <span class="step-label">票务策略</span>
       </div>
     </div>
     <div class="modal-body">
@@ -8220,14 +8220,15 @@ select.form-select-sm,
           <label class="form-label">演出日期范围<span class="required">*</span></label>
           <div class="form-row">
             <div class="form-group">
-              <input type="date" class="form-input" placeholder="开始日期">
+              <input type="date" class="form-input" placeholder="开始日期" id="newShowStartDate" onchange="calcShowDuration()">
               <div class="form-hint">开始日期</div>
             </div>
             <div class="form-group">
-              <input type="date" class="form-input" placeholder="结束日期">
+              <input type="date" class="form-input" placeholder="结束日期" id="newShowEndDate" onchange="calcShowDuration()">
               <div class="form-hint">结束日期</div>
             </div>
           </div>
+          <div class="form-hint" id="newShowDurationHint" style="margin-top:-8px;color:#FF6B4A;font-weight:500;"></div>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -8564,7 +8565,7 @@ select.form-select-sm,
       <button class="btn btn-outline" onclick="closeModal('modalNewShow')">取消</button>
       <button class="btn btn-outline" id="showPrevBtn" onclick="showStepNav(-1)" style="display:none;"><i class="fas fa-arrow-left"></i>上一步</button>
       <button class="btn btn-primary" id="showNextBtn" onclick="showStepNav(1)">下一步<i class="fas fa-arrow-right"></i></button>
-      <button class="btn btn-primary" id="showSaveBtn" onclick="closeModal('modalNewShow')" style="display:none;"><i class="fas fa-check"></i>保存</button>
+      <button class="btn btn-primary" id="showSaveBtn" onclick="saveNewShow()" style="display:none;"><i class="fas fa-check"></i>保存</button>
     </div>
   </div>
 </div>
@@ -8576,21 +8577,21 @@ select.form-select-sm,
       <h3>编辑演出</h3>
       <button class="modal-close" onclick="closeModal('modalEditShow')"><i class="fas fa-xmark"></i></button>
     </div>
-    <!-- Step Indicator -->
-    <div class="step-indicator">
+    <!-- Step Indicator (hidden in edit mode) -->
+    <div class="step-indicator" id="editShowStepIndicator" style="display:none;">
       <div class="step-item active" data-step="1">
         <div class="step-circle">1</div>
-        <span class="step-label">基础信息</span>
+        <span class="step-label">演出信息</span>
       </div>
       <div class="step-line"></div>
       <div class="step-item" data-step="2">
         <div class="step-circle">2</div>
-        <span class="step-label">票价与场次</span>
+        <span class="step-label">演出信息</span>
       </div>
       <div class="step-line"></div>
       <div class="step-item" data-step="3">
         <div class="step-circle">3</div>
-        <span class="step-label">上架与策略</span>
+        <span class="step-label">票务策略</span>
       </div>
     </div>
     <div class="modal-body">
@@ -8604,14 +8605,15 @@ select.form-select-sm,
           <label class="form-label">演出日期范围<span class="required">*</span></label>
           <div class="form-row">
             <div class="form-group">
-              <input type="date" class="form-input" id="editShowStartDate" placeholder="开始日期">
+              <input type="date" class="form-input" id="editShowStartDate" placeholder="开始日期" onchange="calcEditShowDuration()">
               <div class="form-hint">开始日期</div>
             </div>
             <div class="form-group">
-              <input type="date" class="form-input" id="editShowEndDate" placeholder="结束日期">
+              <input type="date" class="form-input" id="editShowEndDate" placeholder="结束日期" onchange="calcEditShowDuration()">
               <div class="form-hint">结束日期</div>
             </div>
           </div>
+          <div class="form-hint" id="editShowDurationHint" style="margin-top:-8px;color:#FF6B4A;font-weight:500;"></div>
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -9471,28 +9473,9 @@ function openEditShow(btn) {
     }
   }
 
-  // 非待发布状态下，场馆、演出厅、票价、场次不可编辑
-  var venueSelect = document.getElementById('editShowVenue');
-  var hallSelect = document.getElementById('editShowHall');
-  var tierInputs = document.querySelectorAll('#editTierTable tbody input[type="number"]');
-  var sessionInputs = document.querySelectorAll('#editSessionList input');
-
-  if (venueSelect) {
-    venueSelect.disabled = !isDraft;
-    venueSelect.style.opacity = !isDraft ? '0.6' : '';
-    venueSelect.style.cursor = !isDraft ? 'not-allowed' : '';
-  }
-  if (hallSelect) {
-    hallSelect.disabled = !isDraft;
-    hallSelect.style.opacity = !isDraft ? '0.6' : '';
-    hallSelect.style.cursor = !isDraft ? 'not-allowed' : '';
-  }
-  tierInputs.forEach(function(input) {
-    input.disabled = !isDraft;
-    input.style.opacity = !isDraft ? '0.6' : '';
-    input.style.cursor = !isDraft ? 'not-allowed' : '';
-  });
-  sessionInputs.forEach(function(input) {
+  // 非待发布状态下，所有字段不可编辑
+  var allEditInputs = document.querySelectorAll('#modalEditShow input, #modalEditShow select, #modalEditShow textarea');
+  allEditInputs.forEach(function(input) {
     input.disabled = !isDraft;
     input.style.opacity = !isDraft ? '0.6' : '';
     input.style.cursor = !isDraft ? 'not-allowed' : '';
@@ -9511,6 +9494,30 @@ function saveEditShow() {
     return;
   }
   document.getElementById('editShowName').style.borderColor = '';
+  // 二次确认弹窗
+  openEditConfirmModal();
+}
+
+function openEditConfirmModal() {
+  var changes = [];
+  var name = document.getElementById('editShowName').value.trim();
+  var type = document.getElementById('editShowType').value;
+  var venue = document.getElementById('editShowVenue').value;
+  var startDate = document.getElementById('editShowStartDate').value;
+  var endDate = document.getElementById('editShowEndDate').value;
+  if (name) changes.push('演出名称：' + name);
+  if (type) changes.push('演出类型：' + type);
+  if (venue) changes.push('所属场馆：' + venue);
+  if (startDate && endDate) changes.push('演出时间：' + startDate + ' 至 ' + endDate);
+
+  var listHtml = changes.map(function(c) { return '<li style="padding:4px 0;border-bottom:1px solid var(--border-color);">' + c + '</li>'; }).join('');
+  var body = document.getElementById('editConfirmModalBody');
+  if (body) body.innerHTML = '<ul style="margin:0;padding-left:20px;">' + listHtml + '</ul>';
+  openModal('modalEditConfirm');
+}
+
+function doConfirmEditSave() {
+  closeModal('modalEditConfirm');
   closeModal('modalEditShow');
   showToast('演出信息已保存');
 }
@@ -9519,6 +9526,75 @@ function toggleEditMemberPriority() {
   var toggle = document.getElementById('editMemberPriorityToggle');
   var body = document.getElementById('editMemberPriorityBody');
   if (toggle && body) body.style.display = toggle.checked ? '' : 'none';
+}
+
+
+function saveNewShow() {
+  var nameInput = document.querySelector('#showStep1 input[type="text"]');
+  if (!nameInput || !nameInput.value.trim()) {
+    if (nameInput) {
+      nameInput.style.borderColor = '#EF4444';
+      nameInput.focus();
+    }
+    return;
+  }
+  if (nameInput) nameInput.style.borderColor = '';
+  var showName = nameInput.value.trim();
+  closeModal('modalNewShow');
+  showToast('演出创建成功');
+  setTimeout(function() {
+    highlightNewShowRow(showName);
+  }, 300);
+}
+
+function highlightNewShowRow(showName) {
+  var rows = document.querySelectorAll('#panel-shows .data-table tbody tr');
+  for (var i = 0; i < rows.length; i++) {
+    var nameCell = rows[i].querySelector('.show-name');
+    if (nameCell && nameCell.textContent.trim() === showName) {
+      rows[i].style.transition = 'background 0.5s';
+      rows[i].style.background = 'rgba(255,107,74,0.15)';
+      rows[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(function(row) {
+        row.style.background = '';
+      }, 3000, rows[i]);
+      break;
+    }
+  }
+}
+
+function calcShowDuration() {
+  var start = document.getElementById('newShowStartDate');
+  var end = document.getElementById('newShowEndDate');
+  var hint = document.getElementById('newShowDurationHint');
+  if (!start || !end || !hint) return;
+  if (start.value && end.value) {
+    var s = new Date(start.value);
+    var e = new Date(end.value);
+    var days = Math.round((e - s) / (1000 * 60 * 60 * 24)) + 1;
+    if (days > 0) {
+      hint.textContent = '演出时长：共 ' + days + ' 天';
+    } else {
+      hint.textContent = '';
+    }
+  }
+}
+
+function calcEditShowDuration() {
+  var start = document.getElementById('editShowStartDate');
+  var end = document.getElementById('editShowEndDate');
+  var hint = document.getElementById('editShowDurationHint');
+  if (!start || !end || !hint) return;
+  if (start.value && end.value) {
+    var s = new Date(start.value);
+    var e = new Date(end.value);
+    var days = Math.round((e - s) / (1000 * 60 * 60 * 24)) + 1;
+    if (days > 0) {
+      hint.textContent = '演出时长：共 ' + days + ' 天';
+    } else {
+      hint.textContent = '';
+    }
+  }
 }
 
 // Close modal on ESC key
@@ -14381,6 +14457,25 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         </div>
     </div>
+
+
+<!-- Edit Confirm Modal -->
+<div class="modal-overlay" id="modalEditConfirm">
+  <div class="modal-container" style="max-width:480px;">
+    <div class="modal-header">
+      <h3><i class="fas fa-exclamation-circle" style="color:#FF6B4A;margin-right:8px;"></i>确认保存修改</h3>
+      <button class="modal-close" onclick="closeModal('modalEditConfirm')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom:12px;color:var(--text-secondary);">以下修改项将被保存：</p>
+      <div id="editConfirmModalBody" style="max-height:300px;overflow-y:auto;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalEditConfirm')">取消</button>
+      <button class="btn btn-primary" onclick="doConfirmEditSave()">确认保存</button>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>
