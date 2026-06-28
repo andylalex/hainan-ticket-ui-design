@@ -793,10 +793,6 @@ body {
           <span class="info-label"><i class="fas fa-users"></i> 参与人数</span>
           <span class="info-value"><span class="num" id="activityParticipants">--</span><span class="unit">人</span></span>
         </div>
-        <div class="info-row">
-          <span class="info-label"><i class="fas fa-chart-line"></i> 转化率</span>
-          <span class="info-value"><span class="percent" id="activityConversion">--</span></span>
-        </div>
       </div>
 
       <!-- 活动介绍 -->
@@ -990,7 +986,6 @@ function loadActivity() {
   document.getElementById('infoTitle').textContent = detail.name;
   document.getElementById('activityTime').textContent = `${detail.start} ~ ${detail.end}`;
   document.getElementById('activityParticipants').textContent = formatNumber(detail.participants);
-  document.getElementById('activityConversion').textContent = `${detail.conversion.toFixed(1)}%`;
 
   const statusPill = document.getElementById('activityStatusPill');
   statusPill.textContent = detail.statusLabel;

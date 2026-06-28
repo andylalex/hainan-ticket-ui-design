@@ -1389,109 +1389,92 @@
       z-index: 5;
     }
 
-    /* ========== Activity Section ========== */
+    /* ========== Activity Section (compact banner) ========== */
     .activity-section {
-      padding: 12px 0 16px;
-      position: relative;
+        padding: 12px 0 16px;
+        position: relative;
     }
     .activity-section .section-title {
-      display: flex;
-      align-items: center;
-      gap: 6px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
     .activity-section .section-title i {
-      color: #FF6B4A;
-      font-size: 14px;
+        color: #FF6B4A;
+        font-size: 14px;
     }
     .activity-scroll {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      padding: 4px 0 8px;
-      -webkit-overflow-scrolling: touch;
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding: 4px 0 8px;
+        -webkit-overflow-scrolling: touch;
     }
     .activity-scroll::-webkit-scrollbar { display: none; }
-    .activity-card {
-      flex: 0 0 260px;
-      border-radius: 14px;
-      overflow: hidden;
-      background: #fff;
-      box-shadow: 0 2px 10px rgba(10,22,40,0.06);
-      cursor: pointer;
-      scroll-snap-align: start;
-      transition: transform 0.2s;
+    .activity-banner {
+        flex: 0 0 280px;
+        height: 140px;
+        border-radius: 14px;
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+        scroll-snap-align: start;
+        transition: transform 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-    .activity-card:active {
-      transform: scale(0.98);
+    .activity-banner:active {
+        transform: scale(0.98);
     }
-    .activity-cover {
-      height: 110px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      color: #fff;
+    .activity-banner .ab-type {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(255,255,255,0.25);
+        color: #fff;
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 8px;
+        backdrop-filter: blur(8px);
+        font-weight: 500;
     }
-    .activity-cover .activity-type-tag {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(255,255,255,0.25);
-      color: #fff;
-      font-size: 10px;
-      padding: 2px 8px;
-      border-radius: 8px;
-      backdrop-filter: blur(8px);
-      font-weight: 500;
+    .activity-banner .ab-status {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0,0,0,0.25);
+        color: #fff;
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 8px;
+        backdrop-filter: blur(8px);
     }
-    .activity-cover .activity-status-tag {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(0,0,0,0.25);
-      color: #fff;
-      font-size: 10px;
-      padding: 2px 8px;
-      border-radius: 8px;
-      backdrop-filter: blur(8px);
+    .activity-banner .ab-icon {
+        font-size: 36px;
+        color: rgba(255,255,255,0.5);
     }
-    .activity-cover .activity-name-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 10px 12px;
-      background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
-      color: #fff;
-      font-size: 14px;
-      font-weight: 600;
+    .activity-banner .ab-bottom {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 10px 12px;
+        background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
     }
-    .activity-info {
-      padding: 12px;
+    .activity-banner .ab-name {
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 3px;
     }
-    .activity-info .activity-time {
-      font-size: 12px;
-      color: #8E95A9;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .activity-info .activity-stats {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: #6B7280;
-    }
-    .activity-info .activity-stats .stat-item {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-    }
-    .activity-info .activity-stats .stat-value {
-      color: #FF6B4A;
-      font-weight: 600;
+    .activity-banner .ab-time {
+        color: rgba(255,255,255,0.85);
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
     }
 
     /* ========== Page Background ========== */
@@ -1747,66 +1730,6 @@
       </div>
     </div>
 
-    <!-- 精彩活动 -->
-    <div class="activity-section animate-in delay-3">
-      <div class="section-header">
-        <div class="section-title"><i class="fas fa-bullhorn"></i>精彩活动</div>
-        <a class="section-more" href="show-list-detail.html" style="text-decoration:none;">
-          全部活动 <i class="fas fa-chevron-right"></i>
-        </a>
-      </div>
-      <div class="activity-scroll">
-        <!-- 活动1: 海南热带雨林音乐节 -->
-        <div class="activity-card" onclick="window.location.href='activity-detail.html?id=ACT-20260401'">
-          <div class="activity-cover" style="background: linear-gradient(135deg, #00C9A7, #00a88a);">
-            <span class="activity-type-tag">节日活动</span>
-            <span class="activity-status-tag">进行中</span>
-            <i class="fas fa-music" style="font-size:32px;opacity:0.8;"></i>
-            <div class="activity-name-overlay">海南热带雨林音乐节</div>
-          </div>
-          <div class="activity-info">
-            <div class="activity-time"><i class="far fa-clock"></i>2026.04.01 - 04.15</div>
-            <div class="activity-stats">
-              <span class="stat-item"><i class="fas fa-users"></i>参与 <strong class="stat-value">12,847</strong></span>
-              <span class="stat-item"><i class="fas fa-chart-line"></i>转化 <strong class="stat-value">8.7%</strong></span>
-            </div>
-          </div>
-        </div>
-        <!-- 活动2: 三亚湾话剧季·惠民专场 -->
-        <div class="activity-card" onclick="window.location.href='activity-detail.html?id=ACT-20260325'">
-          <div class="activity-cover" style="background: linear-gradient(135deg, #6366f1, #818cf8);">
-            <span class="activity-type-tag">专题活动</span>
-            <span class="activity-status-tag">进行中</span>
-            <i class="fas fa-theater-masks" style="font-size:32px;opacity:0.8;"></i>
-            <div class="activity-name-overlay">三亚湾话剧季·惠民专场</div>
-          </div>
-          <div class="activity-info">
-            <div class="activity-time"><i class="far fa-clock"></i>2026.03.25 - 05.30</div>
-            <div class="activity-stats">
-              <span class="stat-item"><i class="fas fa-users"></i>参与 <strong class="stat-value">8,432</strong></span>
-              <span class="stat-item"><i class="fas fa-chart-line"></i>转化 <strong class="stat-value">12.3%</strong></span>
-            </div>
-          </div>
-        </div>
-        <!-- 活动3: 春季演出季·早鸟5折 -->
-        <div class="activity-card" onclick="window.location.href='activity-detail.html?id=ACT-20260315'">
-          <div class="activity-cover" style="background: linear-gradient(135deg, #FF6B4A, #ff8a6a);">
-            <span class="activity-type-tag">促销活动</span>
-            <span class="activity-status-tag">进行中</span>
-            <i class="fas fa-tags" style="font-size:32px;opacity:0.8;"></i>
-            <div class="activity-name-overlay">春季演出季·早鸟5折</div>
-          </div>
-          <div class="activity-info">
-            <div class="activity-time"><i class="far fa-clock"></i>2026.03.15 - 04.30</div>
-            <div class="activity-stats">
-              <span class="stat-item"><i class="fas fa-users"></i>参与 <strong class="stat-value">23,156</strong></span>
-              <span class="stat-item"><i class="fas fa-chart-line"></i>转化 <strong class="stat-value">15.6%</strong></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Coupon Package Section -->
     <div class="coupon-section animate-in delay-3">
       <div class="section-header">
@@ -1863,6 +1786,45 @@
               </div>
               <button class="coupon-buy-btn" onclick="event.stopPropagation();window.location.href='coupon-package.html'">立即抢购</button>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 精彩活动 (compact banner-style) -->
+    <div class="activity-section animate-in delay-3">
+      <div class="section-header">
+        <div class="section-title"><i class="fas fa-bullhorn"></i>精彩活动</div>
+        <a class="section-more" href="show-list-detail.html" style="text-decoration:none;">
+          全部 <i class="fas fa-chevron-right"></i>
+        </a>
+      </div>
+      <div class="activity-scroll">
+        <div class="activity-banner" onclick="window.location.href='activity-detail.html?id=ACT-20260401'" style="background: linear-gradient(135deg, #00C9A7, #00a88a);">
+          <span class="ab-type">节日活动</span>
+          <span class="ab-status">进行中</span>
+          <i class="fas fa-music ab-icon"></i>
+          <div class="ab-bottom">
+            <div class="ab-name">海南热带雨林音乐节</div>
+            <div class="ab-time"><i class="far fa-clock"></i> 2026.04.01 - 04.15</div>
+          </div>
+        </div>
+        <div class="activity-banner" onclick="window.location.href='activity-detail.html?id=ACT-20260325'" style="background: linear-gradient(135deg, #6366f1, #818cf8);">
+          <span class="ab-type">专题活动</span>
+          <span class="ab-status">进行中</span>
+          <i class="fas fa-theater-masks ab-icon"></i>
+          <div class="ab-bottom">
+            <div class="ab-name">三亚湾话剧季·惠民专场</div>
+            <div class="ab-time"><i class="far fa-clock"></i> 2026.03.25 - 05.30</div>
+          </div>
+        </div>
+        <div class="activity-banner" onclick="window.location.href='activity-detail.html?id=ACT-20260315'" style="background: linear-gradient(135deg, #FF6B4A, #ff8a6a);">
+          <span class="ab-type">促销活动</span>
+          <span class="ab-status">进行中</span>
+          <i class="fas fa-tags ab-icon"></i>
+          <div class="ab-bottom">
+            <div class="ab-name">春季演出季·早鸟5折</div>
+            <div class="ab-time"><i class="far fa-clock"></i> 2026.03.15 - 04.30</div>
           </div>
         </div>
       </div>
