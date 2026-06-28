@@ -7913,16 +7913,28 @@ const changelogData = [
         date: '2026-06-28',
         entries: [
             {
+                page: 'pc-admin/activity-decoration.html',
+                pageName: '运营活动',
+                module: '活动管理',
+                content: '新建和编辑弹窗的"活动描述"从普通textarea改为Quill富文本编辑器，支持标题/加粗/斜体/下划线/删除线/颜色/列表/对齐/链接/图片/引用/代码块等格式；修复数据弹窗趋势图高度无限增加bug（canvas用固定高度容器包裹+渲染前重置样式）'
+            },
+            {
+                page: 'pc-admin/activity-decoration.html',
+                pageName: '运营活动',
+                module: '活动管理',
+                content: '新增和编辑弹窗移除"关联演出"section；新建编辑弹窗（modal-edit-activity）功能同新建但无上架设置，编辑按钮onclick改为openEditActivity()'
+            },
+            {
                 page: 'user-miniapp/home.html',
                 pageName: '小程序首页',
                 module: '精彩活动',
-                content: '首页增加"精彩活动"区块（横向滚动卡片），展示后台活动管理中状态为"进行中"的活动（3条），每条卡片含封面渐变+类型/状态标签+时间+参与人数+转化率，点击进入活动详情'
+                content: '首页增加"精彩活动"区块（横向滚动banner），展示后台活动管理中状态为"进行中"的活动（3条），每条banner含封面渐变+类型/状态标签+标题+时间，点击进入活动详情；活动区块位于超值套票下方'
             },
             {
                 page: 'user-miniapp/activity-detail.html',
                 pageName: '活动详情',
                 module: '活动详情',
-                content: '新建活动详情页面：根据URL参数id加载活动数据，展示活动封面、信息（时间/参与人数/转化率）、介绍、规则、演出列表，底部"立即参与"按钮跳转到首个演出'
+                content: '新建活动详情页面：根据URL参数id加载活动数据，展示活动封面、信息（时间/参与人数）、介绍、规则，底部"立即参与"按钮固定在页面底部跳转到首个演出；移除转化率和关联演出列表'
             }
         ]
     },
