@@ -488,6 +488,89 @@ const devDocs = {
         ]
     },
 
+    'user-miniapp/activity-detail.html': {
+        title: '活动详情',
+        subtitle: '活动信息 + 规则 + 演出列表',
+        sections: [
+            {
+                title: '功能描述',
+                content: `<p><strong>核心功能：</strong>展示单个运营活动的详细信息，包括活动介绍、参与规则和活动演出列表。用户可通过首页"精彩活动"区块点击进入此页面，了解活动详情后选择参与的演出。</p>
+                <p><strong>业务说明：</strong></p>
+                <ul>
+                  <li><strong>前置条件：</strong>用户已登录；活动状态为进行中</li>
+                  <li><strong>功能实现逻辑：</strong>
+                    <ul>
+                      <li>进入页面时解析URL参数id，根据id加载活动详情数据</li>
+                      <li>展示活动基本信息（名称、时间、参与人数、转化率）</li>
+                      <li>展示活动介绍和参与规则</li>
+                      <li>展示活动演出列表，每条可跳转到对应演出详情</li>
+                      <li>底部"立即参与"按钮跳转到活动首个演出或显示toast</li>
+                    </ul>
+                  </li>
+                  <li><strong>权限控制：</strong>仅登录用户可参与活动</li>
+                  <li><strong>数据约束：</strong>活动ID全局唯一；活动状态由后台管理（草稿/进行中/已结束）</li>
+                  <li><strong>能力边界：</strong>仅展示活动详情，不支持活动报名</li>
+                </ul>`
+            },
+            {
+                title: '交互说明',
+                content: `<p><strong>查看活动详情</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>从首页"精彩活动"区块点击活动卡片</li>
+                  <li><strong>成功：</strong>跳转到活动详情页，展示活动封面、信息、规则、演出列表</li>
+                </ul>
+                <p><strong>跳转到演出详情</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击活动演出列表中的某条演出</li>
+                  <li><strong>成功：</strong>跳转到对应演出详情页（show-detail.html）</li>
+                </ul>
+                <p><strong>立即参与</strong></p>
+                <ul>
+                  <li><strong>触发：</strong>点击底部"立即参与"按钮</li>
+                  <li><strong>成功：</strong>跳转到活动第一个演出详情页</li>
+                  <li><strong>边界条件：</strong>活动无演出时显示toast提示</li>
+                </ul>`
+            },
+            {
+                title: '核心字段',
+                noTableWrap: true,
+                tables: [
+                    {
+                        title: '活动字段',
+                        headers: ['字段名', '类型', '必填', '说明'],
+                        rows: [
+                            ['id', 'string', '是', '活动ID'],
+                            ['name', 'string', '是', '活动名称'],
+                            ['type', 'enum', '是', '活动类型：topic-专题活动 promo-促销活动 festival-节日活动'],
+                            ['typeLabel', 'string', '是', '活动类型中文名'],
+                            ['status', 'enum', '是', '活动状态：draft-草稿 active-进行中 ended-已结束'],
+                            ['statusLabel', 'string', '是', '活动状态中文名'],
+                            ['start', 'string', '是', '活动开始日期'],
+                            ['end', 'string', '是', '活动结束日期'],
+                            ['cover', 'string', '是', '活动封面（CSS渐变或URL）'],
+                            ['icon', 'string', '否', '活动封面图标（FontAwesome）'],
+                            ['description', 'string', '否', '活动介绍'],
+                            ['rules', 'array', '否', '活动规则列表'],
+                            ['participants', 'number', '否', '参与人数'],
+                            ['conversion', 'number', '否', '转化率（百分比）']
+                        ]
+                    },
+                    {
+                        title: '活动演出字段',
+                        headers: ['字段名', '类型', '必填', '说明'],
+                        rows: [
+                            ['name', 'string', '是', '演出名称'],
+                            ['date', 'string', '是', '演出时间'],
+                            ['venue', 'string', '是', '演出场馆'],
+                            ['price', 'string', '是', '票价'],
+                            ['cover', 'string', '否', '演出封面URL']
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+
     'user-miniapp/seat-selection.html': {
         title: '选座购票页',
         subtitle: '座位矩阵 + 缩放 + 票档筛选 + 优惠券/套票 + 早鸟票',
@@ -7826,6 +7909,23 @@ Tab切换交互：
 // 每次更新原型时，在此数组前面插入新记录
 // entries.page 对应 devDocs 中的页面URL键名
 const changelogData = [
+    {
+        date: '2026-06-28',
+        entries: [
+            {
+                page: 'user-miniapp/home.html',
+                pageName: '小程序首页',
+                module: '精彩活动',
+                content: '首页增加"精彩活动"区块（横向滚动卡片），展示后台活动管理中状态为"进行中"的活动（3条），每条卡片含封面渐变+类型/状态标签+时间+参与人数+转化率，点击进入活动详情'
+            },
+            {
+                page: 'user-miniapp/activity-detail.html',
+                pageName: '活动详情',
+                module: '活动详情',
+                content: '新建活动详情页面：根据URL参数id加载活动数据，展示活动封面、信息（时间/参与人数/转化率）、介绍、规则、演出列表，底部"立即参与"按钮跳转到首个演出'
+            }
+        ]
+    },
     {
         date: '2026-06-27',
         entries: [

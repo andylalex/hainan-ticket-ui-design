@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>活动详情 - 海南演艺</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+/* ========== Reset & Base ========== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --deep-blue: #0A1628;
+  --deep-blue-2: #132240;
+  --coral-orange: #FF6B4A;
+  --coral-orange-light: #FF8A6E;
+  --gold: #D4A853;
+  --gold-light: #F0D48A;
+  --emerald: #00C9A7;
+  --success: #00A755;
+  --light-gray: #F5F6FA;
+  --white: #FFFFFF;
+  --text-primary: #1A1A2E;
+  --text-secondary: #6B7280;
+  --text-light: #9CA3AF;
+  --border-color: #E5E7EB;
+  --card-shadow: 0 2px 12px rgba(10, 22, 40, 0.08);
+}
+
+body {
+  font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #E8EAF0;
+  margin: 0;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ========== Phone Frame ========== */
+.phone-frame {
+  position: relative;
+  width: 375px;
+  max-width: 375px;
+  height: 812px;
+  background: var(--light-gray);
+  border-radius: 32px;
+  box-shadow: 0 8px 40px rgba(10,22,40,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+  overflow: hidden;
+  contain: layout;
+}
+
+.phone-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.phone-screen::-webkit-scrollbar { display: none; }
+
+/* ========== Status Bar ========== */
+.status-bar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 22px 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--white);
+  background: linear-gradient(180deg, #0A1628 0%, #132240 100%);
+}
+
+.status-icons {
+  display: flex;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.status-icons i { font-size: 12px; }
+
+/* ========== Top Bar ========== */
+.top-bar {
+  position: relative;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px 16px;
+  background: linear-gradient(180deg, #132240 0%, #0A1628 100%);
+  color: var(--white);
+}
+
+.back-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: var(--white);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.back-btn:active {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(0.94);
+}
+
+.top-bar-title {
+  flex: 1;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.top-bar-action {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--white);
+  cursor: pointer;
+}
+
+/* ========== Activity Hero ========== */
+.activity-hero {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  background: linear-gradient(135deg, #00C9A7, #00a88a);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 24px;
+  color: var(--white);
+}
+
+.activity-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.1) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+.hero-icon {
+  position: relative;
+  z-index: 1;
+  font-size: 64px;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.hero-type-tag {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.22);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  z-index: 2;
+}
+
+.hero-status-tag {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: rgba(0, 167, 85, 0.92);
+  color: var(--white);
+  font-size: 11px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  z-index: 2;
+}
+
+.hero-status-tag::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--white);
+  animation: pulse 1.5s infinite;
+}
+
+.hero-status-tag.ended {
+  background: rgba(156, 163, 175, 0.92);
+}
+
+.hero-status-tag.ended::before {
+  animation: none;
+  opacity: 0.7;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.hero-name {
+  position: relative;
+  z-index: 1;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  letter-spacing: 0.5px;
+}
+
+/* ========== Content ========== */
+.content {
+  background: var(--light-gray);
+  padding: 0 0 100px;
+  position: relative;
+}
+
+/* ========== Info Card ========== */
+.info-card {
+  background: var(--white);
+  margin: -16px 12px 0;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: var(--card-shadow);
+  position: relative;
+  z-index: 5;
+}
+
+.info-card .activity-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--deep-blue);
+  line-height: 1.5;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--border-color);
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.info-row + .info-row {
+  border-top: 1px solid rgba(229, 231, 235, 0.6);
+}
+
+.info-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.info-label i {
+  color: var(--gold);
+  font-size: 12px;
+  width: 14px;
+  text-align: center;
+}
+
+.info-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.info-value.highlight {
+  color: var(--coral-orange);
+}
+
+.info-value .num {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--deep-blue);
+}
+
+.info-value .unit {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-left: 2px;
+  font-weight: 400;
+}
+
+.info-value .percent {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--coral-orange);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(0, 167, 85, 0.12);
+  color: var(--success);
+}
+
+.status-pill::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--success);
+  animation: pulse 1.5s infinite;
+}
+
+.status-pill.ended {
+  background: rgba(156, 163, 175, 0.15);
+  color: var(--text-light);
+}
+
+.status-pill.ended::before {
+  background: var(--text-light);
+  animation: none;
+}
+
+/* ========== Section ========== */
+.section {
+  background: var(--white);
+  margin: 12px;
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: var(--card-shadow);
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--deep-blue);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title::before {
+  content: '';
+  width: 3px;
+  height: 14px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--gold), var(--gold-light));
+}
+
+.section-title i {
+  color: var(--gold);
+  font-size: 13px;
+  margin-left: 2px;
+}
+
+.section-body {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.section-body p {
+  margin: 0;
+}
+
+/* ========== Rules List ========== */
+.rules-list {
+  list-style: none;
+  counter-reset: rule-counter;
+  padding: 0;
+  margin: 0;
+}
+
+.rules-list li {
+  counter-increment: rule-counter;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  padding: 8px 0 8px 32px;
+  position: relative;
+  border-bottom: 1px dashed rgba(229, 231, 235, 0.6);
+}
+
+.rules-list li:last-child {
+  border-bottom: none;
+}
+
+.rules-list li::before {
+  content: counter(rule-counter);
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--deep-blue);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+/* ========== Show List ========== */
+.show-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.show-item {
+  display: flex;
+  gap: 12px;
+  padding: 10px;
+  background: var(--light-gray);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.25s;
+  text-decoration: none;
+  color: inherit;
+}
+
+.show-item:active {
+  transform: scale(0.98);
+  background: rgba(212, 168, 83, 0.08);
+}
+
+.show-item .cover {
+  width: 72px;
+  height: 92px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #ddd;
+}
+
+.show-item .cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.show-item .info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.show-item .info .name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.show-item .info .meta {
+  font-size: 11px;
+  color: var(--text-light);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.show-item .info .meta .date {
+  color: var(--text-secondary);
+}
+
+.show-item .info .meta .date i {
+  color: var(--gold);
+  margin-right: 3px;
+  font-size: 10px;
+}
+
+.show-item .info .meta .venue i {
+  color: var(--coral-orange);
+  margin-right: 3px;
+  font-size: 10px;
+}
+
+.show-item .info .price {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--coral-orange);
+  margin-top: 4px;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+.show-item .arrow {
+  align-self: center;
+  color: var(--text-light);
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+/* ========== Bottom Action ========== */
+.bottom-action {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 12px 16px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 12px));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid var(--border-color);
+  z-index: 50;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.bottom-action .action-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: transform 0.2s;
+}
+
+.bottom-action .action-icon:active { transform: scale(0.92); }
+
+.bottom-action .action-icon i {
+  font-size: 20px;
+  color: var(--text-secondary);
+  transition: color 0.3s;
+}
+
+.bottom-action .action-icon.liked i { color: var(--coral-orange); }
+
+.bottom-action .action-icon span {
+  font-size: 10px;
+  color: var(--text-light);
+}
+
+.action-btn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--deep-blue);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 6px 18px rgba(212, 168, 83, 0.4);
+  position: relative;
+  overflow: hidden;
+  font-family: 'Noto Sans SC', sans-serif;
+  letter-spacing: 1px;
+}
+
+.action-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  animation: shine 2.5s infinite;
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  40% { left: 100%; }
+  100% { left: 100%; }
+}
+
+.action-btn:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 3px 10px rgba(212, 168, 83, 0.4);
+}
+
+.action-btn i {
+  margin-right: 6px;
+}
+
+/* ========== Toast ========== */
+.toast {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: rgba(10, 22, 40, 0.88);
+  color: var(--white);
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+  max-width: 80%;
+  text-align: center;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ========== Empty State ========== */
+.empty-state {
+  text-align: center;
+  padding: 60px 30px;
+  color: var(--text-light);
+}
+
+.empty-state i {
+  font-size: 48px;
+  margin-bottom: 16px;
+  color: var(--border-color);
+}
+
+.empty-state .title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.empty-state .desc {
+  font-size: 12px;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+.empty-state .back-link {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 9px 20px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  color: var(--deep-blue);
+  border-radius: 22px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* ========== Scrollbar ========== */
+::-webkit-scrollbar { width: 0; height: 0; }
+
+/* ========== Responsive ========== */
+@media (max-width: 400px) {
+  body {
+    padding: 0;
+    background: var(--light-gray);
+  }
+  .phone-frame {
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .activity-hero {
+    height: 220px;
+  }
+  .hero-name {
+    font-size: 19px;
+  }
+  .hero-icon {
+    font-size: 52px;
+  }
+  .info-card,
+  .section {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<div class="phone-frame">
+  <div class="phone-screen">
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="status-icons">
+        <i class="fas fa-signal"></i>
+        <i class="fas fa-wifi"></i>
+        <i class="fas fa-battery-full"></i>
+      </div>
+    </div>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <div class="back-btn" onclick="goBack()">
+        <i class="fas fa-chevron-left"></i>
+      </div>
+      <div class="top-bar-title">活动详情</div>
+      <div class="top-bar-action" onclick="showToast('已分享活动')">
+        <i class="fas fa-share-nodes"></i>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content" id="content">
+
+      <!-- 封面 -->
+      <div class="activity-hero" id="activityHero">
+        <span class="hero-type-tag" id="heroTypeTag">节日活动</span>
+        <span class="hero-status-tag" id="heroStatusTag">进行中</span>
+        <i class="fas fa-music hero-icon" id="heroIcon"></i>
+        <div class="hero-name" id="heroName">活动名称</div>
+      </div>
+
+      <!-- 信息卡片 -->
+      <div class="info-card">
+        <div class="activity-title" id="infoTitle">活动名称</div>
+        <div class="info-row">
+          <span class="info-label"><i class="far fa-clock"></i> 活动时间</span>
+          <span class="info-value" id="activityTime">--</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-tag"></i> 活动状态</span>
+          <span class="info-value">
+            <span class="status-pill" id="activityStatusPill">进行中</span>
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-users"></i> 参与人数</span>
+          <span class="info-value"><span class="num" id="activityParticipants">--</span><span class="unit">人</span></span>
+        </div>
+        <div class="info-row">
+          <span class="info-label"><i class="fas fa-chart-line"></i> 转化率</span>
+          <span class="info-value"><span class="percent" id="activityConversion">--</span></span>
+        </div>
+      </div>
+
+      <!-- 活动介绍 -->
+      <div class="section">
+        <div class="section-title"><i class="fas fa-circle-info"></i> 活动介绍</div>
+        <div class="section-body" id="activityDescription">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- 活动规则 -->
+      <div class="section">
+        <div class="section-title"><i class="fas fa-clipboard-list"></i> 活动规则</div>
+        <div class="section-body">
+          <ol class="rules-list" id="activityRules"></ol>
+        </div>
+      </div>
+
+      <!-- 活动演出 -->
+      <div class="section">
+        <div class="section-title"><i class="fas fa-ticket"></i> 活动演出</div>
+        <div class="section-body">
+          <div class="show-list" id="activityShows"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Action -->
+    <div class="bottom-action">
+      <div class="action-icon" id="wishlistIcon" onclick="toggleWishlist()">
+        <i class="far fa-heart"></i>
+        <span>关注</span>
+      </div>
+      <button class="action-btn" onclick="participateActivity()">
+        <i class="fas fa-bolt"></i>立即参与
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ========== Activity Data ==========
+const activityDetails = {
+  'ACT-20260401': {
+    id: 'ACT-20260401',
+    name: '海南热带雨林音乐节',
+    typeLabel: '节日活动',
+    status: 'active', statusLabel: '进行中',
+    start: '2026-04-01', end: '2026-04-15',
+    cover: 'linear-gradient(135deg, #00C9A7, #00a88a)',
+    icon: 'fa-music',
+    participants: 12847, conversion: 8.7,
+    description: '在热带雨林的怀抱中聆听自然与音乐的和鸣。本次音乐节汇集国内外顶尖音乐人，融合民乐、摇滚、电子等多种风格，让你在五指山的清新空气中享受一场视听盛宴。',
+    rules: [
+      '活动期间所有演出8折优惠，会员可叠加会员折扣',
+      '每个用户限购买6张门票',
+      '购票后请关注演出时间，提前30分钟入场',
+      '活动最终解释权归海南大剧院所有'
+    ],
+    shows: [
+      { name: '热带雨林交响之夜', date: '2026-04-05 19:30', venue: '海南大剧院 · 主剧场', price: '¥280起', cover: 'https://picsum.photos/seed/rain-music/200/260' },
+      { name: '民谣诗会·山间回响', date: '2026-04-08 20:00', venue: '三亚艺术中心 · 大剧场', price: '¥180起', cover: 'https://picsum.photos/seed/folk-poetry/200/260' },
+      { name: '电子音乐派对', date: '2026-04-12 21:00', venue: '海口演艺中心 · 主剧场', price: '¥220起', cover: 'https://picsum.photos/seed/electronic-party/200/260' }
+    ]
+  },
+  'ACT-20260325': {
+    id: 'ACT-20260325',
+    name: '三亚湾话剧季·惠民专场',
+    typeLabel: '专题活动',
+    status: 'active', statusLabel: '进行中',
+    start: '2026-03-25', end: '2026-05-30',
+    cover: 'linear-gradient(135deg, #6366f1, #818cf8)',
+    icon: 'fa-theater-masks',
+    participants: 8432, conversion: 12.3,
+    description: '三亚湾话剧季汇聚国内知名话剧团，呈现多部经典与现代剧目。惠民专场以亲民票价让更多观众走进剧场，感受话剧的独特魅力。',
+    rules: [
+      '惠民票价统一50元/张，每人限购4张',
+      '演出前7天可申请退票',
+      '1.2米以下儿童免票（不占座）',
+      '凭电子票扫码入场'
+    ],
+    shows: [
+      { name: '《雷雨》经典话剧', date: '2026-04-02 19:30', venue: '三亚艺术中心 · 大剧场', price: '¥50', cover: 'https://picsum.photos/seed/leiyu/200/260' },
+      { name: '《茶馆》现代演绎', date: '2026-04-15 19:30', venue: '三亚艺术中心 · 大剧场', price: '¥50', cover: 'https://picsum.photos/seed/chaguan/200/260' },
+      { name: '原创话剧《南海潮》', date: '2026-05-01 20:00', venue: '海南大剧院 · 主剧场', price: '¥50', cover: 'https://picsum.photos/seed/nanhaichao/200/260' }
+    ]
+  },
+  'ACT-20260315': {
+    id: 'ACT-20260315',
+    name: '春季演出季·早鸟5折',
+    typeLabel: '促销活动',
+    status: 'active', statusLabel: '进行中',
+    start: '2026-03-15', end: '2026-04-30',
+    cover: 'linear-gradient(135deg, #FF6B4A, #ff8a6a)',
+    icon: 'fa-tags',
+    participants: 23156, conversion: 15.6,
+    description: '春季演出季震撼来袭！精选20场精品演出，提前购票享受5折早鸟优惠。涵盖音乐会、舞蹈、戏剧、儿童剧等多个品类，让你的春天充满艺术气息。',
+    rules: [
+      '早鸟票仅限前1000张，售完即恢复原价',
+      '早鸟票一经售出不退不换',
+      '早鸟优惠不可与其他优惠叠加使用',
+      '早鸟票出票时间：每个演出开演前30天'
+    ],
+    shows: [
+      { name: '《天涯故事》大型歌舞秀', date: '2026-04-10 19:30', venue: '海南大剧院 · 主剧场', price: '¥168起 (原价¥336)', cover: 'https://picsum.photos/seed/tianya/200/260' },
+      { name: '椰风海韵·交响音乐会', date: '2026-04-15 20:00', venue: '海南大剧院 · 主剧场', price: '¥120起 (原价¥240)', cover: 'https://picsum.photos/seed/symphony/200/260' },
+      { name: '《红色娘子军》芭蕾舞剧', date: '2026-04-20 19:30', venue: '海口演艺中心 · 主剧场', price: '¥150起 (原价¥300)', cover: 'https://picsum.photos/seed/redarmy/200/260' }
+    ]
+  }
+};
+
+// ========== Helpers ==========
+function getQueryParam(name) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(name);
+}
+
+function formatNumber(num) {
+  if (typeof num !== 'number') return '--';
+  return num.toLocaleString('en-US');
+}
+
+function renderEmptyState() {
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="empty-state">
+      <i class="far fa-folder-open"></i>
+      <div class="title">未找到对应的活动</div>
+      <div class="desc">活动可能已下架或链接有误，请返回活动列表查看其他活动</div>
+      <a class="back-link" href="home.html">返回首页</a>
+    </div>
+  `;
+}
+
+function renderRules(rules) {
+  return rules.map(rule => `<li>${rule}</li>`).join('');
+}
+
+function renderShows(shows) {
+  return shows.map(show => `
+    <a class="show-item" href="show-detail.html?id=${encodeURIComponent(show.name)}">
+      <div class="cover">
+        <img src="${show.cover}" alt="${show.name}" onerror="this.style.opacity=0.3">
+      </div>
+      <div class="info">
+        <div class="name">${show.name}</div>
+        <div class="meta">
+          <span class="date"><i class="far fa-calendar"></i>${show.date}</span>
+          <span class="venue"><i class="fas fa-location-dot"></i>${show.venue}</span>
+        </div>
+        <div class="price">${show.price}</div>
+      </div>
+      <i class="fas fa-chevron-right arrow"></i>
+    </a>
+  `).join('');
+}
+
+function loadActivity() {
+  const id = getQueryParam('id');
+  let detail = id ? activityDetails[id] : null;
+
+  // 默认活动 - 取第一个
+  if (!detail) {
+    if (id) {
+      showToast('活动 ID 不存在,显示默认活动');
+    }
+    const defaultId = Object.keys(activityDetails)[0];
+    detail = activityDetails[defaultId];
+  }
+
+  // 渲染数据
+  const hero = document.getElementById('activityHero');
+  hero.style.background = detail.cover;
+
+  const heroIcon = document.getElementById('heroIcon');
+  heroIcon.className = `fas ${detail.icon} hero-icon`;
+
+  document.getElementById('heroTypeTag').innerHTML = `<i class="fas fa-bullhorn"></i> ${detail.typeLabel}`;
+  document.getElementById('heroName').textContent = detail.name;
+
+  const statusTag = document.getElementById('heroStatusTag');
+  statusTag.textContent = detail.statusLabel;
+  if (detail.status === 'ended') {
+    statusTag.classList.add('ended');
+  } else {
+    statusTag.classList.remove('ended');
+  }
+
+  document.getElementById('infoTitle').textContent = detail.name;
+  document.getElementById('activityTime').textContent = `${detail.start} ~ ${detail.end}`;
+  document.getElementById('activityParticipants').textContent = formatNumber(detail.participants);
+  document.getElementById('activityConversion').textContent = `${detail.conversion.toFixed(1)}%`;
+
+  const statusPill = document.getElementById('activityStatusPill');
+  statusPill.textContent = detail.statusLabel;
+  if (detail.status === 'ended') {
+    statusPill.classList.add('ended');
+  } else {
+    statusPill.classList.remove('ended');
+  }
+
+  document.querySelector('#activityDescription p').textContent = detail.description;
+  document.getElementById('activityRules').innerHTML = renderRules(detail.rules);
+  document.getElementById('activityShows').innerHTML = renderShows(detail.shows);
+
+  // 缓存当前活动 ID
+  window.__currentActivityId = detail.id;
+}
+
+// ========== Interactions ==========
+function goBack() {
+  const from = getQueryParam('from');
+  if (from && from !== 'activity-detail.html') {
+    window.location.href = from;
+  } else if (document.referrer && document.referrer.includes('ui-design/user-miniapp/')) {
+    history.back();
+  } else {
+    window.location.href = 'home.html';
+  }
+}
+
+function participateActivity() {
+  const id = window.__currentActivityId;
+  const detail = activityDetails[id];
+  if (detail && detail.shows && detail.shows.length > 0) {
+    const firstShow = detail.shows[0];
+    showToast('跳转到 ' + firstShow.name);
+    setTimeout(() => {
+      window.location.href = 'show-detail.html?id=' + encodeURIComponent(firstShow.name);
+    }, 800);
+  } else {
+    showToast('活动详情加载中...');
+  }
+}
+
+function toggleWishlist() {
+  const icon = document.getElementById('wishlistIcon');
+  icon.classList.toggle('liked');
+  const i = icon.querySelector('i');
+  if (icon.classList.contains('liked')) {
+    i.classList.remove('far');
+    i.classList.add('fas');
+    showToast('已关注活动');
+  } else {
+    i.classList.remove('fas');
+    i.classList.add('far');
+    showToast('已取消关注');
+  }
+}
+
+let toastTimer;
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2000);
+}
+
+// ========== Init ==========
+document.addEventListener('DOMContentLoaded', loadActivity);
+</script>
+
+</body>
+</html>
