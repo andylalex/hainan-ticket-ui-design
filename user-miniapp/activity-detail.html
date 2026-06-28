@@ -760,9 +760,6 @@ body {
         <i class="fas fa-chevron-left"></i>
       </div>
       <div class="top-bar-title">活动详情</div>
-      <div class="top-bar-action" onclick="showToast('已分享活动')">
-        <i class="fas fa-share-nodes"></i>
-      </div>
     </div>
 
     <!-- Content -->
@@ -817,10 +814,6 @@ body {
 
   <!-- Bottom Action -->
   <div class="bottom-action">
-    <div class="action-icon" id="wishlistIcon" onclick="toggleWishlist()">
-      <i class="far fa-heart"></i>
-      <span>关注</span>
-    </div>
     <button class="action-btn" onclick="participateActivity()">
       <i class="fas fa-bolt"></i>立即参与
     </button>
@@ -998,21 +991,6 @@ function participateActivity() {
     }, 800);
   } else {
     showToast('活动详情加载中...');
-  }
-}
-
-function toggleWishlist() {
-  const icon = document.getElementById('wishlistIcon');
-  icon.classList.toggle('liked');
-  const i = icon.querySelector('i');
-  if (icon.classList.contains('liked')) {
-    i.classList.remove('far');
-    i.classList.add('fas');
-    showToast('已关注活动');
-  } else {
-    i.classList.remove('fas');
-    i.classList.add('far');
-    showToast('已取消关注');
   }
 }
 
