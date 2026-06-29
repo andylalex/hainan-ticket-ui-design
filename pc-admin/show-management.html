@@ -2811,8 +2811,28 @@ table { border-collapse: collapse; width: 100%; }
 }
 .session-item .session-label {
   font-size: 12px;
-  color: var(--text-muted);
+  font-weight: 600;
+  color: var(--text-secondary);
   white-space: nowrap;
+  min-width: 50px;
+}
+/* Time range picker component */
+.time-range-picker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+.time-range-picker .form-input {
+  height: 34px;
+  font-size: 12px;
+  flex: 1;
+  min-width: 0;
+}
+.time-range-picker .time-range-sep {
+  font-size: 12px;
+  color: var(--text-muted);
+  flex-shrink: 0;
 }
 .session-item .btn-remove-session {
   width: 28px;
@@ -8534,14 +8554,20 @@ select.form-select-sm,
         <div class="session-list" id="sessionList">
           <div class="session-item">
             <span class="session-label">场次 1</span>
-            <input type="date" class="form-input" style="flex:1;" value="2026-05-01">
-            <input type="time" class="form-input" style="flex:1;" value="19:30">
+            <div class="time-range-picker">
+              <input type="datetime-local" class="form-input" value="2026-05-01T19:00">
+              <span class="time-range-sep">至</span>
+              <input type="datetime-local" class="form-input" value="2026-05-01T21:30">
+            </div>
             <button class="btn-remove-session" onclick="this.closest('.session-item').remove()"><i class="fas fa-trash"></i></button>
           </div>
           <div class="session-item">
             <span class="session-label">场次 2</span>
-            <input type="date" class="form-input" style="flex:1;" value="2026-05-02">
-            <input type="time" class="form-input" style="flex:1;" value="19:30">
+            <div class="time-range-picker">
+              <input type="datetime-local" class="form-input" value="2026-05-02T19:00">
+              <span class="time-range-sep">至</span>
+              <input type="datetime-local" class="form-input" value="2026-05-02T21:30">
+            </div>
             <button class="btn-remove-session" onclick="this.closest('.session-item').remove()"><i class="fas fa-trash"></i></button>
           </div>
         </div>
@@ -8858,13 +8884,19 @@ select.form-select-sm,
         <div class="session-list" id="editSessionList">
           <div class="session-item" style="background:var(--light-gray);pointer-events:none;opacity:0.8;">
             <span class="session-label">场次 1</span>
-            <input type="date" class="form-input" style="flex:1;" value="2026-05-01" readonly>
-            <input type="time" class="form-input" style="flex:1;" value="19:30" readonly>
+            <div class="time-range-picker">
+              <input type="datetime-local" class="form-input" value="2026-05-01T19:00" readonly>
+              <span class="time-range-sep">至</span>
+              <input type="datetime-local" class="form-input" value="2026-05-01T21:30" readonly>
+            </div>
           </div>
           <div class="session-item" style="background:var(--light-gray);pointer-events:none;opacity:0.8;">
             <span class="session-label">场次 2</span>
-            <input type="date" class="form-input" style="flex:1;" value="2026-05-02" readonly>
-            <input type="time" class="form-input" style="flex:1;" value="19:30" readonly>
+            <div class="time-range-picker">
+              <input type="datetime-local" class="form-input" value="2026-05-02T19:00" readonly>
+              <span class="time-range-sep">至</span>
+              <input type="datetime-local" class="form-input" value="2026-05-02T21:30" readonly>
+            </div>
           </div>
         </div>
       </div>
@@ -9257,14 +9289,12 @@ select.form-select-sm,
           <div><span style="color:#94A3B8;">演出时长：</span><span id="ssiDuration" style="font-weight:600;color:#1E293B;">-</span></div>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">场次日期<span class="required">*</span></label>
-          <input type="date" class="form-input" value="2026-05-15">
-        </div>
-        <div class="form-group">
-          <label class="form-label">场次时间<span class="required">*</span></label>
-          <input type="time" class="form-input" value="19:30">
+      <div class="form-group">
+        <label class="form-label">场次时间范围<span class="required">*</span></label>
+        <div class="time-range-picker" style="margin-top:4px;">
+          <input type="datetime-local" class="form-input" value="2026-05-15T19:00">
+          <span class="time-range-sep">至</span>
+          <input type="datetime-local" class="form-input" value="2026-05-15T21:30">
         </div>
       </div>
       <div class="form-group" id="sessionAllTimesWrap" style="display:none;">
@@ -9277,6 +9307,45 @@ select.form-select-sm,
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('modalNewSession')">取消</button>
       <button class="btn btn-primary" onclick="closeModal('modalNewSession');showToast('场次已创建')"><i class="fas fa-check"></i>创建场次</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== Modal: 编辑场次 ========== -->
+<div class="modal-overlay" id="modalEditSession">
+  <div class="modal-container modal-lg">
+    <div class="modal-header">
+      <h3>编辑场次</h3>
+      <button class="modal-close" onclick="closeModal('modalEditSession')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">演出项目<span class="required">*</span></label>
+        <select class="form-select" disabled>
+          <option value="tianya" selected>《天涯故事》大型歌舞秀</option>
+        </select>
+      </div>
+      <!-- 演出信息展示 -->
+      <div style="margin-bottom:16px;padding:16px;background:#F8FAFC;border-radius:10px;border:1px solid #E2E8F0;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px;">
+          <div><span style="color:#94A3B8;">演出时间：</span><span style="font-weight:600;color:#1E293B;">2026-05-01 ~ 2026-05-02</span></div>
+          <div><span style="color:#94A3B8;">场馆·厅：</span><span style="font-weight:600;color:#1E293B;">海南大剧院 · 主剧场</span></div>
+          <div><span style="color:#94A3B8;">已建场次：</span><span style="font-weight:600;color:#1E293B;">2场</span></div>
+          <div><span style="color:#94A3B8;">演出时长：</span><span style="font-weight:600;color:#1E293B;">120分钟</span></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">场次时间范围<span class="required">*</span></label>
+        <div class="time-range-picker" style="margin-top:4px;">
+          <input type="datetime-local" class="form-input" value="2026-05-15T19:00">
+          <span class="time-range-sep">至</span>
+          <input type="datetime-local" class="form-input" value="2026-05-15T21:30">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modalEditSession')">取消</button>
+      <button class="btn btn-primary" onclick="closeModal('modalEditSession');showToast('场次已更新')"><i class="fas fa-check"></i>保存修改</button>
     </div>
   </div>
 </div>
@@ -9752,8 +9821,11 @@ function addSessionRow() {
   var item = document.createElement('div');
   item.className = 'session-item';
   item.innerHTML = '<span class="session-label">场次 ' + sessionCounter + '</span>' +
-    '<input type="date" class="form-input" style="flex:1;">' +
-    '<input type="time" class="form-input" style="flex:1;" value="19:30">' +
+    '<div class="time-range-picker">' +
+    '<input type="datetime-local" class="form-input">' +
+    '<span class="time-range-sep">至</span>' +
+    '<input type="datetime-local" class="form-input">' +
+    '</div>' +
     '<button class="btn-remove-session" onclick="this.closest(\'.session-item\').remove()"><i class="fas fa-trash"></i></button>';
   list.appendChild(item);
 }
@@ -13890,8 +13962,7 @@ function toggleSessionSale(checkbox) {
 }
 
 function openEditSession(btn) {
-  openModal('modalNewSession');
-  // 可以在这里填充编辑数据
+  openModal('modalEditSession');
 }
 
 // Check session status change - warn if show is currently performing
