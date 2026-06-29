@@ -894,6 +894,9 @@ html {
             box-shadow: var(--shadow-xl);
             animation: modalIn 0.3s ease;
         }
+        .modal.modal-xl {
+            width: 960px;
+        }
 
         @keyframes modalIn {
             from { opacity: 0; transform: translateY(20px) scale(0.97); }
@@ -1832,6 +1835,7 @@ html {
         .points-type.earn { background: rgba(0,201,167,0.1); color: var(--emerald); }
         .points-type.spend { background: rgba(255,107,74,0.1); color: var(--accent); }
         .points-type.expire { background: rgba(107,114,128,0.1); color: #6b7280; }
+        .points-type.transfer { background: rgba(99,102,241,0.1); color: #6366f1; }
 
         .points-value {
             font-weight: 600;
@@ -6224,7 +6228,7 @@ select.form-select-sm,
                 modal = document.createElement('div');
                 modal.id = 'walletDetailModal';
                 modal.className = 'modal-overlay';
-                modal.innerHTML = '<div class="modal modal-lg">' +
+                modal.innerHTML = '<div class="modal modal-xl">' +
                     '<div class="modal-header"><span class="modal-title"><i class="fas fa-wallet" style="margin-right:8px;"></i>钱包明细</span><button class="modal-close" onclick="closeWalletDetailModal()"><i class="fas fa-xmark"></i></button></div>' +
                     '<div class="modal-body">' +
                     '<div class="wallet-summary" style="display:flex;gap:16px;margin-bottom:20px;">' +
@@ -6242,6 +6246,7 @@ select.form-select-sm,
                     '<tr><td>W20260407001</td><td><span class="points-type spend"><i class="fas fa-minus-circle"></i> 消费</span></td><td><span class="points-value negative">-&#165;520</span></td><td>&#165;2,460</td><td>2026-04-07 19:00</td><td>购买《黎族故事》演出票</td></tr>' +
                     '<tr><td>W20260405001</td><td><span class="points-type earn"><i class="fas fa-plus-circle"></i> 充值</span></td><td><span class="points-value positive">+&#165;2,000</span></td><td>&#165;2,980</td><td>2026-04-05 11:30</td><td>账户充值</td></tr>' +
                     '<tr><td>W20260403001</td><td><span class="points-type spend"><i class="fas fa-minus-circle"></i> 消费</span></td><td><span class="points-value negative">-&#165;360</span></td><td>&#165;980</td><td>2026-04-03 20:15</td><td>购买《红色娘子军》演出票</td></tr>' +
+                    '<tr><td>W20260402001</td><td><span class="points-type transfer"><i class="fas fa-exchange-alt"></i> 卡转入</span></td><td><span class="points-value positive">+&#165;500</span></td><td>&#165;1,340</td><td>2026-04-02 09:00</td><td>充值卡转入</td></tr>' +
                     '</tbody>' +
                     '</table>' +
                     '</div>' +
