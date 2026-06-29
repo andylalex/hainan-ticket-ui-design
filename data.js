@@ -7910,6 +7910,17 @@ Tab切换交互：
 // entries.page 对应 devDocs 中的页面URL键名
 const changelogData = [
     {
+        date: '2026-06-29',
+        entries: [
+            {
+                page: 'pc-admin/member-management.html',
+                pageName: '会员管理',
+                module: '会员钱包',
+                content: '会员钱包tab筛选条件移除"全部变动类型"下拉框；列表字段"累计消费"改名为"钱包累计消费"；钱包明细弹窗增加分页（共28条记录，第1/3页，页码按钮+上一页/下一页）'
+            }
+        ]
+    },
+    {
         date: '2026-06-28',
         entries: [
             {
