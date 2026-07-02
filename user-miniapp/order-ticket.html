@@ -847,8 +847,8 @@ body {
   color: #8E95A9;
 }
 .ticket-qr .qr-box {
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  height: 120px;
   background: #fff;
   border-radius: 10px;
   display: flex;
@@ -1010,6 +1010,152 @@ body {
   transform: translate(-50%, -50%) scale(1);
 }
 
+/* ========== Download Hint ========== */
+.download-hint {
+  font-size: 11px;
+  color: #999;
+  text-align: center;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+/* ========== View Ticket Button ========== */
+.view-ticket-btn {
+  padding: 6px 16px;
+  background: rgba(255,107,74,0.1);
+  color: #FF6B4A;
+  border: 1px solid rgba(255,107,74,0.3);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.view-ticket-btn:active { transform: scale(0.96); }
+
+/* ========== Download Preview Modal ========== */
+#downloadModal {
+  top: 50%;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  border-radius: 16px;
+  z-index: 302;
+  max-height: 80vh;
+}
+#downloadModal .seat-modal-header {
+  padding: 0 0 12px;
+  margin-bottom: 16px;
+}
+.download-modal-content {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 320px;
+  width: 85%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.download-summary {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16px;
+}
+.download-preview-list {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+.download-ticket-preview {
+  flex-shrink: 0;
+  width: 120px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+.dtp-top-bar {
+  height: 4px;
+  background: linear-gradient(90deg, #FF6B4A, #D4A853);
+}
+.dtp-content {
+  padding: 10px;
+}
+.dtp-show-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dtp-seat {
+  font-size: 10px;
+  color: #666;
+  margin-bottom: 6px;
+}
+.dtp-qr-mini {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 4px;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+.dtp-qr-mini svg {
+  width: 50px;
+  height: 50px;
+}
+.dtp-code {
+  font-family: 'Courier New', monospace;
+  font-size: 9px;
+  color: #999;
+  text-align: center;
+}
+.dtp-index {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 10px;
+  color: #fff;
+  background: rgba(0,0,0,0.5);
+  border-radius: 8px;
+  padding: 1px 6px;
+}
+.download-tip {
+  font-size: 11px;
+  color: #999;
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.download-confirm-btn {
+  width: 100%;
+  padding: 12px;
+  background: #FF6B4A;
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.download-confirm-btn:active { transform: scale(0.97); }
+
 /* ========== Responsive ========== */
 @media (max-width: 400px) {
   body { padding: 0; }
@@ -1099,6 +1245,7 @@ body {
           </div>
           <div class="card-row4">
             <button class="btn btn-cancel" onclick="event.stopPropagation()">取消订单</button>
+            <button class="view-ticket-btn" onclick="event.stopPropagation(); switchView('ticket')">查看电子票</button>
             <button class="btn btn-primary" onclick="event.stopPropagation()">
               去支付
               <span class="shimmer"></span>
@@ -1121,10 +1268,7 @@ body {
             <span class="price"><span class="yen">¥</span>680</span>
           </div>
           <div class="card-row4">
-            <button class="btn btn-primary" onclick="event.stopPropagation()">
-              查看电子票
-              <span class="shimmer"></span>
-            </button>
+            <button class="view-ticket-btn" onclick="event.stopPropagation(); switchView('ticket')">查看电子票</button>
           </div>
         </div>
 
@@ -1143,10 +1287,7 @@ body {
             <span class="price"><span class="yen">¥</span>380</span>
           </div>
           <div class="card-row4">
-            <button class="btn btn-primary" onclick="event.stopPropagation()">
-              查看电子票
-              <span class="shimmer"></span>
-            </button>
+            <button class="view-ticket-btn" onclick="event.stopPropagation(); switchView('ticket')">查看电子票</button>
           </div>
         </div>
 
@@ -1162,6 +1303,7 @@ body {
             <span class="price"><span class="yen">¥</span>540</span>
           </div>
           <div class="card-row4">
+            <button class="view-ticket-btn" onclick="event.stopPropagation(); switchView('ticket')">查看电子票</button>
             <button class="btn btn-green" onclick="event.stopPropagation()">再次购买</button>
           </div>
         </div>
@@ -1178,6 +1320,7 @@ body {
             <span class="price"><span class="yen">¥</span>396</span>
           </div>
           <div class="card-row4">
+            <button class="view-ticket-btn" onclick="event.stopPropagation(); switchView('ticket')">查看电子票</button>
             <button class="btn btn-green" onclick="event.stopPropagation()">再次购买</button>
           </div>
         </div>
@@ -1192,6 +1335,9 @@ body {
           <div class="card-row3">
             <span class="order-no">订单编号 HN20260415006</span>
             <span class="price refunded"><span class="yen">¥</span>280</span>
+          </div>
+          <div class="card-row4">
+            <button class="view-ticket-btn" onclick="event.stopPropagation(); switchView('ticket')">查看电子票</button>
           </div>
         </div>
 
@@ -1265,15 +1411,16 @@ body {
             <div class="ticket-tear"><div class="tear-line"></div></div>
             <div class="ticket-qr">
               <div class="qr-info">
-                <div class="order-no">订单号: <span>TK20260615001</span></div>
+                <div class="order-no">订单级核销码: <span>O2604100000137</span></div>
                 <div class="qr-hint">入场时请出示此二维码</div>
               </div>
               <div class="qr-box"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#fff"/><rect x="5" y="5" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="8" y="8" width="19" height="19" rx="1" fill="#fff"/><rect x="11" y="11" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="70" y="5" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="73" y="8" width="19" height="19" rx="1" fill="#fff"/><rect x="76" y="11" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="5" y="70" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="8" y="73" width="19" height="19" rx="1" fill="#fff"/><rect x="11" y="76" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="35" y="35" width="8" height="8" fill="#1A1A2E"/><rect x="50" y="35" width="8" height="8" fill="#1A1A2E"/><rect x="65" y="35" width="8" height="8" fill="#1A1A2E"/><rect x="35" y="50" width="8" height="8" fill="#1A1A2E"/><rect x="50" y="50" width="8" height="8" fill="#1A1A2E"/><rect x="65" y="50" width="8" height="8" fill="#1A1A2E"/><rect x="35" y="65" width="8" height="8" fill="#1A1A2E"/><rect x="50" y="65" width="8" height="8" fill="#1A1A2E"/><rect x="65" y="65" width="8" height="8" fill="#1A1A2E"/><rect x="80" y="70" width="8" height="8" fill="#1A1A2E"/><rect x="80" y="80" width="8" height="8" fill="#1A1A2E"/><rect x="35" y="80" width="8" height="8" fill="#1A1A2E"/><rect x="50" y="80" width="8" height="8" fill="#1A1A2E"/></svg></div>
             </div>
-            <div class="ticket-download-btn" onclick="showToast('电子门票已保存到相册')">
+            <div class="ticket-download-btn" onclick="openDownloadModal(0)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              下载电子门票
+              下载电子门票(5张)
             </div>
+            <div class="download-hint">💡 将下载5张门票图片，每张含独立核销码</div>
           </div>
 
           <!-- Ticket 2: 猫中文版 (1 seat) -->
@@ -1302,15 +1449,16 @@ body {
             <div class="ticket-tear"><div class="tear-line"></div></div>
             <div class="ticket-qr">
               <div class="qr-info">
-                <div class="order-no">订单号: <span>TK20260620001</span></div>
+                <div class="order-no">订单级核销码: <span>O2604100000138</span></div>
                 <div class="qr-hint">入场时请出示此二维码</div>
               </div>
               <div class="qr-box"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#fff"/><rect x="5" y="5" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="8" y="8" width="19" height="19" rx="1" fill="#fff"/><rect x="11" y="11" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="70" y="5" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="73" y="8" width="19" height="19" rx="1" fill="#fff"/><rect x="76" y="11" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="5" y="70" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="8" y="73" width="19" height="19" rx="1" fill="#fff"/><rect x="11" y="76" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="40" y="35" width="6" height="6" fill="#1A1A2E"/><rect x="55" y="35" width="6" height="6" fill="#1A1A2E"/><rect x="40" y="50" width="6" height="6" fill="#1A1A2E"/><rect x="55" y="50" width="6" height="6" fill="#1A1A2E"/><rect x="40" y="65" width="6" height="6" fill="#1A1A2E"/><rect x="70" y="75" width="6" height="6" fill="#1A1A2E"/><rect x="85" y="75" width="6" height="6" fill="#1A1A2E"/><rect x="40" y="80" width="6" height="6" fill="#1A1A2E"/><rect x="55" y="80" width="6" height="6" fill="#1A1A2E"/></svg></div>
             </div>
-            <div class="ticket-download-btn" onclick="showToast('电子门票已保存到相册')">
+            <div class="ticket-download-btn" onclick="openDownloadModal(1)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              下载电子门票
+              下载电子门票(1张)
             </div>
+            <div class="download-hint">💡 将下载1张门票图片，每张含独立核销码</div>
           </div>
 
           <!-- Ticket 4: 红色娘子军 (1 seat) -->
@@ -1339,15 +1487,16 @@ body {
             <div class="ticket-tear"><div class="tear-line"></div></div>
             <div class="ticket-qr">
               <div class="qr-info">
-                <div class="order-no">订单号: <span>TK20260708001</span></div>
+                <div class="order-no">订单级核销码: <span>O2604100000139</span></div>
                 <div class="qr-hint">入场时请出示此二维码</div>
               </div>
               <div class="qr-box"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#fff"/><rect x="5" y="5" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="8" y="8" width="19" height="19" rx="1" fill="#fff"/><rect x="11" y="11" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="70" y="5" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="73" y="8" width="19" height="19" rx="1" fill="#fff"/><rect x="76" y="11" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="5" y="70" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="8" y="73" width="19" height="19" rx="1" fill="#fff"/><rect x="11" y="76" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="40" y="35" width="6" height="6" fill="#1A1A2E"/><rect x="55" y="35" width="6" height="6" fill="#1A1A2E"/><rect x="40" y="50" width="6" height="6" fill="#1A1A2E"/><rect x="55" y="50" width="6" height="6" fill="#1A1A2E"/><rect x="70" y="65" width="6" height="6" fill="#1A1A2E"/><rect x="40" y="65" width="6" height="6" fill="#1A1A2E"/><rect x="85" y="75" width="6" height="6" fill="#1A1A2E"/><rect x="40" y="80" width="6" height="6" fill="#1A1A2E"/><rect x="55" y="80" width="6" height="6" fill="#1A1A2E"/></svg></div>
             </div>
-            <div class="ticket-download-btn" onclick="showToast('电子门票已保存到相册')">
+            <div class="ticket-download-btn" onclick="openDownloadModal(2)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              下载电子门票
+              下载电子门票(1张)
             </div>
+            <div class="download-hint">💡 将下载1张门票图片，每张含独立核销码</div>
           </div>
         </div>
 
@@ -1378,15 +1527,16 @@ body {
             <div class="ticket-tear"><div class="tear-line"></div></div>
             <div class="ticket-qr">
               <div class="qr-info">
-                <div class="order-no">订单号: <span>TK20260518001</span></div>
+                <div class="order-no">订单级核销码: <span>O2604100000140</span></div>
                 <div class="qr-hint">入场时请出示此二维码</div>
               </div>
               <div class="qr-box verified"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#fff"/><rect x="5" y="5" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="8" y="8" width="19" height="19" rx="1" fill="#fff"/><rect x="11" y="11" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="70" y="5" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="73" y="8" width="19" height="19" rx="1" fill="#fff"/><rect x="76" y="11" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="5" y="70" width="25" height="25" rx="2" fill="#1A1A2E"/><rect x="8" y="73" width="19" height="19" rx="1" fill="#fff"/><rect x="11" y="76" width="13" height="13" rx="1" fill="#1A1A2E"/><rect x="35" y="35" width="8" height="8" fill="#1A1A2E"/><rect x="50" y="35" width="8" height="8" fill="#1A1A2E"/><rect x="35" y="50" width="8" height="8" fill="#1A1A2E"/><rect x="50" y="50" width="8" height="8" fill="#1A1A2E"/><rect x="65" y="65" width="8" height="8" fill="#1A1A2E"/><rect x="80" y="75" width="8" height="8" fill="#1A1A2E"/><rect x="35" y="80" width="8" height="8" fill="#1A1A2E"/></svg></div>
             </div>
-            <div class="ticket-download-btn" onclick="showToast('电子门票已保存到相册')">
+            <div class="ticket-download-btn" onclick="openDownloadModal(3)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              下载电子门票
+              下载电子门票(1张)
             </div>
+            <div class="download-hint">💡 将下载1张门票图片，每张含独立核销码</div>
             <div class="ticket-comment-btn" onclick="openCommentModal('交响音乐会椰风海韵')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
               写评论
@@ -1409,6 +1559,28 @@ body {
     </div>
     <div class="seat-modal-body" id="seatModalBody">
       <!-- Dynamic content -->
+    </div>
+  </div>
+
+  <!-- Download Preview Modal -->
+  <div class="modal-overlay" id="downloadOverlay" onclick="closeDownloadModal()"></div>
+  <div id="downloadModal" class="seat-modal" style="display:none;">
+    <div class="seat-modal-content download-modal-content">
+      <div class="seat-modal-header">
+        <span class="seat-modal-title">下载电子门票</span>
+        <button class="seat-modal-close" onclick="closeDownloadModal()">×</button>
+      </div>
+      <div class="download-modal-body">
+        <div class="download-summary">本订单共3张门票，将下载3张图片</div>
+        <div class="download-preview-list" id="downloadPreviewList">
+          <!-- 动态生成门票缩略图 -->
+        </div>
+        <div class="download-tip">每张门票图片包含独立的核销二维码，可分别出示入场</div>
+      </div>
+      <button class="download-confirm-btn" onclick="confirmDownload()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        全部下载
+      </button>
     </div>
   </div>
 
@@ -1620,6 +1792,105 @@ function showToast(msg) {
   toast.textContent = msg;
   toast.classList.add('show');
   setTimeout(function() { toast.classList.remove('show'); }, 2000);
+}
+
+// ========== Ticket Orders Data ==========
+var ticketOrders = [
+  {
+    showName: '南海之梦歌舞秀',
+    seats: ['A区 3排5座', 'A区 3排6座', 'A区 3排7座', 'B区 5排10座', 'B区 5排11座'],
+    orderCode: 'O2604100000137',
+    ticketCodes: ['O260410000013701', 'O260410000013702', 'O260410000013703', 'O260410000013704', 'O260410000013705']
+  },
+  {
+    showName: '猫中文版',
+    seats: ['VIP区 2排8座'],
+    orderCode: 'O2604100000138',
+    ticketCodes: ['O260410000013801']
+  },
+  {
+    showName: '红色娘子军',
+    seats: ['A区 1排6座'],
+    orderCode: 'O2604100000139',
+    ticketCodes: ['O260410000013901']
+  },
+  {
+    showName: '交响音乐会椰风海韵',
+    seats: ['B区 5排12座'],
+    orderCode: 'O2604100000140',
+    ticketCodes: ['O260410000014001']
+  }
+];
+
+// ========== Mini QR Code SVG Generator ==========
+function generateMiniQR() {
+  var svg = '<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">';
+  svg += '<rect width="60" height="60" fill="#fff"/>';
+  // Three corner markers
+  svg += '<rect x="3" y="3" width="15" height="15" rx="1" fill="#1A1A2E"/>';
+  svg += '<rect x="5" y="5" width="11" height="11" rx="1" fill="#fff"/>';
+  svg += '<rect x="7" y="7" width="7" height="7" rx="1" fill="#1A1A2E"/>';
+  svg += '<rect x="42" y="3" width="15" height="15" rx="1" fill="#1A1A2E"/>';
+  svg += '<rect x="44" y="5" width="11" height="11" rx="1" fill="#fff"/>';
+  svg += '<rect x="46" y="7" width="7" height="7" rx="1" fill="#1A1A2E"/>';
+  svg += '<rect x="3" y="42" width="15" height="15" rx="1" fill="#1A1A2E"/>';
+  svg += '<rect x="5" y="44" width="11" height="11" rx="1" fill="#fff"/>';
+  svg += '<rect x="7" y="46" width="7" height="7" rx="1" fill="#1A1A2E"/>';
+  // Data dots
+  var dots = [[24,24],[28,24],[36,24],[24,28],[32,28],[36,28],[28,32],[32,32],[24,36],[28,36],[36,36],[32,24],[24,32],[36,32]];
+  dots.forEach(function(d) {
+    svg += '<rect x="' + d[0] + '" y="' + d[1] + '" width="3" height="3" fill="#1A1A2E"/>';
+  });
+  svg += '</svg>';
+  return svg;
+}
+
+// ========== Download Modal ==========
+var currentDownloadOrderIndex = 0;
+
+function openDownloadModal(orderIndex) {
+  currentDownloadOrderIndex = orderIndex;
+  var order = ticketOrders[orderIndex];
+  if (!order) return;
+
+  var count = order.seats.length;
+
+  // Update summary
+  document.querySelector('#downloadModal .download-summary').textContent = '本订单共' + count + '张门票，将下载' + count + '张图片';
+
+  // Generate preview list
+  var previewList = document.getElementById('downloadPreviewList');
+  previewList.innerHTML = '';
+  order.seats.forEach(function(seat, i) {
+    var preview = document.createElement('div');
+    preview.className = 'download-ticket-preview';
+    preview.innerHTML =
+      '<div class="dtp-top-bar"></div>' +
+      '<div class="dtp-content">' +
+        '<div class="dtp-show-name">' + order.showName + '</div>' +
+        '<div class="dtp-seat">' + seat + '</div>' +
+        '<div class="dtp-qr-mini">' + generateMiniQR() + '</div>' +
+        '<div class="dtp-code">' + order.ticketCodes[i] + '</div>' +
+      '</div>' +
+      '<div class="dtp-index">' + (i + 1) + '</div>';
+    previewList.appendChild(preview);
+  });
+
+  // Show modal
+  document.getElementById('downloadOverlay').classList.add('active');
+  document.getElementById('downloadModal').style.display = 'block';
+}
+
+function closeDownloadModal() {
+  document.getElementById('downloadOverlay').classList.remove('active');
+  document.getElementById('downloadModal').style.display = 'none';
+}
+
+function confirmDownload() {
+  var order = ticketOrders[currentDownloadOrderIndex];
+  var count = order ? order.seats.length : 0;
+  closeDownloadModal();
+  showToast('已保存' + count + '张门票图片到相册');
 }
 </script>
 

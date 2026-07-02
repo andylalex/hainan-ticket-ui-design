@@ -769,8 +769,10 @@
   .verify-order-info {
     padding: 0 20px 12px;
     display: flex;
-    gap: 16px;
+    flex-direction: column;
+    gap: 12px;
   }
+  .verify-order-rows { display: flex; gap: 16px; flex-wrap: wrap; }
   .verify-order-row { display: flex; align-items: center; gap: 6px; }
   .verify-order-row .lbl { font-size: 11px; color: #8e95a9; }
   .verify-order-row .val { font-size: 12px; color: #0A1628; font-weight: 500; }
@@ -937,14 +939,127 @@
   }
   .input-modal .submit-btn:active { transform: scale(0.97); }
 
+  /* ===== Verify Code Banner (订单级/门票级核销码展示) ===== */
+  .verify-code-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+  .code-type-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .code-type-badge.order-level {
+    background: rgba(255,107,74,0.15);
+    color: #FF6B4A;
+  }
+  .code-type-badge.ticket-level {
+    background: rgba(0,201,167,0.15);
+    color: #00C9A7;
+  }
+  .code-value {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .seat-code {
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: #999;
+    margin-left: 6px;
+  }
+  .verify-status-pending {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: #00C9A7;
+    margin: 8px 0 16px;
+  }
+  .verify-ticket-detail {
+    margin: 12px 0;
+  }
+  .vtd-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+  }
+  .vtd-row span:first-child {
+    color: #999;
+  }
+  .vtd-row span:last-child {
+    font-weight: 500;
+  }
+  .vtd-row:last-child { border-bottom: none; }
+
+  /* ===== Ticket Verify Modal (门票级单张核销) ===== */
+  #ticketVerifyModal {
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0;
+  }
+  #ticketVerifyModal .verify-modal-card {
+    max-width: 100%;
+    width: 100%;
+    max-height: 85vh;
+    border-radius: 20px 20px 0 0;
+    animation: slideUp 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    overflow-y: auto;
+  }
+  #ticketVerifyModal .verify-modal-header {
+    padding: 20px 20px 0;
+    align-items: flex-start;
+  }
+  #ticketVerifyModal .verify-code-banner {
+    flex: 1;
+    margin-bottom: 0;
+  }
+  #ticketVerifyModal .verify-show-info {
+    padding: 0 20px;
+  }
+  #ticketVerifyModal .verify-ticket-detail {
+    padding: 0 20px;
+  }
+  #ticketVerifyModal .verify-modal-footer {
+    padding: 16px 20px calc(20px + env(safe-area-inset-bottom));
+  }
+  #ticketVerifyModal .verify-submit-btn {
+    width: 100%;
+    height: 46px;
+  }
+  .verify-status-success {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: #00C9A7;
+    margin: 8px 0 16px;
+  }
+
+  /* ===== Manual Input Hint ===== */
+  .input-hint {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    font-size: 12px;
+    color: #8e95a9;
+    line-height: 1.8;
+  }
+  .input-hint > div:first-child { color: #FF6B4A; font-weight: 500; }
+  .input-hint > div:last-child { color: #00C9A7; font-weight: 500; }
+
   /* ===== Utility ===== */
   .hidden { display: none !important; }
+  .mono { font-family: 'Courier New', monospace; }
 
-    
-    
-    
-    
-    
   </style>
 </head>
 <body>
@@ -1150,13 +1265,19 @@
           </button>
         </div>
         <div class="verify-order-info">
-          <div class="verify-order-row">
-            <span class="lbl">订单号</span>
-            <span class="val">TK20260615001</span>
+          <div class="verify-code-banner">
+            <span class="code-type-badge order-level">订单级</span>
+            <span class="code-value mono">O2604100000137</span>
           </div>
-          <div class="verify-order-row">
-            <span class="lbl">取票人</span>
-            <span class="val">张小雅 138****5678</span>
+          <div class="verify-order-rows">
+            <div class="verify-order-row">
+              <span class="lbl">订单号</span>
+              <span class="val mono">TK20260615001</span>
+            </div>
+            <div class="verify-order-row">
+              <span class="lbl">观演人</span>
+              <span class="val">张小雅 138****5678</span>
+            </div>
           </div>
         </div>
         <div class="verify-seat-section">
@@ -1171,43 +1292,72 @@
             <div class="verify-seat-item" data-seat="A区3排5座">
               <input type="checkbox" class="seat-check" checked onchange="updateSelectedCount()">
               <div class="seat-info">
-                <span class="seat-name">A区 3排5座</span>
+                <span class="seat-name">A区 3排5座<span class="seat-code mono">T...0137</span></span>
                 <span class="seat-status">未核销</span>
               </div>
             </div>
             <div class="verify-seat-item" data-seat="A区3排6座">
               <input type="checkbox" class="seat-check" checked onchange="updateSelectedCount()">
               <div class="seat-info">
-                <span class="seat-name">A区 3排6座</span>
+                <span class="seat-name">A区 3排6座<span class="seat-code mono">T...0138</span></span>
                 <span class="seat-status">未核销</span>
               </div>
             </div>
             <div class="verify-seat-item" data-seat="A区3排7座">
               <input type="checkbox" class="seat-check" checked onchange="updateSelectedCount()">
               <div class="seat-info">
-                <span class="seat-name">A区 3排7座</span>
+                <span class="seat-name">A区 3排7座<span class="seat-code mono">T...0139</span></span>
                 <span class="seat-status">未核销</span>
               </div>
             </div>
             <div class="verify-seat-item" data-seat="B区5排10座">
               <input type="checkbox" class="seat-check" checked onchange="updateSelectedCount()">
               <div class="seat-info">
-                <span class="seat-name">B区 5排10座</span>
+                <span class="seat-name">B区 5排10座<span class="seat-code mono">T...0140</span></span>
                 <span class="seat-status">未核销</span>
               </div>
             </div>
             <div class="verify-seat-item" data-seat="B区5排11座">
               <input type="checkbox" class="seat-check" checked onchange="updateSelectedCount()">
               <div class="seat-info">
-                <span class="seat-name">B区 5排11座</span>
+                <span class="seat-name">B区 5排11座<span class="seat-code mono">T...0141</span></span>
                 <span class="seat-status">未核销</span>
               </div>
             </div>
           </div>
         </div>
         <div class="verify-modal-footer">
-          <div class="verify-selected-count">已选 <span id="selectedCount">5</span> 个座位</div>
+          <div class="verify-selected-count">已选 <span id="selectedCount">5</span>/<span id="totalSeatCount">5</span> 个</div>
           <button class="verify-submit-btn" onclick="submitVerify()">确认核销</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ticket-Level Verify Modal (门票级单张核销) -->
+    <div id="ticketVerifyModal" class="modal-overlay verify-modal">
+      <div class="verify-modal-card">
+        <div class="verify-modal-header">
+          <div class="verify-code-banner">
+            <span class="code-type-badge ticket-level">门票级</span>
+            <span class="code-value mono">T26041000010137</span>
+          </div>
+          <button class="verify-close-btn" onclick="closeTicketVerifyModal()" style="font-size:20px;line-height:1;color:#8e95a9;">×</button>
+        </div>
+        <div class="verify-status-pending">✅ 待核销</div>
+        <div class="verify-show-info">
+          <div class="verify-show-name">《南海之梦歌舞秀》</div>
+          <div class="verify-show-meta">06-15 20:00 · 海口湾演艺中心</div>
+        </div>
+        <div class="verify-ticket-detail">
+          <div class="vtd-row"><span>订单号</span><span class="mono">HN202604100001</span></div>
+          <div class="vtd-row"><span>观演人</span><span>张小雅</span></div>
+          <div class="vtd-row"><span>座位</span><span>A区 3排5座</span></div>
+          <div class="vtd-row"><span>票档</span><span>VIP贵宾席</span></div>
+          <div class="vtd-row"><span>票价</span><span>¥640</span></div>
+          <div class="vtd-row"><span>订单进度</span><span>0/3 已核销</span></div>
+        </div>
+        <div class="verify-modal-footer">
+          <button class="verify-submit-btn" onclick="confirmTicketVerify()">确认核销此票</button>
         </div>
       </div>
     </div>
@@ -1264,8 +1414,12 @@
     <!-- Manual Input Modal -->
     <div class="input-modal-overlay" id="inputModal">
       <div class="input-modal">
-        <h4>手动输入票号</h4>
-        <input type="text" id="ticketInput" placeholder="请输入票号，如 HN2026041000328">
+        <h4>手动输入核销码</h4>
+        <input type="text" id="ticketInput" placeholder="请输入核销码（O或T开头）">
+        <div class="input-hint">
+          <div>💡 O开头 = 订单级码（批量核销）</div>
+          <div>T开头 = 门票级码（单张核销）</div>
+        </div>
         <button class="submit-btn" onclick="manualVerify()">查询验票</button>
       </div>
     </div>
@@ -1312,31 +1466,95 @@
     }, 300);
   }
 
-  // ===== Manual Verify (Demo) =====
+  // ===== Manual Verify (Demo，按核销码前缀 O/T 分流) =====
   function manualVerify() {
     const input = document.getElementById('ticketInput').value.trim();
     document.getElementById('inputModal').classList.remove('show');
     if (!input) return;
+    const code = input.toUpperCase();
     setTimeout(() => {
-      if (input.endsWith('156')) {
+      // 模拟已核销的失败场景
+      if (code.endsWith('0156')) {
         document.getElementById('failModal').classList.add('show');
+      } else if (code.startsWith('T')) {
+        // T 开头 = 门票级码（单张核销）
+        openTicketVerifyModal();
       } else {
-        openVerifyModal();
+        // O 开头或其他 = 订单级码（批量核销）
+        openOrderVerifyModal();
       }
       document.getElementById('ticketInput').value = '';
     }, 500);
   }
 
-  // ===== Auto-scan simulation =====
+  // ===== Auto-scan simulation (扫码分流：根据核销码前缀 O/T 分流) =====
+  let scanToggle = 0;
   document.querySelector('.scan-area').addEventListener('click', function() {
     setTimeout(() => {
-      openVerifyModal();
+      // 模拟扫码：交替扫描到订单级(O前缀)与门票级(T前缀)核销码
+      scanToggle = (scanToggle + 1) % 2;
+      if (scanToggle === 1) {
+        openOrderVerifyModal();   // 模拟扫描到订单级码（O前缀）
+      } else {
+        openTicketVerifyModal();  // 模拟扫描到门票级码（T前缀）
+      }
     }, 800);
   });
 
-  function openVerifyModal() {
+  // ===== 订单级核销弹窗（批量核销，复用 #verifyModal） =====
+  function openOrderVerifyModal() {
     document.getElementById('verifyModal').classList.add('show');
     updateSelectedCount();
+  }
+
+  // ===== 门票级单张核销弹窗 =====
+  function openTicketVerifyModal() {
+    resetTicketVerifyModal();
+    document.getElementById('ticketVerifyModal').classList.add('show');
+  }
+
+  function closeTicketVerifyModal() {
+    document.getElementById('ticketVerifyModal').classList.remove('show');
+  }
+
+  // 重置门票级弹窗为"待核销"状态，便于重复演示
+  function resetTicketVerifyModal() {
+    const modal = document.getElementById('ticketVerifyModal');
+    const statusEl = modal.querySelector('.verify-status-pending, .verify-status-success');
+    if (statusEl) {
+      statusEl.textContent = '✅ 待核销';
+      statusEl.classList.remove('verify-status-success');
+      statusEl.classList.add('verify-status-pending');
+    }
+    const rows = modal.querySelectorAll('.vtd-row');
+    if (rows.length) {
+      rows[rows.length - 1].querySelector('span:last-child').textContent = '0/3 已核销';
+    }
+    const btn = modal.querySelector('.verify-submit-btn');
+    if (btn) {
+      btn.textContent = '确认核销此票';
+      btn.disabled = false;
+    }
+  }
+
+  // 确认核销单张门票：显示成功结果
+  function confirmTicketVerify() {
+    const modal = document.getElementById('ticketVerifyModal');
+    const statusEl = modal.querySelector('.verify-status-pending');
+    if (statusEl) {
+      statusEl.textContent = '✅ 核销成功';
+      statusEl.classList.remove('verify-status-pending');
+      statusEl.classList.add('verify-status-success');
+    }
+    const rows = modal.querySelectorAll('.vtd-row');
+    if (rows.length) {
+      rows[rows.length - 1].querySelector('span:last-child').textContent = '1/3 已核销';
+    }
+    const btn = modal.querySelector('.verify-submit-btn');
+    if (btn) {
+      btn.textContent = '已核销';
+      btn.disabled = true;
+    }
   }
 
   function toggleAllSeats() {
@@ -1351,8 +1569,9 @@
     const checked = document.querySelectorAll('#verifySeatList .seat-check:checked').length;
     const total = document.querySelectorAll('#verifySeatList .seat-check:not([disabled])').length;
     document.getElementById('selectedCount').textContent = checked;
+    document.getElementById('totalSeatCount').textContent = total;
     document.getElementById('selectAllSeats').checked = checked === total && total > 0;
-    document.querySelector('.verify-submit-btn').disabled = checked === 0;
+    document.querySelector('#verifyModal .verify-submit-btn').disabled = checked === 0;
   }
 
   function submitVerify() {

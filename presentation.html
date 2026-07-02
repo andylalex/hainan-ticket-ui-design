@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海南省演艺集团 - 艺术演出院线数字服务系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0A1628;
+            --primary-light: #162544;
+            --primary-lighter: #1E3A5F;
+            --accent: #FF6B4A;
+            --accent-light: #FF8E72;
+            --gold: #D4A853;
+            --gold-light: #E5BC6E;
+            --emerald: #00C9A7;
+            --emerald-light: #2DD4B8;
+            --text-light: #FFFFFF;
+            --text-dim: rgba(255,255,255,0.6);
+            --text-dimmer: rgba(255,255,255,0.35);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; scroll-snap-type: y mandatory; overflow-y: scroll; }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: var(--primary);
+            color: var(--text-light);
+            overflow-x: hidden;
+        }
+
+        /* ===== 全局滚动指示器 ===== */
+        .scroll-indicator {
+            position: fixed;
+            right: 32px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .scroll-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+            position: relative;
+        }
+        .scroll-dot.active {
+            background: var(--accent);
+            transform: scale(1.4);
+            box-shadow: 0 0 20px rgba(255,107,74,0.6);
+        }
+        .scroll-dot::after {
+            content: attr(data-label);
+            position: absolute;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            white-space: nowrap;
+            font-size: 12px;
+            color: var(--text-dim);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .scroll-dot:hover::after { opacity: 1; }
+
+        /* ===== 屏幕通用 ===== */
+        .screen {
+            min-height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 60px 80px;
+        }
+
+        /* ===== 背景装饰 ===== */
+        .bg-gradient {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 20% 30%, rgba(255,107,74,0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 70%, rgba(0,201,167,0.06) 0%, transparent 50%),
+                        radial-gradient(ellipse at 50% 100%, rgba(212,168,83,0.05) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .bg-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+        .bg-noise {
+            position: absolute;
+            inset: 0;
+            opacity: 0.03;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        /* ===== 第一屏 ===== */
+        .screen-1 { background: linear-gradient(180deg, #0A1628 0%, #0D1B30 100%); }
+
+        .hero-content {
+            max-width: 1300px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: rgba(255,107,74,0.1);
+            border: 1px solid rgba(255,107,74,0.3);
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--accent-light);
+            margin-bottom: 24px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+        .hero-badge i { font-size: 12px; }
+
+        .hero-title {
+            font-size: 52px;
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 16px;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        .hero-title .accent { color: var(--accent); }
+        .hero-title .gold { color: var(--gold); }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--text-dim);
+            margin-bottom: 48px;
+            max-width: 700px;
+            line-height: 1.7;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .hero-divider {
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--gold));
+            border-radius: 2px;
+            margin-bottom: 48px;
+            animation: expandWidth 1s ease-out 0.6s both;
+        }
+
+        @keyframes expandWidth {
+            from { width: 0; }
+            to { width: 60px; }
+        }
+
+        /* 六大建设目标 */
+        .goals-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+        }
+
+        .goal-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 24px 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+        }
+        .goal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            opacity: 0.8;
+        }
+        .goal-card:nth-child(1)::before { background: var(--accent); }
+        .goal-card:nth-child(2)::before { background: var(--emerald); }
+        .goal-card:nth-child(3)::before { background: var(--gold); }
+        .goal-card:nth-child(4)::before { background: #6C8EEF; }
+        .goal-card:nth-child(5)::before { background: #C562E8; }
+        .goal-card:nth-child(6)::before { background: #2DB4A0; }
+
+        .goal-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255,255,255,0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .goal-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 16px;
+        }
+        .goal-card:nth-child(1) .goal-icon { background: rgba(255,107,74,0.15); color: var(--accent); }
+        .goal-card:nth-child(2) .goal-icon { background: rgba(0,201,167,0.15); color: var(--emerald); }
+        .goal-card:nth-child(3) .goal-icon { background: rgba(212,168,83,0.15); color: var(--gold); }
+        .goal-card:nth-child(4) .goal-icon { background: rgba(108,142,239,0.15); color: #6C8EEF; }
+        .goal-card:nth-child(5) .goal-icon { background: rgba(197,98,232,0.15); color: #C562E8; }
+        .goal-card:nth-child(6) .goal-icon { background: rgba(45,180,160,0.15); color: #2DB4A0; }
+
+        .goal-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .goal-desc {
+            font-size: 13px;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        .goal-number {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 900;
+            color: rgba(255,255,255,0.04);
+            line-height: 1;
+        }
+
+        /* 四终端展示 */
+        .terminals-section {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            padding: 28px 32px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            animation: fadeInUp 0.8s ease-out 1s both;
+        }
+
+        .terminals-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dim);
+            white-space: nowrap;
+            writing-mode: vertical-lr;
+            letter-spacing: 4px;
+        }
+
+        .terminals-grid {
+            display: flex;
+            gap: 24px;
+            flex: 1;
+            justify-content: space-around;
+        }
+
+        .terminal-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s;
+        }
+        .terminal-item:hover { transform: translateY(-4px); }
+
+        .terminal-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .terminal-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        /* ===== 第二屏：架构图 ===== */
+        .screen-2 { background: linear-gradient(180deg, #0D1B30 0%, #0A1628 100%); }
+
+        .arch-content {
+            max-width: 1500px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 32px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        .section-eyebrow {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .section-desc {
+            font-size: 15px;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .arch-diagram {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            padding: 32px;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        /* 子系统分组 */
+        .subsystem-group {
+            margin-bottom: 16px;
+        }
+        .subsystem-group:last-child { margin-bottom: 0; }
+
+        .subsystem-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 10px 10px 0 0;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .subsystem-header i { font-size: 14px; }
+        .subsystem-header .module-count {
+            margin-left: auto;
+            font-size: 11px;
+            font-weight: 400;
+            opacity: 0.6;
+        }
+
+        .subsystem-1 .subsystem-header { background: rgba(255,107,74,0.08); color: var(--accent-light); }
+        .subsystem-2 .subsystem-header { background: rgba(0,201,167,0.08); color: var(--emerald-light); }
+        .subsystem-3 .subsystem-header { background: rgba(212,168,83,0.08); color: var(--gold-light); }
+        .subsystem-4 .subsystem-header { background: rgba(108,142,239,0.08); color: #8BA5F5; }
+
+        .subsystem-body {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.01);
+            border-radius: 0 0 10px 10px;
+            border: 1px solid rgba(255,255,255,0.04);
+            border-top: none;
+        }
+
+        .arch-module {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 8px;
+            padding: 10px 14px;
+            text-align: center;
+            transition: all 0.3s;
+            min-width: 100px;
+        }
+        .arch-module:hover {
+            border-color: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+        }
+        .subsystem-1 .arch-module:hover { border-color: rgba(255,107,74,0.3); }
+        .subsystem-2 .arch-module:hover { border-color: rgba(0,201,167,0.3); }
+        .subsystem-3 .arch-module:hover { border-color: rgba(212,168,83,0.3); }
+        .subsystem-4 .arch-module:hover { border-color: rgba(108,142,239,0.3); }
+
+        .arch-module-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .arch-module-desc {
+            font-size: 11px;
+            color: var(--text-dim);
+            line-height: 1.3;
+        }
+
+        /* 架构层 */
+        .arch-layer {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .arch-layer:last-child { margin-bottom: 0; }
+
+        .arch-layer-label {
+            position: absolute;
+            left: -8px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-90deg);
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-dimmer);
+            white-space: nowrap;
+            letter-spacing: 2px;
+        }
+
+        .arch-box {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 16px 20px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .arch-box:hover {
+            border-color: rgba(255,107,74,0.3);
+            background: linear-gradient(135deg, rgba(255,107,74,0.08), rgba(255,255,255,0.02));
+            transform: translateY(-2px);
+        }
+
+        .arch-box-icon { font-size: 20px; margin-bottom: 6px; }
+        .arch-box-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+        .arch-box-desc { font-size: 11px; color: var(--text-dim); line-height: 1.4; }
+
+        /* 终端层 */
+        .terminal-layer { margin-bottom: 24px; }
+        .terminal-layer .arch-box {
+            min-width: 180px;
+        }
+        .terminal-layer .arch-box-icon { font-size: 28px; }
+
+        /* 连接线 */
+        .arch-connector {
+            text-align: center;
+            color: var(--text-dimmer);
+            font-size: 16px;
+            margin: 8px 0;
+        }
+
+        /* 中间层 */
+        .middle-layer .arch-box {
+            min-width: 140px;
+            border-color: rgba(255,107,74,0.15);
+        }
+        .middle-layer .arch-box-icon { color: var(--accent); }
+
+        /* 服务层 */
+        .service-layer .arch-box {
+            min-width: 120px;
+            border-color: rgba(0,201,167,0.12);
+        }
+        .service-layer .arch-box-icon { color: var(--emerald); }
+
+        /* 数据层 */
+        .data-layer .arch-box {
+            min-width: 130px;
+            border-color: rgba(212,168,83,0.12);
+        }
+        .data-layer .arch-box-icon { color: var(--gold); }
+
+        /* 招标响应提示 */
+        .compliance-banner {
+            margin-top: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px 28px;
+            background: linear-gradient(90deg, rgba(0,201,167,0.08), rgba(0,201,167,0.02));
+            border: 1px solid rgba(0,201,167,0.2);
+            border-radius: 12px;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+        .compliance-banner i {
+            font-size: 20px;
+            color: var(--emerald);
+        }
+        .compliance-banner span {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .compliance-banner strong {
+            color: var(--emerald);
+        }
+
+        /* ===== 第三屏：核心场景 ===== */
+        .screen-3 { background: linear-gradient(180deg, #0A1628 0%, #0D1B30 100%); }
+
+        .scenario-content {
+            max-width: 1300px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            margin-bottom: 48px;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .scenario-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 32px 24px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+        }
+        .scenario-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255,107,74,0.2);
+            box-shadow: 0 24px 48px rgba(0,0,0,0.3);
+        }
+
+        .scenario-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 56px;
+            font-weight: 900;
+            color: rgba(255,255,255,0.06);
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+
+        .scenario-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+        .scenario-card:nth-child(1) .scenario-icon { background: rgba(255,107,74,0.15); color: var(--accent); }
+        .scenario-card:nth-child(2) .scenario-icon { background: rgba(0,201,167,0.15); color: var(--emerald); }
+        .scenario-card:nth-child(3) .scenario-icon { background: rgba(212,168,83,0.15); color: var(--gold); }
+        .scenario-card:nth-child(4) .scenario-icon { background: rgba(108,142,239,0.15); color: #6C8EEF; }
+        .scenario-card:nth-child(5) .scenario-icon { background: rgba(197,98,232,0.15); color: #C562E8; }
+
+        .scenario-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .scenario-desc {
+            font-size: 13px;
+            color: var(--text-dim);
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        .scenario-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .scenario-tag {
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.06);
+            color: var(--text-dim);
+        }
+
+        /* 开始演示按钮 */
+        .start-btn-wrapper {
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .start-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 48px;
+            font-size: 18px;
+            font-weight: 700;
+            font-family: 'Noto Sans SC', sans-serif;
+            color: #fff;
+            background: linear-gradient(135deg, var(--accent) 0%, #E55A3A 100%);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+            box-shadow: 0 8px 32px rgba(255,107,74,0.3);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+        }
+        .start-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
+        }
+        .start-btn:hover::before { left: 100%; }
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(255,107,74,0.45);
+        }
+        .start-btn i {
+            font-size: 20px;
+            transition: transform 0.3s;
+        }
+        .start-btn:hover i { transform: translateX(4px); }
+
+        .start-hint {
+            font-size: 13px;
+            color: var(--text-dimmer);
+            margin-top: 16px;
+        }
+
+        /* ===== 动画 ===== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 浮动装饰 */
+        .floating-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            pointer-events: none;
+            animation: float 8s ease-in-out infinite;
+        }
+        .orb-1 {
+            width: 300px; height: 300px;
+            background: rgba(255,107,74,0.08);
+            top: 10%; right: 5%;
+            animation-delay: 0s;
+        }
+        .orb-2 {
+            width: 250px; height: 250px;
+            background: rgba(0,201,167,0.06);
+            bottom: 15%; left: 8%;
+            animation-delay: 3s;
+        }
+        .orb-3 {
+            width: 200px; height: 200px;
+            background: rgba(212,168,83,0.05);
+            top: 40%; left: 50%;
+            animation-delay: 5s;
+        }
+        @keyframes float {
+            0%, 100% { transform: translate(0,0); }
+            33% { transform: translate(30px, -20px); }
+            66% { transform: translate(-20px, 30px); }
+        }
+
+        /* 滚动提示 */
+        .scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dimmer);
+            font-size: 12px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(8px); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 滚动指示器 -->
+<div class="scroll-indicator">
+    <div class="scroll-dot active" data-label="建设目标" onclick="scrollToScreen(0)"></div>
+    <div class="scroll-dot" data-label="系统架构" onclick="scrollToScreen(1)"></div>
+    <div class="scroll-dot" data-label="核心场景" onclick="scrollToScreen(2)"></div>
+</div>
+
+<!-- ===== 第一屏：建设目标 ===== -->
+<div class="screen screen-1" id="screen1">
+    <div class="bg-gradient"></div>
+    <div class="bg-grid"></div>
+    <div class="bg-noise"></div>
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+
+    <div class="hero-content">
+        <div class="hero-badge">
+            <i class="fas fa-microchip"></i> 系统功能设计方案演示
+        </div>
+        <h1 class="hero-title">
+            <span style="font-size:28px;font-weight:500;color:var(--text-dim);display:block;margin-bottom:8px;">海南省演艺集团</span>
+            <span class="accent">艺术演出院线</span>数字服务系统
+        </h1>
+        <p class="hero-subtitle">
+            围绕票务交易全流程闭环、全生命周期会员管理、多端协同服务架构、
+            高适配可扩展技术架构、安全防护体系、标准化业务数据管控六大建设目标，
+            构建覆盖全场景的数字化服务能力
+        </p>
+        <div class="hero-divider"></div>
+
+        <!-- 六大建设目标 -->
+        <div class="goals-grid">
+            <div class="goal-card">
+                <div class="goal-number">01</div>
+                <div class="goal-icon"><i class="fas fa-ticket-alt"></i></div>
+                <div class="goal-title">票务交易全流程闭环</div>
+                <div class="goal-desc">票务策划、库存配置、多渠道销售、订单全周期管理、入场核销的一体化管控，全流程数字化标准化</div>
+            </div>
+            <div class="goal-card">
+                <div class="goal-number">02</div>
+                <div class="goal-icon"><i class="fas fa-user-shield"></i></div>
+                <div class="goal-title">全生命周期会员管理</div>
+                <div class="goal-desc">会员等级配置、权益管理、积分运营、储值管理、身份认证、信息安全管理，集中化精细化管控</div>
+            </div>
+            <div class="goal-card">
+                <div class="goal-number">03</div>
+                <div class="goal-icon"><i class="fas fa-layer-group"></i></div>
+                <div class="goal-title">多端协同服务架构</div>
+                <div class="goal-desc">用户端小程序、管理员端小程序、PC端管理后台多端联动，功能适配与数据实时互通</div>
+            </div>
+            <div class="goal-card">
+                <div class="goal-number">04</div>
+                <div class="goal-icon"><i class="fas fa-cubes"></i></div>
+                <div class="goal-title">高适配可扩展技术架构</div>
+                <div class="goal-desc">模块化迭代、高并发适配、国产化环境兼容，灵活部署于国产化或通用基础设施环境</div>
+            </div>
+            <div class="goal-card">
+                <div class="goal-number">05</div>
+                <div class="goal-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="goal-title">安全防护体系</div>
+                <div class="goal-desc">基于角色的访问控制、关键操作审计、应急响应预案，符合国家网络安全等级保护法规要求</div>
+            </div>
+            <div class="goal-card">
+                <div class="goal-number">06</div>
+                <div class="goal-icon"><i class="fas fa-chart-bar"></i></div>
+                <div class="goal-title">标准化业务数据管控</div>
+                <div class="goal-desc">全业务数据统一归集、可视化展示、多维度统计分析能力，规范化管理与可追溯</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="scroll-hint">
+        <span>向下滚动查看更多</span>
+        <i class="fas fa-chevron-down"></i>
+    </div>
+</div>
+
+<!-- ===== 第二屏：系统架构图 ===== -->
+<div class="screen screen-2" id="screen2">
+    <div class="bg-gradient"></div>
+    <div class="bg-grid"></div>
+    <div class="floating-orb orb-3"></div>
+
+    <div class="arch-content">
+        <div class="section-header">
+            <div class="section-eyebrow">SYSTEM ARCHITECTURE</div>
+            <h2 class="section-title">系统功能架构 · 响应招标技术要求</h2>
+            <p class="section-desc">按招标文件《系统技术功能要求》划分4大子系统，覆盖所有功能模块，完整响应全部功能要求</p>
+        </div>
+
+        <div class="arch-diagram">
+            <!-- 子系统1：用户端小程序 -->
+            <div class="subsystem-group subsystem-1">
+                <div class="subsystem-header">
+                    <i class="fas fa-mobile-alt"></i> 用户端小程序
+                </div>
+                <div class="subsystem-body">
+                    <div class="arch-module">
+                        <div class="arch-module-title">注册登录</div>
+                        <div class="arch-module-desc">微信手机号一键注册</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">首页</div>
+                        <div class="arch-module-desc">轮播图·热门推荐·剧院导航·扫一扫</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">演出券包</div>
+                        <div class="arch-module-desc">多演出券包购买·购票抵扣</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">演出购票</div>
+                        <div class="arch-module-desc">演出列表·智能搜索·自主选座·混合支付</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">心愿单/评论</div>
+                        <div class="arch-module-desc">收藏提醒·剧评互动</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">周边商城</div>
+                        <div class="arch-module-desc">商品浏览·购物车·搜索</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">会员中心</div>
+                        <div class="arch-module-desc">等级权益·优先购·实体会员卡</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">我的</div>
+                        <div class="arch-module-desc">订单·钱包·积分·充值卡·电子票夹</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">运营活动专题</div>
+                        <div class="arch-module-desc">专题活动发布</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">分销</div>
+                        <div class="arch-module-desc">裂变分销·佣金查询提现</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">消息通知</div>
+                        <div class="arch-module-desc">站内信·公众号通知·短信通知</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">客服</div>
+                        <div class="arch-module-desc">AI客服·在线客服·电话转接</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 子系统2：管理员小程序 -->
+            <div class="subsystem-group subsystem-2">
+                <div class="subsystem-header">
+                    <i class="fas fa-tablet-screen-button"></i> 管理员小程序
+                </div>
+                <div class="subsystem-body">
+                    <div class="arch-module">
+                        <div class="arch-module-title">注册登录</div>
+                        <div class="arch-module-desc">手机号+短信验证码登录</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">扫码验票</div>
+                        <div class="arch-module-desc">扫描电子票核销二维码入场</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">首页</div>
+                        <div class="arch-module-desc">所属场馆票务数据看板</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 子系统3：自助机系统 -->
+            <div class="subsystem-group subsystem-3">
+                <div class="subsystem-header">
+                    <i class="fas fa-print"></i> 自助机系统
+                </div>
+                <div class="subsystem-body">
+                    <div class="arch-module">
+                        <div class="arch-module-title">自助出票</div>
+                        <div class="arch-module-desc">扫码识别门票信息·打印出票</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 子系统4：票务管理系统（PC后台） -->
+            <div class="subsystem-group subsystem-4">
+                <div class="subsystem-header">
+                    <i class="fas fa-desktop"></i> 票务管理系统（PC后台）
+                </div>
+                <div class="subsystem-body">
+                    <div class="arch-module">
+                        <div class="arch-module-title">首页</div>
+                        <div class="arch-module-desc">会员分析·消费分析·分销数据</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">演出管理</div>
+                        <div class="arch-module-desc">演出项目·演出售票·演出场馆</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">评论管理</div>
+                        <div class="arch-module-desc">演出评论审核·违规删除</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">订单管理</div>
+                        <div class="arch-module-desc">票务订单·充值订单·商城订单·券包订单</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">会员管理</div>
+                        <div class="arch-module-desc">会员列表·积分明细·会员政策·会员卡管理</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">积分任务</div>
+                        <div class="arch-module-desc">签到·评论·分享任务配置</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">营销中心</div>
+                        <div class="arch-module-desc">充值卡·票品折扣·优惠券·抽奖·演出券包</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">分销管理</div>
+                        <div class="arch-module-desc">分销员·佣金设置·佣金管理</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">AI应用</div>
+                        <div class="arch-module-desc">智能营销·千人千面·效果追踪</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">商品管理</div>
+                        <div class="arch-module-desc">商品列表·商品分类·取货地管理</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">客服管理</div>
+                        <div class="arch-module-desc">AI客服知识库·在线客服管理</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">运营活动管理</div>
+                        <div class="arch-module-desc">活动配置·上架下架·数据监测</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">统计分析</div>
+                        <div class="arch-module-desc">财务报表·出入账明细·销售员报表</div>
+                    </div>
+                    <div class="arch-module">
+                        <div class="arch-module-title">首页管理</div>
+                        <div class="arch-module-desc">可视化首页装修·拖拽布局</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="compliance-banner">
+            <i class="fas fa-circle-check"></i>
+            <span>系统完整响应招标文件《系统技术功能要求》全部内容，覆盖 <strong>4大子系统 · 所有功能模块</strong>，无任何负偏离</span>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 第三屏：核心场景演示 ===== -->
+<div class="screen screen-3" id="screen3">
+    <div class="bg-gradient"></div>
+    <div class="bg-grid"></div>
+    <div class="floating-orb orb-1"></div>
+    <div class="floating-orb orb-2"></div>
+
+    <div class="scenario-content">
+        <div class="section-header">
+            <div class="section-eyebrow">CORE SCENARIOS</div>
+            <h2 class="section-title">四大核心场景演示</h2>
+            <p class="section-desc">以下场景将在原型系统中进行完整演示，展示系统核心业务能力</p>
+        </div>
+
+        <div class="scenario-grid">
+            <div class="scenario-card">
+                <div class="scenario-number">01</div>
+                <div class="scenario-icon"><i class="fas fa-ticket-alt"></i></div>
+                <div class="scenario-title">用户购票</div>
+                <div class="scenario-desc">演出列表浏览、智能搜索、演出详情查看、自主选座，混合支付（微信支付+会员折扣+优惠券+演出券+积分抵扣）</div>
+                <div class="scenario-tags">
+                    <span class="scenario-tag">演出列表</span>
+                    <span class="scenario-tag">自主选座</span>
+                    <span class="scenario-tag">混合支付</span>
+                    <span class="scenario-tag">电子票夹</span>
+                </div>
+            </div>
+            <div class="scenario-card">
+                <div class="scenario-number">02</div>
+                <div class="scenario-icon"><i class="fas fa-music"></i></div>
+                <div class="scenario-title">演出/售票管理</div>
+                <div class="scenario-desc">演出项目创建与票价配置、场馆座位图绘制；窗口选票售票支持多方式支付与出票打印；多渠道库存同步管控</div>
+                <div class="scenario-tags">
+                    <span class="scenario-tag">演出项目</span>
+                    <span class="scenario-tag">场馆座位图</span>
+                    <span class="scenario-tag">窗口售票</span>
+                    <span class="scenario-tag">渠道库存</span>
+                </div>
+            </div>
+            <div class="scenario-card">
+                <div class="scenario-number">03</div>
+                <div class="scenario-icon"><i class="fas fa-user-tie"></i></div>
+                <div class="scenario-title">会员服务</div>
+                <div class="scenario-desc">会员等级配置与权益管理、优先购演出、实体会员卡线下扣款、储值管理、用户画像与精准营销</div>
+                <div class="scenario-tags">
+                    <span class="scenario-tag">等级权益</span>
+                    <span class="scenario-tag">优先购</span>
+                    <span class="scenario-tag">实体会员卡</span>
+                    <span class="scenario-tag">储值管理</span>
+                </div>
+            </div>
+            <div class="scenario-card">
+                <div class="scenario-number">04</div>
+                <div class="scenario-icon"><i class="fas fa-bullhorn"></i></div>
+                <div class="scenario-title">营销工具</div>
+                <div class="scenario-desc">充值卡为核心营销工具，配套票品折扣、优惠券、演出券包、抽奖活动等多维度营销组合</div>
+                <div class="scenario-tags">
+                    <span class="scenario-tag">充值卡</span>
+                    <span class="scenario-tag">票品折扣</span>
+                    <span class="scenario-tag">优惠券</span>
+                    <span class="scenario-tag">演出券包</span>
+                </div>
+            </div>
+            <div class="scenario-card">
+                <div class="scenario-number">05</div>
+                <div class="scenario-icon"><i class="fas fa-chart-bar"></i></div>
+                <div class="scenario-title">数据统计分析</div>
+                <div class="scenario-desc">数据看板整合会员用户分析、消费分析、周边商城及分销数据，财务报表与出入账明细多维度筛选</div>
+                <div class="scenario-tags">
+                    <span class="scenario-tag">数据看板</span>
+                    <span class="scenario-tag">会员分析</span>
+                    <span class="scenario-tag">消费分析</span>
+                    <span class="scenario-tag">财务报表</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="start-btn-wrapper">
+            <a href="index.html" class="start-btn">
+                <i class="fas fa-play-circle"></i>
+                开始演示
+            </a>
+            <div class="start-hint">点击进入系统原型，按五大场景逐一演示</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 滚动指示器
+    const dots = document.querySelectorAll('.scroll-dot');
+    const screens = document.querySelectorAll('.screen');
+
+    function scrollToScreen(index) {
+        screens[index].scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // 监听滚动更新指示器
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const index = Array.from(screens).indexOf(entry.target);
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === index);
+                });
+            }
+        });
+    }, { threshold: 0.5 });
+
+    screens.forEach(screen => observer.observe(screen));
+
+    // 键盘导航
+    document.addEventListener('keydown', (e) => {
+        const activeIndex = Array.from(dots).findIndex(d => d.classList.contains('active'));
+        if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+            e.preventDefault();
+            if (activeIndex < screens.length - 1) scrollToScreen(activeIndex + 1);
+        } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+            e.preventDefault();
+            if (activeIndex > 0) scrollToScreen(activeIndex - 1);
+        }
+    });
+</script>
+
+</body>
+</html>
