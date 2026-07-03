@@ -760,8 +760,8 @@
 
   /* 非激活状态（灰显） */
   .policy-banner.inactive {
-    opacity: 0.5;
-    filter: grayscale(0.3);
+    opacity: 0.75;
+    filter: grayscale(0.1);
   }
 
   /* ========== Divider ========== */
@@ -946,7 +946,7 @@
     height: 70px;
     display: flex;
     align-items: center;
-    padding: 0 16px;
+    padding: 0 20px;
     padding-bottom: env(safe-area-inset-bottom, 0);
     background: linear-gradient(180deg, rgba(10, 22, 40, 0) 0%, rgba(10, 22, 40, 0.95) 20%, var(--bg-dark) 100%);
     backdrop-filter: blur(10px);
@@ -1388,6 +1388,167 @@
 
   .coupon-none-btn:active {
     background: rgba(255,255,255,0.04);
+  }
+
+  /* ========== Price Detail Bottom Sheet ========== */
+  .price-detail-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 70px;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 19;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .price-detail-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .price-detail-sheet {
+    position: absolute;
+    bottom: 70px;
+    left: 0;
+    right: 0;
+    max-height: 50%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-top: 1px solid var(--glass-border);
+    border-left: 1px solid var(--glass-border);
+    border-right: 1px solid var(--glass-border);
+    border-radius: 16px 16px 0 0;
+    z-index: 21;
+    transform: translateY(calc(100% + 70px));
+    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.3);
+    visibility: hidden;
+  }
+
+  .price-detail-sheet.show {
+    transform: translateY(0);
+    visibility: visible;
+  }
+
+  .price-detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px 10px;
+    border-bottom: 1px solid var(--glass-border);
+    flex-shrink: 0;
+  }
+
+  .price-detail-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .price-detail-close {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 14px;
+    transition: background 0.2s;
+  }
+
+  .price-detail-close:active {
+    background: rgba(255,255,255,0.08);
+  }
+
+  .price-detail-body {
+    padding: 2px 20px 16px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .price-detail-body::-webkit-scrollbar {
+    display: none;
+  }
+
+  .price-detail-body .price-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .price-detail-body .price-row:last-child {
+    border-bottom: none;
+  }
+
+  .price-detail-body .price-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .price-detail-body .price-value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+
+  .price-detail-body .price-value.discount {
+    color: var(--coral-orange);
+    font-weight: 600;
+  }
+
+  .price-detail-body .price-total-row {
+    padding-top: 12px;
+    margin-top: 4px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-bottom: none;
+  }
+
+  .price-detail-body .price-total-row .price-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .price-detail-body .price-total-row .price-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--coral-orange);
+  }
+
+  /* Price detail trigger in bottom bar */
+  .price-detail-trigger {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    margin-top: 3px;
+    transition: opacity 0.2s;
+  }
+
+  .price-detail-trigger:active {
+    opacity: 0.7;
+  }
+
+  .price-detail-trigger i {
+    font-size: 9px;
+    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  .price-detail-trigger.open i {
+    transform: rotate(180deg);
   }
 
   /* ========== Expandable Panel ========== */
@@ -1848,30 +2009,6 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
         <div class="no-seat-hint" id="noSeatHint">点击座位进行选择</div>
       </div>
 
-      <!-- Price breakdown -->
-      <div id="priceBreakdown" style="display:none;">
-        <div class="price-row">
-          <span class="price-label" id="priceUnitLabel">单价 × 数量</span>
-          <span class="price-value" id="priceSubtotal">¥0</span>
-        </div>
-        <div class="price-row" id="earlyBirdDiscountRow" style="display:none;">
-          <span class="price-label">票品折扣（早鸟票9.5折）</span>
-          <span class="price-value discount" id="priceEarlyBirdDiscount" style="color:var(--coral-orange);">-¥0</span>
-        </div>
-        <div class="price-row" id="memberDiscountRow" style="display:none;">
-          <span class="price-label">黄金会员9折</span>
-          <span class="price-value discount" id="priceMemberDiscount" style="color:var(--coral-orange);">-¥0</span>
-        </div>
-        <div class="price-row" id="packageDiscountRow" style="display:none;">
-          <span class="price-label">套票抵扣</span>
-          <span class="price-value discount" id="pricePackageDiscount" style="color:var(--coral-orange);">-¥0</span>
-        </div>
-        <div class="price-row" id="couponHintRow" style="display:none;">
-          <span class="price-label" style="color:var(--text-secondary);">优惠券</span>
-          <span class="price-value" id="couponHintText" style="color:var(--coral-orange);">最高可减¥0</span>
-        </div>
-      </div>
-
     </div>
 
     <!-- Bottom spacer for fixed bar -->
@@ -1885,9 +2022,47 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
         <span class="currency">¥</span><span class="amount" id="bottomTotalAmount">0</span>
       </div>
       <div class="bottom-original-price" id="bottomOriginalPrice" style="display:none;">¥0</div>
-      <div class="bottom-deduct-amount" id="bottomDeductAmount" style="display:none;">已减免¥0</div>
+      <div class="price-detail-trigger" id="priceDetailTrigger" style="display:none;" onclick="togglePriceDetail()">
+        <span>价格明细</span>
+        <i class="fa-solid fa-chevron-up"></i>
+      </div>
     </div>
     <button class="confirm-btn" id="confirmBtn" disabled onclick="confirmSeats()">确认选座</button>
+  </div>
+
+  <!-- Price Detail Popup -->
+  <div class="price-detail-overlay" id="priceDetailOverlay" onclick="closePriceDetail()"></div>
+  <div class="price-detail-sheet" id="priceDetailSheet">
+    <div class="price-detail-header">
+      <span class="price-detail-title">价格明细</span>
+      <div class="price-detail-close" onclick="closePriceDetail()"><i class="fa-solid fa-xmark"></i></div>
+    </div>
+    <div class="price-detail-body">
+      <div class="price-row">
+        <span class="price-label" id="priceUnitLabel">单价 × 数量</span>
+        <span class="price-value" id="priceSubtotal">¥0</span>
+      </div>
+      <div class="price-row" id="earlyBirdDiscountRow" style="display:none;">
+        <span class="price-label">票品折扣</span>
+        <span class="price-value discount" id="priceEarlyBirdDiscount">-¥0</span>
+      </div>
+      <div class="price-row" id="memberDiscountRow" style="display:none;">
+        <span class="price-label">黄金会员9折</span>
+        <span class="price-value discount" id="priceMemberDiscount">-¥0</span>
+      </div>
+      <div class="price-row" id="packageDiscountRow" style="display:none;">
+        <span class="price-label">套票抵扣</span>
+        <span class="price-value discount" id="pricePackageDiscount">-¥0</span>
+      </div>
+      <div class="price-row" id="couponHintRow" style="display:none;">
+        <span class="price-label">优惠券</span>
+        <span class="price-value" id="couponHintText">最高可减¥0</span>
+      </div>
+      <div class="price-row price-total-row">
+        <span class="price-label">实付金额</span>
+        <span class="price-value" id="priceDetailTotal">¥0</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -2015,7 +2190,6 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
     earlybird: {
       enabled: true,
       percent: 80,           // 8折
-      maxAmount: 200,        // 最高减200元
       earlybirdDays: 7,      // 开票后7天内
       limitPerUser: 4,
       endDate: '2026-07-31'
@@ -2029,8 +2203,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
     percent: {
       enabled: true,
       percent: 95,           // 9.5折
-      maxAmount: 200,        // 最高减200元
-      limitPerUser: 6
+      maxAmount: 200         // 最高减200元（折扣优惠无限购）
     }
   };
 
@@ -2094,7 +2267,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
         <div class="policy-icon">🐦</div>
         <div class="policy-content">
           <div class="policy-title">早鸟特惠 ${eb.percent / 10}折</div>
-          <div class="policy-desc">前${eb.earlybirdDays}天购买 · 每人限购${eb.limitPerUser}张${eb.maxAmount ? ' · 最高减¥' + eb.maxAmount : ''}</div>
+          <div class="policy-desc">前${eb.earlybirdDays}天购买 · 每人限购${eb.limitPerUser}张</div>
         </div>
         <div class="policy-badge">-${discountPercent}%</div>
       </div>`;
@@ -2123,7 +2296,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
         <div class="policy-icon">🎫</div>
         <div class="policy-content">
           <div class="policy-title">折扣特惠 ${pc.percent / 10}折</div>
-          <div class="policy-desc">${pc.maxAmount ? '最高减¥' + pc.maxAmount + ' · ' : ''}每人限购${pc.limitPerUser}张</div>
+          <div class="policy-desc">最高减¥${pc.maxAmount}</div>
         </div>
         <div class="policy-badge">-${discountPercent}%</div>
       </div>`;
@@ -2285,7 +2458,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
     const display = document.getElementById('selectedDisplay');
     const hint = document.getElementById('noSeatHint');
     const countEl = document.getElementById('panelCount');
-    const breakdown = document.getElementById('priceBreakdown');
+    const detailTrigger = document.getElementById('priceDetailTrigger');
     const subtotalEl = document.getElementById('priceSubtotal');
     const unitLabel = document.getElementById('priceUnitLabel');
     const totalEl = document.getElementById('bottomTotalAmount');
@@ -2296,7 +2469,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
     if (selectedSeats.length === 0) {
       display.innerHTML = '<div class="no-seat-hint" id="noSeatHint">点击座位进行选择</div>';
       countEl.textContent = `最多可选${maxSelect}张`;
-      breakdown.style.display = 'none';
+      detailTrigger.style.display = 'none';
       totalEl.textContent = '0';
       confirmBtn.disabled = true;
       return;
@@ -2304,7 +2477,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
 
     confirmBtn.disabled = false;
     countEl.textContent = `已选 ${selectedSeats.length}/${maxSelect} 张`;
-    breakdown.style.display = 'block';
+    detailTrigger.style.display = 'flex';
 
     // Build chips
     display.innerHTML = '';
@@ -2670,6 +2843,27 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
     document.getElementById('couponSheet').classList.remove('show');
   }
 
+  // ========== Price Detail Popup ==========
+  function togglePriceDetail() {
+    const overlay = document.getElementById('priceDetailOverlay');
+    const sheet = document.getElementById('priceDetailSheet');
+    const trigger = document.getElementById('priceDetailTrigger');
+    if (overlay.classList.contains('show')) {
+      closePriceDetail();
+    } else {
+      overlay.classList.add('show');
+      sheet.classList.add('show');
+      trigger.classList.add('open');
+    }
+  }
+
+  function closePriceDetail() {
+    document.getElementById('priceDetailOverlay').classList.remove('show');
+    document.getElementById('priceDetailSheet').classList.remove('show');
+    const trigger = document.getElementById('priceDetailTrigger');
+    if (trigger) trigger.classList.remove('open');
+  }
+
   function updatePackageEntry() {
     const text = document.getElementById('packageEntryText');
     const arrow = document.getElementById('packageEntryArrow');
@@ -2703,15 +2897,11 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
       totalEl.textContent = '0';
 
       const bottomOriginalEl = document.getElementById('bottomOriginalPrice');
-      if (bottomOriginalEl) {
-        bottomOriginalEl.textContent = '';
-        bottomOriginalEl.style.display = 'none';
-      }
+      if (bottomOriginalEl) bottomOriginalEl.style.display = 'none';
 
-      const bottomDeductEl = document.getElementById('bottomDeductAmount');
-      if (bottomDeductEl) {
-        bottomDeductEl.style.display = 'none';
-        bottomDeductEl.textContent = '';
+      const detailTotalEl = document.getElementById('priceDetailTotal');
+      if (detailTotalEl) {
+        detailTotalEl.textContent = '¥0';
       }
 
       return;
@@ -2747,7 +2937,6 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
     if (policy.activeType === 'earlybird' && policy.earlybird.enabled && isEarlyBirdPeriod()) {
       const eb = policy.earlybird;
       discountAmount = nonVipTotal * (100 - eb.percent) / 100;
-      if (eb.maxAmount && discountAmount > eb.maxAmount) discountAmount = eb.maxAmount;
       discountLabel = `票品折扣（早鸟票${eb.percent / 10}折）`;
     } else if (policy.activeType === 'reduce' && policy.reduce.enabled) {
       const rd = policy.reduce;
@@ -2811,28 +3000,20 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
     const bottomTotalEl = document.getElementById('bottomTotalAmount');
     bottomTotalEl.textContent = finalTotal.toFixed(2);
 
-    // Update total discount display (价格明细面板)
-    const totalDeduct = discountAmount + packageDeduct + (selectedVouchers.length === 0 ? memberDiscount : 0);
-
-    // ========== 更新底栏三行信息 ==========
-    const bottomOriginalEl = document.getElementById('bottomOriginalPrice');
-    const bottomDeductEl = document.getElementById('bottomDeductAmount');
-
-    // 优惠前原价（原价之和）
+    // 底栏划线原价
     const origPriceSum = selectedSeats.reduce((sum, s) => sum + (s.originalPrice || s.price), 0);
+    const bottomOriginalEl = document.getElementById('bottomOriginalPrice');
     if (origPriceSum > finalTotal) {
       bottomOriginalEl.textContent = `¥${origPriceSum}`;
-      bottomOriginalEl.style.display = 'inline';
+      bottomOriginalEl.style.display = 'block';
     } else {
       bottomOriginalEl.style.display = 'none';
     }
 
-    // 已减免金额
-    if (totalDeduct > 0) {
-      bottomDeductEl.textContent = `已减免¥${totalDeduct}`;
-      bottomDeductEl.style.display = 'block';
-    } else {
-      bottomDeductEl.style.display = 'none';
+    // Update price detail popup total
+    const detailTotalEl = document.getElementById('priceDetailTotal');
+    if (detailTotalEl) {
+      detailTotalEl.textContent = `¥${finalTotal.toFixed(2)}`;
     }
   }
 
