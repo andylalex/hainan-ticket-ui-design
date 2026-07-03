@@ -2191,19 +2191,17 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
       enabled: true,
       percent: 80,           // 8折
       earlybirdDays: 7,      // 开票后7天内
-      limitPerUser: 4,
       endDate: '2026-07-31'
     },
     reduce: {
       enabled: true,
       threshold: 300,        // 满300
-      reduceAmount: 50,      // 减50
-      limitPerUser: 6
+      reduceAmount: 50       // 减50
     },
     percent: {
       enabled: true,
       percent: 95,           // 9.5折
-      maxAmount: 200         // 最高减200元（折扣优惠无限购）
+      maxAmount: 200         // 最高减200元
     }
   };
 
@@ -2267,7 +2265,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
         <div class="policy-icon">🐦</div>
         <div class="policy-content">
           <div class="policy-title">早鸟特惠 ${eb.percent / 10}折</div>
-          <div class="policy-desc">前${eb.earlybirdDays}天购买 · 每人限购${eb.limitPerUser}张</div>
+          <div class="policy-desc">前${eb.earlybirdDays}天购买享${eb.percent / 10}折</div>
         </div>
         <div class="policy-badge">-${discountPercent}%</div>
       </div>`;
@@ -2281,7 +2279,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
         <div class="policy-icon">💰</div>
         <div class="policy-content">
           <div class="policy-title">满减优惠 满${rd.threshold}减${rd.reduceAmount}</div>
-          <div class="policy-desc">单笔订单满¥${rd.threshold}立减¥${rd.reduceAmount} · 每人限购${rd.limitPerUser}张</div>
+          <div class="policy-desc">单笔订单满¥${rd.threshold}立减¥${rd.reduceAmount}</div>
         </div>
         <div class="policy-badge">-¥${rd.reduceAmount}</div>
       </div>`;

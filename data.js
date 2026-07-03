@@ -591,7 +591,7 @@ const devDocs = {
                         <ul>
                             <li>座位图：根据场次ID获取座位布局数据，渲染矩阵式座位图，4种状态（可选/已售/已选/VIP）</li>
                             <li>票档筛选：按区域分区展示（VIP区/A区/B区/C区），有可用观演券的票档显示"套票"徽章，点击切换后座位图自动定位到对应区域</li>
-                            <li>票品折扣：展示3种折扣类型卡片（早鸟票/满减优惠/折扣特惠），当前生效类型高亮，其余类型灰显但可见；早鸟票=前N天购买享X折+每人限购N张；满减=满X减Y+每人限购N张；折扣=X折+最高减¥Y（无限购）；VIP区不参与折扣计算</li>
+                            <li>票品折扣：展示3种折扣类型卡片（早鸟票/满减优惠/折扣特惠），当前生效类型高亮，其余类型灰显但可见；早鸟票=前N天购买享X折；满减=满X减Y；折扣=X折+最高减¥Y；三种类型均无限购；VIP区不参与折扣计算</li>
                             <li>会员折扣：价格明细弹窗中显示"黄金会员9折"行及具体优惠金额（座位价格的10%），不受套票影响</li>
                             <li>优惠券：底部弹窗选择优惠券，需满足最低消费金额，选中后全额抵扣</li>
                             <li>套票观演券：底部弹窗选择观演券，观演券绑定指定演出+指定票档双重条件，匹配对应票档座位全额减免；选择座位时自动匹配可用观演券，取消座位时自动解绑</li>
@@ -693,12 +693,10 @@ const devDocs = {
                             ['active_type', 'enum', '是', '当前生效类型：earlybird/reduce/percent/null'],
                             ['earlybird.percent', 'number', '否', '早鸟折扣率，如80=8折'],
                             ['earlybird.earlybird_days', 'number', '否', '开票后优惠天数'],
-                            ['earlybird.limit_per_user', 'number', '否', '每人限购张数'],
                             ['reduce.threshold', 'number', '否', '满减门槛金额（元）'],
                             ['reduce.reduce_amount', 'number', '否', '满减金额（元）'],
-                            ['reduce.limit_per_user', 'number', '否', '每人限购张数'],
                             ['percent.percent', 'number', '否', '折扣率，如95=9.5折'],
-                            ['percent.max_amount', 'number', '否', '最高减免金额（元），折扣优惠无限购']
+                            ['percent.max_amount', 'number', '否', '最高减免金额（元）']
                         ]
                     },
                     {
@@ -1124,7 +1122,7 @@ const devDocs = {
 <ul>
   <li><strong>触发：</strong>点击会员专属购票区演出卡片的"优先选座"按钮（橙红色渐变按钮，带皇冠图标和光泽动画）</li>
   <li><strong>执行中：</strong>无loading，直接跳转</li>
-  <li><strong>成功：</strong>跳转至 seat-selection.html 选座购票页面</li>
+  <li><strong>成功：</strong>跳转至 show-detail.html 演出详情页面（用户在演出详情页选择场次后进入选座）</li>
   <li><strong>失败：</strong>跳转失败时弹出toast"页面加载失败，请重试"</li>
   <li><strong>边界条件：</strong>每张演出卡片展示演出名称/时间/地点/标签（热门/经典等）、金卡折扣标签、价格（会员价和原价删除线）、距公开售票倒计时</li>
 </ul>`
@@ -8110,6 +8108,20 @@ const changelogData = [
                 module: '票品折扣',
                 time: '15:38',
                 content: '新建/编辑折扣活动弹窗中选择场次组件增加不可选状态：已售罄或已被其他折扣占用的场次显示为灰色禁用，右侧标注禁用原因标签（如"已售罄""已被其他折扣占用"），全选时自动跳过禁用项；列表每行新增"删除"按钮，点击后二次确认删除（提示活动名称和不可恢复警告），删除时行渐隐动画+Toast提示'
+            },
+            {
+                page: 'user-miniapp/seat-selection.html',
+                pageName: '选座购票',
+                module: '票品折扣',
+                time: '16:35',
+                content: '三种优惠卡片（早鸟/满减/折扣）全部移除限购文案：早鸟票描述从"前N天购买·每人限购N张"改为"前N天购买享X折"，满减优惠描述从"单笔满X减Y·每人限购N张"改为"单笔满X减Y"；配置数据移除earlybird.limitPerUser和reduce.limitPerUser字段'
+            },
+            {
+                page: 'user-miniapp/member-center.html',
+                pageName: '会员中心',
+                module: '优先选座',
+                time: '16:35',
+                content: '优先选座按钮跳转目标从seat-selection.html改为show-detail.html，3张VIP优先购票卡片全部更新'
             }
         ]
     },
