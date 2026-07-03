@@ -375,6 +375,74 @@ body {
   font-weight: 500;
 }
 
+/* 票品折扣标签区 */
+.discount-tags-section {
+    background: #fff;
+    padding: 16px;
+    margin-bottom: 8px;
+}
+.discount-tags-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-dark, #1a1a2e);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.discount-tags-title i {
+    color: var(--coral-orange, #FF6B4A);
+    font-size: 13px;
+}
+.discount-tags-list {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+}
+.discount-tags-list::-webkit-scrollbar { display: none; }
+.discount-tag-item {
+    min-width: 100px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid;
+    flex-shrink: 0;
+}
+.discount-tag-item .discount-tag-type {
+    font-size: 11px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+.discount-tag-item .discount-tag-value {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+.discount-tag-item .discount-tag-desc {
+    font-size: 10px;
+    opacity: 0.7;
+}
+
+/* 早鸟票样式 */
+.discount-tag-item.earlybird {
+    background: rgba(217, 119, 6, 0.08);
+    border-color: rgba(217, 119, 6, 0.2);
+    color: #d97706;
+}
+/* 满减样式 */
+.discount-tag-item.reduce {
+    background: rgba(5, 150, 105, 0.08);
+    border-color: rgba(5, 150, 105, 0.2);
+    color: #059669;
+}
+/* 折扣样式 */
+.discount-tag-item.percent {
+    background: rgba(184, 134, 11, 0.08);
+    border-color: rgba(184, 134, 11, 0.2);
+    color: #b8860b;
+}
+
 /* 早鸟票和优先购横幅 */
 .promo-banner-section {
   background: var(--white);
@@ -1340,17 +1408,6 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
 
       <!-- Early Bird & Priority Purchase Banner -->
       <div class="promo-banner-section">
-        <!-- 早鸟票提示 -->
-        <div class="promo-banner early-bird" id="earlyBirdBanner">
-          <div class="promo-icon">🐣</div>
-          <div class="promo-content">
-            <div class="promo-title">早鸟票优惠</div>
-            <div class="promo-desc">前7天购票享 <span class="highlight">8.5折</span> 优惠，每人限购5张</div>
-            <div class="promo-timer">距结束: <span class="countdown" id="earlyBirdCountdown">2天12:30:45</span></div>
-          </div>
-          <div class="promo-tag">限时</div>
-        </div>
-        
         <!-- 会员优先购提示 -->
         <div class="promo-banner member-priority" id="memberPriorityBanner">
           <div class="promo-icon">👑</div>
@@ -1364,6 +1421,30 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
           </div>
           <div class="promo-tag gold">VIP</div>
         </div>
+      </div>
+
+      <!-- 票品折扣标签 -->
+      <div class="discount-tags-section">
+          <div class="discount-tags-title">
+              <i class="fas fa-tag"></i> 票品优惠
+          </div>
+          <div class="discount-tags-list">
+              <div class="discount-tag-item earlybird">
+                  <div class="discount-tag-type">早鸟票</div>
+                  <div class="discount-tag-value">8折</div>
+                  <div class="discount-tag-desc">开票后7天内可购</div>
+              </div>
+              <div class="discount-tag-item reduce">
+                  <div class="discount-tag-type">满减</div>
+                  <div class="discount-tag-value">满300减50</div>
+                  <div class="discount-tag-desc">单笔订单满300元</div>
+              </div>
+              <div class="discount-tag-item percent">
+                  <div class="discount-tag-type">折扣</div>
+                  <div class="discount-tag-value">9.5折</div>
+                  <div class="discount-tag-desc">最高减200元</div>
+              </div>
+          </div>
       </div>
 
       <!-- Session Selection -->

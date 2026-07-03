@@ -730,6 +730,34 @@
     color: #1a1a2e;
   }
 
+  /* 满减折扣 */
+  .policy-banner.reduce {
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.15), rgba(5, 150, 105, 0.1));
+    border: 1px solid rgba(5, 150, 105, 0.25);
+    color: #059669;
+  }
+  .policy-banner.reduce .policy-icon {
+    background: rgba(5, 150, 105, 0.2);
+  }
+  .policy-banner.reduce .policy-badge {
+    background: #059669;
+    color: #fff;
+  }
+
+  /* 百分比折扣 */
+  .policy-banner.percent {
+    background: linear-gradient(135deg, rgba(184, 134, 11, 0.15), rgba(184, 134, 11, 0.1));
+    border: 1px solid rgba(184, 134, 11, 0.25);
+    color: #b8860b;
+  }
+  .policy-banner.percent .policy-icon {
+    background: rgba(184, 134, 11, 0.2);
+  }
+  .policy-banner.percent .policy-badge {
+    background: #b8860b;
+    color: #fff;
+  }
+
   /* ========== Divider ========== */
   .section-divider {
     height: 1px;
@@ -1975,18 +2003,28 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
   // ========== Early Bird & Priority Purchase ==========
   // 模拟从后台获取的早鸟票和优先购配置
   const TICKET_POLICY = {
-    earlyBird: {
+    // 当前激活的折扣类型: 'earlybird' | 'reduce' | 'percent' | null
+    activeType: 'earlybird',
+
+    earlybird: {
       enabled: true,
-      advanceDays: 7,
-      discountPercent: 85, // 85折
+      percent: 80,           // 8折
+      maxAmount: 200,        // 最高减200元
+      earlybirdDays: 7,      // 开票后7天内
       limitPerUser: 4,
-      endDate: '2026-07-31' // 早鸟票结束日期
+      endDate: '2026-07-31'
     },
-    memberPriority: {
-      enabled: true,
-      memberLevels: ['gold', 'platinum', 'diamond'],
-      advanceDays: 3,
-      limitPerMember: 6
+    reduce: {
+      enabled: false,
+      threshold: 300,        // 满300
+      reduceAmount: 50,      // 减50
+      limitPerUser: 6
+    },
+    percent: {
+      enabled: false,
+      percent: 95,           // 9.5折
+      maxAmount: 200,        // 最高减200元
+      limitPerUser: 6
     }
   };
 
@@ -1995,23 +2033,27 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
 
   // 计算是否处于早鸟票期间
   function isEarlyBirdPeriod() {
-    if (!TICKET_POLICY.earlyBird.enabled) return false;
+    if (!TICKET_POLICY.earlybird || !TICKET_POLICY.earlybird.enabled) return false;
     const today = new Date();
-    const endDate = new Date(TICKET_POLICY.earlyBird.endDate);
+    const endDate = new Date(TICKET_POLICY.earlybird.endDate);
     return today <= endDate;
   }
 
   // 计算是否处于优先购期间
   function isPriorityPeriod() {
-    if (!TICKET_POLICY.memberPriority.enabled) return false;
+    if (!TICKET_POLICY.memberPriority || !TICKET_POLICY.memberPriority.enabled) return false;
     // 检查当前用户会员等级是否有优先购资格
     return TICKET_POLICY.memberPriority.memberLevels.includes(CURRENT_MEMBER_LEVEL);
   }
 
   // 获取当前生效的折扣比例 (100 = 无折扣)
   function getCurrentDiscount() {
-    if (isEarlyBirdPeriod()) {
-      return TICKET_POLICY.earlyBird.discountPercent;
+    const policy = TICKET_POLICY;
+    if (policy.activeType === 'earlybird' && policy.earlybird && policy.earlybird.enabled && isEarlyBirdPeriod()) {
+      return policy.earlybird.percent;
+    }
+    if (policy.activeType === 'percent' && policy.percent && policy.percent.enabled) {
+      return policy.percent.percent;
     }
     return 100;
   }
@@ -2028,55 +2070,60 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
 
   // 渲染政策横幅
   function renderTicketPolicyBanner() {
-    const banner = document.getElementById('ticketPolicyBanner');
-    if (!banner) return;
+    const container = document.getElementById('ticketPolicyBanner');
+    if (!container) return;
 
-    // 早鸟票优先显示
-    if (isEarlyBirdPeriod()) {
-      const discount = TICKET_POLICY.earlyBird.discountPercent;
-      const limit = TICKET_POLICY.earlyBird.limitPerUser;
-      const endDate = new Date(TICKET_POLICY.earlyBird.endDate);
-      const daysLeft = Math.ceil((endDate - new Date()) / (1000 * 60 * 60 * 24));
-
-      banner.innerHTML = `
-        <div class="policy-banner early-bird">
-          <div class="policy-icon">🐦</div>
-          <div class="policy-content">
-            <div class="policy-title">早鸟特惠 9.5折</div>
-            <div class="policy-desc">剩余${daysLeft}天 · 每人限购${limit}张</div>
-          </div>
-          <div class="policy-badge">-5%</div>
-        </div>
-      `;
-      banner.style.display = 'block';
+    const policy = TICKET_POLICY;
+    if (!policy.activeType) {
+      container.style.display = 'none';
       return;
     }
 
-    // 优先购显示
-    if (isPriorityPeriod()) {
-      const limit = TICKET_POLICY.memberPriority.limitPerMember;
-      const memberLevelName = {
-        'gold': '黄金会员',
-        'platinum': '铂金会员',
-        'diamond': '钻石会员'
-      }[CURRENT_MEMBER_LEVEL] || '会员';
+    let html = '';
 
-      banner.innerHTML = `
-        <div class="policy-banner priority">
-          <div class="policy-icon">👑</div>
-          <div class="policy-content">
-            <div class="policy-title">${memberLevelName}优先购</div>
-            <div class="policy-desc">提前${TICKET_POLICY.memberPriority.advanceDays}天 · 限购${limit}张</div>
-          </div>
-          <div class="policy-badge">专享</div>
+    if (policy.activeType === 'earlybird' && policy.earlybird.enabled) {
+      const eb = policy.earlybird;
+      const now = new Date();
+      const end = new Date(eb.endDate);
+      const daysLeft = Math.max(0, Math.ceil((end - now) / (1000 * 60 * 60 * 24)));
+      const discountPercent = (100 - eb.percent);
+      html = `<div class="policy-banner early-bird">
+        <div class="policy-icon">🐦</div>
+        <div class="policy-content">
+          <div class="policy-title">早鸟特惠 ${eb.percent / 10}折</div>
+          <div class="policy-desc">前${eb.earlybirdDays}天购买 · 每人限购${eb.limitPerUser}张${eb.maxAmount ? ' · 最高减¥' + eb.maxAmount : ''}</div>
         </div>
-      `;
-      banner.style.display = 'block';
-      return;
+        <div class="policy-badge">-${discountPercent}%</div>
+      </div>`;
+    } else if (policy.activeType === 'reduce' && policy.reduce.enabled) {
+      const rd = policy.reduce;
+      html = `<div class="policy-banner reduce">
+        <div class="policy-icon">💰</div>
+        <div class="policy-content">
+          <div class="policy-title">满减优惠 满${rd.threshold}减${rd.reduceAmount}</div>
+          <div class="policy-desc">单笔订单满¥${rd.threshold}立减¥${rd.reduceAmount} · 每人限购${rd.limitPerUser}张</div>
+        </div>
+        <div class="policy-badge">-¥${rd.reduceAmount}</div>
+      </div>`;
+    } else if (policy.activeType === 'percent' && policy.percent.enabled) {
+      const pc = policy.percent;
+      const discountPercent = (100 - pc.percent);
+      html = `<div class="policy-banner percent">
+        <div class="policy-icon">🎫</div>
+        <div class="policy-content">
+          <div class="policy-title">折扣特惠 ${pc.percent / 10}折</div>
+          <div class="policy-desc">${pc.maxAmount ? '最高减¥' + pc.maxAmount + ' · ' : ''}每人限购${pc.limitPerUser}张</div>
+        </div>
+        <div class="policy-badge">-${discountPercent}%</div>
+      </div>`;
     }
 
-    // 无特殊政策
-    banner.style.display = 'none';
+    if (html) {
+      container.innerHTML = html;
+      container.style.display = 'block';
+    } else {
+      container.style.display = 'none';
+    }
   }
 
   // 更新票档价格显示（早鸟票只做展示，不显示折扣价）
@@ -2679,25 +2726,41 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
     const couponHintRow = document.getElementById('couponHintRow');
     const memberDiscountRow = document.getElementById('memberDiscountRow');
 
-    // 计算早鸟票折扣金额（原价的5%，VIP区不参与）
-    let earlyBirdDeduct = 0;
-    if (isEarlyBirdPeriod()) {
-      const nonVipOriginalTotal = selectedSeats
-        .filter(s => s.tier !== 'vip')
-        .reduce((sum, s) => sum + (s.originalPrice || s.price), 0);
-      earlyBirdDeduct = Math.round(nonVipOriginalTotal * 0.05);
+    // 票品折扣计算（VIP区不参与早鸟/百分比折扣）
+    const nonVipTotal = selectedSeats
+      .filter(s => s.tier !== 'vip')
+      .reduce((sum, s) => sum + (s.originalPrice || s.price), 0);
+    let discountAmount = 0;
+    let discountLabel = '';
+    const policy = TICKET_POLICY;
+    if (policy.activeType === 'earlybird' && policy.earlybird.enabled && isEarlyBirdPeriod()) {
+      const eb = policy.earlybird;
+      discountAmount = nonVipTotal * (100 - eb.percent) / 100;
+      if (eb.maxAmount && discountAmount > eb.maxAmount) discountAmount = eb.maxAmount;
+      discountLabel = `票品折扣（早鸟票${eb.percent / 10}折）`;
+    } else if (policy.activeType === 'reduce' && policy.reduce.enabled) {
+      const rd = policy.reduce;
+      if (nonVipTotal >= rd.threshold) {
+        discountAmount = rd.reduceAmount;
+      }
+      discountLabel = `票品折扣（满${rd.threshold}减${rd.reduceAmount}）`;
+    } else if (policy.activeType === 'percent' && policy.percent.enabled) {
+      const pc = policy.percent;
+      discountAmount = nonVipTotal * (100 - pc.percent) / 100;
+      if (pc.maxAmount && discountAmount > pc.maxAmount) discountAmount = pc.maxAmount;
+      discountLabel = `票品折扣（${pc.percent / 10}折）`;
     }
 
     // 计算会员折扣（黄金会员9折，减免10%）
     const discSumForMember = selectedSeats.reduce((sum, s) => sum + s.price, 0);
     let memberDiscount = Math.floor(discSumForMember * 0.1);
 
-    // 票品折扣行：早鸟票9.5折，显示具体优惠金额
-    if (isEarlyBirdPeriod() && earlyBirdDeduct > 0) {
-      earlyBirdRow.style.display = 'flex';
-      document.getElementById('priceEarlyBirdDiscount').textContent = `-¥${earlyBirdDeduct}`;
+    if (discountAmount > 0) {
+      document.getElementById('earlyBirdDiscountRow').querySelector('.price-label').textContent = discountLabel;
+      document.getElementById('priceEarlyBirdDiscount').textContent = '-¥' + discountAmount.toFixed(0);
+      document.getElementById('earlyBirdDiscountRow').style.display = 'flex';
     } else {
-      earlyBirdRow.style.display = 'none';
+      document.getElementById('earlyBirdDiscountRow').style.display = 'none';
     }
 
     // 会员折扣行：黄金会员9折，始终显示具体优惠金额
@@ -2738,7 +2801,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
     bottomTotalEl.textContent = finalTotal.toFixed(2);
 
     // Update total discount display (价格明细面板)
-    const totalDeduct = earlyBirdDeduct + packageDeduct + (selectedVouchers.length === 0 ? memberDiscount : 0);
+    const totalDeduct = discountAmount + packageDeduct + (selectedVouchers.length === 0 ? memberDiscount : 0);
 
     // ========== 更新底栏三行信息 ==========
     const bottomOriginalEl = document.getElementById('bottomOriginalPrice');

@@ -413,9 +413,24 @@ body {
   color: var(--gold);
 }
 
-.show-card .info .label.discount {
-  background: rgba(0, 201, 167, 0.1);
-  color: var(--emerald);
+/* 演出自定义标签 - 使用CSS变量 */
+.show-card .info .label.custom {
+  background: var(--tag-bg, rgba(255, 107, 74, 0.1));
+  color: var(--tag-color, #FF6B4A);
+}
+
+/* 票品折扣标签 */
+.show-card .info .label.earlybird {
+  background: rgba(217, 119, 6, 0.1);
+  color: #d97706;
+}
+.show-card .info .label.reduce {
+  background: rgba(5, 150, 105, 0.1);
+  color: #059669;
+}
+.show-card .info .label.percent {
+  background: rgba(184, 134, 11, 0.1);
+  color: #b8860b;
 }
 
 /* ========== Detail Page ========== */
@@ -1345,7 +1360,8 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
             <div class="bottom-row">
               <div class="price"><span>&yen;</span>280<span>起</span></div>
               <div class="labels">
-                <span class="label soon">即将开演</span>
+                <span class="label custom" style="--tag-color:#FF6B4A;--tag-bg:rgba(255,107,74,0.1);">热门</span>
+                <span class="label earlybird">早鸟8折</span>
               </div>
             </div>
           </div>
@@ -1365,8 +1381,8 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
             <div class="bottom-row">
               <div class="price"><span>&yen;</span>180<span>起</span></div>
               <div class="labels">
-                <span class="label member">会员专享</span>
-                <span class="label discount">9折</span>
+                <span class="label custom" style="--tag-color:#10B981;--tag-bg:rgba(16,185,129,0.1);">推荐</span>
+                <span class="label reduce">满减100</span>
               </div>
             </div>
           </div>
@@ -1386,7 +1402,8 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
             <div class="bottom-row">
               <div class="price"><span>&yen;</span>380<span>起</span></div>
               <div class="labels">
-                <span class="label soon">即将开演</span>
+                <span class="label custom" style="--tag-color:#F59E0B;--tag-bg:rgba(245,158,11,0.1);">限时</span>
+                <span class="label percent">折扣9.5折</span>
               </div>
             </div>
           </div>
@@ -1406,7 +1423,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
             <div class="bottom-row">
               <div class="price"><span>&yen;</span>99<span>起</span></div>
               <div class="labels">
-                <span class="label discount">限时特惠</span>
+                <span class="label custom" style="--tag-color:#06B6D4;--tag-bg:rgba(6,182,212,0.1);">新品</span>
               </div>
             </div>
           </div>
@@ -1426,7 +1443,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
             <div class="bottom-row">
               <div class="price"><span>&yen;</span>128<span>起</span></div>
               <div class="labels">
-                <span class="label member">会员专享</span>
+                <span class="label custom" style="--tag-color:#8B5CF6;--tag-bg:rgba(139,92,246,0.1);">独家</span>
               </div>
             </div>
           </div>
@@ -1446,7 +1463,8 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
             <div class="bottom-row">
               <div class="price"><span>&yen;</span>60<span>起</span></div>
               <div class="labels">
-                <span class="label discount">早鸟价</span>
+                <span class="label custom" style="--tag-color:#FF6B4A;--tag-bg:rgba(255,107,74,0.1);">热门</span>
+                <span class="label earlybird">早鸟8折</span>
               </div>
             </div>
           </div>
@@ -1466,8 +1484,7 @@ function goBack(f){var m=location.search.match(/[?&]from=([^&]+)/);if(m)location
             <div class="bottom-row">
               <div class="price"><span>&yen;</span>168<span>起</span></div>
               <div class="labels">
-                <span class="label soon">即将开演</span>
-                <span class="label member">会员专享</span>
+                <span class="label percent">折扣8折</span>
               </div>
             </div>
           </div>
