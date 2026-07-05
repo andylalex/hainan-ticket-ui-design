@@ -1514,6 +1514,7 @@ html {
             flex-shrink: 0;
         }
         .gc-icon--indigo { background: rgba(99,102,241,0.1); color: #6366f1; }
+        .gc-icon--rose { background: rgba(244,63,94,0.1); color: #f43f5e; }
         .gc-icon--emerald { background: rgba(0,201,167,0.1); color: var(--emerald); }
         .gc-icon--gold { background: rgba(212,168,83,0.1); color: var(--gold); }
         .gc-icon--accent { background: rgba(255,107,74,0.1); color: var(--accent); }
@@ -4796,6 +4797,31 @@ select.form-select-sm,
                                     <span class="gc-label">每推荐1人获得</span>
                                     <input type="number" class="gc-input gc-input--md" value="100">
                                     <span class="gc-unit">成长值</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="growth-config-card">
+                            <div class="gc-header">
+                                <div class="gc-icon gc-icon--rose"><i class="fas fa-gift"></i></div>
+                                <div class="gc-title">邀请有礼</div>
+                                <span class="gc-tag" style="margin-left:auto;font-size:11px;padding:2px 8px;border-radius:4px;background:#FEF2F2;color:#E85D3A;">邀请充值专属</span>
+                            </div>
+                            <div class="gc-body">
+                                <div class="gc-desc">邀请好友充值达标后，双方各获成长值奖励</div>
+                                <div class="gc-setting" style="margin-bottom:16px;">
+                                    <span class="gc-label">邀请者奖励（每成功邀请1人充值）</span>
+                                    <input type="number" class="gc-input gc-input--md" value="1000">
+                                    <span class="gc-unit">成长值</span>
+                                </div>
+                                <div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:8px;padding:12px 14px;">
+                                    <div style="font-size:13px;font-weight:600;color:#9A3412;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+                                        <i class="fas fa-info-circle"></i> 被邀请者权益（系统固定，不可配置）
+                                    </div>
+                                    <div style="font-size:12px;color:#9A3412;line-height:1.8;">
+                                        被邀请者充值达银卡门槛 <strong>80%</strong>，系统额外赠送 <strong>20%</strong> 成长值，充值后立即达标开通银卡会员<br>
+                                        <span style="color:#C2410C;">当前配置下：充值 <strong>¥800</strong> → 得800成长值 + 额外赠200成长值 = <strong>1000成长值</strong> 直达银卡</span><br>
+                                        <span style="color:#A8A29E;font-size:11px;">※ 充值金额与赠送成长值根据等级门槛和充值比例自动推导</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
