@@ -250,10 +250,10 @@
 
   <!-- Buttons -->
   <div class="btn-group">
-    <a class="btn btn-secondary" href="order-list.html">
+    <a class="btn btn-secondary" id="btnViewOrder" href="order-detail.html">
       <i class="fas fa-list-ul"></i> 查看订单
     </a>
-    <a class="btn btn-primary" href="index.html">
+    <a class="btn btn-primary" href="home.html">
       <i class="fas fa-home"></i> 返回首页
     </a>
   </div>
@@ -284,6 +284,9 @@
   document.getElementById('showDate').textContent = showDate;
   document.getElementById('seatInfo').textContent = seats;
   document.getElementById('payAmount').textContent = '\u00A5' + amount;
+
+  // 查看订单链接附带订单号
+  document.getElementById('btnViewOrder').href = 'order-detail.html?orderNo=' + encodeURIComponent(orderNo);
 </script>
 </body>
 </html>
