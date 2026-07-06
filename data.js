@@ -8026,6 +8026,13 @@ const changelogData = [
                 module: '会员政策',
                 time: '09:00',
                 content: '邀请有礼卡片移除"每人限邀次数"和"活动预算上限"两个配置项，保留邀请者奖励、被邀请者赠送成长值和实时预览框'
+            },
+            {
+                page: 'pc-admin/member-management.html',
+                pageName: '会员管理',
+                module: '会员政策',
+                time: '09:10',
+                content: '成长值配置区移除"推荐会员成长值"卡片（功能已由"邀请有礼"卡片覆盖）'
             }
         ]
     },
