@@ -936,6 +936,12 @@ body {
   }
 }
 
+/* ========== WeChat Spin Animation ========== */
+@keyframes wechatSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /* ========== Toast ========== */
 .toast {
   position: fixed;
@@ -1366,18 +1372,230 @@ function closePendingOrderModal() {
   }
 }
 
-// 继续支付此订单
+// 继续支付此订单 — 展示已选支付方式确认弹窗
 function continuePayThisOrder() {
   closePendingOrderModal();
   _simHasPendingOrder = false;
-  showPaymentModal();
+  showPreselectedPayConfirm();
 }
 
-// 关闭此订单
-function closeThisPendingOrder() {
-  closePendingOrderModal();
-  _simHasPendingOrder = false;
-  cancelOrder();
+// 预选支付方式数据（创建订单时已确定）
+var PRESELECT_PAY = {
+  wechat: 500,
+  wallet: 300,
+  card: 200,
+  cardName: 'VIP充值卡',
+  total: 1000
+};
+
+// 已选支付方式确认弹窗
+function showPreselectedPayConfirm() {
+  var overlay = document.createElement('div');
+  overlay.className = 'pay-modal-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,22,40,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:200;opacity:0;transition:opacity 0.3s ease;';
+
+  var sheet = document.createElement('div');
+  sheet.style.cssText = 'position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:375px;background:#fff;border-radius:20px 20px 0 0;z-index:201;transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);padding:28px 24px calc(28px + env(safe-area-inset-bottom));box-shadow:0 -8px 40px rgba(10,22,40,0.12);';
+
+  var html = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">';
+  html += '<span style="font-size:17px;font-weight:700;color:#1A1A2E;">确认支付</span>';
+  html += '<span style="width:28px;height:28px;border-radius:50%;background:#F5F6FA;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#8E95A9;font-size:14px;" onclick="closePreselectedConfirm()"><i class="fas fa-times"></i></span>';
+  html += '</div>';
+
+  // 应付总额
+  html += '<div style="text-align:center;margin-bottom:24px;">';
+  html += '<div style="font-size:12px;color:#8E95A9;margin-bottom:4px;">应付总额</div>';
+  html += '<div style="font-size:32px;font-weight:700;color:#1A1A2E;">¥' + PRESELECT_PAY.total.toFixed(2) + '</div>';
+  html += '</div>';
+
+  // 已选支付方式明细
+  html += '<div style="background:#F8F9FB;border-radius:12px;padding:16px;margin-bottom:20px;">';
+  html += '<div style="font-size:12px;color:#8E95A9;margin-bottom:12px;">已选支付方式</div>';
+
+  // 微信支付
+  if (PRESELECT_PAY.wechat > 0) {
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #F0F1F5;">';
+    html += '<div style="display:flex;align-items:center;gap:10px;">';
+    html += '<div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#07C160,#06AD56);display:flex;align-items:center;justify-content:center;"><i class="fab fa-weixin" style="font-size:14px;color:#fff;"></i></div>';
+    html += '<span style="font-size:14px;font-weight:500;color:#1A1A2E;">微信支付</span>';
+    html += '</div>';
+    html += '<span style="font-size:15px;font-weight:600;color:#1A1A2E;">¥' + PRESELECT_PAY.wechat.toFixed(2) + '</span>';
+    html += '</div>';
+  }
+
+  // 钱包支付
+  if (PRESELECT_PAY.wallet > 0) {
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #F0F1F5;">';
+    html += '<div style="display:flex;align-items:center;gap:10px;">';
+    html += '<div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#FF6B4A,#FF8A6E);display:flex;align-items:center;justify-content:center;"><i class="fas fa-wallet" style="font-size:14px;color:#fff;"></i></div>';
+    html += '<span style="font-size:14px;font-weight:500;color:#1A1A2E;">钱包支付</span>';
+    html += '</div>';
+    html += '<span style="font-size:15px;font-weight:600;color:#1A1A2E;">¥' + PRESELECT_PAY.wallet.toFixed(2) + '</span>';
+    html += '</div>';
+  }
+
+  // 充值卡支付
+  if (PRESELECT_PAY.card > 0) {
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;">';
+    html += '<div style="display:flex;align-items:center;gap:10px;">';
+    html += '<div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#D4A853,#E8C878);display:flex;align-items:center;justify-content:center;"><i class="fas fa-credit-card" style="font-size:14px;color:#fff;"></i></div>';
+    html += '<div><span style="font-size:14px;font-weight:500;color:#1A1A2E;">充值卡支付</span><br><span style="font-size:11px;color:#8E95A9;">' + PRESELECT_PAY.cardName + '</span></div>';
+    html += '</div>';
+    html += '<span style="font-size:15px;font-weight:600;color:#1A1A2E;">¥' + PRESELECT_PAY.card.toFixed(2) + '</span>';
+    html += '</div>';
+  }
+
+  html += '</div>';
+
+  // 支付流程提示
+  html += '<div style="font-size:11px;color:#B8BCCE;text-align:center;margin-bottom:20px;line-height:1.6;">';
+  if (PRESELECT_PAY.wallet > 0 && PRESELECT_PAY.wechat > 0) {
+    html += '支付流程：钱包密码验证 → 微信支付 → 完成';
+  } else if (PRESELECT_PAY.wallet > 0) {
+    html += '支付流程：钱包密码验证 → 完成';
+  } else if (PRESELECT_PAY.wechat > 0) {
+    html += '支付流程：微信支付 → 完成';
+  } else {
+    html += '充值卡已全额抵扣，确认即可完成';
+  }
+  html += '</div>';
+
+  // 确认支付按钮
+  html += '<button style="width:100%;height:50px;background:linear-gradient(135deg,#FF6B4A,#FF8A6A);color:#fff;border:none;border-radius:25px;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(255,107,74,0.3);" onclick="startPreselectedPay()">确认支付</button>';
+
+  sheet.innerHTML = html;
+  document.body.appendChild(overlay);
+  document.body.appendChild(sheet);
+
+  window._preselectedOverlay = overlay;
+  window._preselectedSheet = sheet;
+
+  requestAnimationFrame(function() {
+    overlay.style.opacity = '1';
+    sheet.style.transform = 'translateX(-50%) translateY(0)';
+  });
+  overlay.onclick = closePreselectedConfirm;
+}
+
+function closePreselectedConfirm() {
+  if (window._preselectedOverlay) {
+    window._preselectedOverlay.style.opacity = '0';
+    window._preselectedSheet.style.transform = 'translateX(-50%) translateY(100%)';
+    setTimeout(function() {
+      if (window._preselectedOverlay) window._preselectedOverlay.remove();
+      if (window._preselectedSheet) window._preselectedSheet.remove();
+      window._preselectedOverlay = null;
+      window._preselectedSheet = null;
+    }, 300);
+  }
+}
+
+// 开始预选支付流程（钱包密码 → 微信支付 → 完成）
+function startPreselectedPay() {
+  closePreselectedConfirm();
+  // 有钱包支付，先验证钱包密码
+  if (PRESELECT_PAY.wallet > 0) {
+    showWalletPasswordModal();
+    return;
+  }
+  // 无钱包，直接微信支付
+  proceedDetailToWechatPay();
+}
+
+// 微信支付环节
+function proceedDetailToWechatPay() {
+  if (PRESELECT_PAY.wechat > 0) {
+    showDetailWechatPayModal(PRESELECT_PAY.wechat);
+    return;
+  }
+  // 不需要微信支付，直接完成
+  completeDetailOrder();
+}
+
+// 微信支付模拟弹窗
+function showDetailWechatPayModal(amount) {
+  var overlay = document.createElement('div');
+  overlay.className = 'pay-modal-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,22,40,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:200;opacity:0;transition:opacity 0.3s ease;';
+
+  var sheet = document.createElement('div');
+  sheet.style.cssText = 'position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:375px;background:#fff;border-radius:20px 20px 0 0;z-index:201;transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);padding:28px 24px calc(28px + env(safe-area-inset-bottom));box-shadow:0 -8px 40px rgba(10,22,40,0.12);';
+
+  var html = '<div style="text-align:center;margin-bottom:24px;">';
+  html += '<div style="width:48px;height:48px;border-radius:12px;background:#07C160;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i class="fab fa-weixin" style="font-size:26px;color:#fff;"></i></div>';
+  html += '<div style="font-size:16px;font-weight:600;color:#0A1628;">微信支付</div>';
+  html += '<div style="font-size:28px;font-weight:700;color:#0A1628;margin-top:8px;">¥' + amount.toFixed(2) + '</div>';
+  html += '</div>';
+
+  html += '<div id="detailWechatFingerprint" style="text-align:center;padding:20px 0;">';
+  html += '<div style="width:64px;height:64px;border-radius:50%;background:#F5F6FA;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;cursor:pointer;transition:all 0.2s;" onclick="confirmDetailWechatPay()">';
+  html += '<i class="fas fa-fingerprint" style="font-size:32px;color:#07C160;"></i></div>';
+  html += '<div style="font-size:13px;color:#8E95A9;">轻触指纹支付</div>';
+  html += '</div>';
+
+  html += '<div id="detailWechatPaying" style="display:none;text-align:center;padding:20px 0;">';
+  html += '<div style="width:48px;height:48px;margin:0 auto 16px;"><svg viewBox="0 0 50 50" style="width:48px;height:48px;animation:wechatSpin 0.8s linear infinite;"><circle cx="25" cy="25" r="20" fill="none" stroke="#E8E9ED" stroke-width="4"/><circle cx="25" cy="25" r="20" fill="none" stroke="#07C160" stroke-width="4" stroke-linecap="round" stroke-dasharray="31.4 125.6"/></svg></div>';
+  html += '<div style="font-size:13px;color:#8E95A9;">支付处理中...</div>';
+  html += '</div>';
+
+  html += '<div id="detailWechatPaid" style="display:none;text-align:center;padding:20px 0;">';
+  html += '<div style="width:56px;height:56px;border-radius:50%;background:#07C160;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i class="fas fa-check" style="font-size:24px;color:#fff;"></i></div>';
+  html += '<div style="font-size:15px;font-weight:600;color:#07C160;">支付成功</div>';
+  html += '</div>';
+
+  html += '<div style="margin-top:20px;padding-top:16px;border-top:1px solid #F0F1F5;text-align:center;">';
+  html += '<span style="font-size:12px;color:#B8BCCE;cursor:pointer;" onclick="cancelDetailWechatPay()">取消支付</span>';
+  html += '</div>';
+
+  sheet.innerHTML = html;
+  document.body.appendChild(overlay);
+  document.body.appendChild(sheet);
+
+  window._detailWechatOverlay = overlay;
+  window._detailWechatSheet = sheet;
+
+  requestAnimationFrame(function() {
+    overlay.style.opacity = '1';
+    sheet.style.transform = 'translateX(-50%) translateY(0)';
+  });
+  overlay.onclick = cancelDetailWechatPay;
+}
+
+function confirmDetailWechatPay() {
+  document.getElementById('detailWechatFingerprint').style.display = 'none';
+  document.getElementById('detailWechatPaying').style.display = 'block';
+  setTimeout(function() {
+    document.getElementById('detailWechatPaying').style.display = 'none';
+    document.getElementById('detailWechatPaid').style.display = 'block';
+    setTimeout(function() {
+      if (window._detailWechatOverlay) window._detailWechatOverlay.remove();
+      if (window._detailWechatSheet) window._detailWechatSheet.remove();
+      completeDetailOrder();
+    }, 800);
+  }, 1200);
+}
+
+function cancelDetailWechatPay() {
+  if (window._detailWechatOverlay) window._detailWechatOverlay.remove();
+  if (window._detailWechatSheet) window._detailWechatSheet.remove();
+  if (PRESELECT_PAY.wallet > 0) {
+    showToast('支付已取消，钱包扣款已回滚');
+  } else {
+    showToast('支付已取消');
+  }
+}
+
+// 完成订单，跳转成功页
+function completeDetailOrder() {
+  var params = new URLSearchParams({
+    orderNo: 'HN20260614001',
+    show: '2026海南国际音乐节开幕式音乐会',
+    date: '2026-07-15 19:30',
+    venue: '海口湾演艺中心 大剧场',
+    seats: '3排5座、3排6座',
+    amount: PRESELECT_PAY.total.toFixed(2)
+  });
+  window.location.href = 'order-success.html?' + params.toString();
 }
 
 function viewTicket() { showToast('即将跳转电子票'); }
@@ -1788,7 +2006,15 @@ function confirmWalletPassword() {
     return;
   }
   closeWalletPasswordModal();
-  showToast('正在发起组合支付...');
+  // 钱包密码验证通过，继续微信支付环节
+  proceedDetailToWechatPay();
+}
+
+// 关闭此订单（待支付订单取消）
+function closeThisPendingOrder() {
+  closePendingOrderModal();
+  _simHasPendingOrder = false;
+  cancelOrder();
 }
 
 // 钱包密码弹窗键盘监听
@@ -1902,12 +2128,26 @@ function togglePaymentDetail() {
     }
   }
   
-  // For pending-pay, hide payment detail section
+  // For pending-pay, show payment detail as "已选支付方式" (pre-selected)
   if (status === 'pending-pay') {
     var paymentToggle = document.getElementById('paymentToggle');
     var paymentContent = document.getElementById('paymentDetailContent');
-    if (paymentToggle) paymentToggle.style.display = 'none';
-    if (paymentContent) paymentContent.style.display = 'none';
+    if (paymentToggle) {
+      paymentToggle.style.display = 'flex';
+      // Change label to "已选支付方式"
+      var toggleLabel = paymentToggle.querySelector('.toggle-label');
+      if (toggleLabel) {
+        toggleLabel.lastChild.textContent = ' 已选支付方式';
+      }
+      // Auto-expand
+      paymentToggle.classList.add('expanded');
+    }
+    if (paymentContent) {
+      paymentContent.style.display = 'block';
+    }
+    // Update 实付金额 to match payment detail
+    var totalEl = document.querySelector('.fee-row.total .fee-value');
+    if (totalEl) totalEl.textContent = '¥1,000';
   }
 
   // For pending-pay, update nav title

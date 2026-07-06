@@ -8019,6 +8019,13 @@ const changelogData = [
                 module: '待支付订单检查',
                 time: '11:00',
                 content: 'payNow()前加同样的待支付订单模拟检查：_simHasPendingOrder开关（默认true），有待支付订单时弹窗提示，提供"继续支付此订单"（进入showPaymentModal支付流程）和"关闭此订单"（调用cancelOrder取消并释放冻结资产）两个选项；弹窗样式与确认订单页一致，标注"模拟"标签'
+            },
+            {
+                page: 'user-miniapp/order-detail.html',
+                pageName: '订单详情',
+                module: '待支付订单支付',
+                time: '12:00',
+                content: '待支付订单支付流程重构：不再重新选择支付方式和额度，改为按已选组合支付额度直接支付。待支付状态不再隐藏支付明细区域，改为显示"已选支付方式"并自动展开（微信¥500+钱包¥300+充值卡¥200），实付金额修正为¥1000；continuePayThisOrder改为调用showPreselectedPayConfirm()确认弹窗（展示各支付方式图标+额度+流程提示"钱包密码验证→微信支付→完成"）；新增startPreselectedPay()→proceedDetailToWechatPay()→showDetailWechatPayModal()串行支付链路；confirmWalletPassword()改为调用proceedDetailToWechatPay()继续微信支付环节；新增completeDetailOrder()跳转成功页；新增wechatSpin动画'
             }
         ]
     },
