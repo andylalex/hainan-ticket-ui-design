@@ -8062,6 +8062,20 @@ const changelogData = [
                 module: '邀请好友',
                 time: '17:00',
                 content: '邀请弹窗和海报增加银卡权益说明：邀请弹窗在奖励卡片下方新增"开通银卡即享权益"区域（金色渐变背景，5个权益标签：购票95折/优先购票/每月优惠券/生日福利/积分1.2倍）；海报权益预览从4项增加到5项（新增积分1.2倍），"9折优惠"修正为"95折优惠"（银卡为95折非9折），"享9折购票"修正为"享95折购票"'
+            },
+            {
+                page: 'user-miniapp/member-center.html',
+                pageName: '会员中心',
+                module: '邀请弹窗精简',
+                time: '18:00',
+                content: '邀请弹窗大幅精简为一屏可见：移除max-height:85vh和overflow-y:auto（不再滚动）；删除奖励卡片区和3步规则步骤区；标题区缩小（图标48px+字号18px）；新增一句话流程说明"好友充值¥800→赠200成长值→合计1000直达银卡"；银卡权益和奖励合并为单个紧凑卡片（标题含"你获1000成长值"）；权益标签从emoji改为Font Awesome扁平化图标（fa-tag/fa-ticket-alt/fa-bolt/fa-calendar-check/fa-birthday-cake）；按钮改为单行紧凑样式'
+            },
+            {
+                page: 'user-miniapp/member-center.html',
+                pageName: '会员中心',
+                module: '海报图标',
+                time: '18:00',
+                content: '海报权益图标从emoji改为Font Awesome扁平化图标：🎫→fa-ticket-alt、🏷️→fa-tag、⚡→fa-bolt、🎟️→fa-calendar-check、🎁→fa-birthday-cake，与邀请弹窗图标保持一致'
             }
         ]
     },

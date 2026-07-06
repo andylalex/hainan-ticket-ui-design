@@ -675,12 +675,10 @@
     max-width: 375px;
     background: #FFFFFF;
     border-radius: 24px 24px 0 0;
-    padding: 24px 20px 32px;
+    padding: 20px 20px calc(24px + env(safe-area-inset-bottom));
     transform: translateY(100%);
     transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
     position: relative;
-    max-height: 85vh;
-    overflow-y: auto;
   }
   .modal-overlay.active .refer-modal {
     transform: translateY(0);
@@ -1442,75 +1440,37 @@
   <!-- ===== 5. 推荐有礼弹窗 ===== -->
   <div class="modal-overlay" id="referModal" onclick="closeReferModal(event)">
     <div class="refer-modal" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeReferModal()">✕</button>
+      <button class="modal-close" onclick="closeReferModal()"><i class="fas fa-times"></i></button>
 
-      <div class="modal-header">
-        <div class="modal-gift-icon">🎁</div>
-        <div class="modal-title">邀好友充值 加速开银卡</div>
-        <div class="modal-subtitle">好友充值即享额外20%成长值赠送，更快开通银卡会员</div>
+      <!-- 紧凑标题 -->
+      <div class="modal-header" style="margin-bottom:14px;">
+        <div class="modal-gift-icon" style="width:48px;height:48px;border-radius:14px;font-size:24px;margin-bottom:8px;"><i class="fas fa-gift"></i></div>
+        <div class="modal-title" style="font-size:18px;">邀好友充值 加速开银卡</div>
       </div>
 
-      <!-- 奖励展示 -->
-      <div class="reward-cards">
-        <div class="reward-card">
-          <div class="reward-value">+1000</div>
-          <div class="reward-label">你的成长值奖励</div>
-        </div>
-        <div class="reward-card highlight">
-          <div class="reward-value">+200</div>
-          <div class="reward-label">好友额外成长值<br><span style="font-size:11px;color:#999;font-weight:400">充¥800立达银卡</span></div>
-        </div>
+      <!-- 一句话说明 -->
+      <div style="text-align:center;font-size:13px;color:#888;margin-bottom:14px;line-height:1.5;">
+        好友充值 <span style="color:#D4A853;font-weight:600;">¥800</span> → 赠 <span style="color:#E85D3A;font-weight:600;">200成长值</span> → 合计1000直达银卡
       </div>
 
-      <!-- 银卡权益预览 -->
-      <div style="background:linear-gradient(135deg,#F8F5EE,#FFFDF8);border:1px solid #E8D9B8;border-radius:12px;padding:14px 16px;margin:16px 0;">
+      <!-- 银卡权益 + 奖励 合并紧凑卡片 -->
+      <div style="background:linear-gradient(135deg,#F8F5EE,#FFFDF8);border:1px solid #E8D9B8;border-radius:14px;padding:14px;margin-bottom:16px;">
         <div style="font-size:13px;font-weight:600;color:#8B6F3C;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
-          <i class="fas fa-crown" style="color:#C9A961;"></i> 开通银卡即享权益
+          <i class="fas fa-crown" style="color:#C9A961;"></i> 开通银卡即享 · 你获1000成长值
         </div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px;">
-          <div style="display:flex;align-items:center;gap:4px;background:#fff;border-radius:8px;padding:6px 10px;font-size:12px;color:#5B4A2E;"><span style="font-size:14px;">🏷️</span> 购票95折</div>
-          <div style="display:flex;align-items:center;gap:4px;background:#fff;border-radius:8px;padding:6px 10px;font-size:12px;color:#5B4A2E;"><span style="font-size:14px;">🎫</span> 优先购票</div>
-          <div style="display:flex;align-items:center;gap:4px;background:#fff;border-radius:8px;padding:6px 10px;font-size:12px;color:#5B4A2E;"><span style="font-size:14px;">🎟️</span> 每月优惠券</div>
-          <div style="display:flex;align-items:center;gap:4px;background:#fff;border-radius:8px;padding:6px 10px;font-size:12px;color:#5B4A2E;"><span style="font-size:14px;">🎁</span> 生日福利</div>
-          <div style="display:flex;align-items:center;gap:4px;background:#fff;border-radius:8px;padding:6px 10px;font-size:12px;color:#5B4A2E;"><span style="font-size:14px;">⚡</span> 积分1.2倍</div>
-        </div>
-      </div>
-
-      <!-- 规则步骤 -->
-      <div class="rule-steps">
-        <div class="rule-step">
-          <div class="step-num">1</div>
-          <div class="step-content">
-            <div class="step-title">分享专属邀请</div>
-            <div class="step-desc">生成海报或复制链接，发给想看演出的朋友</div>
-          </div>
-        </div>
-        <div class="rule-step">
-          <div class="step-num">2</div>
-          <div class="step-content">
-            <div class="step-title">好友充值加速达标</div>
-            <div class="step-desc">好友通过你的邀请注册，充值 <span style="color:#D4A853;font-weight:600">¥800</span> 得800成长值，<span style="color:#E85D3A;font-weight:600">额外赠送200成长值</span>，合计1000成长值直达银卡门槛</div>
-          </div>
-        </div>
-        <div class="rule-step">
-          <div class="step-num">3</div>
-          <div class="step-content">
-            <div class="step-title">双方各有所得</div>
-            <div class="step-desc">好友获得银卡会员权益，你获得 <span style="color:#D4A853;font-weight:600">1000成长值</span> 奖励，加速升级</div>
-          </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+          <div style="display:flex;align-items:center;gap:4px;background:#fff;border-radius:8px;padding:5px 10px;font-size:12px;color:#5B4A2E;"><i class="fas fa-tag" style="font-size:11px;color:#C9A961;"></i> 购票95折</div>
+          <div style="display:flex;align-items:center;gap:4px;background:#fff;border-radius:8px;padding:5px 10px;font-size:12px;color:#5B4A2E;"><i class="fas fa-ticket-alt" style="font-size:11px;color:#C9A961;"></i> 优先购票</div>
+          <div style="display:flex;align-items:center;gap:4px;background:#fff;border-radius:8px;padding:5px 10px;font-size:12px;color:#5B4A2E;"><i class="fas fa-bolt" style="font-size:11px;color:#C9A961;"></i> 积分1.2倍</div>
+          <div style="display:flex;align-items:center;gap:4px;background:#fff;border-radius:8px;padding:5px 10px;font-size:12px;color:#5B4A2E;"><i class="fas fa-calendar-check" style="font-size:11px;color:#C9A961;"></i> 每月优惠券</div>
+          <div style="display:flex;align-items:center;gap:4px;background:#fff;border-radius:8px;padding:5px 10px;font-size:12px;color:#5B4A2E;"><i class="fas fa-birthday-cake" style="font-size:11px;color:#C9A961;"></i> 生日福利</div>
         </div>
       </div>
 
       <!-- 行动按钮 -->
       <div class="modal-actions">
-        <button class="modal-btn secondary" onclick="copyLink()">
-          <i class="fas fa-link"></i>
-          复制链接
-        </button>
-        <button class="modal-btn primary" onclick="openPosterModal()">
-          <i class="fas fa-image"></i>
-          生成海报
-        </button>
+        <button class="modal-btn secondary" onclick="copyLink()"><i class="fas fa-link"></i> 复制链接</button>
+        <button class="modal-btn primary" onclick="openPosterModal()"><i class="fas fa-image"></i> 生成海报</button>
       </div>
     </div>
   </div>
@@ -1564,23 +1524,23 @@
           <!-- 银卡权益预览 -->
           <div class="poster-reward-row">
             <div class="poster-reward-chip">
-              <div class="poster-reward-chip-val">🎫</div>
+              <div class="poster-reward-chip-val"><i class="fas fa-ticket-alt"></i></div>
               <div class="poster-reward-chip-label">优先购票</div>
             </div>
             <div class="poster-reward-chip">
-              <div class="poster-reward-chip-val">🏷️</div>
+              <div class="poster-reward-chip-val"><i class="fas fa-tag"></i></div>
               <div class="poster-reward-chip-label">95折优惠</div>
             </div>
             <div class="poster-reward-chip">
-              <div class="poster-reward-chip-val">⚡</div>
+              <div class="poster-reward-chip-val"><i class="fas fa-bolt"></i></div>
               <div class="poster-reward-chip-label">积分1.2倍</div>
             </div>
             <div class="poster-reward-chip">
-              <div class="poster-reward-chip-val">🎟️</div>
+              <div class="poster-reward-chip-val"><i class="fas fa-calendar-check"></i></div>
               <div class="poster-reward-chip-label">每月发券</div>
             </div>
             <div class="poster-reward-chip">
-              <div class="poster-reward-chip-val">🎁</div>
+              <div class="poster-reward-chip-val"><i class="fas fa-birthday-cake"></i></div>
               <div class="poster-reward-chip-label">生日礼包</div>
             </div>
           </div>
