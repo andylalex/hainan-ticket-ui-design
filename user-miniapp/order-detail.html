@@ -1295,8 +1295,89 @@ function cancelOrder() {
   showToast('订单已取消');
 }
 
+// [模拟] 待支付订单开关 — true=有待支付订单, false=无
+var _simHasPendingOrder = true;
+
 function payNow() {
+  // [模拟] 检查是否存在待支付订单（即当前订单）
+  if (_simHasPendingOrder) {
+    showPendingOrderModal();
+    return;
+  }
   showPaymentModal();
+}
+
+// [模拟] 待支付订单冲突弹窗
+function showPendingOrderModal() {
+  var overlay = document.createElement('div');
+  overlay.className = 'pay-modal-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,22,40,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:200;opacity:0;transition:opacity 0.3s ease;';
+
+  var sheet = document.createElement('div');
+  sheet.style.cssText = 'position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:375px;background:#fff;border-radius:20px 20px 0 0;z-index:201;transition:transform 0.35s cubic-bezier(0.32,0.72,0,1);padding:28px 24px calc(28px + env(safe-area-inset-bottom));box-shadow:0 -8px 40px rgba(10,22,40,0.12);';
+
+  var html = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">';
+  html += '<div style="display:flex;align-items:center;gap:8px;">';
+  html += '<div style="width:36px;height:36px;border-radius:10px;background:#FEF3C7;display:flex;align-items:center;justify-content:center;"><i class="fas fa-exclamation-triangle" style="font-size:16px;color:#F59E0B;"></i></div>';
+  html += '<span style="font-size:16px;font-weight:700;color:#1A1A2E;">检测到待支付订单</span>';
+  html += '</div>';
+  html += '<span style="font-size:11px;padding:2px 8px;border-radius:4px;background:#F3F4F6;color:#9CA3AF;">模拟</span>';
+  html += '</div>';
+
+  html += '<div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;padding:14px 16px;margin-bottom:20px;">';
+  html += '<div style="font-size:13px;color:#92400E;line-height:1.8;">';
+  html += '当前订单为待支付状态，已冻结座位资产<br>';
+  html += '<span style="color:#78350F;font-size:12px;">订单号：HN20260706001 · 创建于 2 分钟前</span>';
+  html += '</div>';
+  html += '</div>';
+
+  html += '<div style="font-size:12px;color:#9CA3AF;margin-bottom:20px;line-height:1.6;">';
+  html += '※ 继续支付将进入支付流程<br>';
+  html += '※ 关闭订单后将取消订单并释放冻结资产';
+  html += '</div>';
+
+  html += '<button style="width:100%;height:48px;background:linear-gradient(135deg,#FF6B4A,#FF8A6A);color:#fff;border:none;border-radius:24px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(255,107,74,0.3);margin-bottom:12px;" onclick="continuePayThisOrder()">继续支付此订单</button>';
+  html += '<button style="width:100%;height:48px;background:#F5F6FA;color:#4B5563;border:none;border-radius:24px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;" onclick="closeThisPendingOrder()">关闭此订单</button>';
+
+  sheet.innerHTML = html;
+  document.body.appendChild(overlay);
+  document.body.appendChild(sheet);
+
+  window._pendingOrderOverlay = overlay;
+  window._pendingOrderSheet = sheet;
+
+  requestAnimationFrame(function() {
+    overlay.style.opacity = '1';
+    sheet.style.transform = 'translateX(-50%) translateY(0)';
+  });
+  overlay.onclick = closePendingOrderModal;
+}
+
+function closePendingOrderModal() {
+  if (window._pendingOrderOverlay) {
+    window._pendingOrderOverlay.style.opacity = '0';
+    window._pendingOrderSheet.style.transform = 'translateX(-50%) translateY(100%)';
+    setTimeout(function() {
+      if (window._pendingOrderOverlay) window._pendingOrderOverlay.remove();
+      if (window._pendingOrderSheet) window._pendingOrderSheet.remove();
+      window._pendingOrderOverlay = null;
+      window._pendingOrderSheet = null;
+    }, 300);
+  }
+}
+
+// 继续支付此订单
+function continuePayThisOrder() {
+  closePendingOrderModal();
+  _simHasPendingOrder = false;
+  showPaymentModal();
+}
+
+// 关闭此订单
+function closeThisPendingOrder() {
+  closePendingOrderModal();
+  _simHasPendingOrder = false;
+  cancelOrder();
 }
 
 function viewTicket() { showToast('即将跳转电子票'); }

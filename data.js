@@ -8005,6 +8005,20 @@ const changelogData = [
                 module: '页面跳转',
                 time: '10:30',
                 content: '修复按钮链接指向不存在的页面：查看订单从order-list.html改为order-detail.html并附带orderNo参数；返回首页从index.html改为home.html'
+            },
+            {
+                page: 'user-miniapp/order-confirm.html',
+                pageName: '确认订单',
+                module: '待支付订单检查',
+                time: '11:00',
+                content: '新增待支付订单模拟检查：submitOrder()前加_simHasPendingOrder开关（默认true），有待支付订单时弹窗提示"检测到待支付订单"，提供"继续支付旧订单"（跳转order-detail.html?orderNo=HN20260706001&sim=pending）和"关闭旧订单，创建新订单"（关闭后_proceedToPayment继续支付）两个选项；弹窗标注"模拟"标签，提示关闭后才能创建新订单；原submitOrder支付逻辑提取为proceedToPayment()；无待支付订单时直接进入支付环节'
+            },
+            {
+                page: 'user-miniapp/order-detail.html',
+                pageName: '订单详情',
+                module: '待支付订单检查',
+                time: '11:00',
+                content: 'payNow()前加同样的待支付订单模拟检查：_simHasPendingOrder开关（默认true），有待支付订单时弹窗提示，提供"继续支付此订单"（进入showPaymentModal支付流程）和"关闭此订单"（调用cancelOrder取消并释放冻结资产）两个选项；弹窗样式与确认订单页一致，标注"模拟"标签'
             }
         ]
     },
