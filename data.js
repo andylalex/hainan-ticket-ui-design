@@ -8041,6 +8041,20 @@ const changelogData = [
                 module: '热门推荐',
                 time: '15:00',
                 content: '热门推荐卡片时间从"2026.07.15 20:00"改为日期范围"2026.07.15 - 07.16"，4张卡片全部更新；价格从"¥280 + 划线价480"改为"¥280起"，移除original划线价'
+            },
+            {
+                page: 'pc-admin/member-management.html',
+                pageName: '会员管理',
+                module: '钱包明细',
+                time: '16:00',
+                content: '钱包明细新增"预扣退回"交易类型：新增prededuct样式（橙色#F59E0B），在钱包明细表格中新增1条"预扣退回"记录（+¥300.00，订单超时取消 - 《红色娘子军》预扣退回）'
+            },
+            {
+                page: 'pc-admin/activity-decoration.html',
+                pageName: '首页装修',
+                module: '组件操作',
+                time: '16:00',
+                content: '手机端预览区组件操作按钮从"图标+文字"改为"纯图标"：上移/下移/删除按钮移除文字，只保留图标，title属性保留悬停提示'
             }
         ]
     },

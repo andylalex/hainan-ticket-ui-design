@@ -4944,9 +4944,9 @@ function renderPreview() {
   container.innerHTML = previewComponents.map((comp, i) => {
     var isSearch = comp.type === 'search';
     var actionsHtml = isSearch ? '' : `<div class="comp-actions">
-        <button class="btn-up" onclick="event.stopPropagation();moveComponent(${i},-1)" title="上移"><i class="fas fa-chevron-up"></i> 上移</button>
-        <button class="btn-down" onclick="event.stopPropagation();moveComponent(${i},1)" title="下移"><i class="fas fa-chevron-down"></i> 下移</button>
-        <button class="btn-del" onclick="event.stopPropagation();removeComponent(${i})" title="删除"><i class="fas fa-trash"></i> 删除</button>
+        <button class="btn-up" onclick="event.stopPropagation();moveComponent(${i},-1)" title="上移"><i class="fas fa-chevron-up"></i></button>
+        <button class="btn-down" onclick="event.stopPropagation();moveComponent(${i},1)" title="下移"><i class="fas fa-chevron-down"></i></button>
+        <button class="btn-del" onclick="event.stopPropagation();removeComponent(${i})" title="删除"><i class="fas fa-trash"></i></button>
       </div>`;
     return `
     <div class="preview-component ${i === selectedComponentIndex ? 'selected' : ''} ${isSearch ? 'search-fixed' : ''}"
