@@ -2871,7 +2871,7 @@ select.form-select-sm,
           </div>
         </div>
         <div class="st-right-panel">
-          <div class="st-panel-card st-selected-seats-card" style="height:500px;">
+          <div class="st-panel-card st-selected-seats-card" style="height:350px;">
             <div class="st-panel-card-header">
               <i class="fas fa-check-circle"></i> 已选座位
               <span style="margin-left:auto;font-size:11px;color:#94A3B8;font-weight:400;" id="chSelectedCount">0 个</span>
@@ -3195,10 +3195,14 @@ select.form-select-sm,
 <div class="st-modal-overlay" id="chAddChannelModal" style="display:none;">
   <div class="st-modal" style="width:420px;">
     <div class="st-modal-header">
-      <span>添加渠道</span>
+      <span id="chModalTitle">添加渠道</span>
       <button class="st-modal-close" onclick="chCloseAddChannelModal()"><i class="fas fa-times"></i></button>
     </div>
     <div class="st-modal-body">
+      <div class="st-form-group">
+        <label class="st-form-label">渠道编码</label>
+        <input type="text" class="st-form-input" id="chNewChannelCode" placeholder="请输入渠道编码，如 DAMAI" style="text-transform:uppercase;">
+      </div>
       <div class="st-form-group">
         <label class="st-form-label">渠道名称</label>
         <input type="text" class="st-form-input" id="chNewChannelName" placeholder="请输入渠道名称">
@@ -3221,7 +3225,7 @@ select.form-select-sm,
     </div>
     <div class="st-modal-footer">
       <button class="st-modal-btn cancel" onclick="chCloseAddChannelModal()">取消</button>
-      <button class="st-modal-btn confirm" onclick="chConfirmAddChannel()">确认添加</button>
+      <button class="st-modal-btn confirm" id="chModalConfirmBtn" onclick="chConfirmAddChannel()">确认添加</button>
     </div>
   </div>
 </div>
@@ -4599,10 +4603,10 @@ var chState = {
   seatData: {},
   zones: [],
   channels: [
-    { name: '大麦', color: '#FF6B35', count: 0 },
-    { name: '猫眼', color: '#E4393C', count: 0 },
-    { name: '抖音', color: '#111', count: 0 },
-    { name: '美团', color: '#FFD100', count: 0 }
+    { code: 'DAMAI', name: '大麦', color: '#FF6B35', count: 0 },
+    { code: 'MAOYAN', name: '猫眼', color: '#E4393C', count: 0 },
+    { code: 'DOUYIN', name: '抖音', color: '#111', count: 0 },
+    { code: 'MEITUAN', name: '美团', color: '#FFD100', count: 0 }
   ],
   activeChannel: null,
   selectedShow: null,
@@ -4984,6 +4988,7 @@ function chRenderChannelList() {
     html += '  <div style="width:12px;height:12px;border-radius:3px;background:' + ch.color + ';flex-shrink:0;"></div>';
     html += '  <span style="flex:1;font-size:12.5px;font-weight:' + (isActive ? '600' : '400') + ';color:' + (isActive ? ch.color : '#2D3748') + ';">' + ch.name + '</span>';
     html += '  <span style="font-size:11px;color:#94A3B8;">' + ch.count + '座</span>';
+    html += '  <button onclick="event.stopPropagation();chEditChannel(\'' + ch.name + '\')" title="编辑渠道" style="flex-shrink:0;width:22px;height:22px;border:none;background:transparent;color:#94A3B8;cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;" onmouseover="this.style.color=\'#3B82F6\';this.style.background=\'#EFF6FF\';" onmouseout="this.style.color=\'#94A3B8\';this.style.background=\'transparent\';"><i class="fas fa-pen"></i></button>';
     html += '  <button onclick="event.stopPropagation();chDeleteChannel(\'' + ch.name + '\')" title="删除渠道" style="flex-shrink:0;width:22px;height:22px;border:none;background:transparent;color:#94A3B8;cursor:pointer;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:12px;" onmouseover="this.style.color=\'#EF4444\';this.style.background=\'#FEF2F2\';" onmouseout="this.style.color=\'#94A3B8\';this.style.background=\'transparent\';"><i class="fas fa-trash-alt"></i></button>';
     html += '</div>';
   });
@@ -5015,18 +5020,42 @@ function chDeleteChannel(name) {
 
 var chSelectedColor = '#FF6B35';
 
+var chEditingChannel = null; // 当前编辑的渠道名，null=新增模式
+
 function chAddChannel() {
+  chEditingChannel = null;
+  document.getElementById('chModalTitle').textContent = '添加渠道';
+  document.getElementById('chModalConfirmBtn').textContent = '确认添加';
+  document.getElementById('chNewChannelCode').value = '';
   document.getElementById('chNewChannelName').value = '';
   chSelectedColor = '#FF6B35';
-  // 重置颜色选择
   document.querySelectorAll('#chColorPicker .st-color-option').forEach(function(el) {
     el.classList.remove('active');
   });
   document.getElementById('chAddChannelModal').style.display = 'flex';
 }
 
+function chEditChannel(name) {
+  var ch = chState.channels.find(function(c) { return c.name === name; });
+  if (!ch) return;
+  chEditingChannel = name;
+  document.getElementById('chModalTitle').textContent = '编辑渠道';
+  document.getElementById('chModalConfirmBtn').textContent = '保存修改';
+  document.getElementById('chNewChannelCode').value = ch.code || '';
+  document.getElementById('chNewChannelName').value = ch.name;
+  chSelectedColor = ch.color;
+  document.querySelectorAll('#chColorPicker .st-color-option').forEach(function(el) {
+    el.classList.remove('active');
+    if (el.style.background === ch.color || el.style.backgroundColor === ch.color) {
+      el.classList.add('active');
+    }
+  });
+  document.getElementById('chAddChannelModal').style.display = 'flex';
+}
+
 function chCloseAddChannelModal() {
   document.getElementById('chAddChannelModal').style.display = 'none';
+  chEditingChannel = null;
 }
 
 function chSelectColor(el, color) {
@@ -5038,15 +5067,43 @@ function chSelectColor(el, color) {
 }
 
 function chConfirmAddChannel() {
+  var code = document.getElementById('chNewChannelCode').value.trim().toUpperCase();
   var name = document.getElementById('chNewChannelName').value.trim();
+  if (!code) { showToast('warning', '请输入渠道编码'); return; }
   if (!name) { showToast('warning', '请输入渠道名称'); return; }
-  var exists = chState.channels.some(function(ch) { return ch.name === name; });
-  if (exists) { showToast('warning', '渠道"' + name + '"已存在'); return; }
-  chState.channels.push({ name: name, color: chSelectedColor, count: 0 });
-  chChannelColors[name] = chSelectedColor;
-  chRenderChannelList();
-  chCloseAddChannelModal();
-  showToast('success', '已添加渠道: ' + name);
+
+  if (chEditingChannel) {
+    // 编辑模式
+    var ch = chState.channels.find(function(c) { return c.name === chEditingChannel; });
+    if (!ch) return;
+    // 检查名称是否与其他渠道冲突
+    var conflict = chState.channels.some(function(c) { return c.name === name && c.name !== chEditingChannel; });
+    if (conflict) { showToast('warning', '渠道"' + name + '"已存在'); return; }
+    // 更新颜色映射
+    delete chChannelColors[chEditingChannel];
+    ch.code = code;
+    ch.name = name;
+    ch.color = chSelectedColor;
+    chChannelColors[name] = chSelectedColor;
+    if (chState.activeChannel === chEditingChannel) {
+      chState.activeChannel = name;
+    }
+    chRenderChannelList();
+    chRenderSeatMap();
+    chCloseAddChannelModal();
+    showToast('success', '已更新渠道: ' + name);
+  } else {
+    // 新增模式
+    var exists = chState.channels.some(function(c) { return c.name === name; });
+    if (exists) { showToast('warning', '渠道"' + name + '"已存在'); return; }
+    var codeExists = chState.channels.some(function(c) { return c.code === code; });
+    if (codeExists) { showToast('warning', '渠道编码"' + code + '"已存在'); return; }
+    chState.channels.push({ code: code, name: name, color: chSelectedColor, count: 0 });
+    chChannelColors[name] = chSelectedColor;
+    chRenderChannelList();
+    chCloseAddChannelModal();
+    showToast('success', '已添加渠道: ' + name);
+  }
 }
 
 // ==================== 渠道售票 - 分配/取消/清空 ====================
