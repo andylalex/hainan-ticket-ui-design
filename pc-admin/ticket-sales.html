@@ -3295,7 +3295,7 @@ var stShows = [
     id: 'st1', name: '《天涯故事》大型歌舞秀', type: '歌舞剧',
     icon: 'fa-masks-theater', color: 'linear-gradient(135deg, #667eea, #764ba2)',
     totalSeats: 1200, soldSeats: 856, sessions: [
-      { id: 'st1-1', datetime: '2026-04-20 19:30', sold: 856, total: 1200, rate: '71.3%', ticketDiscount: { type: 'percentage', value: 0.85, label: '折扣' }, earlyBird: null },
+      { id: 'st1-1', datetime: '2026-04-20 19:30', sold: 856, total: 1200, rate: '71.3%', ticketDiscount: { type: 'percentage', value: 0.95, maxSave: 100, label: '折扣' }, earlyBird: null },
       { id: 'st1-2', datetime: '2026-04-21 14:00', sold: 620, total: 1200, rate: '51.7%', ticketDiscount: null, earlyBird: { discount: 0.8, deadline: '2026-04-15', label: '早鸟' } },
       { id: 'st1-3', datetime: '2026-04-21 19:30', sold: 1100, total: 1200, rate: '91.7%', ticketDiscount: { type: 'amount', value: 50, threshold: 300, label: '满减' }, earlyBird: null }
     ]
@@ -3305,7 +3305,7 @@ var stShows = [
     icon: 'fa-music', color: 'linear-gradient(135deg, #43e97b, #38f9d7)',
     totalSeats: 800, soldSeats: 500, sessions: [
       { id: 'st2-1', datetime: '2026-04-20 15:00', sold: 180, total: 800, rate: '22.5%', ticketDiscount: null, earlyBird: null },
-      { id: 'st2-2', datetime: '2026-04-21 19:30', sold: 320, total: 800, rate: '40.0%', ticketDiscount: { type: 'percentage', value: 0.9, label: '折扣' }, earlyBird: { discount: 0.75, deadline: '2026-04-10', label: '早鸟' } }
+      { id: 'st2-2', datetime: '2026-04-21 19:30', sold: 320, total: 800, rate: '40.0%', ticketDiscount: { type: 'percentage', value: 0.9, maxSave: 80, label: '折扣' }, earlyBird: null }
     ]
   },
   {
@@ -3322,7 +3322,7 @@ var stShows = [
     totalSeats: 500, soldSeats: 360, sessions: [
       { id: 'st4-1', datetime: '2026-04-20 10:00', sold: 110, total: 500, rate: '22.0%', ticketDiscount: null, earlyBird: { discount: 0.85, deadline: '2026-04-15', label: '早鸟' } },
       { id: 'st4-2', datetime: '2026-04-20 15:00', sold: 200, total: 500, rate: '40.0%', ticketDiscount: null, earlyBird: null },
-      { id: 'st4-3', datetime: '2026-04-21 10:00', sold: 50, total: 500, rate: '10.0%', ticketDiscount: { type: 'percentage', value: 0.88, label: '折扣' }, earlyBird: null }
+      { id: 'st4-3', datetime: '2026-04-21 10:00', sold: 50, total: 500, rate: '10.0%', ticketDiscount: { type: 'percentage', value: 0.88, maxSave: 60, label: '折扣' }, earlyBird: null }
     ]
   }
 ];
@@ -3517,16 +3517,15 @@ function stRenderShowList() {
           var td = sess.ticketDiscount;
           if (td.type === 'percentage') {
             var zhe = td.value * 10;
-            var maxSave = Math.round((1 - td.value) * 100);
-            html += '    <span class="st-session-expand-tag discount">' + zhe + '折，最高优惠' + maxSave + '%</span>';
+            html += '    <span class="st-session-expand-tag discount">「折扣」' + zhe + '折，最高优惠' + (td.maxSave || '') + '</span>';
           } else if (td.type === 'amount') {
-            html += '    <span class="st-session-expand-tag fullcut">满' + td.threshold + '-' + td.value + '</span>';
+            html += '    <span class="st-session-expand-tag fullcut">「满减」满' + td.threshold + '-' + td.value + '</span>';
           }
         }
         if (sess.earlyBird) {
           var eb = sess.earlyBird;
           var ebZhe = eb.discount * 10;
-          html += '    <span class="st-session-expand-tag earlybird">' + ebZhe + '折，' + eb.deadline + '前</span>';
+          html += '    <span class="st-session-expand-tag earlybird">「早鸟」' + ebZhe + '折，' + eb.deadline + '前</span>';
         }
         html += '  </div>';
       }
