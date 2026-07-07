@@ -4761,27 +4761,33 @@ select.form-select-sm,
                             <div class="gc-body" id="growthActivityBody" style="opacity:0.4;pointer-events:none;">
                                 <div class="gc-desc">设置限时活动，活动期间充值可获得额外成长值加成</div>
                                 <div class="gc-activity-form" id="growthActivityForm">
-                                    <div class="gc-form-row">
-                                        <label class="gc-form-label">活动名称</label>
-                                        <input type="text" class="gc-form-input" placeholder="例如：五一充值狂欢" value="">
-                                    </div>
-                                    <div class="gc-form-row">
-                                        <label class="gc-form-label">活动时间</label>
-                                        <input type="datetime-local" class="gc-form-input" value="2026-04-30T00:00">
-                                        <span class="gc-form-sep">至</span>
-                                        <input type="datetime-local" class="gc-form-input" value="2026-05-05T23:59">
-                                    </div>
-                                    <div class="gc-form-row">
-                                        <label class="gc-form-label">活动比例</label>
-                                        <div class="gc-setting">
-                                            <span class="gc-label">每充值</span>
-                                            <input type="number" class="gc-input gc-input--sm" value="1">
-                                            <span class="gc-unit">元 =</span>
-                                            <input type="number" class="gc-input gc-input--sm" value="2">
-                                            <span class="gc-unit">成长值</span>
+                                    <!-- 活动名称 + 活动比例 同一行 -->
+                                    <div style="display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap;">
+                                        <div style="flex:1;min-width:180px;">
+                                            <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">活动名称</label>
+                                            <input type="text" style="width:100%;height:32px;border:1px solid var(--border-light);border-radius:6px;padding:0 10px;font-size:13px;color:var(--text-primary);outline:none;" placeholder="例如：五一充值狂欢" value="">
                                         </div>
-                                        <div class="gc-hint">活动期间充值成长值翻倍</div>
+                                        <div style="min-width:200px;">
+                                            <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">活动比例</label>
+                                            <div style="display:flex;align-items:center;gap:6px;">
+                                                <span style="font-size:13px;color:var(--text-secondary);">每充值</span>
+                                                <input type="number" class="gc-input gc-input--sm" value="1">
+                                                <span style="font-size:13px;color:var(--text-secondary);">元 =</span>
+                                                <input type="number" class="gc-input gc-input--sm" value="2">
+                                                <span style="font-size:13px;color:var(--text-secondary);">成长值</span>
+                                            </div>
+                                        </div>
                                     </div>
+                                    <!-- 活动时间 -->
+                                    <div style="margin-bottom:0;">
+                                        <label style="display:block;font-size:12px;color:var(--text-muted);margin-bottom:4px;">活动时间</label>
+                                        <div style="display:flex;align-items:center;gap:8px;">
+                                            <input type="datetime-local" style="flex:1;height:32px;border:1px solid var(--border-light);border-radius:6px;padding:0 10px;font-size:13px;color:var(--text-primary);outline:none;" value="2026-04-30T00:00">
+                                            <span style="color:var(--text-muted);font-size:13px;">至</span>
+                                            <input type="datetime-local" style="flex:1;height:32px;border:1px solid var(--border-light);border-radius:6px;padding:0 10px;font-size:13px;color:var(--text-primary);outline:none;" value="2026-05-05T23:59">
+                                        </div>
+                                    </div>
+                                    <div style="margin-top:8px;font-size:11px;color:var(--text-muted);">活动期间充值成长值翻倍</div>
                                 </div>
                             </div>
                         </div>
@@ -4789,12 +4795,13 @@ select.form-select-sm,
                             <div class="gc-header">
                                 <div class="gc-icon gc-icon--rose"><i class="fas fa-gift"></i></div>
                                 <div class="gc-title">邀请有礼</div>
-                                <span class="gc-tag" style="margin-left:auto;font-size:11px;padding:2px 8px;border-radius:4px;background:#FEF2F2;color:#E85D3A;">邀请充值专属</span>
-                                <label class="benefit-toggle" style="margin-left:8px;">
-                                    <input type="checkbox" id="inviteRewardSwitch" checked onchange="toggleInviteReward()">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                                <span id="inviteRewardStatus" style="font-size:12px;color:var(--emerald);font-weight:600;width:32px;">已开启</span>
+                                <div style="margin-left:auto;display:flex;align-items:center;gap:6px;white-space:nowrap;">
+                                    <label class="benefit-toggle">
+                                        <input type="checkbox" id="inviteRewardSwitch" checked onchange="toggleInviteReward()">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                    <span id="inviteRewardStatus" style="font-size:12px;color:var(--emerald);font-weight:600;">已开启</span>
+                                </div>
                             </div>
                             <div class="gc-body" id="inviteRewardBody">
                                 <div class="gc-desc">邀请好友充值达标开通 L2 银卡，双方各获成长值奖励</div>
@@ -4816,24 +4823,17 @@ select.form-select-sm,
                                 </div>
 
                                 <div class="gc-setting" style="margin-bottom:12px;">
-                                    <span class="gc-label">邀请奖励</span>
+                                    <span class="gc-label">邀请者奖励</span>
                                     <input type="number" class="gc-input gc-input--md" id="inviteRewardGrowth" value="1000">
                                     <span class="gc-unit">成长值</span>
                                 </div>
-                                <div class="gc-setting" style="margin-bottom:12px;">
+                                <div class="gc-setting" style="margin-bottom:0;gap:12px;">
                                     <span class="gc-label">被邀请者充值</span>
                                     <input type="number" class="gc-input gc-input--md" id="inviteRechargeAmount" value="800">
                                     <span class="gc-unit">元</span>
-                                </div>
-                                <div class="gc-setting" style="margin-bottom:12px;">
-                                    <span class="gc-label">赠送</span>
+                                    <span class="gc-label" style="margin-left:8px;">赠送</span>
                                     <input type="number" class="gc-input gc-input--md" id="inviteBonusGrowth" value="200">
                                     <span class="gc-unit">成长值</span>
-                                </div>
-
-                                <div style="font-size:11px;color:var(--text-light);line-height:1.6;">
-                                    ※ 按当前充值比例，充 <strong>¥800</strong> 得 <strong>800</strong> 成长值 + 赠送 <strong>200</strong> = 合计 <strong>1,000</strong> 达银卡门槛<br>
-                                    ※ 活动期间充值比例 1元=2成长值，可降低充值金额或赠送成长值
                                 </div>
                             </div>
                         </div>
