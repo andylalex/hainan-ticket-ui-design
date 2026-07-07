@@ -4787,38 +4787,54 @@ select.form-select-sm,
                                 </div>
                             </div>
                         </div>
-                        <div class="growth-config-card">
+                        <div class="growth-config-card" id="inviteRewardCard">
                             <div class="gc-header">
                                 <div class="gc-icon gc-icon--rose"><i class="fas fa-gift"></i></div>
                                 <div class="gc-title">邀请有礼</div>
                                 <span class="gc-tag" style="margin-left:auto;font-size:11px;padding:2px 8px;border-radius:4px;background:#FEF2F2;color:#E85D3A;">邀请充值专属</span>
+                                <label class="benefit-toggle" style="margin-left:8px;">
+                                    <input type="checkbox" id="inviteRewardSwitch" checked onchange="toggleInviteReward()">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span id="inviteRewardStatus" style="font-size:12px;color:var(--emerald);font-weight:600;width:32px;">已开启</span>
                             </div>
-                            <div class="gc-body">
+                            <div class="gc-body" id="inviteRewardBody">
                                 <div class="gc-desc">邀请好友充值达标后，双方各获成长值奖励 · 目标等级为 <strong style="color:#8B6F3C;">L2 银卡会员</strong></div>
+
+                                <!-- 银卡门槛提示 -->
+                                <div style="background:rgba(212,168,83,0.06);border:1px solid rgba(212,168,83,0.25);border-radius:8px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+                                    <i class="fas fa-info-circle" style="color:#D4A853;font-size:14px;"></i>
+                                    <span style="font-size:12px;color:#8B6F3C;">当前 L2 银卡会员成长值门槛：<strong style="font-size:15px;color:#D4A853;">1,000</strong>，请据此合理配置以下参数</span>
+                                </div>
+
                                 <div class="gc-setting" style="margin-bottom:12px;">
-                                    <span class="gc-label">邀请者奖励（每成功邀请1人充值）</span>
-                                    <input type="number" class="gc-input gc-input--md" value="1000">
+                                    <span class="gc-label">邀请奖励</span>
+                                    <input type="number" class="gc-input gc-input--md" id="inviteRewardGrowth" value="1000">
                                     <span class="gc-unit">成长值</span>
+                                    <span style="font-size:11px;color:var(--text-light);margin-left:8px;">（每成功邀请1人充值，邀请者获得的成长值）</span>
+                                </div>
+                                <div class="gc-setting" style="margin-bottom:12px;">
+                                    <span class="gc-label">被邀请者充值</span>
+                                    <input type="number" class="gc-input gc-input--md" id="inviteRechargeAmount" value="800">
+                                    <span class="gc-unit">元</span>
+                                    <span style="font-size:11px;color:var(--text-light);margin-left:8px;">（被邀请者需充值的金额）</span>
                                 </div>
                                 <div class="gc-setting" style="margin-bottom:16px;">
-                                    <span class="gc-label">被邀请者赠送比例</span>
-                                    <input type="number" class="gc-input gc-input--md" id="inviteBonusPercent" value="20" min="1" max="50" oninput="updateInvitePreview()">
-                                    <span class="gc-unit">%</span>
-                                    <span style="font-size:11px;color:var(--text-light);margin-left:8px;">（占银卡门槛比例，上限50%）</span>
+                                    <span class="gc-label">赠送</span>
+                                    <input type="number" class="gc-input gc-input--md" id="inviteBonusGrowth" value="200">
+                                    <span class="gc-unit">成长值</span>
+                                    <span style="font-size:11px;color:var(--text-light);margin-left:8px;">（被邀请者充值后额外赠送的成长值）</span>
                                 </div>
-                                <div id="invitePreviewBox" style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:14px 16px;">
-                                    <div style="font-size:13px;font-weight:600;color:#166534;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
-                                        <i class="fas fa-check-circle"></i> 实时预览（被邀请者视角 · L2银卡）
+
+                                <!-- 配置提示 -->
+                                <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:14px 16px;">
+                                    <div style="font-size:13px;font-weight:600;color:#475569;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+                                        <i class="fas fa-lightbulb" style="color:#D4A853;"></i> 配置提示
                                     </div>
-                                    <div id="invitePreviewContent" style="font-size:13px;color:#166534;line-height:2;">
-                                        被邀请者充值 <strong style="font-size:15px;color:#15803D;">¥800</strong> → 得 800 成长值<br>
-                                        <span style="color:#E85D3A;">额外赠送 <strong style="font-size:15px;">200</strong> 成长值（门槛20%取整）</span><br>
-                                        合计 <strong style="font-size:16px;color:#15803D;">1000</strong> 成长值 → 直达 L2 银卡会员
-                                    </div>
-                                    <div style="margin-top:8px;padding-top:8px;border-top:1px dashed #BBF7D0;font-size:11px;color:#65A30D;">
-                                        ※ 赠送成长值 = 银卡门槛1000 × 20% = 200（向下取整）<br>
-                                        ※ 充值金额 = 1000 − 200 = 800 成长值 ÷ 充值比例1 = ¥800<br>
-                                        ※ 赠送比例不可超过50%，确保充值金额≥门槛50%
+                                    <div style="font-size:12px;color:#64748B;line-height:1.9;">
+                                        以上三项参数均由管理员手动配置，系统不做自动运算。<br>
+                                        配置时请确保：充值成长值 + 赠送成长值 ≥ 银卡门槛（1,000），<br>
+                                        被邀请者才能通过充值达标开通银卡会员。
                                     </div>
                                 </div>
                             </div>
@@ -6143,47 +6159,24 @@ select.form-select-sm,
         }
 
         // Growth Activity Toggle
-        // Invite Preview - percentage-based derivation
-        function updateInvitePreview() {
-            var percent = parseInt(document.getElementById('inviteBonusPercent').value) || 0;
-            var threshold = 1000;   // 银卡门槛成长值（从L2等级配置读取）
-            var ratio = 1;          // 充值比例（从充值成长值比例读取）
-            var maxPercent = 50;    // 上限50%
+        // Invite Reward Toggle - enable/disable the whole invite reward card
+        function toggleInviteReward() {
+            var checkbox = document.getElementById('inviteRewardSwitch');
+            var body = document.getElementById('inviteRewardBody');
+            var status = document.getElementById('inviteRewardStatus');
 
-            var box = document.getElementById('invitePreviewBox');
-            var content = document.getElementById('invitePreviewContent');
-
-            if (percent > maxPercent || percent < 1) {
-                box.style.background = '#FEF2F2';
-                box.style.borderColor = '#FECACA';
-                content.innerHTML = '<span style="color:#DC2626;font-weight:600;">⚠ 赠送比例应在 1%~50% 之间</span><br><span style="color:#991B1B;font-size:11px;">赠送比例不可超过50%，确保充值金额≥门槛50%</span>';
-                box.querySelector('div:first-child').style.color = '#991B1B';
-                box.querySelector('div:first-child i').className = 'fas fa-exclamation-circle';
-                return;
+            if (checkbox.checked) {
+                body.style.opacity = '1';
+                body.style.pointerEvents = 'auto';
+                status.textContent = '已开启';
+                status.style.color = 'var(--emerald)';
+                body.querySelectorAll('input').forEach(function(input) { input.disabled = false; });
+            } else {
+                body.style.opacity = '0.4';
+                body.style.pointerEvents = 'none';
+                status.textContent = '已关闭';
+                status.style.color = 'var(--text-light)';
             }
-
-            // 赠送成长值 = 银卡门槛 × 百分比，向下取整
-            var bonus = Math.floor(threshold * percent / 100);
-            // 充值所需成长值 = 门槛 − 赠送
-            var rechargeGrowth = threshold - bonus;
-            // 充值金额 = 充值成长值 ÷ 充值比例
-            var rechargeAmount = rechargeGrowth / ratio;
-
-            box.style.background = '#F0FDF4';
-            box.style.borderColor = '#BBF7D0';
-            box.querySelector('div:first-child').style.color = '#166534';
-            box.querySelector('div:first-child i').className = 'fas fa-check-circle';
-
-            content.innerHTML =
-                '被邀请者充值 <strong style="font-size:15px;color:#15803D;">¥' + rechargeAmount + '</strong> → 得 ' + rechargeGrowth + ' 成长值<br>' +
-                '<span style="color:#E85D3A;">额外赠送 <strong style="font-size:15px;">' + bonus + '</strong> 成长值（门槛' + percent + '%取整）</span><br>' +
-                '合计 <strong style="font-size:16px;color:#15803D;">' + threshold + '</strong> 成长值 → 直达 L2 银卡会员';
-
-            var hint = box.querySelector('div:last-child');
-            hint.innerHTML =
-                '※ 赠送成长值 = 银卡门槛' + threshold + ' × ' + percent + '% = ' + bonus + '（向下取整）<br>' +
-                '※ 充值金额 = ' + threshold + ' − ' + bonus + ' = ' + rechargeGrowth + ' 成长值 ÷ 充值比例' + ratio + ' = ¥' + rechargeAmount + '<br>' +
-                '※ 赠送比例不可超过50%，确保充值金额≥门槛50%';
         }
 
         function toggleGrowthActivity(checkbox) {
