@@ -2178,6 +2178,7 @@ textarea.form-control {
   background: var(--bg-light);
   border-radius: var(--radius-sm);
   font-size: 12.5px;
+  position: relative;
 }
 
 .version-item .version-dot {
@@ -2188,8 +2189,73 @@ textarea.form-control {
   flex-shrink: 0;
 }
 
+.version-item .version-dot.current {
+  background: var(--gold);
+  box-shadow: 0 0 0 2px rgba(212,168,83,0.3);
+}
+
+.version-item .version-dot.saved {
+  background: #3B82F6;
+}
+
 .version-item .version-dot.pending {
   background: var(--gold);
+}
+
+.version-item .version-dot.archived {
+  background: #94A3B8;
+}
+
+.version-item .version-actions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.version-item .version-actions button {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.version-item .version-actions .btn-restore {
+  background: #EFF6FF;
+  color: #3B82F6;
+}
+.version-item .version-actions .btn-restore:hover { background: #DBEAFE; }
+
+.version-item .version-actions .btn-archive {
+  background: #F8FAFC;
+  color: #94A3B8;
+}
+.version-item .version-actions .btn-archive:hover { background: #F1F5F9; color: #64748B; }
+
+.version-item .version-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(148,163,184,0.04);
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+}
+
+.version-item .version-badge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: #F1F5F9;
+  color: #94A3B8;
+  flex-shrink: 0;
+}
+.version-item .version-badge.current {
+  background: var(--green-soft, #D1FAE5);
+  color: var(--green, #10B981);
 }
 
 .version-item .version-info {
@@ -3932,19 +3998,15 @@ select.form-select-sm,
         <!-- Toolbar -->
         <div class="deco-toolbar">
           <div class="deco-toolbar-left">
-            <button class="btn btn-ghost" onclick="undoAction()" title="撤销">
-              <i class="fas fa-undo"></i> 撤销
-            </button>
-            <button class="btn btn-ghost" onclick="redoAction()" title="重做">
-              <i class="fas fa-redo"></i> 重做
-            </button>
-            <div class="toolbar-divider"></div>
             <div class="gray-toggle">
               <span>一键置灰</span>
               <div class="switch" id="gray-switch" onclick="toggleGrayMode()"></div>
             </div>
           </div>
           <div class="deco-toolbar-right">
+            <button class="btn btn-ghost" onclick="openVersionHistory()">
+              <i class="fas fa-clock-rotate-left"></i> 历史版本
+            </button>
             <button class="btn btn-secondary" onclick="saveDesign()">
               <i class="fas fa-save"></i> 保存
             </button>
@@ -4176,6 +4238,28 @@ select.form-select-sm,
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modal-edit-activity')">取消</button>
       <button class="btn btn-primary" onclick="closeModal('modal-edit-activity');showToast('success','活动修改已保存')">保存修改</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== Modal: Version History ==================== -->
+<div class="modal-overlay" id="modal-version-history">
+  <div class="modal" style="width:520px;">
+    <div class="modal-header">
+      <h3><i class="fas fa-clock-rotate-left"></i> 历史版本</h3>
+      <button class="modal-close" onclick="closeModal('modal-version-history')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+        <i class="fas fa-info-circle" style="color:var(--gold);"></i>
+        <span>每次保存自动创建新版本，最多保留 <strong>20</strong> 个版本</span>
+      </div>
+      <div class="version-list" id="versionList">
+        <!-- 由JS渲染版本列表 -->
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-version-history')">关闭</button>
     </div>
   </div>
 </div>
@@ -5499,15 +5583,143 @@ function toggleGrayMode() {
   document.getElementById('phone-content').classList.toggle('gray-mode');
 }
 
-// ==================== Toolbar Actions ====================
-function undoAction() {
-  showToast('warning', '暂无可撤销操作');
+// ==================== Version History ====================
+var versionHistory = [];
+var versionIdCounter = 1;
+
+function initVersionHistory() {
+  var now = new Date();
+  versionHistory = [{
+    id: versionIdCounter++,
+    name: '初版方案',
+    components: JSON.parse(JSON.stringify(previewComponents)),
+    time: formatVersionTime(now),
+    timestamp: now.getTime(),
+    status: 'current'
+  }];
 }
 
-function redoAction() {
-  showToast('warning', '暂无可重做操作');
+function formatVersionTime(date) {
+  var m = date.getMonth() + 1;
+  var d = date.getDate();
+  var h = String(date.getHours()).padStart(2, '0');
+  var min = String(date.getMinutes()).padStart(2, '0');
+  return m + '-' + d + ' ' + h + ':' + min;
 }
 
+function openVersionHistory() {
+  renderVersionList();
+  openModal('modal-version-history');
+}
+
+function renderVersionList() {
+  var container = document.getElementById('versionList');
+  if (!container) return;
+  var html = '';
+
+  // 当前版本排最前
+  var sorted = versionHistory.slice().sort(function(a, b) { return b.timestamp - a.timestamp; });
+  var latestId = sorted.length > 0 ? sorted[0].id : null;
+
+  sorted.forEach(function(v) {
+    var isCurrent = v.status === 'current';
+    var isArchived = v.status === 'archived';
+    var compCount = v.components ? v.components.length : 0;
+    html += '<div class="version-item" style="' + (isCurrent ? 'border:1.5px solid var(--gold);' : '') + '">';
+    if (isArchived) {
+      html += '  <div class="version-overlay"></div>';
+    }
+    html += '  <div class="version-dot ' + v.status + '"></div>';
+    html += '  <div class="version-info">';
+    html += '    <div class="version-name">' + v.name;
+    if (isCurrent) {
+      html += '      <span class="version-badge current">当前</span>';
+    } else if (isArchived) {
+      html += '      <span class="version-badge" style="color:#94A3B8;">已归档</span>';
+    }
+    html += '    </div>';
+    html += '    <div class="version-time">' + v.time + ' · ' + compCount + ' 个组件</div>';
+    html += '  </div>';
+    html += '  <div class="version-actions">';
+    if (!isCurrent) {
+      html += '    <button class="btn-restore" onclick="restoreVersion(' + v.id + ')" title="恢复到此版本"><i class="fas fa-rotate-left"></i></button>';
+    }
+    if (!isArchived && !isCurrent) {
+      html += '    <button class="btn-archive" onclick="archiveVersion(' + v.id + ')" title="归档"><i class="fas fa-archive"></i></button>';
+    }
+    if (isArchived) {
+      html += '    <button class="btn-archive" onclick="unarchiveVersion(' + v.id + ')" title="取消归档"><i class="fas fa-box-open"></i></button>';
+    }
+    html += '  </div>';
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function saveDesign() {
+  if (previewComponents.length === 0) {
+    showToast('warning', '请先添加组件再保存');
+    return;
+  }
+  // 将当前版本移出 current 状态
+  versionHistory.forEach(function(v) {
+    if (v.status === 'current') {
+      v.status = 'saved';
+    }
+  });
+  // 创建新版本
+  var now = new Date();
+  versionHistory.push({
+    id: versionIdCounter++,
+    name: '版本 ' + versionIdCounter,
+    components: JSON.parse(JSON.stringify(previewComponents)),
+    time: formatVersionTime(now),
+    timestamp: now.getTime(),
+    status: 'current'
+  });
+  // 限制最多20个版本，超出则删除最旧的未归档版本
+  if (versionHistory.length > 20) {
+    var nonArchived = versionHistory.filter(function(v) { return v.status !== 'archived'; }).sort(function(a, b) { return a.timestamp - b.timestamp; });
+    while (nonArchived.length > 20) {
+      var oldest = nonArchived.shift();
+      versionHistory = versionHistory.filter(function(v) { return v.id !== oldest.id; });
+    }
+  }
+  showToast('success', '装修方案已保存，版本已记录');
+}
+
+function restoreVersion(id) {
+  var v = versionHistory.find(function(v) { return v.id === id; });
+  if (!v) return;
+  // 当前版本移出 current
+  versionHistory.forEach(function(v) {
+    if (v.status === 'current') v.status = 'saved';
+  });
+  // 恢复
+  previewComponents = JSON.parse(JSON.stringify(v.components));
+  renderPreview();
+  // 恢复的版本成为当前
+  v.status = 'current';
+  renderVersionList();
+  closeModal('modal-version-history');
+  showToast('success', '已恢复版本: ' + v.name);
+}
+
+function archiveVersion(id) {
+  var v = versionHistory.find(function(v) { return v.id === id; });
+  if (!v) return;
+  v.status = 'archived';
+  renderVersionList();
+  showToast('success', '已归档版本: ' + v.name);
+}
+
+function unarchiveVersion(id) {
+  var v = versionHistory.find(function(v) { return v.id === id; });
+  if (!v) return;
+  v.status = 'saved';
+  renderVersionList();
+  showToast('success', '已取消归档版本: ' + v.name);
+}
 // ==================== Hot Show Functions ====================
 function toggleHotMode(select) {
   var customPanel = document.getElementById('hotCustomPanel');
@@ -5585,6 +5797,7 @@ previewComponents = [
   { type: 'activity' }
 ];
 renderPreview();
+initVersionHistory();
 // 根据 URL hash 自动切换页面
 if (location.hash === '#decoration') switchPage('decoration');
 </script>
