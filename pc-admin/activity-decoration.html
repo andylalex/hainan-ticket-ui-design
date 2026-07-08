@@ -4250,9 +4250,14 @@ select.form-select-sm,
       <button class="modal-close" onclick="closeModal('modal-version-history')"><i class="fas fa-times"></i></button>
     </div>
     <div class="modal-body">
-      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;display:flex;align-items:center;gap:8px;">
-        <i class="fas fa-info-circle" style="color:var(--gold);"></i>
-        <span>每次保存自动创建新版本，最多保留 <strong>20</strong> 个版本</span>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="font-size:12px;color:var(--text-secondary);display:flex;align-items:center;gap:8px;">
+          <i class="fas fa-info-circle" style="color:var(--gold);"></i>
+          <span>每次保存自动创建新版本，最多保留 <strong>20</strong> 个版本</span>
+        </div>
+        <button class="btn btn-ghost" onclick="openArchivedVersions()" style="font-size:12px;padding:4px 10px;">
+          <i class="fas fa-archive"></i> 查看归档
+        </button>
       </div>
       <div class="version-list" id="versionList">
         <!-- 由JS渲染版本列表 -->
@@ -4260,6 +4265,28 @@ select.form-select-sm,
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modal-version-history')">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== Modal: Archived Versions ==================== -->
+<div class="modal-overlay" id="modal-archived-versions">
+  <div class="modal" style="width:520px;">
+    <div class="modal-header">
+      <h3><i class="fas fa-archive"></i> 已归档版本</h3>
+      <button class="modal-close" onclick="closeModal('modal-archived-versions')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+        <i class="fas fa-info-circle" style="color:#94A3B8;"></i>
+        <span>归档版本不参与自动清理，可随时恢复</span>
+      </div>
+      <div class="version-list" id="archivedVersionList">
+        <!-- 由JS渲染归档版本列表 -->
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-archived-versions')">关闭</button>
     </div>
   </div>
 </div>
@@ -5453,18 +5480,12 @@ function renderPropertyPanel() {
               </div>
             </div>
           </div>
-          <div class="prop-field">
+          <div class="prop-field" id="hotShowCountField">
             <label>展示数量</label>
             <div class="prop-number-input">
               <button onclick="this.nextElementSibling.value=Math.max(1,+this.nextElementSibling.value-1)">-</button>
               <input type="number" value="3" min="1" max="6">
               <button onclick="this.previousElementSibling.value=Math.min(6,+this.previousElementSibling.value+1)">+</button>
-            </div>
-          </div>
-          <div class="prop-field">
-            <div class="switch-wrap">
-              <div class="switch on" onclick="this.classList.toggle('on')"></div>
-              <span class="switch-label">显示价格</span>
             </div>
           </div>
         </div>`;
@@ -5506,12 +5527,6 @@ function renderPropertyPanel() {
               <button onclick="this.nextElementSibling.value=Math.max(1,+this.nextElementSibling.value-1)">-</button>
               <input type="number" value="3" min="1" max="10">
               <button onclick="this.previousElementSibling.value=Math.min(10,+this.previousElementSibling.value+1)">+</button>
-            </div>
-          </div>
-          <div class="prop-field">
-            <div class="switch-wrap">
-              <div class="switch on" onclick="this.classList.toggle('on')"></div>
-              <span class="switch-label">显示价格</span>
             </div>
           </div>
         </div>`;
@@ -5589,14 +5604,49 @@ var versionIdCounter = 1;
 
 function initVersionHistory() {
   var now = new Date();
-  versionHistory = [{
-    id: versionIdCounter++,
-    name: '初版方案',
-    components: JSON.parse(JSON.stringify(previewComponents)),
-    time: formatVersionTime(now),
-    timestamp: now.getTime(),
-    status: 'current'
-  }];
+  var baseComponents = JSON.parse(JSON.stringify(previewComponents));
+  versionHistory = [
+    {
+      id: versionIdCounter++,
+      name: '初版方案',
+      components: baseComponents,
+      time: formatVersionTime(new Date(now.getTime() - 86400000 * 5)),
+      timestamp: now.getTime() - 86400000 * 5,
+      status: 'archived'
+    },
+    {
+      id: versionIdCounter++,
+      name: '春季演出季版',
+      components: baseComponents.slice(0, 4),
+      time: formatVersionTime(new Date(now.getTime() - 86400000 * 3)),
+      timestamp: now.getTime() - 86400000 * 3,
+      status: 'archived'
+    },
+    {
+      id: versionIdCounter++,
+      name: '五一活动版',
+      components: baseComponents.concat([{ type: 'activity' }]),
+      time: formatVersionTime(new Date(now.getTime() - 86400000 * 2)),
+      timestamp: now.getTime() - 86400000 * 2,
+      status: 'saved'
+    },
+    {
+      id: versionIdCounter++,
+      name: '儿童节专题版',
+      components: baseComponents,
+      time: formatVersionTime(new Date(now.getTime() - 86400000)),
+      timestamp: now.getTime() - 86400000,
+      status: 'saved'
+    },
+    {
+      id: versionIdCounter++,
+      name: '当前方案',
+      components: JSON.parse(JSON.stringify(previewComponents)),
+      time: formatVersionTime(now),
+      timestamp: now.getTime(),
+      status: 'current'
+    }
+  ];
 }
 
 function formatVersionTime(date) {
@@ -5610,6 +5660,36 @@ function formatVersionTime(date) {
 function openVersionHistory() {
   renderVersionList();
   openModal('modal-version-history');
+}
+
+function openArchivedVersions() {
+  var container = document.getElementById('archivedVersionList');
+  if (!container) return;
+  var html = '';
+  var archived = versionHistory.filter(function(v) { return v.status === 'archived'; }).sort(function(a, b) { return b.timestamp - a.timestamp; });
+
+  if (archived.length === 0) {
+    html = '<div style="text-align:center;padding:30px;color:#94A3B8;font-size:13px;"><i class="fas fa-inbox" style="font-size:24px;margin-bottom:8px;display:block;"></i>暂无归档版本</div>';
+  } else {
+    archived.forEach(function(v) {
+      var compCount = v.components ? v.components.length : 0;
+      html += '<div class="version-item" style="opacity:0.7;">';
+      html += '  <div class="version-dot archived"></div>';
+      html += '  <div class="version-info">';
+      html += '    <div class="version-name">' + v.name;
+      html += '      <span class="version-badge" style="color:#94A3B8;">已归档</span>';
+      html += '    </div>';
+      html += '    <div class="version-time">' + v.time + ' · ' + compCount + ' 个组件</div>';
+      html += '  </div>';
+      html += '  <div class="version-actions">';
+      html += '    <button class="btn-restore" onclick="restoreVersion(' + v.id + ')" title="恢复到此版本"><i class="fas fa-rotate-left"></i></button>';
+      html += '    <button class="btn-archive" onclick="unarchiveVersion(' + v.id + ')" title="取消归档"><i class="fas fa-box-open"></i></button>';
+      html += '  </div>';
+      html += '</div>';
+    });
+  }
+  container.innerHTML = html;
+  openModal('modal-archived-versions');
 }
 
 function renderVersionList() {
@@ -5724,12 +5804,15 @@ function unarchiveVersion(id) {
 function toggleHotMode(select) {
   var customPanel = document.getElementById('hotCustomPanel');
   var hint = document.getElementById('hotRecHint');
+  var countField = document.getElementById('hotShowCountField');
   if (select.value === 'custom') {
     customPanel.style.display = 'block';
     if (hint) hint.style.display = 'none';
+    if (countField) countField.style.display = 'none';
   } else {
     customPanel.style.display = 'none';
     if (hint) hint.style.display = 'block';
+    if (countField) countField.style.display = 'block';
   }
 }
 
