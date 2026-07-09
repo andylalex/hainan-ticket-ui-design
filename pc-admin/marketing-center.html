@@ -1047,6 +1047,8 @@ html {
     .status-expired::before { background: #ef4444; }
     .status-pending { background: #e0e7ff; color: #4f46e5; }
     .status-pending::before { background: #6366f1; }
+    .status-stopped { background: #f3f4f6; color: #6b7280; }
+    .status-stopped::before { background: #9ca3af; }
 
     /* ========== Value Tags ========== */
     .value-tag {
@@ -4068,6 +4070,39 @@ select.form-select-sm,
                     <div class="actions-cell">
                       <button class="action-btn view" title="查看" onclick="openModal('modal-coupon-view')"><i class="fas fa-eye"></i> 查看</button>
                       <button class="action-btn view" title="数据" onclick="openModal('modal-coupon-data')"><i class="fas fa-chart-bar"></i> 数据</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="font-weight:500">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <span style="width:4px; height:28px; background:#9ca3af; border-radius:2px; display:inline-block;"></span>
+                      元旦满减优惠券
+                    </div>
+                  </td>
+                  <td><span class="value-tag money">现金券</span></td>
+                  <td style="font-weight:700; color:var(--accent); font-size:15px;">¥100</td>
+                  <td style="color:var(--text-secondary); font-size:12px">满500可用</td>
+                  <td style="color:var(--text-secondary); font-size:12px">
+                    <span style="display:inline-flex; align-items:center; gap:4px;"><i class="fas fa-globe" style="font-size:11px;"></i>全部演出</span>
+                  </td>
+                  <td><span class="value-tag" style="background:rgba(74,122,255,0.1);color:#4A7AFF;">扫码领取</span></td>
+                  <td>
+                    <div>
+                      <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                        <span>3,000 / 450</span>
+                        <span style="color:var(--text-muted); font-weight:500;">15%</span>
+                      </div>
+                      <div class="progress-bar"><div class="progress-fill" style="width:15%; background:#d1d5db;"></div></div>
+                    </div>
+                  </td>
+                  <td style="color:var(--text-secondary); font-size:12px">2025-12-25 ~ 2026-01-10</td>
+                  <td><span class="status status-stopped">已停用</span></td>
+                  <td>
+                    <div class="actions-cell">
+                      <button class="action-btn view" title="查看" onclick="openModal('modal-coupon-view')"><i class="fas fa-eye"></i> 查看</button>
+                      <button class="action-btn view" title="数据" onclick="openModal('modal-coupon-data')"><i class="fas fa-chart-bar"></i> 数据</button>
+                      <button class="action-btn danger" title="启用" style="color:var(--green)"><i class="fas fa-play"></i> 启用</button>
                     </div>
                   </td>
                 </tr>
