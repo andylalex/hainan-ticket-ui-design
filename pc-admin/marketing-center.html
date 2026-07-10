@@ -3914,7 +3914,7 @@ select.form-select-sm,
                 <option>全部状态</option>
                 <option>未开始</option>
                 <option>进行中</option>
-                <option>已过期</option>
+                <option>已结束</option>
                 <option>已停用</option>
               </select>
             </div>
@@ -4065,7 +4065,7 @@ select.form-select-sm,
                     </div>
                   </td>
                   <td style="color:var(--text-secondary); font-size:12px">2026-01-20 ~ 2026-02-28</td>
-                  <td><span class="status status-expired">已过期</span></td>
+                  <td><span class="status status-expired">已结束</span></td>
                   <td>
                     <div class="actions-cell">
                       <button class="action-btn view" title="查看" onclick="openModal('modal-coupon-view')"><i class="fas fa-eye"></i> 查看</button>
@@ -5647,7 +5647,7 @@ select.form-select-sm,
   </div>
 </div>
 
-<!-- Modal: 查看优惠券（已过期/已停用 — 只读） -->
+<!-- Modal: 查看优惠券（已结束/已停用 — 只读） -->
 <div class="modal-overlay" id="modal-coupon-view">
   <div class="modal modal-lg">
     <div class="modal-header">
@@ -5659,7 +5659,7 @@ select.form-select-sm,
       <div class="edit-state-hint danger">
         <i class="fas fa-lock"></i>
         <div>
-          <strong>当前状态：已过期</strong> — 该优惠券已过期，所有内容均为只读，不可修改。
+          <strong>当前状态：已结束</strong> — 该优惠券已结束，所有内容均为只读，不可修改。
         </div>
       </div>
 
@@ -5910,7 +5910,7 @@ select.form-select-sm,
           <strong>编辑规则说明：</strong><br>
           · <strong>未开始</strong>：所有字段均可编辑<br>
           · <strong>进行中</strong>：仅可修改有效期和使用说明，核心参数不可变更<br>
-          · <strong>已过期/已停用</strong>：仅可查看，不可编辑
+          · <strong>已结束/已停用</strong>：仅可查看，不可编辑
         </div>
       </div>
     </div>
